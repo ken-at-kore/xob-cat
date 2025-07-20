@@ -2,6 +2,10 @@
 
 A full-stack web analytics platform for Kore.ai Expert Services teams to investigate and analyze production chatbot and IVA sessions built using the Kore.ai XO Platform.
 
+> 📋 **Product Vision**: To become the definitive analytics platform for Kore.ai Expert Services teams, enabling data-driven bot optimization and improved client satisfaction through comprehensive conversation analysis and AI-enhanced insight generation.
+
+📚 **[📖 Complete Documentation](./docs/README.md)** | 📋 **[📄 Product Requirements Document](./docs/Product%20Requirements%20Document.md)**
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -91,6 +95,8 @@ XOB CAT/
    - Pareto charts for intents and drop-offs
    - Transfer reason analysis
    - Session metrics dashboard
+
+> 📋 **For detailed feature specifications, see the [Product Requirements Document](./docs/Product%20Requirements%20Document.md)**
 
 ## 🔧 Development
 
@@ -198,8 +204,10 @@ types/
 The project includes comprehensive testing setup:
 
 - **Frontend**: Jest + React Testing Library
-- **Backend**: Jest for unit tests
+- **Backend**: Jest for unit tests with 100% coverage on core components
 - **E2E**: Playwright (planned)
+
+> 🧪 **For testing details, see the [Testing Guide](./docs/testing.md)**
 
 ## 📈 Deployment
 
@@ -219,6 +227,8 @@ The project includes comprehensive testing setup:
 4. Add tests if applicable
 5. Submit a pull request
 
+> 📚 **For development guidelines, see the [Development Guide](./docs/development.md)**
+
 ## 📄 License
 
 MIT License - see LICENSE file for details
@@ -226,9 +236,16 @@ MIT License - see LICENSE file for details
 ## 🆘 Support
 
 For questions or issues:
-1. Check the documentation
+1. Check the [documentation](./docs/README.md)
 2. Search existing issues
 3. Create a new issue with detailed information
+
+## 📚 Additional Resources
+
+- **[📖 Complete Documentation](./docs/README.md)** - All project documentation
+- **[📋 Product Requirements Document](./docs/Product%20Requirements%20Document.md)** - Detailed product specifications
+- **[🏗️ Architecture Overview](./docs/architecture.md)** - System design and technical decisions
+- **[🔧 API Reference](./docs/api-reference.md)** - Complete API documentation
 
 ---
 
