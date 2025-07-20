@@ -99,6 +99,9 @@ temp/
 # Reference source code (exclude from version control)
 reference_source_code/
 
+# Configuration files with sensitive data
+backend/config/
+
 # TypeScript cache
 *.tsbuildinfo
 

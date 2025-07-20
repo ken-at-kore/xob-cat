@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { SessionWithTranscript, SessionsResponse, SessionFilters } from '../../../shared/types';
-import { generateMockSessions } from '../services/mockDataService';
+import { getSessions } from '../services/mockDataService';
 
 const router = Router();
 
@@ -16,8 +16,8 @@ router.get('/', async (req: Request, res: Response<SessionsResponse>) => {
       skip: parseInt(req.query.skip as string) || 0
     };
 
-    // Generate mock sessions for now
-    const sessions = generateMockSessions(filters);
+    // Get sessions (real API or mock data)
+    const sessions = await getSessions(filters);
     
     res.json({
       success: true,
@@ -40,9 +40,12 @@ router.get('/:sessionId', async (req: Request, res: Response) => {
   try {
     const { sessionId } = req.params;
     
-    // Generate mock sessions and find the specific one
-    const sessions = generateMockSessions({});
-    const session = sessions.find(s => s.session_id === sessionId);
+    // Get sessions and find the specific one
+    const sessions = await getSessions({
+      start_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // Last 30 days
+      end_date: new Date().toISOString()
+    });
+    const session = sessions.find((s: SessionWithTranscript) => s.session_id === sessionId);
     
     if (!session) {
       return res.status(404).json({

@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { sessionsRouter } from './routes/sessions';
 import { analysisRouter } from './routes/analysis';
+import { koreRouter } from './routes/kore';
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +35,7 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/analysis', analysisRouter);
+app.use('/api/kore', koreRouter);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

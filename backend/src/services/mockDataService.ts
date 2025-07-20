@@ -1,4 +1,6 @@
 import { SessionWithTranscript, Message, SessionFilters } from '../../../shared/types';
+import { createKoreApiService, KoreApiConfig } from './koreApiService';
+import { configManager } from '../utils/configManager';
 
 // Sample conversation templates
 const conversationTemplates = [
@@ -42,6 +44,89 @@ const conversationTemplates = [
     outcome: 'Contained' as const
   }
 ];
+
+// Kore.ai API service instance
+let koreApiService: any = null;
+
+// Initialize Kore.ai API service if credentials are available
+function initializeKoreApiService(): any {
+  try {
+    // First try to load from config file
+    const koreConfig = configManager.getKoreConfig();
+    const config: KoreApiConfig = {
+      botId: koreConfig.bot_id,
+      clientId: koreConfig.client_id,
+      clientSecret: koreConfig.client_secret,
+      baseUrl: koreConfig.base_url
+    };
+    console.log(`🔗 Using Kore.ai API with bot: ${koreConfig.name}`);
+    return createKoreApiService(config);
+  } catch (error) {
+    console.log('📁 No config file found, checking environment variables...');
+    
+    // Fall back to environment variables
+    const botId = process.env.KORE_BOT_ID;
+    const clientId = process.env.KORE_CLIENT_ID;
+    const clientSecret = process.env.KORE_CLIENT_SECRET;
+    const baseUrl = process.env.KORE_BASE_URL;
+
+    if (botId && clientId && clientSecret) {
+      const config: KoreApiConfig = {
+        botId,
+        clientId,
+        clientSecret,
+        ...(baseUrl && { baseUrl })
+      };
+      console.log('🔗 Using Kore.ai API with environment variables');
+      return createKoreApiService(config);
+    }
+    
+    console.log('📝 No Kore.ai credentials found, will use mock data');
+    return null;
+  }
+}
+
+export async function getSessions(filters: SessionFilters): Promise<SessionWithTranscript[]> {
+  // Try to use real Kore.ai API first
+  if (!koreApiService) {
+    koreApiService = initializeKoreApiService();
+  }
+
+  if (koreApiService) {
+    try {
+      console.log('Using real Kore.ai API to fetch sessions');
+      
+      // Convert filters to date range for Kore.ai API
+      const dateFrom = filters.start_date || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const dateTo = filters.end_date || new Date().toISOString();
+      
+      const sessions = await koreApiService.getSessions(
+        dateFrom,
+        dateTo,
+        filters.skip || 0,
+        filters.limit || 1000
+      );
+
+      // Apply additional filters that aren't handled by the API
+      let filteredSessions = sessions;
+      
+      if (filters.containment_type) {
+        filteredSessions = filteredSessions.filter((s: SessionWithTranscript) => 
+          s.containment_type === filters.containment_type
+        );
+      }
+
+      return filteredSessions;
+    } catch (error) {
+      console.error('Error fetching sessions from Kore.ai API:', error);
+      console.log('Falling back to mock data');
+    }
+  }
+
+  // Fall back to mock data
+  console.log('Using mock data for sessions');
+  return generateMockSessions(filters);
+}
 
 export function generateMockSessions(filters: SessionFilters): SessionWithTranscript[] {
   const sessions: SessionWithTranscript[] = [];
