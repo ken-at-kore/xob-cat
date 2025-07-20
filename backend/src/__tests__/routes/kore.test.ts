@@ -64,7 +64,7 @@ describe('Kore Routes', () => {
             tags: { userTags: [], sessionTags: [] },
             messages: []
           }
-        ])
+        ] as any)
       };
 
       configManager.getKoreConfig.mockReturnValue(mockKoreConfig);
@@ -130,7 +130,7 @@ describe('Kore Routes', () => {
       ];
 
       const mockKoreService = {
-        getSessions: jest.fn().mockResolvedValue(mockSessions)
+        getSessions: jest.fn().mockResolvedValue(mockSessions as any)
       };
 
       configManager.getKoreConfig.mockReturnValue(mockKoreConfig);

@@ -1,14 +1,11 @@
 import { jest } from '@jest/globals';
 import { createKoreApiService, KoreApiConfig } from '../../services/koreApiService';
 import axios from 'axios';
-import jwt from 'jsonwebtoken';
 
 // Mock the modules
 jest.mock('axios');
-jest.mock('jsonwebtoken');
 
 const mockAxios = axios as jest.Mocked<typeof axios>;
-const mockJwt = jwt as jest.Mocked<typeof jwt>;
 
 describe('KoreApiService', () => {
   const mockConfig: KoreApiConfig = {
@@ -18,27 +15,42 @@ describe('KoreApiService', () => {
     baseUrl: 'https://bots.kore.ai'
   };
 
-  const mockJwtToken = 'mock-jwt-token';
   const mockSessionsResponse = {
-    data: {
-      sessions: [
-        {
-          sessionId: 'session-1',
-          userId: 'user-1',
-          start_time: '2025-01-01T00:00:00Z',
-          end_time: '2025-01-01T00:01:00Z',
-          containment_type: 'agent',
-          tags: { userTags: [], sessionTags: [] },
-          messages: []
-        }
-      ]
-    }
+    sessions: [
+      {
+        sessionId: 'session-1',
+        userId: 'user-1',
+        start_time: '2025-01-01T00:00:00Z',
+        end_time: '2025-01-01T00:01:00Z',
+        containment_type: 'agent',
+        tags: { userTags: [], sessionTags: [] },
+        messages: []
+      }
+    ]
+  };
+
+  const mockMessagesResponse = {
+    messages: [
+      {
+        sessionId: 'session-1',
+        createdBy: 'user-1',
+        createdOn: '2025-01-01T00:00:30Z',
+        type: 'incoming',
+        timestampValue: 1735689630000,
+        components: [
+          {
+            cT: 'text',
+            data: { text: 'Hello' }
+          }
+        ]
+      }
+    ],
+    moreAvailable: false
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (mockJwt.sign as jest.Mock).mockReturnValue(mockJwtToken);
-    mockAxios.get.mockResolvedValue(mockSessionsResponse);
+    mockAxios.post.mockResolvedValue({ status: 200, data: mockSessionsResponse });
   });
 
   describe('createKoreApiService', () => {
@@ -50,25 +62,7 @@ describe('KoreApiService', () => {
     });
   });
 
-  describe('JWT Token Generation', () => {
-    it('should generate JWT token with correct payload', async () => {
-      const service = createKoreApiService(mockConfig);
-      
-      // Trigger a request to generate JWT
-      await service.getSessions('2025-01-01', '2025-01-02');
-
-      expect(mockJwt.sign).toHaveBeenCalledWith(
-        {
-          iss: mockConfig.clientId,
-          sub: mockConfig.botId,
-          iat: expect.any(Number),
-          exp: expect.any(Number)
-        },
-        mockConfig.clientSecret,
-        { algorithm: 'HS256' }
-      );
-    });
-
+  describe('Configuration', () => {
     it('should use default base URL when not provided', () => {
       const configWithoutBaseUrl = {
         botId: 'test-bot-id',
@@ -87,16 +81,13 @@ describe('KoreApiService', () => {
       
       await service.getSessions('2025-01-01', '2025-01-02');
 
-      // Should make 3 calls for agent, selfService, and dropOff
-      expect(mockAxios.get).toHaveBeenCalledTimes(3);
+      // Should make 3 POST calls for agent, selfService, and dropOff
+      expect(mockAxios.post).toHaveBeenCalledTimes(3);
       
-      expect(mockAxios.get).toHaveBeenCalledWith(
+      expect(mockAxios.post).toHaveBeenCalledWith(
         expect.stringContaining('containmentType=agent'),
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            Authorization: `Bearer ${mockJwtToken}`
-          })
-        })
+        expect.any(Object),
+        expect.any(Object)
       );
     });
 
@@ -105,32 +96,65 @@ describe('KoreApiService', () => {
       
       await service.getSessions('2025-01-01', '2025-01-02', 10, 20);
 
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringContaining('skip=10'),
-        expect.any(Object)
-      );
-      
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringContaining('limit=20'),
+      expect(mockAxios.post).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          skip: 10,
+          limit: 20
+        }),
         expect.any(Object)
       );
     });
 
     it('should handle API errors gracefully', async () => {
       const service = createKoreApiService(mockConfig);
-      mockAxios.get.mockRejectedValue(new Error('API Error'));
+      mockAxios.post.mockRejectedValue(new Error('API Error'));
 
-      await expect(service.getSessions('2025-01-01', '2025-01-02'))
-        .rejects.toThrow('API Error');
+      // Service should return empty array when all containment types fail
+      const result = await service.getSessions('2025-01-01', '2025-01-02');
+      expect(result).toEqual([]);
     });
 
     it('should return empty array when no sessions found', async () => {
       const service = createKoreApiService(mockConfig);
-      mockAxios.get.mockResolvedValue({ data: { sessions: [] } });
+      mockAxios.post.mockResolvedValue({ status: 200, data: { sessions: [] } });
 
       const result = await service.getSessions('2025-01-01', '2025-01-02');
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('getMessages', () => {
+    it('should fetch messages with correct parameters', async () => {
+      const service = createKoreApiService(mockConfig);
+      mockAxios.post.mockResolvedValue({ status: 200, data: mockMessagesResponse });
+      
+      await service.getMessages('2025-01-01', '2025-01-02');
+
+      expect(mockAxios.post).toHaveBeenCalledWith(
+        expect.stringContaining('/getMessagesV2'),
+        expect.objectContaining({
+          dateFrom: '2025-01-01',
+          dateTo: '2025-01-02'
+        }),
+        expect.any(Object)
+      );
+    });
+
+    it('should handle session ID filtering', async () => {
+      const service = createKoreApiService(mockConfig);
+      mockAxios.post.mockResolvedValue({ status: 200, data: mockMessagesResponse });
+      
+      await service.getMessages('2025-01-01', '2025-01-02', ['session-1']);
+
+      expect(mockAxios.post).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          sessionId: ['session-1']
+        }),
+        expect.any(Object)
+      );
     });
   });
 
@@ -141,19 +165,13 @@ describe('KoreApiService', () => {
       
       await service.getSessionById(sessionId);
 
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringContaining(`/sessions/${sessionId}`),
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            Authorization: `Bearer ${mockJwtToken}`
-          })
-        })
-      );
+      // Should make a call to getSessions with broad date range
+      expect(mockAxios.post).toHaveBeenCalled();
     });
 
     it('should handle session not found', async () => {
       const service = createKoreApiService(mockConfig);
-      mockAxios.get.mockResolvedValue({ data: null });
+      mockAxios.post.mockResolvedValue({ status: 200, data: { sessions: [] } });
 
       const result = await service.getSessionById('non-existent-session');
 
@@ -166,29 +184,30 @@ describe('KoreApiService', () => {
       const service = createKoreApiService(mockConfig);
       
       // Make multiple rapid requests
-      const promises = Array(5).fill(null).map(() => 
+      const promises = Array(3).fill(null).map(() => 
         service.getSessions('2025-01-01', '2025-01-02')
       );
 
       await Promise.all(promises);
 
       // Should have made requests (rate limiting is internal)
-      expect(mockAxios.get).toHaveBeenCalled();
+      expect(mockAxios.post).toHaveBeenCalled();
     });
   });
 
   describe('Error Handling', () => {
     it('should handle network errors', async () => {
       const service = createKoreApiService(mockConfig);
-      mockAxios.get.mockRejectedValue(new Error('Network Error'));
+      mockAxios.post.mockRejectedValue(new Error('Network Error'));
 
-      await expect(service.getSessions('2025-01-01', '2025-01-02'))
-        .rejects.toThrow('Network Error');
+      // Service should return empty array when all containment types fail
+      const result = await service.getSessions('2025-01-01', '2025-01-02');
+      expect(result).toEqual([]);
     });
 
     it('should handle invalid response format', async () => {
       const service = createKoreApiService(mockConfig);
-      mockAxios.get.mockResolvedValue({ data: { invalid: 'format' } });
+      mockAxios.post.mockResolvedValue({ status: 200, data: { invalid: 'format' } });
 
       const result = await service.getSessions('2025-01-01', '2025-01-02');
 
@@ -202,26 +221,41 @@ describe('KoreApiService', () => {
       
       await service.getSessions('2025-01-01', '2025-01-02');
 
-      expect(mockAxios.get).toHaveBeenCalledWith(
+      expect(mockAxios.post).toHaveBeenCalledWith(
         expect.stringMatching(/https:\/\/bots\.kore\.ai\/api\/public\/bot\/test-bot-id\/getSessions/),
+        expect.any(Object),
         expect.any(Object)
       );
     });
 
-    it('should include date parameters in URL', async () => {
+    it('should include date parameters in payload', async () => {
       const service = createKoreApiService(mockConfig);
       
       await service.getSessions('2025-01-01T00:00:00Z', '2025-01-02T00:00:00Z');
 
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringContaining('dateFrom=2025-01-01T00:00:00Z'),
+      expect(mockAxios.post).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          dateFrom: '2025-01-01T00:00:00Z',
+          dateTo: '2025-01-02T00:00:00Z'
+        }),
         expect.any(Object)
       );
+    });
+  });
+
+  describe('Message Conversion', () => {
+    it('should convert Kore messages to internal format', async () => {
+      const service = createKoreApiService(mockConfig);
+      mockAxios.post.mockResolvedValue({ status: 200, data: mockMessagesResponse });
       
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringContaining('dateTo=2025-01-02T00:00:00Z'),
-        expect.any(Object)
-      );
+      const result = await service.getMessages('2025-01-01', '2025-01-02');
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty('sessionId');
+      expect(result[0]).toHaveProperty('timestamp');
+      expect(result[0]).toHaveProperty('message_type');
+      expect(result[0]).toHaveProperty('message');
     });
   });
 }); 

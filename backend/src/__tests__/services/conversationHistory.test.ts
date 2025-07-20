@@ -98,7 +98,7 @@ describe('Conversation History Retrieval', () => {
         baseUrl: 'https://bots.kore.ai'
       };
 
-      mockAxios.post.mockResolvedValue({
+      (mockAxios.post as jest.Mock).mockResolvedValue({
         status: 200,
         data: {
           messages: mockKoreMessages,
@@ -150,7 +150,7 @@ describe('Conversation History Retrieval', () => {
       };
 
       // First call returns messages with moreAvailable: true
-      mockAxios.post.mockResolvedValueOnce({
+      (mockAxios.post as jest.Mock).mockResolvedValueOnce({
         status: 200,
         data: {
           messages: mockKoreMessages.slice(0, 2),
@@ -159,7 +159,7 @@ describe('Conversation History Retrieval', () => {
       });
       
       // Second call returns remaining messages with moreAvailable: false
-      mockAxios.post.mockResolvedValueOnce({
+      (mockAxios.post as jest.Mock).mockResolvedValueOnce({
         status: 200,
         data: {
           messages: mockKoreMessages.slice(2),
@@ -184,7 +184,7 @@ describe('Conversation History Retrieval', () => {
       };
 
       const axios = require('axios').default;
-      axios.post.mockResolvedValue({
+      (axios.post as jest.Mock).mockResolvedValue({
         status: 200,
         data: {
           messages: mockKoreMessages,

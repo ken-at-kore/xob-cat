@@ -123,7 +123,7 @@ describe('MockDataService', () => {
         }
       ];
       
-      (mockKoreService.getSessions as jest.Mock).mockResolvedValue(mockRealSessions);
+      (mockKoreService.getSessions as jest.Mock).mockResolvedValue(mockRealSessions as any);
 
       const filters = {
         start_date: '2025-01-01T00:00:00Z',
@@ -147,7 +147,7 @@ describe('MockDataService', () => {
       
       configManager.getKoreConfig.mockReturnValue(mockKoreConfig);
       createKoreApiService.mockReturnValue(mockKoreService);
-      (mockKoreService.getSessions as jest.Mock).mockRejectedValue(new Error('API Error'));
+      (mockKoreService.getSessions as jest.Mock).mockRejectedValue(new Error('API Error') as any);
 
       const filters = {
         start_date: '2025-01-01T00:00:00Z',
@@ -205,9 +205,9 @@ describe('MockDataService', () => {
           expect(message).toHaveProperty('message_type');
           expect(message).toHaveProperty('message');
 
-          expect(typeof message.timestamp).toBe('string');
-          expect(['user', 'bot']).toContain(message.message_type);
-          expect(typeof message.message).toBe('string');
+          expect(typeof message?.timestamp).toBe('string');
+          expect(['user', 'bot']).toContain(message?.message_type);
+          expect(typeof message?.message).toBe('string');
         }
       });
     });
