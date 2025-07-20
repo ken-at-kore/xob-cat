@@ -585,4 +585,80 @@ describe('Conversation History Retrieval', () => {
       });
     });
   });
+
+  describe('Session and Conversation History Integration', () => {
+    it('should retrieve session history with full conversation transcripts', async () => {
+      const { generateMockSessions } = require('../../services/mockDataService');
+      
+      const filters = {
+        start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        end_date: new Date().toISOString()
+      };
+      
+      const sessions = generateMockSessions(filters);
+
+      expect(sessions).toBeInstanceOf(Array);
+      expect(sessions.length).toBeGreaterThan(0);
+      
+      // Verify session structure
+      const session = sessions[0];
+      expect(session).toBeDefined();
+      expect(session).toHaveProperty('session_id');
+      expect(session).toHaveProperty('user_id');
+      expect(session).toHaveProperty('start_time');
+      expect(session).toHaveProperty('end_time');
+      expect(session).toHaveProperty('containment_type');
+      expect(session).toHaveProperty('messages');
+      expect(session).toHaveProperty('message_count');
+      expect(session).toHaveProperty('duration_seconds');
+      
+      // Verify session has conversation history
+      expect(session!.messages).toBeInstanceOf(Array);
+      expect(session!.messages.length).toBeGreaterThan(0);
+      expect(session!.message_count).toBeGreaterThan(0);
+    });
+
+    it('should filter sessions by containment type', async () => {
+      const { generateMockSessions } = require('../../services/mockDataService');
+      
+      const filters = {
+        start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        end_date: new Date().toISOString(),
+        containment_type: 'agent'
+      };
+      
+      const sessions = generateMockSessions(filters);
+
+      expect(sessions).toBeInstanceOf(Array);
+      sessions.forEach((session: any) => {
+        expect(session.containment_type).toBe('agent');
+        expect(session.messages).toBeInstanceOf(Array);
+        expect(session.message_count).toBeGreaterThan(0);
+      });
+    });
+
+    it('should include conversation metrics in session data', async () => {
+      const { generateMockSessions } = require('../../services/mockDataService');
+      
+      const filters = {
+        start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        end_date: new Date().toISOString()
+      };
+      
+      const sessions = generateMockSessions(filters);
+
+      sessions.forEach((session: any) => {
+        // Verify metrics are calculated correctly
+        const userMessages = session.messages.filter((m: any) => m.message_type === 'user');
+        const botMessages = session.messages.filter((m: any) => m.message_type === 'bot');
+        
+        expect(session.message_count).toBe(session.messages.length);
+        expect(session.user_message_count).toBe(userMessages.length);
+        expect(session.bot_message_count).toBe(botMessages.length);
+        expect(session.metrics.total_messages).toBe(session.messages.length);
+        expect(session.metrics.user_messages).toBe(userMessages.length);
+        expect(session.metrics.bot_messages).toBe(botMessages.length);
+      });
+    });
+  });
 }); 

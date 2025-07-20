@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import { sessionsRouter } from './routes/sessions';
 import { analysisRouter } from './routes/analysis';
 import { koreRouter } from './routes/kore';
 
@@ -33,7 +32,6 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
-app.use('/api/sessions', sessionsRouter);
 app.use('/api/analysis', analysisRouter);
 app.use('/api/kore', koreRouter);
 
