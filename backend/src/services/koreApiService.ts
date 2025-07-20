@@ -233,7 +233,14 @@ export class KoreApiService {
         const response = await this.makeRequest<KoreSessionsResponse>(url, payload);
         const sessions = response.sessions || [];
         console.log(`Retrieved ${sessions.length} ${containmentType} sessions`);
-        allSessions.push(...sessions);
+        
+        // Tag each session with its containment type
+        const taggedSessions = sessions.map(session => ({
+          ...session,
+          containment_type: containmentType as 'agent' | 'selfService' | 'dropOff'
+        }));
+        
+        allSessions.push(...taggedSessions);
       } catch (error) {
         console.warn(`Warning: Failed to retrieve ${containmentType} sessions:`, error);
         continue;
