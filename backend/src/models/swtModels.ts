@@ -40,6 +40,16 @@ export class SWTBuilder {
    * Create a Message object from raw message data
    */
   static createMessage(rawMessage: any): Message | null {
+    // Handle already converted messages (from KoreApiService)
+    if (rawMessage.message && rawMessage.timestamp && rawMessage.message_type) {
+      return {
+        timestamp: rawMessage.timestamp,
+        message_type: rawMessage.message_type,
+        message: rawMessage.message
+      };
+    }
+
+    // Handle raw Kore.ai messages
     const messageText = this.extractMessageText(rawMessage);
     if (!messageText) return null;
 

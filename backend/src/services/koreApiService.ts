@@ -180,6 +180,7 @@ export class KoreApiService {
     if (!messageText) return null;
 
     return {
+      sessionId: koreMessage.sessionId,
       timestamp: koreMessage.createdOn,
       message_type: koreMessage.type === 'incoming' ? 'user' : 'bot',
       message: messageText
