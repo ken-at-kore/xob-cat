@@ -1,0 +1,136 @@
+{
+  "success": true,
+  "data": [
+    {
+      "timestamp": "2025-07-20T12:04:24.120Z",
+      "message_type": "user",
+      "message": "StartFlow"
+    },
+    {
+      "timestamp": "2025-07-20T12:04:29.328Z",
+      "message_type": "bot",
+      "message": "This call may be monitored or recorded for quality assurance purposes."
+    },
+    {
+      "timestamp": "2025-07-20T12:04:29.641Z",
+      "message_type": "bot",
+      "message": "Please state the reason for the contact today, such as claim status, billing, member eligibility, provider enrollment, web portal, prior authorization, Electronic Data Interchange, or other."
+    },
+    {
+      "timestamp": "2025-07-20T12:04:46.099Z",
+      "message_type": "user",
+      "message": "Member Eligibility"
+    },
+    {
+      "timestamp": "2025-07-20T12:04:46.880Z",
+      "message_type": "bot",
+      "message": "You are calling about Member Eligibility. Is that correct, please say yes or no?"
+    },
+    {
+      "timestamp": "2025-07-20T12:04:56.220Z",
+      "message_type": "user",
+      "message": "Yes"
+    },
+    {
+      "timestamp": "2025-07-20T12:04:57.008Z",
+      "message_type": "bot",
+      "message": "Please say or enter the 8 or 10 digit Health First Colorado Provider ID or the National Provider Identifier. \n                      If you are not an enrolled provider or do not know your ID, please say I do not have one."
+    },
+    {
+      "timestamp": "2025-07-20T12:05:19.593Z",
+      "message_type": "user",
+      "message": "137657720136"
+    },
+    {
+      "timestamp": "2025-07-20T12:05:20.101Z",
+      "message_type": "bot",
+      "message": "An invalid response or selection has been made.\n\nPlease say or enter the 8 or 10 digit Health First Colorado Provider ID or the National Provider Identifier. If you are not an enrolled provider or do not know your ID, please say I do not have one."
+    },
+    {
+      "timestamp": "2025-07-20T12:05:24.262Z",
+      "message_type": "user",
+      "message": "I dont have one"
+    },
+    {
+      "timestamp": "2025-07-20T12:05:25.166Z",
+      "message_type": "bot",
+      "message": "Please hold while you are connected with the next available representative."
+    },
+    {
+      "timestamp": "2025-07-20T12:05:25.540Z",
+      "message_type": "bot",
+      "message": " "
+    },
+    {
+      "timestamp": "2025-07-20T12:05:31.278Z",
+      "message_type": "user",
+      "message": "MAX_NO_INPUT"
+    },
+    {
+      "timestamp": "2025-07-20T12:05:33.364Z",
+      "message_type": "user",
+      "message": "Call Termination Handler"
+    },
+    {
+      "timestamp": "2025-07-20T12:06:44.049Z",
+      "message_type": "user",
+      "message": "StartFlow"
+    },
+    {
+      "timestamp": "2025-07-20T12:06:45.213Z",
+      "message_type": "bot",
+      "message": "This call may be monitored or recorded for quality assurance purposes."
+    },
+    {
+      "timestamp": "2025-07-20T12:06:45.502Z",
+      "message_type": "bot",
+      "message": "Please state the reason for the contact today, such as claim status, billing, member eligibility, provider enrollment, web portal, prior authorization, Electronic Data Interchange, or other."
+    },
+    {
+      "timestamp": "2025-07-20T12:06:59.930Z",
+      "message_type": "user",
+      "message": "Billing"
+    },
+    {
+      "timestamp": "2025-07-20T12:07:00.551Z",
+      "message_type": "bot",
+      "message": "Before connecting you to the next available representative, I have a few more questions."
+    },
+    {
+      "timestamp": "2025-07-20T12:07:01.144Z",
+      "message_type": "bot",
+      "message": "Please say or enter the 8 or 10 digit Health First Colorado Provider ID or the National Provider Identifier. \n                      If you are not an enrolled provider or do not know your ID, please say I do not have one."
+    },
+    {
+      "timestamp": "2025-07-20T12:07:21.738Z",
+      "message_type": "user",
+      "message": "I do not have one"
+    },
+    {
+      "timestamp": "2025-07-20T12:07:22.678Z",
+      "message_type": "bot",
+      "message": "Please hold while you are connected with the next available representative."
+    },
+    {
+      "timestamp": "2025-07-20T12:07:23.013Z",
+      "message_type": "bot",
+      "message": " "
+    },
+    {
+      "timestamp": "2025-07-20T12:07:28.618Z",
+      "message_type": "user",
+      "message": "MAX_NO_INPUT"
+    },
+    {
+      "timestamp": "2025-07-20T12:07:30.643Z",
+      "message_type": "user",
+      "message": "Call Termination Handler"
+    }
+  ],
+  "total_count": 25,
+  "date_range": {
+    "dateFrom": "2025-07-20T00:00:00Z",
+    "dateTo": "2025-07-20T23:59:59Z"
+  },
+  "bot_name": "Optum Bot"
+}
