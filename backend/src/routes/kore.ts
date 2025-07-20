@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { createKoreApiService, KoreApiConfig } from '../services/koreApiService';
+import { createSWTService } from '../services/swtService';
 import { configManager } from '../utils/configManager';
 
 const router = Router();
@@ -432,6 +433,174 @@ router.get('/transcript', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch conversation transcript',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// GET /api/kore/swts - Generate Sessions With Transcripts (SWTs)
+router.get('/swts', async (req: Request, res: Response) => {
+  try {
+    let config: KoreApiConfig;
+    let botName = 'Unknown';
+
+    try {
+      // First try to load from config file
+      const koreConfig = configManager.getKoreConfig();
+      config = {
+        botId: koreConfig.bot_id,
+        clientId: koreConfig.client_id,
+        clientSecret: koreConfig.client_secret,
+        baseUrl: koreConfig.base_url
+      };
+      botName = koreConfig.name;
+    } catch (error) {
+      // Fall back to environment variables
+      const botId = process.env.KORE_BOT_ID;
+      const clientId = process.env.KORE_CLIENT_ID;
+      const clientSecret = process.env.KORE_CLIENT_SECRET;
+      const baseUrl = process.env.KORE_BASE_URL;
+
+      if (!botId || !clientId || !clientSecret) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing Kore.ai credentials',
+          message: 'Please set up credentials in backend/config/optum-bot.yaml or set KORE_BOT_ID, KORE_CLIENT_ID, and KORE_CLIENT_SECRET environment variables'
+        });
+      }
+
+      config = {
+        botId,
+        clientId,
+        clientSecret,
+        ...(baseUrl && { baseUrl })
+      };
+    }
+
+    const swtService = createSWTService(config);
+    
+    const dateFrom = req.query.dateFrom as string || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const dateTo = req.query.dateTo as string || new Date().toISOString();
+    const limit = parseInt(req.query.limit as string) || 100;
+    const sessionIds = req.query.sessionIds as string ? (req.query.sessionIds as string).split(',') : undefined;
+
+    console.log(`Generating SWTs from ${dateFrom} to ${dateTo} for ${botName} (limit=${limit})`);
+    if (sessionIds) {
+      console.log(`Filtering by ${sessionIds.length} session IDs: ${sessionIds.join(', ')}`);
+    }
+
+    let result;
+    if (sessionIds && sessionIds.length > 0) {
+      // Generate SWTs for specific session IDs
+      result = await swtService.generateSWTsForSessions(sessionIds);
+    } else {
+      // Generate SWTs for date range
+      result = await swtService.generateSWTs({
+        dateFrom,
+        dateTo,
+        limit
+      });
+    }
+
+    // Get summary statistics
+    const summary = swtService.getSWTSummary(result.swts);
+
+    res.json({
+      success: true,
+      data: {
+        swts: result.swts,
+        summary,
+        generation_stats: {
+          total_sessions: result.totalSessions,
+          total_messages: result.totalMessages,
+          sessions_with_messages: result.sessionsWithMessages,
+          generation_time_ms: result.generationTime
+        }
+      },
+      date_range: { dateFrom, dateTo },
+      session_ids: sessionIds,
+      bot_name: botName
+    });
+  } catch (error) {
+    console.error('Error generating SWTs:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate SWTs',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// GET /api/kore/swts/:sessionId - Generate SWT for specific session
+router.get('/swts/:sessionId', async (req: Request, res: Response) => {
+  try {
+    const { sessionId } = req.params;
+    let config: KoreApiConfig;
+    let botName = 'Unknown';
+
+    try {
+      // First try to load from config file
+      const koreConfig = configManager.getKoreConfig();
+      config = {
+        botId: koreConfig.bot_id,
+        clientId: koreConfig.client_id,
+        clientSecret: koreConfig.client_secret,
+        baseUrl: koreConfig.base_url
+      };
+      botName = koreConfig.name;
+    } catch (error) {
+      // Fall back to environment variables
+      const botId = process.env.KORE_BOT_ID;
+      const clientId = process.env.KORE_CLIENT_ID;
+      const clientSecret = process.env.KORE_CLIENT_SECRET;
+      const baseUrl = process.env.KORE_BASE_URL;
+
+      if (!botId || !clientId || !clientSecret) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing Kore.ai credentials',
+          message: 'Please set up credentials in backend/config/optum-bot.yaml or set KORE_BOT_ID, KORE_CLIENT_ID, and KORE_CLIENT_SECRET environment variables'
+        });
+      }
+
+      config = {
+        botId,
+        clientId,
+        clientSecret,
+        ...(baseUrl && { baseUrl })
+      };
+    }
+
+    const swtService = createSWTService(config);
+    
+    console.log(`Generating SWT for session: ${sessionId} in ${botName}`);
+    const swt = await swtService.generateSWTForSession(sessionId as string);
+
+    if (!swt) {
+      return res.status(404).json({
+        success: false,
+        error: 'Session not found',
+        message: `Session with ID ${sessionId} not found in ${botName}`
+      });
+    }
+
+    // Get conversation summary
+    const conversationSummary = swtService.getSWTSummary([swt]);
+
+    res.json({
+      success: true,
+      data: {
+        swt,
+        summary: conversationSummary
+      },
+      session_id: sessionId,
+      bot_name: botName
+    });
+  } catch (error) {
+    console.error('Error generating SWT for session:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate SWT for session',
       message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
