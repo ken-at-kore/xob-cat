@@ -22,7 +22,9 @@
     "lint:backend": "cd backend && npm run lint"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@babel/preset-typescript": "^7.27.1",
+    "concurrently": "^8.2.2",
+    "ts-jest": "^29.4.0"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -32,4 +34,4 @@
     "frontend",
     "backend"
   ]
-} 
+}

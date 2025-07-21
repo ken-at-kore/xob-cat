@@ -1,0 +1,11 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - heading "XOB CAT" [level=1]
+  - paragraph: XO Bot Conversation Analysis Tools
+- main:
+  - text: Session Overview Loading sessions...
+  - paragraph: Loading sessions...
+- alert
+```
