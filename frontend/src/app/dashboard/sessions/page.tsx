@@ -43,7 +43,17 @@ export default function SessionsPage() {
       });
       
       if (response.success && response.data) {
-        setSessions(response.data);
+        // Filter sessions to only those from the last hour
+        const now = Date.now();
+        const oneHourAgo = now - 1 * 60 * 60 * 1000;
+        const filtered = response.data.filter(session => {
+          const start = new Date(session.start_time).getTime();
+          return start >= oneHourAgo && start <= now;
+        });
+        // Sort by start_time descending (most recent first)
+        filtered.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
+        // Limit to 50
+        setSessions(filtered.slice(0, 50));
       } else {
         throw new Error(response.message || 'Failed to load sessions');
       }
@@ -216,7 +226,15 @@ export default function SessionsPage() {
                     {session.session_id}
                   </TableCell>
                   <TableCell>{formatDateTime(session.start_time)}</TableCell>
-                  <TableCell>{formatDuration(session.duration_seconds)}</TableCell>
+                  <TableCell>{
+                    formatDuration(
+                      typeof session.duration_seconds === 'number' && session.duration_seconds > 0
+                        ? session.duration_seconds
+                        : (session.start_time && session.end_time
+                            ? (new Date(session.end_time).getTime() - new Date(session.start_time).getTime()) / 1000
+                            : null)
+                    )
+                  }</TableCell>
                   <TableCell>
                     {getContainmentBadge(session.containment_type)}
                   </TableCell>
