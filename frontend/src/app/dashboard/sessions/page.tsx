@@ -31,15 +31,15 @@ export default function SessionsPage() {
       setLoading(true);
       setError(null);
       
-      // Calculate date range for the past week (instead of just 1 hour)
-      const endDate = new Date();
-      const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000); // 1 week ago
-      
-      // Use the API client to get sessions
+      // Calculate date range for the last hour
+      const now = Date.now();
+      const endDate = new Date(now);
+      const startDate = new Date(now - 1 * 60 * 60 * 1000); // 1 hour ago
+      // Use the API client to get at most 50 sessions from the last hour
       const response = await apiClient.getSessions({
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
-        limit: 500
+        limit: 50
       });
       
       if (response.success && response.data) {
@@ -54,13 +54,12 @@ export default function SessionsPage() {
     }
   };
 
-  const formatDuration = (seconds?: number) => {
-    if (!seconds) return 'N/A';
-    
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    
+  const formatDuration = (seconds?: number | string | null) => {
+    const value = Number(seconds);
+    if (!seconds || isNaN(value) || value <= 0) return 'N/A';
+    const hours = Math.floor(value / 3600);
+    const minutes = Math.floor((value % 3600) / 60);
+    const remainingSeconds = Math.floor(value % 60);
     if (hours > 0) {
       return `${hours}h ${minutes}m ${remainingSeconds}s`;
     } else if (minutes > 0) {
@@ -204,17 +203,17 @@ export default function SessionsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Session ID</TableHead>
-                <TableHead>Start Time</TableHead>
-                <TableHead>Duration</TableHead>
-                <TableHead>Containment Type</TableHead>
+                <th scope="col">Session ID</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Containment Type</th>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sessions.map((session) => (
+              {sessions.slice(0, 50).map((session) => (
                 <TableRow key={session.session_id}>
-                  <TableCell className="font-mono text-sm">
-                    {session.session_id.slice(0, 8)}...
+                  <TableCell className="font-mono text-sm" data-testid="session-id">
+                    {session.session_id}
                   </TableCell>
                   <TableCell>{formatDateTime(session.start_time)}</TableCell>
                   <TableCell>{formatDuration(session.duration_seconds)}</TableCell>
