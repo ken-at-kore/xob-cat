@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom'
 import { render, screen, within } from '@testing-library/react'
 import { SessionTable } from '../SessionTable'
-import { SessionWithTranscript } from '@/shared/types'
 
-const mockSessions: SessionWithTranscript[] = [
+const mockSessions = [
   {
     session_id: 'session_123',
     user_id: 'user_456',
@@ -72,7 +71,7 @@ describe('SessionTable', () => {
         user_id: 'user_1',
         start_time: '2025-07-21T10:00:00.000Z',
         end_time: '2025-07-21T10:05:00.000Z',
-        containment_type: 'selfService' as const,
+        containment_type: 'selfService',
         tags: [],
         metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
         messages: [],
@@ -97,7 +96,7 @@ describe('SessionTable', () => {
         user_id: 'user_1',
         start_time: '2025-07-21T10:00:00.000Z',
         end_time: '2025-07-21T10:05:00.000Z',
-        containment_type: 'selfService' as const,
+        containment_type: 'selfService',
         tags: [],
         metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
         messages: [],
@@ -111,7 +110,7 @@ describe('SessionTable', () => {
         user_id: 'user_2',
         start_time: '2025-07-21T11:00:00.000Z',
         end_time: '2025-07-21T11:02:30.000Z',
-        containment_type: 'agent' as const,
+        containment_type: 'agent',
         tags: [],
         metrics: { total_messages: 5, user_messages: 2, bot_messages: 3 },
         messages: [],
@@ -144,7 +143,7 @@ describe('SessionTable', () => {
         user_id: 'user_1',
         start_time: '2025-07-21T10:00:00.000Z',
         end_time: '2025-07-21T10:05:00.000Z',
-        containment_type: 'selfService' as const,
+        containment_type: 'selfService',
         tags: [],
         metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
         messages: [],
@@ -167,7 +166,7 @@ describe('SessionTable', () => {
         user_id: 'user_1',
         start_time: '2025-07-21T10:00:00.000Z',
         end_time: '2025-07-21T10:05:00.000Z',
-        containment_type: 'selfService' as const,
+        containment_type: 'selfService',
         tags: [],
         metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
         messages: [],
@@ -213,7 +212,7 @@ describe('SessionTable', () => {
         user_id: 'user_123',
         start_time: '2025-07-21T10:00:00.000Z',
         end_time: '2025-07-21T10:01:00.000Z',
-        containment_type: 'selfService' as const,
+        containment_type: 'selfService',
         tags: [],
         metrics: {
           total_messages: 0,
@@ -233,4 +232,16 @@ describe('SessionTable', () => {
     expect(within(rows[1]).getByTestId('session-id').textContent).toBe('incomple...')
     expect(within(rows[1]).getByText('1m 0s')).toBeInTheDocument()
   })
+
+  it('renders only start date, end date, start time, and end time filter fields', () => {
+    render(<SessionTable sessions={mockSessions} />);
+    // Check for the four filter fields
+    expect(screen.getByLabelText(/Start Date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/End Date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Start Time/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/End Time/i)).toBeInTheDocument();
+    // Ensure session id and containment type fields are not present
+    expect(screen.queryByLabelText(/Session ID/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Containment Type/i)).not.toBeInTheDocument();
+  });
 }) 

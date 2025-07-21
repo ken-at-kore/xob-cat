@@ -26,15 +26,13 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
     startDate: '',
     endDate: '',
     startTime: '',
-    endTime: '',
-    sessionId: '',
-    containmentType: ''
+    endTime: ''
   });
   const [userSorted, setUserSorted] = useState(false);
 
   // If filters change and user hasn't sorted, sort by start_time asc
   useEffect(() => {
-    if (!userSorted && (filters.startDate || filters.endDate || filters.startTime || filters.endTime || filters.sessionId || filters.containmentType)) {
+    if (!userSorted && (filters.startDate || filters.endDate || filters.startTime || filters.endTime)) {
       setSortField('start_time');
       setSortDirection('asc');
     }
@@ -52,26 +50,24 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
 
   const filteredAndSortedSessions = useMemo(() => {
     let filtered = sessions.filter(session => {
-      // Filter by session ID
-      if (filters.sessionId && !session.session_id.toLowerCase().includes(filters.sessionId.toLowerCase())) {
-        return false;
-      }
-      
-      // Filter by containment type
-      if (filters.containmentType && session.containment_type !== filters.containmentType) {
-        return false;
-      }
-      
       // Filter by date range
       if (filters.startDate || filters.endDate) {
         const sessionDate = new Date(session.start_time);
         const startDate = filters.startDate ? new Date(filters.startDate) : null;
         const endDate = filters.endDate ? new Date(filters.endDate) : null;
-        
         if (startDate && sessionDate < startDate) return false;
         if (endDate && sessionDate > endDate) return false;
       }
-      
+      // Filter by start time
+      if (filters.startTime) {
+        const sessionTime = new Date(session.start_time).toLocaleTimeString('en-US', { hour12: false });
+        if (sessionTime < filters.startTime) return false;
+      }
+      // Filter by end time
+      if (filters.endTime) {
+        const sessionTime = new Date(session.start_time).toLocaleTimeString('en-US', { hour12: false });
+        if (sessionTime > filters.endTime) return false;
+      }
       return true;
     });
 
@@ -230,15 +226,6 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="sessionId">Session ID</Label>
-              <Input
-                id="sessionId"
-                placeholder="Search session ID..."
-                value={filters.sessionId}
-                onChange={(e) => setFilters(prev => ({ ...prev, sessionId: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="startDate">Start Date</Label>
               <Input
                 id="startDate"
@@ -273,20 +260,6 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
                 value={filters.endTime}
                 onChange={(e) => setFilters(prev => ({ ...prev, endTime: e.target.value }))}
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="containmentType">Containment Type</Label>
-              <select
-                id="containmentType"
-                value={filters.containmentType}
-                onChange={(e) => setFilters(prev => ({ ...prev, containmentType: e.target.value }))}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <option value="">All Types</option>
-                <option value="selfService">Self Service</option>
-                <option value="agent">Agent</option>
-                <option value="dropOff">Drop Off</option>
-              </select>
             </div>
           </div>
         </CardContent>
