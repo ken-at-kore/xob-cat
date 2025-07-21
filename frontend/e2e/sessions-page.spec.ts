@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { ROUTES } from '../src/routes';
 
 test.describe('Sessions Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -14,7 +15,7 @@ test.describe('Sessions Page', () => {
   });
 
   test('should display sessions page with loading state', async ({ page }) => {
-    await page.goto('/dashboard/sessions');
+    await page.goto(ROUTES.DASHBOARD_SESSIONS);
 
     // Check that we're on the sessions page
     await expect(page.getByText('Loading...')).toBeVisible();
@@ -65,7 +66,7 @@ test.describe('Sessions Page', () => {
       });
     });
 
-    await page.goto('/dashboard/sessions');
+    await page.goto(ROUTES.DASHBOARD_SESSIONS);
 
     // Wait for sessions to load
     await expect(page.getByText('Sessions')).toBeVisible();
@@ -90,7 +91,7 @@ test.describe('Sessions Page', () => {
       });
     });
 
-    await page.goto('/dashboard/sessions');
+    await page.goto(ROUTES.DASHBOARD_SESSIONS);
 
     // Wait for error to be displayed
     await expect(page.getByText(/Error:/)).toBeVisible();
@@ -112,7 +113,7 @@ test.describe('Sessions Page', () => {
       });
     });
 
-    await page.goto('/dashboard/sessions');
+    await page.goto(ROUTES.DASHBOARD_SESSIONS);
 
     // Wait for sessions to load
     await expect(page.getByText('Sessions')).toBeVisible();
@@ -133,7 +134,7 @@ test.describe('Sessions Page', () => {
       });
     });
 
-    await page.goto('/dashboard/sessions');
+    await page.goto(ROUTES.DASHBOARD_SESSIONS);
 
     // Check that refresh button is present
     await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
@@ -189,7 +190,7 @@ test.describe('Sessions Page', () => {
       });
     });
 
-    await page.goto('/dashboard/sessions');
+    await page.goto(ROUTES.DASHBOARD_SESSIONS);
 
     // Wait for sessions to load
     await expect(page.getByText('Sessions')).toBeVisible();

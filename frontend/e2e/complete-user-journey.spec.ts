@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { ROUTES } from '../src/routes';
 
 test.describe('Complete User Journey', () => {
   test('should complete full user journey from login to viewing sessions', async ({ page }) => {
@@ -120,7 +121,7 @@ test.describe('Complete User Journey', () => {
     await connectButton.click();
 
     // Step 5: Verify we're redirected to the sessions page
-    await expect(page).toHaveURL('/dashboard/sessions');
+    await expect(page).toHaveURL(ROUTES.DASHBOARD_SESSIONS);
 
     // Step 6: Wait for the sessions page to load and display data
     await expect(page.getByText('Sessions')).toBeVisible();
@@ -203,7 +204,7 @@ test.describe('Complete User Journey', () => {
     });
 
     // Step 3: Navigate to sessions page
-    await page.goto('/dashboard/sessions');
+    await page.goto(ROUTES.DASHBOARD_SESSIONS);
 
     // Step 4: Verify error handling
     await expect(page.getByText(/Error:/)).toBeVisible();
