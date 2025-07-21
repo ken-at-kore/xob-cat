@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { ROUTES } from '../src/routes';
 
 test.describe('Authentication Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -72,7 +73,7 @@ test.describe('Authentication Flow', () => {
     await page.getByRole('button', { name: 'Connect' }).click();
 
     // Wait for redirect to dashboard sessions page
-    await expect(page).toHaveURL('/dashboard/sessions');
+    await expect(page).toHaveURL(ROUTES.DASHBOARD_SESSIONS);
 
     // Check that we're on the sessions page
     await expect(page.getByText('Loading...')).toBeVisible();

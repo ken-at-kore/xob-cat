@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { redirectTo } from "@/lib/utils";
+import { ROUTES } from '@/routes';
 
 interface BotCredentials {
   botId: string;
@@ -25,7 +27,7 @@ export default function DashboardLayout({
     const storedCredentials = sessionStorage.getItem('botCredentials');
     if (!storedCredentials) {
       // Redirect to login if no credentials
-      window.location.href = '/';
+      redirectTo('/');
       return;
     }
 
@@ -34,13 +36,13 @@ export default function DashboardLayout({
       setCredentials(parsedCredentials);
     } catch (error) {
       console.error('Failed to parse stored credentials:', error);
-      window.location.href = '/';
+      redirectTo('/');
     }
   }, []);
 
   const handleDisconnect = () => {
     sessionStorage.removeItem('botCredentials');
-    window.location.href = '/';
+    redirectTo('/');
   };
 
   const isActive = (path: string) => {
@@ -79,9 +81,9 @@ export default function DashboardLayout({
         {/* Sidebar Navigation */}
         <aside className="w-64 border-r bg-card min-h-[calc(100vh-73px)]">
           <nav className="p-4 space-y-2">
-            <Link href="/dashboard/sessions">
+            <Link href={ROUTES.DASHBOARD_SESSIONS}>
               <Card className={`p-3 cursor-pointer transition-colors ${
-                isActive('/dashboard/sessions') 
+                isActive(ROUTES.DASHBOARD_SESSIONS) 
                   ? 'bg-primary text-primary-foreground' 
                   : 'hover:bg-muted'
               }`}>

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { apiClient } from '@/lib/api';
+import { ROUTES } from '@/routes';
 
 interface Credentials {
   botId: string;
@@ -68,9 +69,9 @@ export default function Home({ onNavigate }: HomeProps = {}) {
         sessionStorage.setItem('botCredentials', JSON.stringify(credentials));
         // Redirect to dashboard
         if (onNavigate) {
-          onNavigate('/dashboard/sessions');
+          onNavigate(ROUTES.DASHBOARD_SESSIONS);
         } else {
-          window.location.href = '/dashboard/sessions';
+          window.location.href = ROUTES.DASHBOARD_SESSIONS;
         }
       } else {
         setConnectionError('Connection failed - invalid response');
