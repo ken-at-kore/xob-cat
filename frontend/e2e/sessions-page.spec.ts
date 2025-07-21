@@ -265,6 +265,9 @@ test.describe('Sessions Page', () => {
     for (let i = 0; i < 50; i++) {
       const sessionId = await rows.nth(i).locator('[data-testid="session-id"]').textContent();
       expect(sessionId).toContain('recent_session_');
+      // Check that duration is '5m 0s'
+      const durationCell = await rows.nth(i).locator('td').nth(2).textContent();
+      expect(durationCell).toBe('5m 0s');
     }
   });
 }); 
