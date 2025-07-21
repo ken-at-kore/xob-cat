@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 
 import { SessionWithTranscript } from '@/shared/types';
 import { apiClient } from '@/lib/api';
+import { SessionTable } from '@/components/SessionTable';
 
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<SessionWithTranscript[]>([]);
@@ -112,28 +113,15 @@ export default function SessionsPage() {
     );
   };
 
-  if (loading) {
+  if (loading || error) {
+    // Let SessionTable handle loading and error UI
     return (
-      <div className="space-y-4">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Sessions</h1>
-          <p className="text-muted-foreground">Loading sessions...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-4">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Sessions</h1>
-          <p className="text-destructive">Error: {error}</p>
-          <Button onClick={loadSessions} className="mt-4">
-            Retry
-          </Button>
-        </div>
-      </div>
+      <SessionTable
+        sessions={sessions}
+        loading={loading}
+        error={error}
+        onRefresh={loadSessions}
+      />
     );
   }
 
@@ -150,100 +138,12 @@ export default function SessionsPage() {
           Refresh
         </Button>
       </div>
-
-      {/* Filter UI */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Filters</CardTitle>
-          <CardDescription>
-            Filter sessions by date and time range (Eastern Time)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date</Label>
-              <Input
-                id="startDate"
-                type="date"
-                value={filters.startDate}
-                onChange={(e) => setFilters(prev => ({ ...prev, startDate: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="endDate">End Date</Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={filters.endDate}
-                onChange={(e) => setFilters(prev => ({ ...prev, endDate: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="startTime">Start Time</Label>
-              <Input
-                id="startTime"
-                type="time"
-                value={filters.startTime}
-                onChange={(e) => setFilters(prev => ({ ...prev, startTime: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="endTime">End Time</Label>
-              <Input
-                id="endTime"
-                type="time"
-                value={filters.endTime}
-                onChange={(e) => setFilters(prev => ({ ...prev, endTime: e.target.value }))}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Sessions Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Session Overview</CardTitle>
-          <CardDescription>
-            {sessions.length} sessions found
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <th scope="col">Session ID</th>
-                <th scope="col">Start Time</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Containment Type</th>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sessions.slice(0, 50).map((session) => (
-                <TableRow key={session.session_id}>
-                  <TableCell className="font-mono text-sm" data-testid="session-id">
-                    {session.session_id}
-                  </TableCell>
-                  <TableCell>{formatDateTime(session.start_time)}</TableCell>
-                  <TableCell>{
-                    formatDuration(
-                      typeof session.duration_seconds === 'number' && session.duration_seconds > 0
-                        ? session.duration_seconds
-                        : (session.start_time && session.end_time
-                            ? (new Date(session.end_time).getTime() - new Date(session.start_time).getTime()) / 1000
-                            : null)
-                    )
-                  }</TableCell>
-                  <TableCell>
-                    {getContainmentBadge(session.containment_type)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <SessionTable
+        sessions={sessions}
+        loading={loading}
+        error={error}
+        onRefresh={loadSessions}
+      />
     </div>
   );
 } 

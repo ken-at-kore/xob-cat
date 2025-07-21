@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -30,8 +30,18 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
     sessionId: '',
     containmentType: ''
   });
+  const [userSorted, setUserSorted] = useState(false);
+
+  // If filters change and user hasn't sorted, sort by start_time asc
+  useEffect(() => {
+    if (!userSorted && (filters.startDate || filters.endDate || filters.startTime || filters.endTime || filters.sessionId || filters.containmentType)) {
+      setSortField('start_time');
+      setSortDirection('asc');
+    }
+  }, [filters, userSorted]);
 
   const handleSort = (field: SortField) => {
+    setUserSorted(true);
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -80,8 +90,13 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
           bValue = new Date(b.start_time);
           break;
         case 'duration_seconds':
-          aValue = a.duration_seconds || 0;
-          bValue = b.duration_seconds || 0;
+          // Fallback to calculated duration if missing
+          aValue = typeof a.duration_seconds === 'number' && a.duration_seconds > 0
+            ? a.duration_seconds
+            : (a.start_time && a.end_time ? (new Date(a.end_time).getTime() - new Date(a.start_time).getTime()) / 1000 : 0);
+          bValue = typeof b.duration_seconds === 'number' && b.duration_seconds > 0
+            ? b.duration_seconds
+            : (b.start_time && b.end_time ? (new Date(b.end_time).getTime() - new Date(b.start_time).getTime()) / 1000 : 0);
           break;
         case 'containment_type':
           aValue = a.containment_type;
@@ -99,13 +114,12 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
     return filtered;
   }, [sessions, filters, sortField, sortDirection]);
 
-  const formatDuration = (seconds?: number) => {
-    if (!seconds) return 'N/A';
-    
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    
+  const formatDuration = (seconds?: number | string | null) => {
+    const value = Number(seconds);
+    if (!seconds || isNaN(value) || value <= 0) return 'N/A';
+    const hours = Math.floor(value / 3600);
+    const minutes = Math.floor((value % 3600) / 60);
+    const remainingSeconds = Math.floor(value % 60);
     if (hours > 0) {
       return `${hours}h ${minutes}m ${remainingSeconds}s`;
     } else if (minutes > 0) {
@@ -290,16 +304,16 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>
+                <TableHead className="text-left">
                   <SortButton field="session_id">Session ID</SortButton>
                 </TableHead>
-                <TableHead>
+                <TableHead className="text-left">
                   <SortButton field="start_time">Start Time</SortButton>
                 </TableHead>
-                <TableHead>
+                <TableHead className="text-left">
                   <SortButton field="duration_seconds">Duration</SortButton>
                 </TableHead>
-                <TableHead>
+                <TableHead className="text-left">
                   <SortButton field="containment_type">Containment Type</SortButton>
                 </TableHead>
               </TableRow>
@@ -308,15 +322,23 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
               {filteredAndSortedSessions.map((session) => (
                 <TableRow key={session.session_id}>
                   <TableCell
-                    className="p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] font-mono text-sm"
+                    className="p-2 align-middle whitespace-nowrap font-mono text-sm text-left"
                     data-slot="table-cell"
                     data-testid="session-id"
                   >
-                    {session.session_id.slice(0, 8)}...
+                    {session.session_id}
                   </TableCell>
-                  <TableCell>{formatDateTime(session.start_time)}</TableCell>
-                  <TableCell>{formatDuration(session.duration_seconds)}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-left">{formatDateTime(session.start_time)}</TableCell>
+                  <TableCell className="text-left">{
+                    formatDuration(
+                      typeof session.duration_seconds === 'number' && session.duration_seconds > 0
+                        ? session.duration_seconds
+                        : (session.start_time && session.end_time
+                            ? (new Date(session.end_time).getTime() - new Date(session.start_time).getTime()) / 1000
+                            : null)
+                    )
+                  }</TableCell>
+                  <TableCell className="text-left">
                     {getContainmentBadge(session.containment_type)}
                   </TableCell>
                 </TableRow>
