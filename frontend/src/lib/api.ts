@@ -1,6 +1,6 @@
 import { SessionWithTranscript, AnalysisResult, SessionsResponse, AnalysisResponse, SessionFilters } from '@/shared/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 class ApiClient {
   private baseUrl: string;
@@ -37,23 +37,23 @@ class ApiClient {
       });
     }
     
-    return this.request<SessionsResponse>(`/sessions?${params.toString()}`);
+    return this.request<SessionsResponse>(`/api/analysis/sessions?${params.toString()}`);
   }
 
   async getSession(sessionId: string): Promise<{ success: boolean; data: SessionWithTranscript }> {
-    return this.request<{ success: boolean; data: SessionWithTranscript }>(`/sessions/${sessionId}`);
+    return this.request<{ success: boolean; data: SessionWithTranscript }>(`/api/analysis/sessions/${sessionId}`);
   }
 
   // Analysis API
   async analyzeSession(sessionId: string, messages: any[]): Promise<AnalysisResponse> {
-    return this.request<AnalysisResponse>('/analysis/session', {
+    return this.request<AnalysisResponse>('/api/analysis/session', {
       method: 'POST',
       body: JSON.stringify({ session_id: sessionId, messages }),
     });
   }
 
   async analyzeSessionsBatch(sessions: Array<{ session_id: string; messages: any[] }>): Promise<AnalysisResponse> {
-    return this.request<AnalysisResponse>('/analysis/batch', {
+    return this.request<AnalysisResponse>('/api/analysis/batch', {
       method: 'POST',
       body: JSON.stringify({ sessions }),
     });

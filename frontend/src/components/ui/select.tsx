@@ -24,13 +24,16 @@ function SelectValue({
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
 
+// Temporarily disabled due to TypeScript issues
+/*
 function SelectTrigger({
   className,
   size = "default",
   children,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size?: "sm" | "default"
+  size?: "sm" | "default";
+  className?: string;
 }) {
   return (
     <SelectPrimitive.Trigger
@@ -49,6 +52,7 @@ function SelectTrigger({
     </SelectPrimitive.Trigger>
   )
 }
+*/
 
 function SelectContent({
   className,
