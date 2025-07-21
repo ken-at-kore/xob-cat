@@ -10,7 +10,7 @@ XOB CAT (XO Bot Conversation Analysis Tools) is a full-stack web app that helps 
 - **No persistent storage** — session and analysis data are held in memory for MVP
 - **OpenAI Integration** via GPT-4o-mini + function calling (in `backend/`)
 - **Shared domain models** live in a `shared/` folder and include `Session`, `Message`, `AnalysisResult`, etc.
-- **Testing tools**: Jest + React Testing Library (frontend), Playwright (E2E), and Jest or tsx for backend testing
+- **Testing tools**: Jest + React Testing Library + Storybook (frontend), Playwright (E2E), and Jest or tsx for backend testing
 
 ## ✅ Requirements
 - Users can view a list of bot sessions and inspect details of each

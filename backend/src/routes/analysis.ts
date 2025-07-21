@@ -1,8 +1,41 @@
 import { Router, Request, Response } from 'express';
 import { AnalysisResult, AnalysisResponse, ANALYSIS_FUNCTION_SCHEMA } from '../../../shared/types';
 import { analyzeSessionWithOpenAI } from '../services/openaiService';
+import { getSessions } from '../services/mockDataService';
 
 const router = Router();
+
+// GET /api/analysis/sessions - Get sessions (with mock data fallback)
+router.get('/sessions', async (req: Request, res: Response) => {
+  try {
+    const dateFrom = req.query.dateFrom as string || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const dateTo = req.query.dateTo as string || new Date().toISOString();
+    const limit = parseInt(req.query.limit as string) || 100;
+    
+    const filters = {
+      start_date: dateFrom,
+      end_date: dateTo,
+      limit
+    };
+    
+    console.log(`Fetching sessions with filters:`, filters);
+    const sessions = await getSessions(filters);
+    
+    res.json({
+      success: true,
+      data: sessions,
+      total_count: sessions.length,
+      date_range: { dateFrom, dateTo }
+    });
+  } catch (error) {
+    console.error('Error fetching sessions:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch sessions',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
 
 // POST /api/analysis/session - Analyze a single session
 router.post('/session', async (req: Request, res: Response<AnalysisResponse>) => {
@@ -19,11 +52,19 @@ router.post('/session', async (req: Request, res: Response<AnalysisResponse>) =>
     
     const analysis = await analyzeSessionWithOpenAI(session_id, messages);
     
-    res.json({
+    const response: AnalysisResponse = {
       success: true,
-      data: [analysis],
-      token_usage: analysis.token_usage
-    });
+      data: [analysis]
+    };
+    
+    if (analysis.token_usage) {
+      response.token_usage = {
+        ...analysis.token_usage,
+        timestamp: new Date().toISOString()
+      };
+    }
+    
+    res.json(response);
   } catch (error) {
     console.error('Error analyzing session:', error);
     res.status(500).json({
@@ -52,7 +93,8 @@ router.post('/batch', async (req: Request, res: Response<AnalysisResponse>) => {
       prompt_tokens: 0,
       completion_tokens: 0,
       total_tokens: 0,
-      cost: 0
+      cost: 0,
+      timestamp: new Date().toISOString()
     };
     
     // Analyze each session

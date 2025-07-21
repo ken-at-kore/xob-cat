@@ -107,16 +107,23 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
         filters.limit || 1000
       );
 
-      // Apply additional filters that aren't handled by the API
-      let filteredSessions = sessions;
-      
-      if (filters.containment_type) {
-        filteredSessions = filteredSessions.filter((s: SessionWithTranscript) => 
-          s.containment_type === filters.containment_type
-        );
-      }
+      // If we got sessions from the API, return them
+      if (sessions && sessions.length > 0) {
+        console.log(`Found ${sessions.length} sessions from Kore.ai API`);
+        
+        // Apply additional filters that aren't handled by the API
+        let filteredSessions = sessions;
+        
+        if (filters.containment_type) {
+          filteredSessions = filteredSessions.filter((s: SessionWithTranscript) => 
+            s.containment_type === filters.containment_type
+          );
+        }
 
-      return filteredSessions;
+        return filteredSessions;
+      } else {
+        console.log('No sessions found from Kore.ai API, falling back to mock data');
+      }
     } catch (error) {
       console.error('Error fetching sessions from Kore.ai API:', error);
       console.log('Falling back to mock data');
