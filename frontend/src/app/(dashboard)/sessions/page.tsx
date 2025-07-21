@@ -5,14 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { apiClient } from '@/lib/api';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 import { SessionWithTranscript } from '@/shared/types';
-import Link from 'next/link';
+import { apiClient } from '@/lib/api';
 
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<SessionWithTranscript[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+    startTime: '',
+    endTime: ''
+  });
 
   useEffect(() => {
     loadSessions();
@@ -21,11 +29,23 @@ export default function SessionsPage() {
   const loadSessions = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.getSessions();
+      setError(null);
+      
+      // Calculate date range for the past week (instead of just 1 hour)
+      const endDate = new Date();
+      const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000); // 1 week ago
+      
+      // Use the API client to get sessions
+      const response = await apiClient.getSessions({
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+        limit: 500
+      });
+      
       if (response.success && response.data) {
         setSessions(response.data);
       } else {
-        setError('Failed to load sessions');
+        throw new Error(response.message || 'Failed to load sessions');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load sessions');
@@ -36,13 +56,31 @@ export default function SessionsPage() {
 
   const formatDuration = (seconds?: number) => {
     if (!seconds) return 'N/A';
-    const minutes = Math.floor(seconds / 60);
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}m ${remainingSeconds}s`;
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${remainingSeconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${remainingSeconds}s`;
+    } else {
+      return `${remainingSeconds}s`;
+    }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'America/New_York'
+    }) + ' ET';
   };
 
   const getContainmentBadge = (type: string) => {
@@ -52,9 +90,15 @@ export default function SessionsPage() {
       'dropOff': 'secondary'
     };
     
+    const labels: Record<string, string> = {
+      'selfService': 'Self Service',
+      'agent': 'Agent',
+      'dropOff': 'Drop Off'
+    };
+    
     return (
       <Badge variant={variants[type] || 'secondary'}>
-        {type}
+        {labels[type] || type}
       </Badge>
     );
   };
@@ -98,6 +142,57 @@ export default function SessionsPage() {
         </Button>
       </div>
 
+      {/* Filter UI */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+          <CardDescription>
+            Filter sessions by date and time range (Eastern Time)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={filters.startDate}
+                onChange={(e) => setFilters(prev => ({ ...prev, startDate: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={filters.endDate}
+                onChange={(e) => setFilters(prev => ({ ...prev, endDate: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="startTime">Start Time</Label>
+              <Input
+                id="startTime"
+                type="time"
+                value={filters.startTime}
+                onChange={(e) => setFilters(prev => ({ ...prev, startTime: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="endTime">End Time</Label>
+              <Input
+                id="endTime"
+                type="time"
+                value={filters.endTime}
+                onChange={(e) => setFilters(prev => ({ ...prev, endTime: e.target.value }))}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Sessions Table */}
       <Card>
         <CardHeader>
           <CardTitle>Session Overview</CardTitle>
@@ -110,12 +205,9 @@ export default function SessionsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Session ID</TableHead>
-                <TableHead>User ID</TableHead>
                 <TableHead>Start Time</TableHead>
                 <TableHead>Duration</TableHead>
-                <TableHead>Messages</TableHead>
-                <TableHead>Containment</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>Containment Type</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -124,21 +216,10 @@ export default function SessionsPage() {
                   <TableCell className="font-mono text-sm">
                     {session.session_id.slice(0, 8)}...
                   </TableCell>
-                  <TableCell>{session.user_id}</TableCell>
-                  <TableCell>{formatDate(session.start_time)}</TableCell>
+                  <TableCell>{formatDateTime(session.start_time)}</TableCell>
                   <TableCell>{formatDuration(session.duration_seconds)}</TableCell>
                   <TableCell>
-                    {session.message_count} ({session.user_message_count} user, {session.bot_message_count} bot)
-                  </TableCell>
-                  <TableCell>
                     {getContainmentBadge(session.containment_type)}
-                  </TableCell>
-                  <TableCell>
-                    <Button asChild size="sm">
-                      <Link href={`/sessions/${session.session_id}`}>
-                        View Details
-                      </Link>
-                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

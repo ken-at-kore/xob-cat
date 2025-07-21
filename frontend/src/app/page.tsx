@@ -1,125 +1,164 @@
+'use client';
+
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { apiClient } from '@/lib/api';
 
-export default function Home() {
+interface Credentials {
+  botId: string;
+  clientId: string;
+  clientSecret: string;
+}
+
+interface ValidationErrors {
+  botId?: string;
+  clientId?: string;
+  clientSecret?: string;
+}
+
+interface HomeProps {
+  onNavigate?: (url: string) => void;
+}
+
+export default function Home({ onNavigate }: HomeProps = {}) {
+  const [credentials, setCredentials] = useState<Credentials>({
+    botId: '***REMOVED***',
+    clientId: '***REMOVED***',
+    clientSecret: '***REMOVED***'
+  });
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    
+    if (!credentials.botId.trim()) {
+      newErrors.botId = 'Bot ID is required';
+    }
+    if (!credentials.clientId.trim()) {
+      newErrors.clientId = 'Client ID is required';
+    }
+    if (!credentials.clientSecret.trim()) {
+      newErrors.clientSecret = 'Client Secret is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleConnect = async () => {
+    setConnectionError(null);
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsConnecting(true);
+    
+    try {
+      // Test the connection by calling the health check endpoint
+      const response = await apiClient.healthCheck();
+      
+      if (response.status === 'ok') {
+        // Store credentials in session storage for the dashboard
+        sessionStorage.setItem('botCredentials', JSON.stringify(credentials));
+        // Redirect to dashboard
+        if (onNavigate) {
+          onNavigate('/dashboard/sessions');
+        } else {
+          window.location.href = '/dashboard/sessions';
+        }
+      } else {
+        setConnectionError('Connection failed - invalid response');
+      }
+    } catch (error) {
+      setConnectionError(error instanceof Error ? error.message : 'Connection failed');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleInputChange = (field: keyof Credentials, value: string) => {
+    setCredentials(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
+
   return (
-    <div className="space-y-8">
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight">
-          Welcome to XOB CAT
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          XO Bot Conversation Analysis Tools - Empowering Kore.ai Expert Services teams 
-          to investigate and analyze chatbot and IVA session data.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Sessions</CardTitle>
-            <CardDescription>
-              View and explore chatbot session data
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              Browse through session transcripts, filter by date range, and examine 
-              conversation details with full message history.
-            </p>
-            <Button asChild className="w-full">
-              <Link href="/sessions">
-                View Sessions
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Analysis</CardTitle>
-            <CardDescription>
-              AI-powered session analysis and insights
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              Generate structured analysis of sessions using GPT-4o-mini, including 
-              intent classification, outcome analysis, and drop-off insights.
-            </p>
-            <Button asChild className="w-full">
-              <Link href="/analysis">
-                Analyze Sessions
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Dashboard</CardTitle>
-            <CardDescription>
-              Analytics and visualization dashboard
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">
-              View charts and metrics including Pareto analysis of intents, 
-              drop-off locations, and transfer reasons.
-            </p>
-            <Button asChild className="w-full">
-              <Link href="/dashboard">
-                View Dashboard
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Quick Start</CardTitle>
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Welcome to XOB CAT</CardTitle>
           <CardDescription>
-            Get started with XOB CAT in a few simple steps
+            XO Bot Conversation Analysis Tools - Empowering Kore.ai Expert Services teams 
+            to investigate and analyze chatbot and IVA session data.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
-                1
-              </div>
-              <div>
-                <h4 className="font-medium">View Sessions</h4>
-                <p className="text-sm text-muted-foreground">
-                  Start by browsing available chatbot sessions to understand the data structure.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
-                2
-              </div>
-              <div>
-                <h4 className="font-medium">Analyze Conversations</h4>
-                <p className="text-sm text-muted-foreground">
-                  Use AI analysis to classify intents, outcomes, and identify drop-off patterns.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
-                3
-              </div>
-              <div>
-                <h4 className="font-medium">Review Insights</h4>
-                <p className="text-sm text-muted-foreground">
-                  Explore the dashboard to visualize trends and generate actionable insights.
-                </p>
-              </div>
-            </div>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="botId">Bot ID</Label>
+            <Input
+              id="botId"
+              type="text"
+              placeholder="Enter your Bot ID"
+              value={credentials.botId}
+              onChange={(e) => handleInputChange('botId', e.target.value)}
+              className={errors.botId ? 'border-destructive' : ''}
+            />
+            {errors.botId && (
+              <p className="text-sm text-destructive">{errors.botId}</p>
+            )}
           </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="clientId">Client ID</Label>
+            <Input
+              id="clientId"
+              type="text"
+              placeholder="Enter your Client ID"
+              value={credentials.clientId}
+              onChange={(e) => handleInputChange('clientId', e.target.value)}
+              className={errors.clientId ? 'border-destructive' : ''}
+            />
+            {errors.clientId && (
+              <p className="text-sm text-destructive">{errors.clientId}</p>
+            )}
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="clientSecret">Client Secret</Label>
+            <Input
+              id="clientSecret"
+              type="password"
+              placeholder="Enter your Client Secret"
+              value={credentials.clientSecret}
+              onChange={(e) => handleInputChange('clientSecret', e.target.value)}
+              className={errors.clientSecret ? 'border-destructive' : ''}
+            />
+            {errors.clientSecret && (
+              <p className="text-sm text-destructive">{errors.clientSecret}</p>
+            )}
+          </div>
+          
+          {connectionError && (
+            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+              <p className="text-sm text-destructive">{connectionError}</p>
+            </div>
+          )}
+          
+          <Button 
+            onClick={handleConnect} 
+            disabled={isConnecting}
+            className="w-full"
+          >
+            {isConnecting ? 'Connecting...' : 'Connect'}
+          </Button>
         </CardContent>
       </Card>
     </div>
