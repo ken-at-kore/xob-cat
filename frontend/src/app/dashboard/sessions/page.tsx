@@ -28,6 +28,10 @@ export default function SessionsPage() {
     loadSessions();
   }, []);
 
+  const hasActiveFilters = (f: typeof filters) => {
+    return f.startDate || f.endDate || f.startTime || f.endTime;
+  };
+
   const loadSessions = async (filterOverride?: typeof filters) => {
     try {
       setLoading(true);
@@ -39,9 +43,12 @@ export default function SessionsPage() {
       if (f.endDate) apiFilters.end_date = f.endDate;
       if (f.startTime) apiFilters.start_time = f.startTime;
       if (f.endTime) apiFilters.end_time = f.endTime;
-      apiFilters.limit = 50;
+      
+      // Dynamic limit: 1000 when filtering, 50 for initial load
+      apiFilters.limit = hasActiveFilters(f) ? 1000 : 50;
+      
       const sessions = await apiClient.getSessions(apiFilters);
-      setSessions(sessions.slice(0, 50));
+      setSessions(sessions.slice(0, apiFilters.limit));
     } catch (err) {
       if (err instanceof ApiError) {
         setError(`${err.message} (${err.status})`);
