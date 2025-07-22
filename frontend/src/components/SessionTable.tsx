@@ -22,12 +22,13 @@ interface SessionTableProps {
   };
   setFilters: (filters: { startDate: string; endDate: string; startTime: string; endTime: string }) => void;
   onApplyFilters: () => void;
+  onRowClick?: (session: SessionWithTranscript, index: number) => void;
 }
 
 type SortField = 'session_id' | 'start_time' | 'duration_seconds' | 'containment_type';
 type SortDirection = 'asc' | 'desc';
 
-export function SessionTable({ sessions, loading = false, error = null, onRefresh, filters, setFilters, onApplyFilters }: SessionTableProps) {
+export function SessionTable({ sessions, loading = false, error = null, onRefresh, filters, setFilters, onApplyFilters, onRowClick }: SessionTableProps) {
   const [sortField, setSortField] = useState<SortField>('start_time');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [userSorted, setUserSorted] = useState(false);
@@ -89,7 +90,8 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
 
   const formatDuration = (seconds?: number | string | null) => {
     const value = Number(seconds);
-    if (!seconds || isNaN(value) || value <= 0) return 'N/A';
+    // Fixed: Check for null/undefined specifically, but allow 0 
+    if (seconds === null || seconds === undefined || isNaN(value) || value < 0) return 'N/A';
     const hours = Math.floor(value / 3600);
     const minutes = Math.floor((value % 3600) / 60);
     const remainingSeconds = Math.floor(value % 60);
@@ -274,9 +276,16 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedSessions.map((session) => (
-                <TableRow key={session.session_id}>
-                  <TableCell
+              {sortedSessions.map((session, sortedIndex) => {
+                // Find the original index in the unsorted sessions array
+                const originalIndex = sessions.findIndex(s => s.session_id === session.session_id);
+                return (
+                  <TableRow 
+                    key={session.session_id}
+                    className={onRowClick ? "cursor-pointer hover:bg-muted/50" : ""}
+                    onClick={() => onRowClick?.(session, originalIndex)}
+                  >
+                    <TableCell
                     className="p-2 align-middle whitespace-nowrap font-mono text-sm text-left"
                     data-slot="table-cell"
                     data-testid="session-id"
@@ -296,8 +305,9 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
                   <TableCell className="text-left">
                     {getContainmentBadge(session.containment_type)}
                   </TableCell>
-                </TableRow>
-              ))}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
           

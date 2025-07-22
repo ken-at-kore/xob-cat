@@ -12,6 +12,7 @@ import { SessionWithTranscript } from '@/shared/types';
 import { apiClient, ApiError } from '@/lib/api';
 import { SessionTable } from '@/components/SessionTable';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { SessionDetailsDialog } from '@/components/SessionDetailsDialog';
 
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<SessionWithTranscript[]>([]);
@@ -23,6 +24,10 @@ export default function SessionsPage() {
     startTime: '',
     endTime: ''
   });
+
+  // Dialog state for session details
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedSessionIndex, setSelectedSessionIndex] = useState(0);
 
   useEffect(() => {
     loadSessions();
@@ -64,9 +69,23 @@ export default function SessionsPage() {
     loadSessions(filters);
   };
 
+  const handleRowClick = (session: SessionWithTranscript, index: number) => {
+    setSelectedSessionIndex(index);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+  };
+
+  const handleSessionNavigate = (index: number) => {
+    setSelectedSessionIndex(index);
+  };
+
   const formatDuration = (seconds?: number | string | null) => {
     const value = Number(seconds);
-    if (!seconds || isNaN(value) || value <= 0) return 'N/A';
+    // Fixed: Check for null/undefined specifically, but allow 0 
+    if (seconds === null || seconds === undefined || isNaN(value) || value < 0) return 'N/A';
     const hours = Math.floor(value / 3600);
     const minutes = Math.floor((value % 3600) / 60);
     const remainingSeconds = Math.floor(value % 60);
@@ -123,6 +142,7 @@ export default function SessionsPage() {
         filters={filters}
         setFilters={setFilters}
         onApplyFilters={onApplyFilters}
+        onRowClick={handleRowClick}
       />
     );
   }
@@ -144,6 +164,16 @@ export default function SessionsPage() {
           filters={filters}
           setFilters={setFilters}
           onApplyFilters={onApplyFilters}
+          onRowClick={handleRowClick}
+        />
+        
+        {/* Session Details Dialog */}
+        <SessionDetailsDialog
+          isOpen={isDialogOpen}
+          onClose={handleDialogClose}
+          sessions={sessions}
+          currentSessionIndex={selectedSessionIndex}
+          onNavigate={handleSessionNavigate}
         />
       </div>
     </ErrorBoundary>
