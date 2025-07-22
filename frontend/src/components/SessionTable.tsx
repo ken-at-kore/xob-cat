@@ -212,21 +212,21 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="endDate">End Date</Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={filters.endDate}
-                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="startTime">Start Time</Label>
               <Input
                 id="startTime"
                 type="time"
                 value={filters.startTime}
                 onChange={(e) => setFilters({ ...filters, startTime: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={filters.endDate}
+                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
               />
             </div>
             <div className="space-y-2">

@@ -250,4 +250,14 @@ describe('SessionTable', () => {
     expect(screen.queryByLabelText(/Session ID/i)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/Containment Type/i)).not.toBeInTheDocument();
   });
+
+  it('renders filter fields in the correct order: start date, start time, end date, end time', () => {
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />);
+    
+    // Get all filter label elements in DOM order
+    const labels = screen.getAllByText(/Date|Time/, { selector: 'label' });
+    const labelTexts = labels.map(label => label.textContent);
+    
+    expect(labelTexts).toEqual(['Start Date', 'Start Time', 'End Date', 'End Time']);
+  });
 }) 
