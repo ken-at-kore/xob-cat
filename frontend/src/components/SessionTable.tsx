@@ -14,20 +14,22 @@ interface SessionTableProps {
   loading?: boolean;
   error?: string | null;
   onRefresh?: () => void;
+  filters: {
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+  };
+  setFilters: (filters: { startDate: string; endDate: string; startTime: string; endTime: string }) => void;
+  onApplyFilters: () => void;
 }
 
 type SortField = 'session_id' | 'start_time' | 'duration_seconds' | 'containment_type';
 type SortDirection = 'asc' | 'desc';
 
-export function SessionTable({ sessions, loading = false, error = null, onRefresh }: SessionTableProps) {
+export function SessionTable({ sessions, loading = false, error = null, onRefresh, filters, setFilters, onApplyFilters }: SessionTableProps) {
   const [sortField, setSortField] = useState<SortField>('start_time');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [filters, setFilters] = useState({
-    startDate: '',
-    endDate: '',
-    startTime: '',
-    endTime: ''
-  });
   const [userSorted, setUserSorted] = useState(false);
 
   // If filters change and user hasn't sorted, sort by start_time asc
@@ -48,34 +50,11 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
     }
   };
 
-  const filteredAndSortedSessions = useMemo(() => {
-    let filtered = sessions.filter(session => {
-      // Filter by date range
-      if (filters.startDate || filters.endDate) {
-        const sessionDate = new Date(session.start_time);
-        const startDate = filters.startDate ? new Date(filters.startDate) : null;
-        const endDate = filters.endDate ? new Date(filters.endDate) : null;
-        if (startDate && sessionDate < startDate) return false;
-        if (endDate && sessionDate > endDate) return false;
-      }
-      // Filter by start time
-      if (filters.startTime) {
-        const sessionTime = new Date(session.start_time).toLocaleTimeString('en-US', { hour12: false });
-        if (sessionTime < filters.startTime) return false;
-      }
-      // Filter by end time
-      if (filters.endTime) {
-        const sessionTime = new Date(session.start_time).toLocaleTimeString('en-US', { hour12: false });
-        if (sessionTime > filters.endTime) return false;
-      }
-      return true;
-    });
-
-    // Sort sessions
-    filtered.sort((a, b) => {
+  const sortedSessions = useMemo(() => {
+    const sorted = [...sessions];
+    sorted.sort((a, b) => {
       let aValue: any;
       let bValue: any;
-      
       switch (sortField) {
         case 'session_id':
           aValue = a.session_id;
@@ -86,7 +65,6 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
           bValue = new Date(b.start_time);
           break;
         case 'duration_seconds':
-          // Fallback to calculated duration if missing
           aValue = typeof a.duration_seconds === 'number' && a.duration_seconds > 0
             ? a.duration_seconds
             : (a.start_time && a.end_time ? (new Date(a.end_time).getTime() - new Date(a.start_time).getTime()) / 1000 : 0);
@@ -99,16 +77,15 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
           bValue = b.containment_type;
           break;
         default:
-          return 0;
+          aValue = a[sortField];
+          bValue = b[sortField];
       }
-      
       if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
       if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
-
-    return filtered;
-  }, [sessions, filters, sortField, sortDirection]);
+    return sorted;
+  }, [sessions, sortField, sortDirection]);
 
   const formatDuration = (seconds?: number | string | null) => {
     const value = Number(seconds);
@@ -231,7 +208,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
                 id="startDate"
                 type="date"
                 value={filters.startDate}
-                onChange={(e) => setFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -240,7 +217,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
                 id="endDate"
                 type="date"
                 value={filters.endDate}
-                onChange={(e) => setFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -249,7 +226,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
                 id="startTime"
                 type="time"
                 value={filters.startTime}
-                onChange={(e) => setFilters(prev => ({ ...prev, startTime: e.target.value }))}
+                onChange={(e) => setFilters({ ...filters, startTime: e.target.value })}
               />
             </div>
             <div className="space-y-2">
@@ -258,8 +235,13 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
                 id="endTime"
                 type="time"
                 value={filters.endTime}
-                onChange={(e) => setFilters(prev => ({ ...prev, endTime: e.target.value }))}
+                onChange={(e) => setFilters({ ...filters, endTime: e.target.value })}
               />
+            </div>
+            <div className="flex items-end">
+              <Button type="button" onClick={onApplyFilters}>
+                Filter
+              </Button>
             </div>
           </div>
         </CardContent>
@@ -270,7 +252,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
         <CardHeader>
           <CardTitle>Session Overview</CardTitle>
           <CardDescription>
-            {filteredAndSortedSessions.length} sessions found
+            {sortedSessions.length} sessions found
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -292,7 +274,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredAndSortedSessions.map((session) => (
+              {sortedSessions.map((session) => (
                 <TableRow key={session.session_id}>
                   <TableCell
                     className="p-2 align-middle whitespace-nowrap font-mono text-sm text-left"
@@ -319,7 +301,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
             </TableBody>
           </Table>
           
-          {filteredAndSortedSessions.length === 0 && (
+          {sortedSessions.length === 0 && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">No sessions found matching your filters.</p>
             </div>

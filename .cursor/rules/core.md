@@ -1,3 +1,16 @@
+---
+description: XOB CAT default workflow
+alwaysApply: true
+globs: ["**/*"]
+---
+
+# Working style
+- Follow TDD: **write tests, then code, run tests until green**.
+- Use Next 14 + shadcn, strict TS, no `any`.
+- If more than one reasonable technical option exists **pick the one already recommended in the prompt**; do **not** ask.
+- Only ask a question when business logic is ambiguous or new credentials / costs are involved.
+
+
 # Cursor AI Core Rules for XOB CAT
 
 ## 🧠 Project Overview
@@ -5,12 +18,12 @@ XOB CAT (XO Bot Conversation Analysis Tools) is a full-stack web app that helps 
 
 ## 🏗️ Architecture & Stack
 - **Monorepo structure**
-  - `frontend/`: Next.js 15 (React + TypeScript), Tailwind CSS, shadcn-ui
-  - `backend/`: Node.js + TypeScript, using API routes or Express
+  - `frontend/`: Next.js 14/15 (React + TypeScript), Tailwind CSS, shadcn-ui
+  - `backend/`: Node.js + TypeScript, using API routes (not Express)
 - **No persistent storage** — session and analysis data are held in memory for MVP
 - **OpenAI Integration** via GPT-4o-mini + function calling (in `backend/`)
-- **Shared domain models** live in a `shared/` folder and include `Session`, `Message`, `AnalysisResult`, etc.
-- **Testing tools**: Jest + React Testing Library + Storybook (frontend), Playwright (E2E), and Jest or tsx for backend testing
+- **Shared domain models** live in a `shared/` folder and include `Session`, `Message`, `AnalysisResult`, etc. All structured data exchanged between frontend and backend uses these types.
+- **Testing tools**: Jest + React Testing Library (frontend), Playwright (E2E), and Jest or tsx for backend testing
 
 ## ✅ Requirements
 - Users can view a list of bot sessions and inspect details of each

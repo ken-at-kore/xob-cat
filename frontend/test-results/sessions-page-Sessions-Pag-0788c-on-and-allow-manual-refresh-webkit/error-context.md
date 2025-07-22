@@ -7,10 +7,7 @@
 - main:
   - heading "Sessions" [level=1]
   - paragraph: Browse and analyze chatbot session data
-  - button "Refresh"
-  - text: Filters Filter sessions by date, time, and other criteria (Eastern Time) Session ID
-  - textbox "Session ID"
-  - text: Start Date
+  - text: Filters Filter sessions by date, time, and other criteria (Eastern Time) Start Date
   - textbox "Start Date"
   - text: End Date
   - textbox "End Date"
@@ -18,12 +15,7 @@
   - textbox "Start Time"
   - text: End Time
   - textbox "End Time"
-  - text: Containment Type
-  - combobox "Containment Type":
-    - option "All Types" [selected]
-    - option "Self Service"
-    - option "Agent"
-    - option "Drop Off"
+  - button "Filter"
   - text: Session Overview 0 sessions found
   - table:
     - rowgroup:

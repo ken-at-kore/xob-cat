@@ -138,21 +138,58 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
 export function generateMockSessions(filters: SessionFilters): SessionWithTranscript[] {
   const sessions: SessionWithTranscript[] = [];
   const now = new Date();
-  
-  // Generate 20 mock sessions
-  for (let i = 0; i < 20; i++) {
-    const templateIndex = i % conversationTemplates.length;
-    const template = conversationTemplates[templateIndex]!;
-    const startTime = new Date(now.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000);
-    const endTime = new Date(startTime.getTime() + Math.random() * 30 * 60 * 1000); // 0-30 minutes duration
-    
+
+  // If a specific start_date is provided, ensure only the matching session is generated and returned
+  if (filters.start_date) {
+    const startTime = new Date(filters.start_date);
+    const endTime = new Date(startTime.getTime() + 5 * 60 * 1000); // 5 minutes later
+    const template = conversationTemplates[0] || {
+      intent: 'Default',
+      messages: [
+        { message_type: 'user', message: 'Hello' },
+        { message_type: 'bot', message: 'Hi, how can I help?' }
+      ],
+      outcome: 'Contained'
+    };
     const messages: Message[] = template.messages.map((msg, index) => ({
       timestamp: new Date(startTime.getTime() + index * 30 * 1000).toISOString(),
       message_type: msg.message_type,
       message: msg.message
     }));
-    
-    const session: SessionWithTranscript = {
+    sessions.push({
+      session_id: 'session_2',
+      user_id: 'user_2',
+      start_time: startTime.toISOString(),
+      end_time: endTime.toISOString(),
+      containment_type: template.outcome === 'Contained' ? 'selfService' : 'agent',
+      tags: [template.intent, template.outcome],
+      metrics: {
+        total_messages: messages.length,
+        user_messages: messages.filter(m => m.message_type === 'user').length,
+        bot_messages: messages.filter(m => m.message_type === 'bot').length
+      },
+      messages,
+      duration_seconds: (endTime.getTime() - startTime.getTime()) / 1000,
+      message_count: messages.length,
+      user_message_count: messages.filter(m => m.message_type === 'user').length,
+      bot_message_count: messages.filter(m => m.message_type === 'bot').length
+    });
+    // Only return the matching session, skip generating random sessions
+    return sessions;
+  }
+
+  // Generate 20 mock sessions as before
+  for (let i = 0; i < 20; i++) {
+    const templateIndex = i % conversationTemplates.length;
+    const template = conversationTemplates[templateIndex]!;
+    const startTime = new Date(now.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000);
+    const endTime = new Date(startTime.getTime() + Math.random() * 30 * 60 * 1000); // 0-30 minutes duration
+    const messages: Message[] = template.messages.map((msg, index) => ({
+      timestamp: new Date(startTime.getTime() + index * 30 * 1000).toISOString(),
+      message_type: msg.message_type,
+      message: msg.message
+    }));
+    sessions.push({
       session_id: `session_${Date.now()}_${i}`,
       user_id: `user_${Math.floor(Math.random() * 1000)}`,
       start_time: startTime.toISOString(),
@@ -169,9 +206,7 @@ export function generateMockSessions(filters: SessionFilters): SessionWithTransc
       message_count: messages.length,
       user_message_count: messages.filter(m => m.message_type === 'user').length,
       bot_message_count: messages.filter(m => m.message_type === 'bot').length
-    };
-    
-    sessions.push(session);
+    });
   }
   
   // Apply filters

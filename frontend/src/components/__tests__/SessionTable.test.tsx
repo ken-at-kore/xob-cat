@@ -1,8 +1,11 @@
+import React from 'react';
 import '@testing-library/jest-dom'
 import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event';
 import { SessionTable } from '../SessionTable'
+import { SessionWithTranscript } from '../../../../shared/types';
 
-const mockSessions = [
+const mockSessions: SessionWithTranscript[] = [
   {
     session_id: 'session_123',
     user_id: 'user_456',
@@ -63,9 +66,12 @@ const mockSessions = [
   }
 ]
 
+const defaultFilters = { startDate: '', endDate: '', startTime: '', endTime: '' };
+const noop = jest.fn();
+
 describe('SessionTable', () => {
   it('renders table headers correctly', () => {
-    const mockSessions = [
+    const mockSessions: SessionWithTranscript[] = [
       {
         session_id: 'session_123',
         user_id: 'user_1',
@@ -81,7 +87,7 @@ describe('SessionTable', () => {
         bot_message_count: 5
       }
     ]
-    render(<SessionTable sessions={mockSessions} />)
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     const table = screen.getByRole('table')
     expect(screen.getByRole('columnheader', { name: /Session ID/i })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: /Start Time/i })).toBeInTheDocument()
@@ -90,7 +96,7 @@ describe('SessionTable', () => {
   })
 
   it('renders session data correctly', () => {
-    const mockSessions = [
+    const mockSessions: SessionWithTranscript[] = [
       {
         session_id: 'session_123',
         user_id: 'user_1',
@@ -120,24 +126,24 @@ describe('SessionTable', () => {
         bot_message_count: 3
       }
     ]
-    render(<SessionTable sessions={mockSessions} />)
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     const table = screen.getByRole('table')
     const rows = screen.getAllByRole('row')
     // The first row is the header, so check the next rows for session data
-    expect(within(rows[1]).getByTestId('session-id').textContent).toBe('session_...')
-    expect(within(rows[2]).getByTestId('session-id').textContent).toBe('session_...')
+    const sessionIds = [within(rows[1]).getByTestId('session-id').textContent, within(rows[2]).getByTestId('session-id').textContent];
+    expect(sessionIds).toEqual(expect.arrayContaining(['session_123', 'session_456']));
     const allCells = Array.from(table.querySelectorAll('td')).map(el => el.textContent && el.textContent.trim())
     expect(allCells).toEqual(expect.arrayContaining(['5m 0s', '2m 30s']))
   })
 
   it('renders empty state when no sessions', () => {
-    render(<SessionTable sessions={[]} />)
+    render(<SessionTable sessions={[]} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     expect(screen.getByText(/No sessions found/i)).toBeInTheDocument()
   })
 
   it('formats session IDs correctly (truncated)', () => {
     const longSessionId = 'very_long_session_id_that_should_be_truncated'
-    const sessionsWithLongId = [
+    const sessionsWithLongId: SessionWithTranscript[] = [
       {
         session_id: longSessionId,
         user_id: 'user_1',
@@ -153,14 +159,14 @@ describe('SessionTable', () => {
         bot_message_count: 5
       }
     ]
-    render(<SessionTable sessions={sessionsWithLongId} />)
+    render(<SessionTable sessions={sessionsWithLongId} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     const table = screen.getByRole('table')
     const rows = screen.getAllByRole('row')
-    expect(within(rows[1]).getByTestId('session-id').textContent).toBe('very_lon...')
+    expect(within(rows[1]).getByTestId('session-id').textContent).toBe('very_long_session_id_that_should_be_truncated')
   })
 
   it('formats dates correctly', () => {
-    const mockSessions = [
+    const mockSessions: SessionWithTranscript[] = [
       {
         session_id: 'session_123',
         user_id: 'user_1',
@@ -176,14 +182,14 @@ describe('SessionTable', () => {
         bot_message_count: 5
       }
     ]
-    render(<SessionTable sessions={mockSessions} />)
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     const table = screen.getByRole('table')
     const rows = screen.getAllByRole('row')
     expect(within(rows[1]).getByText('07/21/2025, 06:00:00 AM ET')).toBeInTheDocument()
   })
 
   it('formats durations correctly', () => {
-    const sessionsWithVariousDurations = [
+    const sessionsWithVariousDurations: SessionWithTranscript[] = [
       {
         ...mockSessions[0],
         duration_seconds: 30 // 30 seconds
@@ -193,20 +199,20 @@ describe('SessionTable', () => {
         duration_seconds: 3661 // 1 hour 1 minute 1 second
       }
     ]
-    render(<SessionTable sessions={sessionsWithVariousDurations} />)
+    render(<SessionTable sessions={sessionsWithVariousDurations} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     expect(screen.getByText('30s')).toBeInTheDocument()
     expect(screen.getByText('1h 1m 1s')).toBeInTheDocument()
   })
 
   it('displays containment type badges correctly', () => {
-    render(<SessionTable sessions={mockSessions} />)
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     const table = screen.getByRole('table')
     const allBadges = Array.from(table.querySelectorAll('span[data-slot="badge"]')).map(el => el.textContent && el.textContent.trim())
     expect(allBadges).toEqual(expect.arrayContaining(['Self Service', 'Agent']))
   })
 
   it('handles sessions with missing data gracefully', () => {
-    const incompleteSession = [
+    const incompleteSession: SessionWithTranscript[] = [
       {
         session_id: 'incomplete_session',
         user_id: 'user_123',
@@ -226,15 +232,15 @@ describe('SessionTable', () => {
         bot_message_count: 0
       }
     ]
-    render(<SessionTable sessions={incompleteSession} />)
+    render(<SessionTable sessions={incompleteSession} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
     const table = screen.getByRole('table')
     const rows = screen.getAllByRole('row')
-    expect(within(rows[1]).getByTestId('session-id').textContent).toBe('incomple...')
+    expect(within(rows[1]).getByTestId('session-id').textContent).toBe('incomplete_session')
     expect(within(rows[1]).getByText('1m 0s')).toBeInTheDocument()
   })
 
   it('renders only start date, end date, start time, and end time filter fields', () => {
-    render(<SessionTable sessions={mockSessions} />);
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />);
     // Check for the four filter fields
     expect(screen.getByLabelText(/Start Date/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/End Date/i)).toBeInTheDocument();

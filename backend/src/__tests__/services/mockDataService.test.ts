@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import { getSessions, generateMockSessions } from '../../services/mockDataService';
+import { SessionFilters } from '../../../../shared/types/index';
 
 // Mock the config manager
 jest.mock('../../utils/configManager', () => ({
@@ -123,7 +124,7 @@ describe('MockDataService', () => {
         }
       ];
       
-      (mockKoreService.getSessions as jest.Mock).mockResolvedValue(mockRealSessions as any);
+      mockKoreService.getSessions.mockImplementation(() => Promise.resolve(mockRealSessions));
 
       const filters = {
         start_date: '2025-01-01T00:00:00Z',
@@ -137,7 +138,7 @@ describe('MockDataService', () => {
         clientSecret: mockKoreConfig.client_secret,
         baseUrl: mockKoreConfig.base_url
       });
-      expect(mockKoreService.getSessions as jest.Mock).toHaveBeenCalled();
+      expect(mockKoreService.getSessions).toHaveBeenCalled();
       expect(sessions).toEqual(mockRealSessions);
     });
 
@@ -147,7 +148,7 @@ describe('MockDataService', () => {
       
       configManager.getKoreConfig.mockReturnValue(mockKoreConfig);
       createKoreApiService.mockReturnValue(mockKoreService);
-      (mockKoreService.getSessions as jest.Mock).mockRejectedValue(new Error('API Error') as any);
+      mockKoreService.getSessions.mockImplementation(() => Promise.reject(new Error('API Error')));
 
       const filters = {
         start_date: '2025-01-01T00:00:00Z',
@@ -211,5 +212,60 @@ describe('MockDataService', () => {
         }
       });
     });
+  });
+}); 
+
+describe('filtering bug reproduction', () => {
+  it('should return only the session matching the start_date filter', () => {
+    // Create two sessions with different start dates
+    const sessions = [
+      {
+        session_id: 'session_1',
+        user_id: 'user_1',
+        start_time: '2025-07-21T10:00:00.000Z',
+        end_time: '2025-07-21T10:05:00.000Z',
+        containment_type: 'selfService',
+        tags: [],
+        metrics: { total_messages: 5, user_messages: 2, bot_messages: 3 },
+        messages: [],
+        duration_seconds: 300,
+        message_count: 5,
+        user_message_count: 2,
+        bot_message_count: 3
+      },
+      {
+        session_id: 'session_2',
+        user_id: 'user_2',
+        start_time: '2025-07-22T10:00:00.000Z',
+        end_time: '2025-07-22T10:05:00.000Z',
+        containment_type: 'agent',
+        tags: [],
+        metrics: { total_messages: 5, user_messages: 2, bot_messages: 3 },
+        messages: [],
+        duration_seconds: 300,
+        message_count: 5,
+        user_message_count: 2,
+        bot_message_count: 3
+      }
+    ];
+    // Patch generateMockSessions to return our sessions
+    const { generateMockSessions } = require('../../services/mockDataService');
+    jest.spyOn(require('../../services/mockDataService'), 'generateMockSessions').mockImplementation((filters: unknown) => {
+      const typedFilters = filters as SessionFilters;
+      let filtered = sessions;
+      if (typedFilters.start_date) {
+        const startDate = new Date(typedFilters.start_date);
+        filtered = filtered.filter(s => new Date(s.start_time) >= startDate);
+      }
+      if (typedFilters.end_date) {
+        const endDate = new Date(typedFilters.end_date);
+        filtered = filtered.filter(s => new Date(s.start_time) <= endDate);
+      }
+      return filtered;
+    });
+    const filters = { start_date: '2025-07-22' };
+    const result = generateMockSessions(filters);
+    expect(result).toHaveLength(1);
+    expect(result[0].session_id).toBe('session_2');
   });
 }); 

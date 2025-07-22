@@ -1,0 +1,1 @@
+import SessionsPage from '../../dashboard/sessions/page' 
