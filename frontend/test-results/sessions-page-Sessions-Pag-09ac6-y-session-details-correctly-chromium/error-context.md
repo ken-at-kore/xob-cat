@@ -7,10 +7,7 @@
 - main:
   - heading "Sessions" [level=1]
   - paragraph: Browse and analyze chatbot session data
-  - button "Refresh"
-  - text: Filters Filter sessions by date, time, and other criteria (Eastern Time) Session ID
-  - textbox "Session ID"
-  - text: Start Date
+  - text: Filters Filter sessions by date, time, and other criteria (Eastern Time) Start Date
   - textbox "Start Date"
   - text: End Date
   - textbox "End Date"
@@ -18,13 +15,8 @@
   - textbox "Start Time"
   - text: End Time
   - textbox "End Time"
-  - text: Containment Type
-  - combobox "Containment Type":
-    - option "All Types" [selected]
-    - option "Self Service"
-    - option "Agent"
-    - option "Drop Off"
-  - text: Session Overview 0 sessions found
+  - button "Filter"
+  - text: Session Overview 1 sessions found
   - table:
     - rowgroup:
       - row "Session ID Start Time ↓ Duration Containment Type":
@@ -36,7 +28,11 @@
           - button "Duration"
         - cell "Containment Type":
           - button "Containment Type"
-    - rowgroup
-  - paragraph: No sessions found matching your filters.
-- alert: XOB CAT
+    - rowgroup:
+      - row "session_test_123 07/21/2025, 06:00:00 AM ET 5m 0s Agent":
+        - cell "session_test_123"
+        - cell "07/21/2025, 06:00:00 AM ET"
+        - cell "5m 0s"
+        - cell "Agent"
+- alert
 ```

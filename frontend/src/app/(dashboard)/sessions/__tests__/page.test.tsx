@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import SessionsPage from '../page'
+import SessionsPage from '../../../../../../frontend/src/app/dashboard/sessions/page'
 import { apiClient } from '../../../../lib/api'
 const mockGetSessions = apiClient.getSessions as jest.Mock
 
@@ -37,9 +37,7 @@ describe('Sessions Page', () => {
   it('renders loading state initially', () => {
     render(<SessionsPage />)
     // Use regex to match 'Loading sessions...' or similar
-    expect(screen.getByText(/Loading/i)).toBeInTheDocument()
-    // Optionally check for the subtitle if present
-    // expect(screen.getByText(/Setting up your dashboard/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Loading/i).length).toBeGreaterThan(0)
   })
 
   it('loads and displays sessions successfully', async () => {
@@ -69,7 +67,7 @@ describe('Sessions Page', () => {
     await waitFor(() => {
       expect(screen.getByText((content) => !!content && content.includes('Sessions'))).toBeInTheDocument()
       expect(screen.getByText((content) => !!content && /Browse and analyze chatbot session data/i.test(content))).toBeInTheDocument()
-      expect(screen.getByText((content) => !!content && content.includes('session_...'))).toBeInTheDocument()
+      expect(screen.getByText('session_123')).toBeInTheDocument()
       expect(screen.getAllByText((content) => !!content && content.includes('Self Service')).length).toBeGreaterThan(0)
     })
   })
@@ -80,7 +78,7 @@ describe('Sessions Page', () => {
       render(<SessionsPage />)
     })
     await waitFor(() => {
-      expect(screen.getByText(/Error:/i)).toBeInTheDocument()
+      expect(screen.getByText(/Error loading sessions/i)).toBeInTheDocument()
       expect(screen.getByText(/Failed to fetch sessions/i)).toBeInTheDocument()
     })
   })
@@ -131,23 +129,37 @@ describe('Sessions Page', () => {
     expect(mockGetSessions).toHaveBeenCalledTimes(2)
   })
 
-  it('shows refresh button and allows manual refresh', async () => {
-    mockGetSessions.mockResolvedValue({
-      success: true,
-      data: [],
-      total_count: 0
-    })
+  it('does not fetch sessions on filter field change, but does on Filter button click', async () => {
+    mockGetSessions.mockResolvedValue({ success: true, data: [], total_count: 0 });
     await act(async () => {
-      render(<SessionsPage />)
-    })
+      render(<SessionsPage />);
+    });
     await waitFor(() => {
-      expect(screen.getByText('Sessions')).toBeInTheDocument()
-    })
-    const refreshButton = screen.getByRole('button', { name: /Refresh/i })
-    expect(refreshButton).toBeInTheDocument()
-    await userEvent.click(refreshButton)
-    expect(mockGetSessions).toHaveBeenCalledTimes(2)
-  })
+      expect(screen.getByText('Sessions')).toBeInTheDocument();
+    });
+    // Simulate changing a filter field
+    const startDateInput = screen.getByLabelText(/Start Date/i);
+    await userEvent.type(startDateInput, '2025-07-22');
+    // API should not be called again yet
+    expect(mockGetSessions).toHaveBeenCalledTimes(1);
+    // Click the Filter button
+    await userEvent.click(screen.getByRole('button', { name: /filter/i }));
+    // API should be called again
+    expect(mockGetSessions).toHaveBeenCalledTimes(2);
+  });
+  it('does not show a refresh button outside the filter section', async () => {
+    mockGetSessions.mockResolvedValue({ success: true, data: [], total_count: 0 });
+    await act(async () => {
+      render(<SessionsPage />);
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Sessions')).toBeInTheDocument();
+    });
+    // There should not be a refresh button outside the filter section
+    expect(screen.queryByRole('button', { name: /refresh/i })).not.toBeInTheDocument();
+    // There should be a Filter button in the filter section
+    expect(screen.getByRole('button', { name: /filter/i })).toBeInTheDocument();
+  });
 
   it('displays session table with correct columns', async () => {
     mockGetSessions.mockResolvedValueOnce({
@@ -175,10 +187,10 @@ describe('Sessions Page', () => {
     })
     await waitFor(() => {
       expect(screen.getByText((content) => !!content && content.includes('Sessions'))).toBeInTheDocument()
-      expect(screen.getAllByText((content) => !!content && content.includes('Session ID')).some(el => el.tagName === 'TH')).toBe(true)
-      expect(screen.getAllByText((content) => !!content && content.includes('Start Time')).some(el => el.tagName === 'TH')).toBe(true)
-      expect(screen.getAllByText((content) => !!content && content.includes('Duration')).some(el => el.tagName === 'TH')).toBe(true)
-      expect(screen.getAllByText((content) => !!content && content.includes('Containment Type')).some(el => el.tagName === 'TH')).toBe(true)
+      expect(screen.getByRole('columnheader', { name: /Session ID/i })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: /Start Time/i })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: /Duration/i })).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', { name: /Containment Type/i })).toBeInTheDocument();
     })
   })
 

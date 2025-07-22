@@ -8,5 +8,5 @@
   - text: Session Overview Error loading sessions
   - paragraph: "API request failed: 500 Internal Server Error"
   - button "Retry"
-- alert
+- alert: XOB CAT
 ```

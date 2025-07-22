@@ -27,34 +27,22 @@ export default function SessionsPage() {
     loadSessions();
   }, []);
 
-  const loadSessions = async () => {
+  const loadSessions = async (filterOverride?: typeof filters) => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Calculate date range for the last hour
-      const now = Date.now();
-      const endDate = new Date(now);
-      const startDate = new Date(now - 1 * 60 * 60 * 1000); // 1 hour ago
-      // Use the API client to get at most 50 sessions from the last hour
-      const response = await apiClient.getSessions({
-        start_date: startDate.toISOString(),
-        end_date: endDate.toISOString(),
-        limit: 50
-      });
-      
+      const f = filterOverride || filters;
+      // Compose API filters
+      const apiFilters: any = {};
+      if (f.startDate) apiFilters.start_date = f.startDate;
+      if (f.endDate) apiFilters.end_date = f.endDate;
+      // Optionally add time filters if backend supports
+      // if (f.startTime) apiFilters.start_time = f.startTime;
+      // if (f.endTime) apiFilters.end_time = f.endTime;
+      apiFilters.limit = 50;
+      const response = await apiClient.getSessions(apiFilters);
       if (response.success && response.data) {
-        // Filter sessions to only those from the last hour
-        const now = Date.now();
-        const oneHourAgo = now - 1 * 60 * 60 * 1000;
-        const filtered = response.data.filter(session => {
-          const start = new Date(session.start_time).getTime();
-          return start >= oneHourAgo && start <= now;
-        });
-        // Sort by start_time descending (most recent first)
-        filtered.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
-        // Limit to 50
-        setSessions(filtered.slice(0, 50));
+        setSessions(response.data.slice(0, 50));
       } else {
         throw new Error(response.message || 'Failed to load sessions');
       }
@@ -63,6 +51,10 @@ export default function SessionsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const onApplyFilters = () => {
+    loadSessions(filters);
   };
 
   const formatDuration = (seconds?: number | string | null) => {
@@ -120,29 +112,30 @@ export default function SessionsPage() {
         sessions={sessions}
         loading={loading}
         error={error}
-        onRefresh={loadSessions}
+        onRefresh={() => loadSessions()}
+        filters={filters}
+        setFilters={setFilters}
+        onApplyFilters={onApplyFilters}
       />
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Sessions</h1>
-          <p className="text-muted-foreground">
-            Browse and analyze chatbot session data
-          </p>
-        </div>
-        <Button onClick={loadSessions}>
-          Refresh
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold">Sessions</h1>
+        <p className="text-muted-foreground">
+          Browse and analyze chatbot session data
+        </p>
       </div>
       <SessionTable
         sessions={sessions}
         loading={loading}
         error={error}
-        onRefresh={loadSessions}
+        onRefresh={() => loadSessions()}
+        filters={filters}
+        setFilters={setFilters}
+        onApplyFilters={onApplyFilters}
       />
     </div>
   );
