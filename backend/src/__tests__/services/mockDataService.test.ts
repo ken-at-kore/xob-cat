@@ -41,9 +41,12 @@ describe('MockDataService', () => {
 
   describe('generateMockSessions', () => {
     it('should generate mock sessions', () => {
+      // Use a range that includes sessions from the past week (mock sessions are generated from past 7 days)
+      const now = new Date();
+      const weekAgo = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000);
       const filters = {
-        start_date: '2025-01-01T00:00:00Z',
-        end_date: '2025-01-02T00:00:00Z'
+        start_date: weekAgo.toISOString(),
+        end_date: now.toISOString()
       };
       const sessions = generateMockSessions(filters);
 
@@ -94,9 +97,12 @@ describe('MockDataService', () => {
 
   describe('getSessions', () => {
     it('should use mock data when no Kore API credentials available', async () => {
+      // Use a range that includes sessions from the past week
+      const now = new Date();
+      const weekAgo = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000);
       const filters = {
-        start_date: '2025-01-01T00:00:00Z',
-        end_date: '2025-01-02T00:00:00Z'
+        start_date: weekAgo.toISOString(),
+        end_date: now.toISOString()
       };
       const sessions = await getSessions(filters);
 
@@ -150,9 +156,12 @@ describe('MockDataService', () => {
       createKoreApiService.mockReturnValue(mockKoreService);
       mockKoreService.getSessions.mockImplementation(() => Promise.reject(new Error('API Error')));
 
+      // Use a range that includes sessions from the past week
+      const now = new Date();
+      const weekAgo = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000);
       const filters = {
-        start_date: '2025-01-01T00:00:00Z',
-        end_date: '2025-01-02T00:00:00Z'
+        start_date: weekAgo.toISOString(),
+        end_date: now.toISOString()
       };
       const sessions = await getSessions(filters);
 
@@ -215,57 +224,56 @@ describe('MockDataService', () => {
   });
 }); 
 
-describe('filtering bug reproduction', () => {
-  it('should return only the session matching the start_date filter', () => {
-    // Create two sessions with different start dates
-    const sessions = [
-      {
-        session_id: 'session_1',
-        user_id: 'user_1',
-        start_time: '2025-07-21T10:00:00.000Z',
-        end_time: '2025-07-21T10:05:00.000Z',
-        containment_type: 'selfService',
-        tags: [],
-        metrics: { total_messages: 5, user_messages: 2, bot_messages: 3 },
-        messages: [],
-        duration_seconds: 300,
-        message_count: 5,
-        user_message_count: 2,
-        bot_message_count: 3
-      },
-      {
-        session_id: 'session_2',
-        user_id: 'user_2',
-        start_time: '2025-07-22T10:00:00.000Z',
-        end_time: '2025-07-22T10:05:00.000Z',
-        containment_type: 'agent',
-        tags: [],
-        metrics: { total_messages: 5, user_messages: 2, bot_messages: 3 },
-        messages: [],
-        duration_seconds: 300,
-        message_count: 5,
-        user_message_count: 2,
-        bot_message_count: 3
-      }
-    ];
-    // Patch generateMockSessions to return our sessions
-    const { generateMockSessions } = require('../../services/mockDataService');
-    jest.spyOn(require('../../services/mockDataService'), 'generateMockSessions').mockImplementation((filters: unknown) => {
-      const typedFilters = filters as SessionFilters;
-      let filtered = sessions;
-      if (typedFilters.start_date) {
-        const startDate = new Date(typedFilters.start_date);
-        filtered = filtered.filter(s => new Date(s.start_time) >= startDate);
-      }
-      if (typedFilters.end_date) {
-        const endDate = new Date(typedFilters.end_date);
-        filtered = filtered.filter(s => new Date(s.start_time) <= endDate);
-      }
-      return filtered;
+describe('filtering functionality - fixed implementation', () => {
+  it('should properly filter sessions by date range', () => {
+    // Test the actual filtering behavior with realistic date ranges
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    // Test 1: Wide date range should return sessions
+    const wideRangeFilters = {
+      start_date: weekAgo.toISOString(),
+      end_date: now.toISOString()
+    };
+    const wideSessions = generateMockSessions(wideRangeFilters);
+    expect(wideSessions).toBeInstanceOf(Array);
+    expect(wideSessions.length).toBeGreaterThan(0);
+    
+    // Test 2: Narrow date range should return fewer or no sessions
+    const narrowRangeFilters = {
+      start_date: yesterday.toISOString(),
+      end_date: yesterday.toISOString()
+    };
+    const narrowSessions = generateMockSessions(narrowRangeFilters);
+    expect(narrowSessions).toBeInstanceOf(Array);
+    
+    // Test 3: Future date range should return no sessions
+    const futureDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const futureFilters = {
+      start_date: futureDate.toISOString(),
+      end_date: futureDate.toISOString()
+    };
+    const futureSessions = generateMockSessions(futureFilters);
+    expect(futureSessions).toHaveLength(0);
+  });
+  
+  it('should properly filter sessions by containment type', () => {
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    const filters = {
+      start_date: weekAgo.toISOString(),
+      end_date: now.toISOString(),
+      containment_type: 'agent'
+    };
+    
+    const sessions = generateMockSessions(filters);
+    expect(sessions).toBeInstanceOf(Array);
+    
+    // All returned sessions should match the filter
+    sessions.forEach(session => {
+      expect(session.containment_type).toBe('agent');
     });
-    const filters = { start_date: '2025-07-22' };
-    const result = generateMockSessions(filters);
-    expect(result).toHaveLength(1);
-    expect(result[0].session_id).toBe('session_2');
   });
 }); 

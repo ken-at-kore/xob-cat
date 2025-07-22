@@ -37,9 +37,8 @@ export default function SessionsPage() {
       const apiFilters: any = {};
       if (f.startDate) apiFilters.start_date = f.startDate;
       if (f.endDate) apiFilters.end_date = f.endDate;
-      // Optionally add time filters if backend supports
-      // if (f.startTime) apiFilters.start_time = f.startTime;
-      // if (f.endTime) apiFilters.end_time = f.endTime;
+      if (f.startTime) apiFilters.start_time = f.startTime;
+      if (f.endTime) apiFilters.end_time = f.endTime;
       apiFilters.limit = 50;
       const sessions = await apiClient.getSessions(apiFilters);
       setSessions(sessions.slice(0, 50));

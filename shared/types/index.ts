@@ -52,8 +52,10 @@ export interface TokenUsage {
 }
 
 export interface SessionFilters {
-  start_date: string;
-  end_date: string;
+  start_date?: string;
+  end_date?: string;
+  start_time?: string;
+  end_time?: string;
   bot_id?: string;
   containment_type?: string;
   limit?: number;
