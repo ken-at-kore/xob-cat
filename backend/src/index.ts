@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { analysisRouter } from './routes/analysis';
 import { koreRouter } from './routes/kore';
+import { globalErrorHandler, notFoundHandler } from './middleware/errorHandler';
+import { successResponse } from './utils/apiResponse';
 
 // Load environment variables
 dotenv.config();
@@ -22,37 +24,25 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Health check endpoint
+// Health check endpoint with standardized response
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    service: 'XOB CAT Backend API'
-  });
+  successResponse(res, {
+    status: 'ok',
+    service: 'XOB CAT Backend API',
+    environment: process.env.NODE_ENV || 'development',
+    uptime: process.uptime()
+  }, 'Service is healthy');
 });
 
 // API routes
 app.use('/api/analysis', analysisRouter);
 app.use('/api/kore', koreRouter);
 
-// Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Error:', err);
-  res.status(500).json({
-    success: false,
-    error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
-  });
-});
+// 404 handler (must be after all routes)
+app.use(notFoundHandler);
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Not found',
-    message: `Route ${req.originalUrl} not found`
-  });
-});
+// Global error handling middleware (must be last)
+app.use(globalErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚀 XOB CAT Backend API running on port ${PORT}`);

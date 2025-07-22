@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { SessionWithTranscript } from '@/shared/types';
-import { apiClient } from '@/lib/api';
+import { apiClient, ApiError } from '@/lib/api';
 import { SessionTable } from '@/components/SessionTable';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<SessionWithTranscript[]>([]);
@@ -40,14 +41,14 @@ export default function SessionsPage() {
       // if (f.startTime) apiFilters.start_time = f.startTime;
       // if (f.endTime) apiFilters.end_time = f.endTime;
       apiFilters.limit = 50;
-      const response = await apiClient.getSessions(apiFilters);
-      if (response.success && response.data) {
-        setSessions(response.data.slice(0, 50));
-      } else {
-        throw new Error(response.message || 'Failed to load sessions');
-      }
+      const sessions = await apiClient.getSessions(apiFilters);
+      setSessions(sessions.slice(0, 50));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load sessions');
+      if (err instanceof ApiError) {
+        setError(`${err.message} (${err.status})`);
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to load sessions');
+      }
     } finally {
       setLoading(false);
     }
@@ -121,22 +122,24 @@ export default function SessionsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Sessions</h1>
-        <p className="text-muted-foreground">
-          Browse and analyze chatbot session data
-        </p>
+    <ErrorBoundary>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Sessions</h1>
+          <p className="text-muted-foreground">
+            Browse and analyze chatbot session data
+          </p>
+        </div>
+        <SessionTable
+          sessions={sessions}
+          loading={loading}
+          error={error}
+          onRefresh={() => loadSessions()}
+          filters={filters}
+          setFilters={setFilters}
+          onApplyFilters={onApplyFilters}
+        />
       </div>
-      <SessionTable
-        sessions={sessions}
-        loading={loading}
-        error={error}
-        onRefresh={() => loadSessions()}
-        filters={filters}
-        setFilters={setFilters}
-        onApplyFilters={onApplyFilters}
-      />
-    </div>
+    </ErrorBoundary>
   );
 } 
