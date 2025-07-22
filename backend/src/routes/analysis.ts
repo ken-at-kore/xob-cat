@@ -9,15 +9,28 @@ const router = Router();
 
 // GET /api/analysis/sessions - Get sessions (with mock data fallback)
 router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
-  const dateFrom = req.query.dateFrom as string || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const dateTo = req.query.dateTo as string || new Date().toISOString();
+  // Fix parameter mapping - use the correct query parameter names that frontend sends
+  const startDate = req.query.start_date as string;
+  const endDate = req.query.end_date as string;
+  const startTime = req.query.start_time as string;
+  const endTime = req.query.end_time as string;
+  const containmentType = req.query.containment_type as string;
+  const botId = req.query.bot_id as string;
   const limit = parseInt(req.query.limit as string) || 100;
+  const skip = parseInt(req.query.skip as string) || 0;
   
-  const filters = {
-    start_date: dateFrom,
-    end_date: dateTo,
-    limit
+  // Build filters object with all supported parameters
+  const filters: any = {
+    limit,
+    skip
   };
+  
+  if (startDate) filters.start_date = startDate;
+  if (endDate) filters.end_date = endDate;
+  if (startTime) filters.start_time = startTime;
+  if (endTime) filters.end_time = endTime;
+  if (containmentType) filters.containment_type = containmentType;
+  if (botId) filters.bot_id = botId;
   
   console.log(`Fetching sessions with filters:`, filters);
   const sessions = await getSessions(filters);
@@ -28,7 +41,7 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
     `Found ${sessions.length} sessions`,
     {
       total_count: sessions.length,
-      date_range: { dateFrom, dateTo }
+      filters_applied: filters
     }
   );
 }));
