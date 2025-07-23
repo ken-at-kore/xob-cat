@@ -1,5 +1,9 @@
 import { apiClient } from '../api'
 
+// Import static test data
+const staticSessionData = require('../../../../data/api-kore-sessions-selfservice-2025-07-23T17-05-08.json')
+const staticMessageData = require('../../../../data/api-kore-messages-2025-07-23T17-05-31.json')
+
 // Mock fetch globally
 global.fetch = jest.fn()
 
@@ -11,15 +15,21 @@ describe('API Client', () => {
 
   describe('healthCheck', () => {
     it('should make a GET request to /health', async () => {
-      const mockResponse = {
+      const healthResponseData = {
         status: 'ok',
         timestamp: new Date().toISOString(),
         service: 'XOB CAT Backend API'
       }
 
+      const standardResponse = {
+        success: true,
+        data: healthResponseData,
+        timestamp: new Date().toISOString()
+      }
+
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse
+        json: async () => standardResponse
       })
 
       const result = await apiClient.healthCheck()
@@ -29,31 +39,41 @@ describe('API Client', () => {
           'Content-Type': 'application/json'
         }
       })
-      expect(result).toEqual(mockResponse)
+      expect(result).toEqual(healthResponseData)
     })
 
     it('should throw error when health check fails', async () => {
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
         status: 500,
-        statusText: 'Internal Server Error'
+        statusText: 'Internal Server Error',
+        json: async () => ({
+          success: false,
+          error: 'Internal Server Error',
+          timestamp: new Date().toISOString()
+        })
       })
 
-      await expect(apiClient.healthCheck()).rejects.toThrow('API request failed: 500 Internal Server Error')
+      await expect(apiClient.healthCheck()).rejects.toThrow('Internal Server Error')
     })
   })
 
   describe('getSessions', () => {
     it('should make a GET request to /api/analysis/sessions with filters', async () => {
-      const mockResponse = {
+      // Use static data with realistic sessions
+      const realisticSessions = staticSessionData.data.slice(0, 3) // Use first 3 sessions
+      const standardResponse = {
         success: true,
-        data: [],
-        total_count: 0
+        data: realisticSessions,
+        timestamp: new Date().toISOString(),
+        meta: {
+          total_count: realisticSessions.length
+        }
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse
+        json: async () => standardResponse
       })
 
       const filters = {
@@ -72,19 +92,23 @@ describe('API Client', () => {
           }
         }
       )
-      expect(result).toEqual(mockResponse)
+      expect(result).toEqual(realisticSessions) // API client extracts data field
     })
 
     it('should make a GET request without filters', async () => {
-      const mockResponse = {
+      const realisticSessions = staticSessionData.data.slice(0, 2) // Use first 2 sessions
+      const standardResponse = {
         success: true,
-        data: [],
-        total_count: 0
+        data: realisticSessions,
+        timestamp: new Date().toISOString(),
+        meta: {
+          total_count: realisticSessions.length
+        }
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse
+        json: async () => standardResponse
       })
 
       const result = await apiClient.getSessions()
@@ -97,63 +121,78 @@ describe('API Client', () => {
           }
         }
       )
-      expect(result).toEqual(mockResponse)
+      expect(result).toEqual(realisticSessions)
     })
   })
 
   describe('getSession', () => {
     it('should make a GET request to /api/analysis/sessions/{sessionId}', async () => {
-      const mockResponse = {
+      const realisticSession = staticSessionData.data[0] // First session from static data
+      const standardResponse = {
         success: true,
-        data: {
-          session_id: 'session_123',
-          user_id: 'user_456'
-        }
+        data: realisticSession,
+        timestamp: new Date().toISOString()
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse
+        json: async () => standardResponse
       })
 
-      const result = await apiClient.getSession('session_123')
+      const sessionId = realisticSession.session_id
+      const result = await apiClient.getSession(sessionId)
 
       expect(fetch).toHaveBeenCalledWith(
-        'http://localhost:3001/api/analysis/sessions/session_123',
+        `http://localhost:3001/api/analysis/sessions/${sessionId}`,
         {
           headers: {
             'Content-Type': 'application/json'
           }
         }
       )
-      expect(result).toEqual(mockResponse)
+      expect(result).toEqual(realisticSession)
     })
   })
 
   describe('analyzeSession', () => {
     it('should make a POST request to /api/analysis/session', async () => {
-      const mockResponse = {
+      const realisticSession = staticSessionData.data[0]
+      const sessionId = realisticSession.session_id
+      
+      // Get realistic messages for this session
+      const realisticMessages = staticMessageData.data
+        .filter(msg => msg.sessionId === sessionId)
+        .slice(0, 5) // Use first 5 messages
+      
+      const analysisResult = {
+        analyses: [{
+          session_id: sessionId,
+          intent: 'Claim Status',
+          outcome: 'Contained',
+          dropOff: false,
+          escalationReason: null,
+          notes: 'User successfully checked claim status'
+        }],
+        token_usage: {
+          prompt_tokens: 150,
+          completion_tokens: 50,
+          total_tokens: 200,
+          cost: 0.0004
+        }
+      }
+
+      const standardResponse = {
         success: true,
-        data: [
-          {
-            session_id: 'session_123',
-            analysis: 'This session shows good containment'
-          }
-        ]
+        data: analysisResult,
+        timestamp: new Date().toISOString()
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse
+        json: async () => standardResponse
       })
 
-      const sessionId = 'session_123'
-      const messages = [
-        { message_type: 'user', message: 'Hello' },
-        { message_type: 'bot', message: 'Hi there!' }
-      ]
-
-      const result = await apiClient.analyzeSession(sessionId, messages)
+      const result = await apiClient.analyzeSession(sessionId, realisticMessages)
 
       expect(fetch).toHaveBeenCalledWith(
         'http://localhost:3001/api/analysis/session',
@@ -162,40 +201,53 @@ describe('API Client', () => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ session_id: sessionId, messages })
+          body: JSON.stringify({ session_id: sessionId, messages: realisticMessages })
         }
       )
-      expect(result).toEqual(mockResponse)
+      expect(result).toEqual(analysisResult)
     })
   })
 
   describe('analyzeSessionsBatch', () => {
     it('should make a POST request to /api/analysis/batch', async () => {
-      const mockResponse = {
+      const realisticSessions = staticSessionData.data.slice(0, 2) // First 2 sessions
+      
+      const batchResult = {
+        analyses: realisticSessions.map(session => ({
+          session_id: session.session_id,
+          intent: 'Member Services',
+          outcome: 'Contained',
+          dropOff: false,
+          escalationReason: null,
+          notes: 'Session handled successfully'
+        })),
+        token_usage: {
+          prompt_tokens: 300,
+          completion_tokens: 100,
+          total_tokens: 400,
+          cost: 0.0008
+        }
+      }
+
+      const standardResponse = {
         success: true,
-        data: [
-          {
-            session_id: 'session_123',
-            analysis: 'Analysis 1'
-          },
-          {
-            session_id: 'session_456',
-            analysis: 'Analysis 2'
-          }
-        ]
+        data: batchResult,
+        timestamp: new Date().toISOString()
       }
 
       ;(fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockResponse
+        json: async () => standardResponse
       })
 
-      const sessions = [
-        { session_id: 'session_123', messages: [] },
-        { session_id: 'session_456', messages: [] }
-      ]
+      const sessionsWithMessages = realisticSessions.map(session => ({
+        session_id: session.session_id,
+        messages: staticMessageData.data
+          .filter(msg => msg.sessionId === session.session_id)
+          .slice(0, 3) // First 3 messages per session
+      }))
 
-      const result = await apiClient.analyzeSessionsBatch(sessions)
+      const result = await apiClient.analyzeSessionsBatch(sessionsWithMessages)
 
       expect(fetch).toHaveBeenCalledWith(
         'http://localhost:3001/api/analysis/batch',
@@ -204,10 +256,10 @@ describe('API Client', () => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ sessions })
+          body: JSON.stringify({ sessions: sessionsWithMessages })
         }
       )
-      expect(result).toEqual(mockResponse)
+      expect(result).toEqual(batchResult)
     })
   })
 

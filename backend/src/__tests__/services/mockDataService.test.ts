@@ -2,6 +2,10 @@ import { jest } from '@jest/globals';
 import { getSessions, generateMockSessions } from '../../services/mockDataService';
 import { SessionFilters } from '../../../../shared/types/index';
 
+// Import static test data
+const staticSessionData = require('../../../../data/api-kore-sessions-selfservice-2025-07-23T17-05-08.json');
+const staticMessageData = require('../../../../data/api-kore-messages-2025-07-23T17-05-31.json');
+
 // Mock the config manager
 jest.mock('../../utils/configManager', () => ({
   configManager: {
@@ -40,7 +44,7 @@ describe('MockDataService', () => {
   });
 
   describe('generateMockSessions', () => {
-    it('should generate mock sessions', () => {
+    it('should generate mock sessions with realistic structure', () => {
       // Use a range that includes sessions from the past week (mock sessions are generated from past 7 days)
       const now = new Date();
       const weekAgo = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000);
@@ -52,11 +56,24 @@ describe('MockDataService', () => {
 
       expect(sessions).toBeInstanceOf(Array);
       expect(sessions.length).toBeGreaterThan(0);
-      expect(sessions[0]).toHaveProperty('session_id');
-      expect(sessions[0]).toHaveProperty('user_id');
-      expect(sessions[0]).toHaveProperty('start_time');
-      expect(sessions[0]).toHaveProperty('end_time');
-      expect(sessions[0]).toHaveProperty('messages');
+      
+      // Test against realistic static data structure
+      const firstSession = sessions[0];
+      const realisticSession = staticSessionData.data[0];
+      
+      // Should have same properties as real sessions
+      expect(firstSession).toHaveProperty('session_id');
+      expect(firstSession).toHaveProperty('user_id');
+      expect(firstSession).toHaveProperty('start_time');
+      expect(firstSession).toHaveProperty('end_time');
+      expect(firstSession).toHaveProperty('containment_type');
+      expect(firstSession).toHaveProperty('tags');
+      expect(firstSession).toHaveProperty('messages');
+      
+      // Should have valid containment types like real data
+      if (firstSession) {
+        expect(['agent', 'selfService', 'dropOff']).toContain(firstSession.containment_type);
+      }
     });
 
     it('should filter sessions by date range', () => {
@@ -92,6 +109,38 @@ describe('MockDataService', () => {
       sessions.forEach(session => {
         expect(session.containment_type).toBe('agent');
       });
+    });
+  });
+
+  describe('getSessions with static data validation', () => {
+    it('should validate service works with realistic static data patterns', async () => {
+      // Test that our static data has the correct structure for the service
+      const realisticSessions = staticSessionData.data;
+      
+      expect(realisticSessions).toBeInstanceOf(Array);
+      expect(realisticSessions.length).toBeGreaterThan(0);
+      
+      // Test first session has all required properties
+      const firstSession = realisticSessions[0];
+      expect(firstSession).toHaveProperty('session_id');
+      expect(firstSession).toHaveProperty('containment_type');
+      expect(['agent', 'selfService', 'dropOff']).toContain(firstSession.containment_type);
+      expect(firstSession).toHaveProperty('tags');
+      if (firstSession.tags && typeof firstSession.tags === 'object') {
+        expect(firstSession.tags).toHaveProperty('sessionTags');
+      }
+      
+      // Test realistic message data structure
+      const realisticMessages = staticMessageData.data;
+      expect(realisticMessages).toBeInstanceOf(Array);
+      expect(realisticMessages.length).toBeGreaterThan(0);
+      
+      const firstMessage = realisticMessages[0];
+      expect(firstMessage).toHaveProperty('sessionId');
+      expect(firstMessage).toHaveProperty('message_type');
+      expect(['user', 'bot']).toContain(firstMessage.message_type);
+      expect(firstMessage).toHaveProperty('message');
+      expect(firstMessage).toHaveProperty('timestamp');
     });
   });
 

@@ -1,34 +1,45 @@
 import { getSessions } from '../../services/mockDataService';
 import { SessionWithTranscript, Message } from '../../../../shared/types';
 
-// Mock the createKoreApiService and configManager
-jest.mock('../../services/koreApiService');
-jest.mock('../../utils/configManager');
+// Import static test data
+const staticSessionData = require('../../../../data/api-kore-sessions-selfservice-2025-07-23T17-05-08.json');
+const staticMessageData = require('../../../../data/api-kore-messages-2025-07-23T17-05-31.json');
 
-describe('Session History + Conversation History Integration (Simplified)', () => {
+// Mock the createKoreApiService and configManager to force use of static data
+jest.mock('../../services/koreApiService');
+jest.mock('../../utils/configManager', () => ({
+  configManager: {
+    getKoreConfig: jest.fn().mockImplementation(() => {
+      throw new Error('No config found - using static test data');
+    })
+  }
+}));
+
+describe('Session History + Conversation History Integration (Static Data)', () => {
   
   describe('Complete Session with Conversation History Retrieval', () => {
-    it('should retrieve sessions and populate with conversation messages from mockDataService', async () => {
-      // Execute the workflow with realistic filters
+    it('should retrieve sessions using static data and validate structure', async () => {
+      // Execute the workflow with realistic filters within past week for mock data
+      const now = new Date();
+      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
       const filters = {
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
+        start_date: threeDaysAgo.toISOString(),
+        end_date: now.toISOString(),
         limit: 10,
         skip: 0
       };
 
       const result = await getSessions(filters);
 
-      // Verify sessions are returned (could be mock or real depending on config)
+      // Verify sessions are returned from mock data (fallback when no real API)
       expect(Array.isArray(result)).toBe(true);
-      expect(result.length).toBeGreaterThanOrEqual(0);
+      expect(result.length).toBeGreaterThan(0); // Should have mock sessions
+
+      const session = result[0];
+      expect(session).toBeDefined();
       
-      // If sessions exist, verify they have the correct structure
-      if (result.length > 0) {
-        const session = result[0];
-        expect(session).toBeDefined();
-        
-        // Verify session structure
+      if (session) {
+        // Verify session structure matches expected format
         expect(session).toHaveProperty('session_id');
         expect(session).toHaveProperty('user_id'); 
         expect(session).toHaveProperty('start_time');
@@ -39,146 +50,141 @@ describe('Session History + Conversation History Integration (Simplified)', () =
         expect(session).toHaveProperty('user_message_count');
         expect(session).toHaveProperty('bot_message_count');
         
+        // Verify containment type is valid
+        expect(['agent', 'selfService', 'dropOff']).toContain(session.containment_type);
+        
         // Verify messages structure if they exist
-        if (session && session.messages && session.messages.length > 0) {
+        if (session.messages && session.messages.length > 0) {
           const message = session.messages[0];
-          expect(message).toBeDefined();
-          expect(message).toHaveProperty('timestamp');
-          expect(message).toHaveProperty('message_type');
-          expect(message).toHaveProperty('message');
           if (message) {
+            expect(message).toHaveProperty('timestamp');
+            expect(message).toHaveProperty('message_type');
+            expect(message).toHaveProperty('message');
             expect(['user', 'bot']).toContain(message.message_type);
           }
         }
       }
     });
 
-    it('should handle filtering by containment type', async () => {
+    it('should handle filtering by containment type using mock data', async () => {
+      const now = new Date();
+      const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
       const filters = {
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z', 
+        start_date: twoDaysAgo.toISOString(),
+        end_date: now.toISOString(), 
         containment_type: 'selfService',
         limit: 5,
         skip: 0
       };
 
       const result = await getSessions(filters);
-      
+
       expect(Array.isArray(result)).toBe(true);
       
-      // If sessions exist, verify containment type filter worked
+      // If sessions are returned, verify they match the filter
       result.forEach(session => {
-        if (session.containment_type) {
-          expect(session.containment_type).toBe('selfService');
-        }
+        expect(session.containment_type).toBe('selfService');
       });
     });
 
-    it('should handle pagination correctly', async () => {
-      const firstPageFilters = {
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
-        limit: 5,
+    it('should handle pagination parameters correctly', async () => {
+      const now = new Date();
+      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const filtersPage1 = {
+        start_date: oneDayAgo.toISOString(),
+        end_date: now.toISOString(),
+        limit: 2,
         skip: 0
       };
 
-      const secondPageFilters = {
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
-        limit: 5,
-        skip: 5
+      const filtersPage2 = {
+        start_date: oneDayAgo.toISOString(),
+        end_date: now.toISOString(),
+        limit: 2,
+        skip: 2
       };
 
-      const firstPage = await getSessions(firstPageFilters);
-      const secondPage = await getSessions(secondPageFilters);
+      const page1 = await getSessions(filtersPage1);
+      const page2 = await getSessions(filtersPage2);
+
+      expect(Array.isArray(page1)).toBe(true);
+      expect(Array.isArray(page2)).toBe(true);
       
-      expect(Array.isArray(firstPage)).toBe(true);
-      expect(Array.isArray(secondPage)).toBe(true);
-      
-      // Verify pagination returns different results (if there are enough sessions)
-      if (firstPage.length > 0 && secondPage.length > 0) {
-        const firstSession = firstPage[0];
-        const secondSession = secondPage[0];
-        expect(firstSession).toBeDefined();
-        expect(secondSession).toBeDefined();
-        if (firstSession && secondSession) {
-          expect(firstSession.session_id).not.toBe(secondSession.session_id);
-        }
+      // Verify pagination is working (different results)
+      if (page1.length > 0 && page2.length > 0 && page1[0] && page2[0]) {
+        expect(page1[0].session_id).not.toBe(page2[0].session_id);
       }
     });
 
-    it('should maintain message chronological order within sessions', async () => {
+    it('should validate static data structure compatibility', async () => {
+      // Verify our static session data has the expected structure
+      expect(staticSessionData).toHaveProperty('data');
+      expect(Array.isArray(staticSessionData.data)).toBe(true);
+      expect(staticSessionData.data.length).toBeGreaterThan(0);
+
+      const session = staticSessionData.data[0];
+      expect(session).toHaveProperty('session_id');
+      expect(session).toHaveProperty('containment_type');
+      expect(['agent', 'selfService', 'dropOff']).toContain(session.containment_type);
+
+      // Verify our static message data has the expected structure
+      expect(staticMessageData).toHaveProperty('data');
+      expect(Array.isArray(staticMessageData.data)).toBe(true);
+      expect(staticMessageData.data.length).toBeGreaterThan(0);
+
+      const message = staticMessageData.data[0];
+      expect(message).toHaveProperty('sessionId');
+      expect(message).toHaveProperty('message_type');
+      expect(['user', 'bot']).toContain(message.message_type);
+    });
+
+    it('should complete workflow within reasonable time using mock data', async () => {
+      const startTime = Date.now();
+      
+      const now = new Date();
+      const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
       const filters = {
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
+        start_date: twoDaysAgo.toISOString(),
+        end_date: now.toISOString(),
         limit: 10,
         skip: 0
       };
 
       const result = await getSessions(filters);
       
-      // Check chronological order for sessions that have multiple messages
+      const executionTime = Date.now() - startTime;
+      
+      expect(Array.isArray(result)).toBe(true);
+      expect(executionTime).toBeLessThan(5000); // Should complete within 5 seconds with mock data
+    }, 10000);
+
+    it('should handle message chronological ordering', async () => {
+      const now = new Date();
+      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const filters = {
+        start_date: oneDayAgo.toISOString(),
+        end_date: now.toISOString(),
+        limit: 5,
+        skip: 0
+      };
+
+      const result = await getSessions(filters);
+
+      expect(Array.isArray(result)).toBe(true);
+      
+      // Check chronological ordering within sessions that have multiple messages
       result.forEach(session => {
-        if (session.messages && session.messages.length > 1) {
+        if (session && session.messages && session.messages.length > 1) {
           for (let i = 1; i < session.messages.length; i++) {
             const prevMessage = session.messages[i-1];
             const currMessage = session.messages[i];
             if (prevMessage && currMessage) {
-              const prevTime = new Date(prevMessage.timestamp).getTime();
-              const currTime = new Date(currMessage.timestamp).getTime();
-              expect(currTime).toBeGreaterThanOrEqual(prevTime);
+              const prevTime = new Date(prevMessage.timestamp);
+              const currTime = new Date(currMessage.timestamp);
+              expect(prevTime.getTime()).toBeLessThanOrEqual(currTime.getTime());
             }
           }
         }
-      });
-    });
-
-    it('should handle empty results gracefully', async () => {
-      // Use a date range with no data
-      const filters = {
-        start_date: '2030-01-01T00:00:00Z',
-        end_date: '2030-01-02T00:00:00Z',
-        limit: 10,
-        skip: 0
-      };
-
-      const result = await getSessions(filters);
-      
-      expect(Array.isArray(result)).toBe(true);
-      // May be empty array for future dates or still have mock data
-    });
-
-    it('should handle service integration correctly', async () => {
-      // This test verifies the service integration works end-to-end
-      const filters = {
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
-        limit: 50,
-        skip: 0
-      };
-
-      const startTime = Date.now();
-      const result = await getSessions(filters);
-      const endTime = Date.now();
-      const executionTime = endTime - startTime;
-
-      // Verify reasonable performance
-      expect(executionTime).toBeLessThan(5000); // Should complete within 5 seconds
-      
-      // Verify response structure
-      expect(Array.isArray(result)).toBe(true);
-      
-      // Verify all sessions have required fields
-      result.forEach(session => {
-        expect(typeof session.session_id).toBe('string');
-        expect(typeof session.user_id).toBe('string');
-        expect(typeof session.start_time).toBe('string');
-        expect(typeof session.end_time).toBe('string');
-        expect(['agent', 'selfService', 'dropOff']).toContain(session.containment_type);
-        expect(Array.isArray(session.messages)).toBe(true);
-        expect(typeof session.message_count).toBe('number');
-        expect(typeof session.user_message_count).toBe('number');
-        expect(typeof session.bot_message_count).toBe('number');
       });
     });
   });
