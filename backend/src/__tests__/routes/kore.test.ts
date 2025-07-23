@@ -54,18 +54,20 @@ describe('Kore Routes', () => {
       };
 
       const mockKoreService = {
-        getSessions: jest.fn().mockResolvedValue([
-          {
-            session_id: 'test-session-1',
-            user_id: 'test-user-1',
-            start_time: '2025-01-01T00:00:00Z',
-            end_time: '2025-01-01T00:01:00Z',
-            containment_type: 'agent',
-            tags: { userTags: [], sessionTags: [] },
-            messages: []
-          }
-        ] as any)
-      };
+        getSessions: jest.fn()
+      } as any;
+      
+      mockKoreService.getSessions.mockResolvedValue([
+        {
+          session_id: 'test-session-1',
+          user_id: 'test-user-1',
+          start_time: '2025-01-01T00:00:00Z',
+          end_time: '2025-01-01T00:01:00Z',
+          containment_type: 'agent',
+          tags: { userTags: [], sessionTags: [] },
+          messages: []
+        }
+      ]);
 
       configManager.getKoreConfig.mockReturnValue(mockKoreConfig);
       createKoreApiService.mockReturnValue(mockKoreService);
@@ -82,7 +84,8 @@ describe('Kore Routes', () => {
           sessions_count: 1,
           sample_session: expect.any(Object),
           date_range: expect.any(Object)
-        }
+        },
+        timestamp: expect.any(String)
       });
     });
   });
@@ -130,8 +133,10 @@ describe('Kore Routes', () => {
       ];
 
       const mockKoreService = {
-        getSessions: jest.fn().mockResolvedValue(mockSessions as any)
-      };
+        getSessions: jest.fn()
+      } as any;
+      
+      mockKoreService.getSessions.mockResolvedValue(mockSessions);
 
       configManager.getKoreConfig.mockReturnValue(mockKoreConfig);
       createKoreApiService.mockReturnValue(mockKoreService);
@@ -142,11 +147,15 @@ describe('Kore Routes', () => {
 
       expect(response.body).toEqual({
         success: true,
+        message: expect.any(String),
         data: mockSessions,
-        total_count: 1,
-        has_more: false,
-        date_range: expect.any(Object),
-        bot_name: 'Test Bot'
+        meta: {
+          total_count: 1,
+          has_more: false,
+          date_range: expect.any(Object),
+          bot_name: 'Test Bot'
+        },
+        timestamp: expect.any(String)
       });
     });
   });
