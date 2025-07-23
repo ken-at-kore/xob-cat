@@ -107,12 +107,52 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
         filters.limit || 1000
       );
 
-      // If we got sessions from the API, return them
+      // If we got sessions from the API, fetch their messages too
       if (sessions && sessions.length > 0) {
         console.log(`Found ${sessions.length} sessions from Kore.ai API`);
         
+        // Extract session IDs for message retrieval
+        const sessionIds = sessions
+          .map((session: any) => session.session_id)
+          .filter((id: any) => id && id.trim() !== '');
+        
+        console.log(`Fetching messages for ${sessionIds.length} sessions...`);
+        
+        // Fetch messages for all sessions
+        let messages: any[] = [];
+        try {
+          messages = await koreApiService.getMessages(dateFrom, dateTo, sessionIds);
+          console.log(`Retrieved ${messages.length} messages from Kore.ai API`);
+        } catch (messageError) {
+          console.error('Error fetching messages from Kore.ai API:', messageError);
+          console.log('Continuing with sessions without messages...');
+        }
+        
+        // Group messages by session ID
+        const messagesBySession: Record<string, any[]> = {};
+        messages.forEach((message: any) => {
+          const sessionId = message.sessionId || message.session_id;
+          if (sessionId) {
+            if (!messagesBySession[sessionId]) {
+              messagesBySession[sessionId] = [];
+            }
+            messagesBySession[sessionId].push(message);
+          }
+        });
+        
+        // Add messages to sessions
+        const sessionsWithMessages = sessions.map((session: any) => {
+          const sessionMessages = messagesBySession[session.session_id] || [];
+          return {
+            ...session,
+            messages: sessionMessages
+          };
+        });
+        
+        console.log(`Sessions with messages: ${Object.keys(messagesBySession).length}/${sessions.length}`);
+        
         // Apply additional filters that aren't handled by the API
-        let filteredSessions = sessions;
+        let filteredSessions = sessionsWithMessages;
         
         if (filters.containment_type) {
           filteredSessions = filteredSessions.filter((s: SessionWithTranscript) => 
