@@ -47,26 +47,22 @@ describe('Sessions Page', () => {
   })
 
   it('loads and displays sessions successfully', async () => {
-    mockGetSessions.mockResolvedValueOnce({
-      success: true,
-      data: [
-        {
-          session_id: 'session_123',
-          user_id: 'user_1',
-          start_time: '2025-07-21T10:00:00.000Z',
-          end_time: '2025-07-21T10:05:00.000Z',
-          containment_type: 'selfService',
-          tags: [],
-          metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
-          messages: [],
-          duration_seconds: 300,
-          message_count: 10,
-          user_message_count: 5,
-          bot_message_count: 5
-        }
-      ],
-      total_count: 1
-    })
+    mockGetSessions.mockResolvedValueOnce([
+      {
+        session_id: 'session_123',
+        user_id: 'user_1',
+        start_time: '2025-07-21T10:00:00.000Z',
+        end_time: '2025-07-21T10:05:00.000Z',
+        containment_type: 'selfService',
+        tags: [],
+        metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
+        messages: [],
+        duration_seconds: 300,
+        message_count: 10,
+        user_message_count: 5,
+        bot_message_count: 5
+      }
+    ])
     await act(async () => {
       render(<SessionsPage />)
     })
@@ -90,11 +86,7 @@ describe('Sessions Page', () => {
   })
 
   it('displays empty state when no sessions', async () => {
-    mockGetSessions.mockResolvedValue({
-      success: true,
-      data: [],
-      total_count: 0
-    })
+    mockGetSessions.mockResolvedValue([])
     await act(async () => {
       render(<SessionsPage />)
     })
@@ -116,11 +108,7 @@ describe('Sessions Page', () => {
 
   it('retries loading sessions when retry button is clicked', async () => {
     mockGetSessions.mockRejectedValueOnce(new Error('Failed to fetch sessions'))
-      .mockResolvedValueOnce({
-        success: true,
-        data: [],
-        total_count: 0
-      })
+      .mockResolvedValueOnce([])
     await act(async () => {
       render(<SessionsPage />)
     })
@@ -136,7 +124,7 @@ describe('Sessions Page', () => {
   })
 
   it('does not fetch sessions on filter field change, but does on Filter button click', async () => {
-    mockGetSessions.mockResolvedValue({ success: true, data: [], total_count: 0 });
+    mockGetSessions.mockResolvedValue([]);
     await act(async () => {
       render(<SessionsPage />);
     });
@@ -154,7 +142,7 @@ describe('Sessions Page', () => {
     expect(mockGetSessions).toHaveBeenCalledTimes(2);
   });
   it('does not show a refresh button outside the filter section', async () => {
-    mockGetSessions.mockResolvedValue({ success: true, data: [], total_count: 0 });
+    mockGetSessions.mockResolvedValue([]);
     await act(async () => {
       render(<SessionsPage />);
     });
@@ -168,26 +156,22 @@ describe('Sessions Page', () => {
   });
 
   it('displays session table with correct columns', async () => {
-    mockGetSessions.mockResolvedValueOnce({
-      success: true,
-      data: [
-        {
-          session_id: 'session_123',
-          user_id: 'user_1',
-          start_time: '2025-07-21T10:00:00.000Z',
-          end_time: '2025-07-21T10:05:00.000Z',
-          containment_type: 'selfService',
-          tags: [],
-          metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
-          messages: [],
-          duration_seconds: 300,
-          message_count: 10,
-          user_message_count: 5,
-          bot_message_count: 5
-        }
-      ],
-      total_count: 1
-    })
+    mockGetSessions.mockResolvedValueOnce([
+      {
+        session_id: 'session_123',
+        user_id: 'user_1',
+        start_time: '2025-07-21T10:00:00.000Z',
+        end_time: '2025-07-21T10:05:00.000Z',
+        containment_type: 'selfService',
+        tags: [],
+        metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
+        messages: [],
+        duration_seconds: 300,
+        message_count: 10,
+        user_message_count: 5,
+        bot_message_count: 5
+      }
+    ])
     await act(async () => {
       render(<SessionsPage />)
     })
@@ -202,7 +186,7 @@ describe('Sessions Page', () => {
 
   it('handles missing credentials gracefully', async () => {
     jest.spyOn(window.sessionStorage, 'getItem').mockReturnValueOnce(null)
-    mockGetSessions.mockResolvedValueOnce({ success: true, data: [], total_count: 0 })
+    mockGetSessions.mockResolvedValueOnce([])
     await act(async () => {
       render(<SessionsPage />)
     })
@@ -287,5 +271,146 @@ describe('Sessions Page', () => {
     // For the third test, we test the no-filters behavior by calling loadSessions
     // without any filters applied initially (which we already test in the first test)
     // This verifies the dynamic limit logic works correctly
+  })
+
+  it('opens session details dialog when table row is clicked', async () => {
+    const testSessions = [
+      {
+        session_id: 'session_123',
+        user_id: 'user_1',
+        start_time: '2025-07-21T10:00:00.000Z',
+        end_time: '2025-07-21T10:05:00.000Z',
+        containment_type: 'selfService',
+        tags: [],
+        metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
+        messages: [
+          {
+            timestamp: '2025-07-21T10:00:00.000Z',
+            message_type: 'user',
+            message: 'Test message'
+          }
+        ],
+        duration_seconds: 300,
+        message_count: 10,
+        user_message_count: 5,
+        bot_message_count: 5
+      }
+    ];
+    
+    mockGetSessions.mockResolvedValue(testSessions)
+    await act(async () => {
+      render(<SessionsPage />)
+    })
+    
+    await waitFor(() => {
+      expect(screen.getByText('Sessions')).toBeInTheDocument()
+    })
+    
+    // Click on a session row
+    const rows = screen.getAllByRole('row')
+    await userEvent.click(rows[1]) // Skip header row
+    
+    // Check that dialog opens with session details
+    expect(screen.getByText('Session Details')).toBeInTheDocument()
+    expect(screen.getAllByText('session_123')).toHaveLength(2) // One in table, one in dialog
+    expect(screen.getByText('Session 1 of 1')).toBeInTheDocument()
+  })
+
+  it('closes session details dialog when close button is clicked', async () => {
+    const testSessions = [
+      {
+        session_id: 'session_123',
+        user_id: 'user_1',
+        start_time: '2025-07-21T10:00:00.000Z',
+        end_time: '2025-07-21T10:05:00.000Z',
+        containment_type: 'selfService',
+        tags: [],
+        metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
+        messages: [],
+        duration_seconds: 300,
+        message_count: 10,
+        user_message_count: 5,
+        bot_message_count: 5
+      }
+    ];
+    
+    mockGetSessions.mockResolvedValue(testSessions)
+    await act(async () => {
+      render(<SessionsPage />)
+    })
+    
+    await waitFor(() => {
+      expect(screen.getByText('Sessions')).toBeInTheDocument()
+    })
+    
+    // Open dialog
+    const rows = screen.getAllByRole('row')
+    await userEvent.click(rows[1])
+    
+    expect(screen.getByText('Session Details')).toBeInTheDocument()
+    
+    // Close dialog
+    const closeButton = screen.getByRole('button', { name: /close/i })
+    await userEvent.click(closeButton)
+    
+    // Dialog should be closed
+    expect(screen.queryByText('Session Details')).not.toBeInTheDocument()
+  })
+
+  it('navigates between sessions in dialog', async () => {
+    const testSessions = [
+      {
+        session_id: 'session_123',
+        user_id: 'user_1',
+        start_time: '2025-07-21T10:00:00.000Z',
+        end_time: '2025-07-21T10:05:00.000Z',
+        containment_type: 'selfService',
+        tags: [],
+        metrics: { total_messages: 10, user_messages: 5, bot_messages: 5 },
+        messages: [],
+        duration_seconds: 300,
+        message_count: 10,
+        user_message_count: 5,
+        bot_message_count: 5
+      },
+      {
+        session_id: 'session_456',
+        user_id: 'user_2',
+        start_time: '2025-07-21T11:00:00.000Z',
+        end_time: '2025-07-21T11:02:30.000Z',
+        containment_type: 'agent',
+        tags: [],
+        metrics: { total_messages: 5, user_messages: 2, bot_messages: 3 },
+        messages: [],
+        duration_seconds: 150,
+        message_count: 5,
+        user_message_count: 2,
+        bot_message_count: 3
+      }
+    ];
+    
+    mockGetSessions.mockResolvedValue(testSessions)
+    await act(async () => {
+      render(<SessionsPage />)
+    })
+    
+    await waitFor(() => {
+      expect(screen.getByText('Sessions')).toBeInTheDocument()
+    })
+    
+    // Click on first session row (due to sorting by start_time desc, this will be session_456)
+    const rows = screen.getAllByRole('row')
+    await userEvent.click(rows[1])
+    
+    // First row should be session_456 (index 1 in original array), which appears first due to sorting
+    expect(screen.getAllByText('session_456')).toHaveLength(2) // One in table, one in dialog
+    expect(screen.getByText('Session 2 of 2')).toBeInTheDocument() // session_456 is at index 1
+    
+    // Navigate to previous session (this will go to session_123)
+    const prevButton = screen.getByRole('button', { name: /previous/i })
+    await userEvent.click(prevButton)
+    
+    expect(screen.getAllByText('session_123')).toHaveLength(2) // One in table, one in dialog
+    expect(screen.getByText('Session 1 of 2')).toBeInTheDocument() // session_123 is at index 0
   })
 }) 

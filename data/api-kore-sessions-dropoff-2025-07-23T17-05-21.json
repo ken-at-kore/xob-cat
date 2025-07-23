@@ -1,0 +1,442 @@
+{
+  "success": true,
+  "data": [
+    {
+      "session_id": "686c0067c9df49437e692fae",
+      "user_id": "u-540120d4-cec4-5ccf-8f99-a016e0d11ab0",
+      "start_time": "2025-07-07T17:05:10.886Z",
+      "end_time": "2025-07-07T17:19:22.141Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686bfe526325502831001e19",
+      "user_id": "u-1363d779-57a7-55dd-9d4d-31833189f590",
+      "start_time": "2025-07-07T17:05:22.246Z",
+      "end_time": "2025-07-07T17:16:14.646Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [
+          {
+            "value": "1975-02-25 11:05:22",
+            "name": "callStartTime"
+          },
+          {
+            "value": "431702685160",
+            "name": "niceContactId"
+          },
+          {
+            "value": "u-1363d779-57a7-55dd-9d4d-31833189f590",
+            "name": "koreUserId"
+          },
+          {
+            "value": "ec181540-7278-47d3-bb00-bcadcb6f86e8",
+            "name": "koreCallId"
+          },
+          {
+            "value": "0398315731",
+            "name": "callerNumber"
+          },
+          {
+            "value": "smartassist",
+            "name": "channelName"
+          },
+          {
+            "value": "Regular",
+            "name": "callerType"
+          },
+          {
+            "value": "No",
+            "name": "surveyOptedIn"
+          },
+          {
+            "value": "No",
+            "name": "surveyTransfer"
+          },
+          {
+            "value": "Yes",
+            "name": "agentTransfer"
+          },
+          {
+            "value": "No",
+            "name": "userHangUp"
+          },
+          {
+            "value": "SUCCESS",
+            "name": "niceApiStatus"
+          },
+          {
+            "value": "Caller Escalation",
+            "name": "agentTransferReason"
+          },
+          {
+            "value": "NA",
+            "name": "lastUserUtterance"
+          },
+          {
+            "value": "NA",
+            "name": "failedAPI"
+          },
+          {
+            "value": "NA",
+            "name": "inputEntityFailedBeforeAgentTransfer"
+          },
+          {
+            "value": "Claim_Status",
+            "name": "lastIntentBeforeSessionCompletion"
+          },
+          {
+            "value": "{\"Claim_Status\":1}",
+            "name": "intentCounts"
+          },
+          {
+            "value": "{\"Provider ID\":1,\"Claim Number\":1}",
+            "name": "entityVisitCounts"
+          },
+          {
+            "value": "1995-04-12 11:06:58",
+            "name": "callEndTime"
+          }
+        ],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c00ff4f46d3d39253a4c2",
+      "user_id": "u-c6dbf817-b749-5a15-af03-5bc3f224855d",
+      "start_time": "2025-07-07T17:07:30.128Z",
+      "end_time": "2025-07-07T17:17:53.347Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c01589c75ee15bd77e040",
+      "user_id": "u-94494d84-a55b-597f-bf15-2800b5b2e21e",
+      "start_time": "2025-07-07T17:09:01.981Z",
+      "end_time": "2025-07-07T17:18:35.245Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c01bc5e10c3de5a47d11c",
+      "user_id": "u-f380d5a2-48c4-53be-b0e9-c9482292b2ff",
+      "start_time": "2025-07-07T17:10:42.139Z",
+      "end_time": "2025-07-07T17:21:12.869Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c030d3f0864e6e70fa76e",
+      "user_id": "u-7a383e0c-69f5-5884-83d1-654bbede4cda",
+      "start_time": "2025-07-07T17:15:59.700Z",
+      "end_time": "2025-07-07T17:26:03.578Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c0396a11bc9443031ed55",
+      "user_id": "u-8627bfed-f927-530c-89a4-e7d98d2be3c8",
+      "start_time": "2025-07-07T17:18:14.653Z",
+      "end_time": "2025-07-07T17:31:14.294Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c048f702ba7a4918966ea",
+      "user_id": "u-a77c623a-3584-54dc-8e23-6dc099fb858b",
+      "start_time": "2025-07-07T17:22:20.438Z",
+      "end_time": "2025-07-07T17:32:51.544Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c08189c75ee15bd7c7419",
+      "user_id": "u-a48da450-dc2e-5140-9633-c932579e5a36",
+      "start_time": "2025-07-07T17:37:38.859Z",
+      "end_time": "2025-07-07T17:55:23.155Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c081da1104c0d95a1e67f",
+      "user_id": "u-86650aac-59c7-5a82-ac89-e6fcc0220c8a",
+      "start_time": "2025-07-07T17:37:42.596Z",
+      "end_time": "2025-07-07T17:47:57.456Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c091c702ba7a4918cf51f",
+      "user_id": "u-53ebcb7c-eab9-5fd1-89f7-c567e481a993",
+      "start_time": "2025-07-07T17:42:13.535Z",
+      "end_time": "2025-07-07T17:53:32.933Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c09533f0864e6e7141f28",
+      "user_id": "u-1f43d7db-8ba0-549d-9b89-48df7053357e",
+      "start_time": "2025-07-07T17:43:23.043Z",
+      "end_time": "2025-07-07T17:53:41.280Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c099462db9154925226ed",
+      "user_id": "u-4a821218-e151-516c-b275-f2aa9db6c06e",
+      "start_time": "2025-07-07T17:53:23.963Z",
+      "end_time": "2025-07-07T18:03:44.485Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [
+          {
+            "value": "1970-06-02 11:53:24",
+            "name": "callStartTime"
+          },
+          {
+            "value": "431702698970",
+            "name": "niceContactId"
+          },
+          {
+            "value": "u-4a821218-e151-516c-b275-f2aa9db6c06e",
+            "name": "koreUserId"
+          },
+          {
+            "value": "71ad86aa-9699-49c3-bf19-fdac523439a9",
+            "name": "koreCallId"
+          },
+          {
+            "value": "9609963396",
+            "name": "callerNumber"
+          },
+          {
+            "value": "smartassist",
+            "name": "channelName"
+          },
+          {
+            "value": "Regular",
+            "name": "callerType"
+          },
+          {
+            "value": "No",
+            "name": "surveyOptedIn"
+          },
+          {
+            "value": "No",
+            "name": "surveyTransfer"
+          },
+          {
+            "value": "Yes",
+            "name": "agentTransfer"
+          },
+          {
+            "value": "No",
+            "name": "userHangUp"
+          },
+          {
+            "value": "SUCCESS",
+            "name": "niceApiStatus"
+          },
+          {
+            "value": "Input capture failed",
+            "name": "agentTransferReason"
+          },
+          {
+            "value": "NA",
+            "name": "lastUserUtterance"
+          },
+          {
+            "value": "NA",
+            "name": "failedAPI"
+          },
+          {
+            "value": "Provider ID",
+            "name": "inputEntityFailedBeforeAgentTransfer"
+          },
+          {
+            "value": "Claim_Status",
+            "name": "lastIntentBeforeSessionCompletion"
+          },
+          {
+            "value": "{\"Claim_Status\":1}",
+            "name": "intentCounts"
+          },
+          {
+            "value": "{\"Provider ID\":2}",
+            "name": "entityVisitCounts"
+          },
+          {
+            "value": "1974-05-23 11:54:55",
+            "name": "callEndTime"
+          }
+        ],
+        "altText": []
+      },
+      "messages": []
+    },
+    {
+      "session_id": "686c0a5198860449d90e65fe",
+      "user_id": "u-2530ab07-00d7-5bd8-bf9d-aa653d50adc1",
+      "start_time": "2025-07-07T17:56:33.036Z",
+      "end_time": "2025-07-07T18:07:31.834Z",
+      "containment_type": "dropOff",
+      "tags": {
+        "userTags": [],
+        "sessionTags": [
+          {
+            "value": "1975-09-06 11:56:33",
+            "name": "callStartTime"
+          },
+          {
+            "value": "431702699837",
+            "name": "niceContactId"
+          },
+          {
+            "value": "u-2530ab07-00d7-5bd8-bf9d-aa653d50adc1",
+            "name": "koreUserId"
+          },
+          {
+            "value": "ec9a480e-d7c7-487a-95ef-6c9aba6a9cf3",
+            "name": "koreCallId"
+          },
+          {
+            "value": "3778671127",
+            "name": "callerNumber"
+          },
+          {
+            "value": "smartassist",
+            "name": "channelName"
+          },
+          {
+            "value": "Regular",
+            "name": "callerType"
+          },
+          {
+            "value": "Yes",
+            "name": "surveyOptedIn"
+          },
+          {
+            "value": "No",
+            "name": "surveyTransfer"
+          },
+          {
+            "value": "Yes",
+            "name": "agentTransfer"
+          },
+          {
+            "value": "No",
+            "name": "userHangUp"
+          },
+          {
+            "value": "SUCCESS",
+            "name": "niceApiStatus"
+          },
+          {
+            "value": "Caller Escalation",
+            "name": "agentTransferReason"
+          },
+          {
+            "value": "NA",
+            "name": "lastUserUtterance"
+          },
+          {
+            "value": "NA",
+            "name": "failedAPI"
+          },
+          {
+            "value": "NA",
+            "name": "inputEntityFailedBeforeAgentTransfer"
+          },
+          {
+            "value": "Claim_Status",
+            "name": "lastIntentBeforeSessionCompletion"
+          },
+          {
+            "value": "{\"Claim_Status\":1}",
+            "name": "intentCounts"
+          },
+          {
+            "value": "{\"Provider ID\":1,\"Claim Number\":1}",
+            "name": "entityVisitCounts"
+          },
+          {
+            "value": "1997-05-26 11:58:38",
+            "name": "callEndTime"
+          }
+        ],
+        "altText": []
+      },
+      "messages": []
+    }
+  ],
+  "message": "Found 14 dropOff sessions",
+  "timestamp": "2025-07-23T17:05:21.484Z",
+  "meta": {
+    "total_count": 14,
+    "has_more": false,
+    "date_range": {
+      "from": "2025-07-07T17:00:00.000Z",
+      "to": "2025-07-07T18:00:00.000Z"
+    },
+    "bot_name": "Acme Bot",
+    "containment_type_filter": "dropOff"
+  }
+}

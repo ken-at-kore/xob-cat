@@ -260,4 +260,34 @@ describe('SessionTable', () => {
     
     expect(labelTexts).toEqual(['Start Date', 'Start Time', 'End Date', 'End Time']);
   });
+
+  it('calls onRowClick when a table row is clicked', async () => {
+    const onRowClick = jest.fn();
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} onRowClick={onRowClick} />);
+    
+    const rows = screen.getAllByRole('row');
+    // Skip header row (index 0), click first data row (index 1)
+    // Due to default sorting by start_time desc, session_456 (index 1) appears first
+    await userEvent.click(rows[1]);
+    
+    expect(onRowClick).toHaveBeenCalledWith(mockSessions[1], 1);
+  });
+
+  it('makes table rows clickable with proper cursor styling', () => {
+    const onRowClick = jest.fn();
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} onRowClick={onRowClick} />);
+    
+    const rows = screen.getAllByRole('row');
+    // Check that data rows have clickable styling
+    expect(rows[1]).toHaveClass('cursor-pointer');
+  });
+
+  it('does not call onRowClick when onRowClick is not provided', async () => {
+    // This should not throw an error
+    render(<SessionTable sessions={mockSessions} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />);
+    
+    const rows = screen.getAllByRole('row');
+    await userEvent.click(rows[1]);
+    // Should not throw or cause issues
+  });
 }) 

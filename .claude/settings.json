@@ -1,0 +1,30 @@
+{
+  "env": {
+    "NEXT_PUBLIC_ENABLE_TELEMETRY": "false"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm run test:*)",
+      "Bash(npm run build)",
+      "Bash(npm run lint)",
+      "Bash(cd * && ls *)",
+      "Bash(cd *)",
+      "Bash(git commit)",
+      "Bash(npm test)",
+      "Bash(playwright test)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(find *)",
+      "Bash(lsof *)",
+      "Bash(ps *)",
+      "Read(shared/**/*)",
+      "Read(frontend/**/*)",
+      "Read(backend/**/*)"
+    ],
+    "deny": [
+      "WebFetch",
+      "Bash(curl:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  }
+}

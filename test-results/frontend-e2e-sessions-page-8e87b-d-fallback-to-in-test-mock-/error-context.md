@@ -1,0 +1,283 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - heading "XOB CAT" [level=1]
+  - paragraph: XO Bot Conversation Analysis Tools
+- main:
+  - heading "Sessions" [level=1]
+  - paragraph: Browse and analyze chatbot session data
+  - text: Filters Filter sessions by date, time, and other criteria (Eastern Time) Start Date
+  - textbox "Start Date"
+  - text: End Date
+  - textbox "End Date"
+  - text: Start Time
+  - textbox "Start Time"
+  - text: End Time
+  - textbox "End Time"
+  - button "Filter"
+  - text: Session Overview 50 sessions found
+  - table:
+    - rowgroup:
+      - row "Session ID Start Time ↓ Duration Containment Type":
+        - cell "Session ID":
+          - button "Session ID"
+        - cell "Start Time ↓":
+          - button "Start Time ↓"
+        - cell "Duration":
+          - button "Duration"
+        - cell "Containment Type":
+          - button "Containment Type"
+    - rowgroup:
+      - row "687f9e373b9f90bf16f11ea5 07/22/2025, 10:20:39 AM ET 53s Self Service":
+        - cell "687f9e373b9f90bf16f11ea5"
+        - cell "07/22/2025, 10:20:39 AM ET"
+        - cell "53s"
+        - cell "Self Service"
+      - row "687f960550a394cf57195f16 07/22/2025, 09:45:41 AM ET 3m 39s Drop Off":
+        - cell "687f960550a394cf57195f16"
+        - cell "07/22/2025, 09:45:41 AM ET"
+        - cell "3m 39s"
+        - cell "Drop Off"
+      - row "687ed5623888e21a8cae4fc4 07/21/2025, 08:03:46 PM ET 2m 57s Drop Off":
+        - cell "687ed5623888e21a8cae4fc4"
+        - cell "07/21/2025, 08:03:46 PM ET"
+        - cell "2m 57s"
+        - cell "Drop Off"
+      - row "687ec7a8c8d2f87d447506b1 07/21/2025, 07:05:10 PM ET 0s Drop Off":
+        - cell "687ec7a8c8d2f87d447506b1"
+        - cell "07/21/2025, 07:05:10 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687ec3432f5c4c93ffe56dde 07/21/2025, 06:46:27 PM ET 5s Drop Off":
+        - cell "687ec3432f5c4c93ffe56dde"
+        - cell "07/21/2025, 06:46:27 PM ET"
+        - cell "5s"
+        - cell "Drop Off"
+      - row "687ebeba7b6761716c9780f0 07/21/2025, 06:27:06 PM ET 59s Drop Off":
+        - cell "687ebeba7b6761716c9780f0"
+        - cell "07/21/2025, 06:27:06 PM ET"
+        - cell "59s"
+        - cell "Drop Off"
+      - row "687eb4918cddc08b6717effe 07/21/2025, 05:43:45 PM ET 25s Drop Off":
+        - cell "687eb4918cddc08b6717effe"
+        - cell "07/21/2025, 05:43:45 PM ET"
+        - cell "25s"
+        - cell "Drop Off"
+      - row "687eb35fdc2811dde491707e 07/21/2025, 05:38:38 PM ET 0s Drop Off":
+        - cell "687eb35fdc2811dde491707e"
+        - cell "07/21/2025, 05:38:38 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687eb0c8bfdd71fee18e7721 07/21/2025, 05:27:36 PM ET 1m 20s Drop Off":
+        - cell "687eb0c8bfdd71fee18e7721"
+        - cell "07/21/2025, 05:27:36 PM ET"
+        - cell "1m 20s"
+        - cell "Drop Off"
+      - row "687eaebc2f5c4c93ffe18e3b 07/21/2025, 05:18:52 PM ET 7s Drop Off":
+        - cell "687eaebc2f5c4c93ffe18e3b"
+        - cell "07/21/2025, 05:18:52 PM ET"
+        - cell "7s"
+        - cell "Drop Off"
+      - row "687eab93f118017c7ad10e00 07/21/2025, 05:05:23 PM ET 2s Drop Off":
+        - cell "687eab93f118017c7ad10e00"
+        - cell "07/21/2025, 05:05:23 PM ET"
+        - cell "2s"
+        - cell "Drop Off"
+      - row "687eaa8944eb6455cd4e83a0 07/21/2025, 05:00:55 PM ET 0s Drop Off":
+        - cell "687eaa8944eb6455cd4e83a0"
+        - cell "07/21/2025, 05:00:55 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687ea7b56aba483c42cb3991 07/21/2025, 04:48:46 PM ET 0s Drop Off":
+        - cell "687ea7b56aba483c42cb3991"
+        - cell "07/21/2025, 04:48:46 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687ea765b349c2dbd564bb64 07/21/2025, 04:47:33 PM ET 2m 23s Drop Off":
+        - cell "687ea765b349c2dbd564bb64"
+        - cell "07/21/2025, 04:47:33 PM ET"
+        - cell "2m 23s"
+        - cell "Drop Off"
+      - row "687e9ea2dbdaf191170b3b1b 07/21/2025, 04:10:08 PM ET 3s Drop Off":
+        - cell "687e9ea2dbdaf191170b3b1b"
+        - cell "07/21/2025, 04:10:08 PM ET"
+        - cell "3s"
+        - cell "Drop Off"
+      - row "687e9e2a8a0ec1c35687441d 07/21/2025, 04:08:10 PM ET 57s Drop Off":
+        - cell "687e9e2a8a0ec1c35687441d"
+        - cell "07/21/2025, 04:08:10 PM ET"
+        - cell "57s"
+        - cell "Drop Off"
+      - row "687e9d7ebfdd71fee18a5254 07/21/2025, 04:05:18 PM ET 13s Drop Off":
+        - cell "687e9d7ebfdd71fee18a5254"
+        - cell "07/21/2025, 04:05:18 PM ET"
+        - cell "13s"
+        - cell "Drop Off"
+      - row "687e9d38c0e161e590ca765c 07/21/2025, 04:04:08 PM ET 10s Drop Off":
+        - cell "687e9d38c0e161e590ca765c"
+        - cell "07/21/2025, 04:04:08 PM ET"
+        - cell "10s"
+        - cell "Drop Off"
+      - row "687e9b0304640037731c1109 07/21/2025, 03:54:43 PM ET 2m 38s Drop Off":
+        - cell "687e9b0304640037731c1109"
+        - cell "07/21/2025, 03:54:43 PM ET"
+        - cell "2m 38s"
+        - cell "Drop Off"
+      - row "687e99d2bf3714512bb3d37c 07/21/2025, 03:49:38 PM ET 1m 0s Drop Off":
+        - cell "687e99d2bf3714512bb3d37c"
+        - cell "07/21/2025, 03:49:38 PM ET"
+        - cell "1m 0s"
+        - cell "Drop Off"
+      - row "687e98ceb0252e91159a7870 07/21/2025, 03:45:15 PM ET 8s Drop Off":
+        - cell "687e98ceb0252e91159a7870"
+        - cell "07/21/2025, 03:45:15 PM ET"
+        - cell "8s"
+        - cell "Drop Off"
+      - row "687e929d8aec31d20b615429 07/21/2025, 03:18:53 PM ET 0s Drop Off":
+        - cell "687e929d8aec31d20b615429"
+        - cell "07/21/2025, 03:18:53 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687e90cbb349c2dbd55f9726 07/21/2025, 03:11:07 PM ET 54s Drop Off":
+        - cell "687e90cbb349c2dbd55f9726"
+        - cell "07/21/2025, 03:11:07 PM ET"
+        - cell "54s"
+        - cell "Drop Off"
+      - row "687e8d492e9c43cbc77fd00a 07/21/2025, 02:56:09 PM ET 36s Drop Off":
+        - cell "687e8d492e9c43cbc77fd00a"
+        - cell "07/21/2025, 02:56:09 PM ET"
+        - cell "36s"
+        - cell "Drop Off"
+      - row "687e8c258cddc08b670f212d 07/21/2025, 02:51:17 PM ET 16s Drop Off":
+        - cell "687e8c258cddc08b670f212d"
+        - cell "07/21/2025, 02:51:17 PM ET"
+        - cell "16s"
+        - cell "Drop Off"
+      - row "687e8b218cddc08b670ef0f4 07/21/2025, 02:46:57 PM ET 39s Drop Off":
+        - cell "687e8b218cddc08b670ef0f4"
+        - cell "07/21/2025, 02:46:57 PM ET"
+        - cell "39s"
+        - cell "Drop Off"
+      - row "687e8a521ce7ff8b94f0a9a8 07/21/2025, 02:43:30 PM ET 22s Drop Off":
+        - cell "687e8a521ce7ff8b94f0a9a8"
+        - cell "07/21/2025, 02:43:30 PM ET"
+        - cell "22s"
+        - cell "Drop Off"
+      - row "687e8a4f22ad6a81a986e456 07/21/2025, 02:43:26 PM ET 0s Drop Off":
+        - cell "687e8a4f22ad6a81a986e456"
+        - cell "07/21/2025, 02:43:26 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687e8a424defbddadd20a114 07/21/2025, 02:43:14 PM ET 21s Drop Off":
+        - cell "687e8a424defbddadd20a114"
+        - cell "07/21/2025, 02:43:14 PM ET"
+        - cell "21s"
+        - cell "Drop Off"
+      - row "687e8a0b50a394cf57fb97f0 07/21/2025, 02:42:19 PM ET 54s Drop Off":
+        - cell "687e8a0b50a394cf57fb97f0"
+        - cell "07/21/2025, 02:42:19 PM ET"
+        - cell "54s"
+        - cell "Drop Off"
+      - row "687e89e1c3693c334f38c101 07/21/2025, 02:41:36 PM ET 0s Drop Off":
+        - cell "687e89e1c3693c334f38c101"
+        - cell "07/21/2025, 02:41:36 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687e897bbe54e8129a3204d0 07/21/2025, 02:39:55 PM ET 1m 39s Drop Off":
+        - cell "687e897bbe54e8129a3204d0"
+        - cell "07/21/2025, 02:39:55 PM ET"
+        - cell "1m 39s"
+        - cell "Drop Off"
+      - row "687e86800464003773178586 07/21/2025, 02:27:12 PM ET 2m 5s Drop Off":
+        - cell "687e86800464003773178586"
+        - cell "07/21/2025, 02:27:12 PM ET"
+        - cell "2m 5s"
+        - cell "Drop Off"
+      - row "687e82d4bfdd71fee184789e 07/21/2025, 02:11:32 PM ET 11m 22s Drop Off":
+        - cell "687e82d4bfdd71fee184789e"
+        - cell "07/21/2025, 02:11:32 PM ET"
+        - cell "11m 22s"
+        - cell "Drop Off"
+      - row "687e8286c8d2f87d444d514a 07/21/2025, 02:10:10 PM ET 6s Drop Off":
+        - cell "687e8286c8d2f87d444d514a"
+        - cell "07/21/2025, 02:10:10 PM ET"
+        - cell "6s"
+        - cell "Drop Off"
+      - row "687e82435a8f4eae8118c70f 07/21/2025, 02:09:06 PM ET 3m 35s Drop Off":
+        - cell "687e82435a8f4eae8118c70f"
+        - cell "07/21/2025, 02:09:06 PM ET"
+        - cell "3m 35s"
+        - cell "Drop Off"
+      - row "687e8160ed7c76077e7e9082 07/21/2025, 02:05:18 PM ET 0s Drop Off":
+        - cell "687e8160ed7c76077e7e9082"
+        - cell "07/21/2025, 02:05:18 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687e7fabb1568cd8d6357db3 07/21/2025, 01:58:03 PM ET 48s Drop Off":
+        - cell "687e7fabb1568cd8d6357db3"
+        - cell "07/21/2025, 01:58:03 PM ET"
+        - cell "48s"
+        - cell "Drop Off"
+      - row "687e7f3bc0e161e590c3e391 07/21/2025, 01:56:10 PM ET 15s Drop Off":
+        - cell "687e7f3bc0e161e590c3e391"
+        - cell "07/21/2025, 01:56:10 PM ET"
+        - cell "15s"
+        - cell "Drop Off"
+      - row "687e7dcb9a9cad1e6d7b078d 07/21/2025, 01:50:03 PM ET 1m 42s Drop Off":
+        - cell "687e7dcb9a9cad1e6d7b078d"
+        - cell "07/21/2025, 01:50:03 PM ET"
+        - cell "1m 42s"
+        - cell "Drop Off"
+      - row "687e7b7f44eb6455cd30d168 07/21/2025, 01:40:11 PM ET 1m 12s Drop Off":
+        - cell "687e7b7f44eb6455cd30d168"
+        - cell "07/21/2025, 01:40:11 PM ET"
+        - cell "1m 12s"
+        - cell "Drop Off"
+      - row "687e7218304de28acfb8ac20 07/21/2025, 01:00:05 PM ET 5s Drop Off":
+        - cell "687e7218304de28acfb8ac20"
+        - cell "07/21/2025, 01:00:05 PM ET"
+        - cell "5s"
+        - cell "Drop Off"
+      - row "687e700c57e083e5d26d518a 07/21/2025, 12:51:24 PM ET 1m 53s Drop Off":
+        - cell "687e700c57e083e5d26d518a"
+        - cell "07/21/2025, 12:51:24 PM ET"
+        - cell "1m 53s"
+        - cell "Drop Off"
+      - row "687e6f56b64e9b464f36edda 07/21/2025, 12:48:22 PM ET 15s Drop Off":
+        - cell "687e6f56b64e9b464f36edda"
+        - cell "07/21/2025, 12:48:22 PM ET"
+        - cell "15s"
+        - cell "Drop Off"
+      - row "687e6d7d2f5c4c93ffd3881e 07/21/2025, 12:40:29 PM ET 1m 23s Drop Off":
+        - cell "687e6d7d2f5c4c93ffd3881e"
+        - cell "07/21/2025, 12:40:29 PM ET"
+        - cell "1m 23s"
+        - cell "Drop Off"
+      - row "687e6d788f07f4c0bf65919a 07/21/2025, 12:40:21 PM ET 0s Drop Off":
+        - cell "687e6d788f07f4c0bf65919a"
+        - cell "07/21/2025, 12:40:21 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687e6b3b8853c5035c0a76b9 07/21/2025, 12:30:48 PM ET 3s Drop Off":
+        - cell "687e6b3b8853c5035c0a76b9"
+        - cell "07/21/2025, 12:30:48 PM ET"
+        - cell "3s"
+        - cell "Drop Off"
+      - row "687e6963b1568cd8d630f547 07/21/2025, 12:22:59 PM ET 3m 35s Drop Off":
+        - cell "687e6963b1568cd8d630f547"
+        - cell "07/21/2025, 12:22:59 PM ET"
+        - cell "3m 35s"
+        - cell "Drop Off"
+      - row "687e68cec54c41a9d62df8e6 07/21/2025, 12:20:28 PM ET 0s Drop Off":
+        - cell "687e68cec54c41a9d62df8e6"
+        - cell "07/21/2025, 12:20:28 PM ET"
+        - cell "0s"
+        - cell "Drop Off"
+      - row "687e61d2b349c2dbd555dca4 07/21/2025, 11:50:42 AM ET 46s Drop Off":
+        - cell "687e61d2b349c2dbd555dca4"
+        - cell "07/21/2025, 11:50:42 AM ET"
+        - cell "46s"
+        - cell "Drop Off"
+- alert
+```
