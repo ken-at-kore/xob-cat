@@ -240,12 +240,22 @@ For questions or issues:
 2. Search existing issues
 3. Create a new issue with detailed information
 
+## 📊 Recent Updates
+
+See **[CHANGELOG.md](CHANGELOG.md)** for detailed information about recent updates including:
+- ✅ Comprehensive test data collection system with sanitized production data
+- ✅ Enhanced unit test infrastructure (89% pass rate)
+- ✅ Organized development tooling structure
+- ✅ Real API integration tests for all major workflows
+
 ## 📚 Additional Resources
 
 - **[📖 Complete Documentation](./docs/README.md)** - All project documentation
 - **[📋 Product Requirements Document](./docs/Product%20Requirements%20Document.md)** - Detailed product specifications
 - **[🏗️ Architecture Overview](./docs/architecture.md)** - System design and technical decisions
 - **[🔧 API Reference](./docs/api-reference.md)** - Complete API documentation
+- **[🛠️ Development Tools](tools/README.md)** - Data collection and testing utilities
+- **[📋 Test Data](data/README.md)** - Sanitized production data for realistic testing
 
 ---
 

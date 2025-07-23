@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "data": [],
+  "message": "Found 0 agent sessions",
+  "timestamp": "2025-07-23T17:04:55.187Z",
+  "meta": {
+    "total_count": 0,
+    "has_more": false,
+    "date_range": {
+      "from": "2025-07-07T17:00:00.000Z",
+      "to": "2025-07-07T18:00:00.000Z"
+    },
+    "bot_name": "Acme Bot",
+    "containment_type_filter": "agent"
+  }
+}
