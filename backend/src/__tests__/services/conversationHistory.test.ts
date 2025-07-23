@@ -8,14 +8,12 @@ jest.mock('../../utils/configManager', () => ({
   }
 }));
 
-// Mock axios
-const mockAxios = {
-  post: jest.fn(),
-  isAxiosError: jest.fn(),
-};
-
+// Mock axios - define as object literal to fix hoisting
 jest.mock('axios', () => ({
-  default: mockAxios
+  default: {
+    post: jest.fn(),
+    isAxiosError: jest.fn(),
+  }
 }));
 
 describe('Conversation History Retrieval', () => {
@@ -26,6 +24,9 @@ describe('Conversation History Retrieval', () => {
     base_url: 'https://bots.kore.ai',
     name: 'Test Bot'
   };
+
+  // Get reference to the mocked axios
+  const mockAxiosDefault = require('axios').default;
 
   const mockKoreMessages = [
     {
@@ -85,8 +86,8 @@ describe('Conversation History Retrieval', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockAxios.post.mockReset();
-    mockAxios.isAxiosError.mockReturnValue(false);
+    mockAxiosDefault.post.mockReset();
+    mockAxiosDefault.isAxiosError.mockReturnValue(false);
   });
 
   describe('Message Retrieval', () => {
@@ -98,7 +99,7 @@ describe('Conversation History Retrieval', () => {
         baseUrl: 'https://bots.kore.ai'
       };
 
-      (mockAxios.post as jest.Mock).mockResolvedValue({
+      mockAxiosDefault.post.mockResolvedValue({
         status: 200,
         data: {
           messages: mockKoreMessages,
@@ -109,7 +110,7 @@ describe('Conversation History Retrieval', () => {
       const service = createKoreApiService(config);
       const messages = await service.getMessages('2025-01-01T00:00:00Z', '2025-01-02T00:00:00Z');
 
-      expect(mockAxios.post).toHaveBeenCalledWith(
+      expect(mockAxiosDefault.post).toHaveBeenCalledWith(
         'https://bots.kore.ai/api/public/bot/test-bot-id/getMessagesV2',
         {
           skip: 0,
@@ -150,7 +151,7 @@ describe('Conversation History Retrieval', () => {
       };
 
       // First call returns messages with moreAvailable: true
-      (mockAxios.post as jest.Mock).mockResolvedValueOnce({
+      mockAxiosDefault.post.mockResolvedValueOnce({
         status: 200,
         data: {
           messages: mockKoreMessages.slice(0, 2),
@@ -159,7 +160,7 @@ describe('Conversation History Retrieval', () => {
       });
       
       // Second call returns remaining messages with moreAvailable: false
-      (mockAxios.post as jest.Mock).mockResolvedValueOnce({
+      mockAxiosDefault.post.mockResolvedValueOnce({
         status: 200,
         data: {
           messages: mockKoreMessages.slice(2),
@@ -170,7 +171,7 @@ describe('Conversation History Retrieval', () => {
       const service = createKoreApiService(config);
       const messages = await service.getMessages('2025-01-01T00:00:00Z', '2025-01-02T00:00:00Z');
 
-      expect(mockAxios.post).toHaveBeenCalledTimes(2);
+      expect(mockAxiosDefault.post).toHaveBeenCalledTimes(2);
       expect(messages).toBeInstanceOf(Array);
       expect(messages.length).toBe(4);
     });
@@ -183,8 +184,8 @@ describe('Conversation History Retrieval', () => {
         baseUrl: 'https://bots.kore.ai'
       };
 
-      const axios = require('axios').default;
-      (axios.post as jest.Mock).mockResolvedValue({
+      // Use the global mockAxiosDefault
+      mockAxiosDefault.post.mockResolvedValue({
         status: 200,
         data: {
           messages: mockKoreMessages,
@@ -196,7 +197,7 @@ describe('Conversation History Retrieval', () => {
       const sessionIds = ['session-123', 'session-456'];
       const messages = await service.getMessages('2025-01-01T00:00:00Z', '2025-01-02T00:00:00Z', sessionIds);
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(mockAxiosDefault.post).toHaveBeenCalledWith(
         'https://bots.kore.ai/api/public/bot/test-bot-id/getMessagesV2',
         {
           skip: 0,
@@ -355,7 +356,7 @@ describe('Conversation History Retrieval', () => {
       const service = createKoreApiService(config);
       const messages = await service.getSessionMessages('session-123');
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(mockAxiosDefault.post).toHaveBeenCalledWith(
         'https://bots.kore.ai/api/public/bot/test-bot-id/getMessagesV2',
         {
           skip: 0,
