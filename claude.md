@@ -1,56 +1,175 @@
----
-description: XOB CAT – Claude Code default workflow
-alwaysApply: true
-globs: ["**/*"]
----
+# CLAUDE.md
 
-# 🧑‍💻 Working Style
-- **TDD first** – write failing tests, then code until green.
-- Next 14 / 15 + shadcn-ui + Tailwind, strict TypeScript, **no `any`**.
-- If several technical paths are possible, **pick the one already recommended** in the prompt; do **not** ask.
-- Ask questions only when business logic is ambiguous or new credentials / cost are involved.
-- Keep assistant chatter minimal; avoid unnecessary confirmations.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# 🏗️ Architecture & Stack
-| Layer      | Tech & Conventions |
-|------------|-------------------|
-| Frontend   | Next.js 14/15 (App Router, React Server Components), Tailwind CSS, shadcn-ui |
-| Backend    | Node.js + TypeScript, Next.js API routes (no Express) |
-| Shared     | `shared/` folder with types (`Session`, `Message`, `AnalysisResult`, …) |
-| Storage    | **None** (in-memory only for MVP) |
-| LLM        | OpenAI GPT-4o-mini via function calling |
-| Testing    | Jest + React Testing Library, Playwright E2E, Jest/tsx for backend |
+## 🏗️ Project Architecture
 
-# ✅ Functional Requirements
-- List & detail views for bot sessions (timestamps, metadata, transcripts).
-- LLM analysis returns structured JSON: `intent`, `outcome`, `dropOff`, `escalationReason`, `notes`.
-- Pareto-style charts for drop-off / escalation frequency.
-- User-selectable date range & sample size.
-- Surface token usage (cost & consumption).
+**XOB CAT** is a monorepo full-stack analytics platform for Kore.ai Expert Services teams to analyze chatbot conversations using OpenAI GPT-4o-mini.
 
-# 📐 Coding Guidelines
-- **TypeScript everywhere**; domain models live in `shared/types/`.
-- Follow Next.js App Router patterns; backend routes return JSON only.
-- Styling: **Tailwind utilities + shadcn/ui components** – no external CSS or `<style>` tags.
-- Use async/await; avoid `.then` chains.
-- No database, file writes, LocalStorage, or auth unless explicitly requested.
-- Read `process.env.OPENAI_API_KEY` for LLM calls.
+### Tech Stack
+- **Frontend**: Next.js 15 (App Router) + TypeScript + Tailwind CSS + shadcn/ui
+- **Backend**: Node.js + Express + TypeScript (port 3001)
+- **Shared**: TypeScript types in `shared/types/`
+- **LLM Integration**: OpenAI GPT-4o-mini with function calling
+- **Testing**: Jest (unit), Playwright (E2E)
+- **No Database**: In-memory data only (MVP constraint)
 
-# 🎨 UI & Accessibility
-- Desktop-first (≥ 1280 px); progressively enhance down to tablet.
-- All interactive elements must expose a visible `:focus-visible` ring.
-- Minimum interactive target: **32 × 32 px**.
-- Re-use `/src/components/ui/{Button,Card,Input,…}` before creating new markup.
+### Workspace Structure
+```
+XOB CAT/
+├── frontend/          # Next.js application (port 3000)
+├── backend/           # Express API server (port 3001)  
+├── shared/            # Shared TypeScript types
+├── data/              # Sanitized production test data
+├── scripts/           # Data collection utilities
+└── package.json       # Root with concurrent scripts
+```
 
-# 🛑 Hard Constraints
-- Never commit secrets or sample data.
-- Do **not** introduce persistence (SQLite, Postgres, etc.).
-- Do **not** scaffold login/auth without an explicit requirement.
+## 🔧 Essential Commands
 
-# 🤖 Claude Code Assistant Directives
-- Follow the rules above for every suggestion or code generation.
-- Default charting libs: **nivo** (preferred) or a simple D3 wrapper.
-- When adding LLM logic, assume GPT-4o-mini with function calling and strict schema parsing.
-- Break complex logic into testable utilities; favor composable, minimal React components.
+### Development
+```bash
+# Start both frontend and backend concurrently
+npm run dev
 
----
+# Individual services
+npm run dev:frontend    # Next.js dev server (port 3000)
+npm run dev:backend     # Express API server (port 3001)
+```
+
+### Testing
+```bash
+# Run all tests
+npm run test
+
+# Individual test suites
+npm run test:frontend         # Jest + React Testing Library
+npm run test:backend          # Jest unit tests  
+npm run test:e2e             # Playwright E2E tests
+
+# Backend test variations
+cd backend && npm run test:unit         # Unit tests only
+cd backend && npm run test:integration  # Integration tests
+cd backend && npm run test:real-api     # Real API integration tests
+cd backend && npm run test:coverage     # With coverage report
+```
+
+### Building & Linting
+```bash
+npm run build       # Build both frontend and backend
+npm run lint        # Lint both projects
+npm run lint:fix    # Auto-fix linting issues (backend only)
+```
+
+### Data Collection
+```bash
+npm run collect-data    # Collect production data for testing
+```
+
+## 🏛️ Core Architecture Patterns
+
+### Shared Types (`shared/types/index.ts`)
+All data models are defined here and imported by both frontend and backend:
+- `SessionWithTranscript` - Core session data structure
+- `AnalysisResult` - OpenAI analysis output schema
+- `Message` - Individual conversation messages
+- `ANALYSIS_FUNCTION_SCHEMA` - OpenAI function calling schema
+
+### API Structure (`backend/src/`)
+- **Routes**: `/api/analysis/*` (session analysis) and `/api/kore/*` (Kore.ai integration)
+- **Services**: 
+  - `openaiService.ts` - GPT-4o-mini integration with function calling
+  - `koreApiService.ts` - Kore.ai API client with JWT auth and rate limiting
+  - `mockDataService.ts` - Test data generation
+- **Models**: `swtModels.ts` - Domain models for session analysis
+
+### Frontend Structure (`frontend/src/`)
+- **App Router**: Pages in `app/` directory with nested layouts
+- **Components**: `components/ui/` for shadcn/ui components, custom components at root
+- **API Client**: `lib/api.ts` - Type-safe API client with error handling
+
+## 🧪 Testing Architecture
+
+### Backend Testing (`backend/src/__tests__/`)
+- **Unit Tests**: Individual service testing with mocks
+- **Integration Tests**: Full API workflow testing with real/mock data hybrid
+- **Real API Tests**: Limited real Kore.ai API integration tests
+- **Coverage**: Comprehensive coverage reporting with lcov
+
+### Frontend Testing (`frontend/src/__tests__/`)
+- **Component Tests**: React Testing Library for UI components
+- **API Tests**: Frontend API client testing
+- **E2E Tests**: Playwright for full user workflows
+
+### Test Data (`data/`)
+- Sanitized production data for realistic testing
+- JSON files with real session structures
+- Use for integration and E2E test scenarios
+
+## 🔑 Environment Configuration
+
+### Backend (`.env` in `backend/`)
+```env
+OPENAI_API_KEY=your_key_here    # Required for session analysis
+PORT=3001                       # API server port
+NODE_ENV=development            # Environment
+FRONTEND_URL=http://localhost:3000  # CORS origin
+```
+
+### Frontend (`.env.local` in `frontend/`)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+## 🎯 Development Guidelines
+
+### OpenAI Integration
+- Uses GPT-4o-mini with function calling for structured analysis
+- Schema defined in `shared/types/ANALYSIS_FUNCTION_SCHEMA`
+- Cost tracking with token usage calculation
+- Session analysis returns structured JSON with intent, outcome, transfer reasons
+
+### Kore.ai Integration
+- JWT-based authentication with rate limiting (60/min, 1800/hour)
+- Real API service in `koreApiService.ts`
+- Mock service for development in `mockDataService.ts`
+- Session and message retrieval with pagination
+
+### UI Components
+- Use shadcn/ui components from `components/ui/`
+- Tailwind CSS for styling (no custom CSS files)
+- Desktop-first responsive design (≥1280px)
+- Accessibility: focus rings, minimum 32px touch targets
+
+### Code Quality
+- Strict TypeScript, no `any` types
+- TDD approach: write failing tests first
+- async/await (avoid .then chains)
+- Comprehensive error handling with typed API responses
+
+## 🚫 Project Constraints
+
+- **No Database**: All data is in-memory or file-based
+- **No Authentication**: MVP has no user auth system
+- **No Persistence**: Session data doesn't persist between restarts
+- **OpenAI Dependency**: Session analysis requires valid API key
+
+## 📊 Key Features
+
+### Session Management
+- List/detail views with filtering by date range and containment type
+- Full conversation transcripts with message threading
+- Session metadata (duration, message counts, user engagement)
+
+### AI Analysis  
+- GPT-4o-mini analyzes sessions for intent classification
+- Identifies transfer reasons and drop-off locations
+- Token usage tracking and cost calculation
+- Batch analysis capabilities
+
+### Data Visualization (Planned)
+- Pareto charts for intent/drop-off frequency using nivo charts
+- Transfer reason analysis dashboards
+- Session metrics visualization
+
+When working on this codebase, always reference the shared types, follow the monorepo structure, and ensure tests pass before committing changes.
