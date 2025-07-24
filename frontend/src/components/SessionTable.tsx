@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { formatDuration, formatDateTime } from '@/lib/dateUtils';
+import { ContainmentBadge } from './ContainmentBadge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,54 +89,6 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
     return sorted;
   }, [sessions, sortField, sortDirection]);
 
-  const formatDuration = (seconds?: number | string | null) => {
-    const value = Number(seconds);
-    // Fixed: Check for null/undefined specifically, but allow 0 
-    if (seconds === null || seconds === undefined || isNaN(value) || value < 0) return 'N/A';
-    const hours = Math.floor(value / 3600);
-    const minutes = Math.floor((value % 3600) / 60);
-    const remainingSeconds = Math.floor(value % 60);
-    if (hours > 0) {
-      return `${hours}h ${minutes}m ${remainingSeconds}s`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${remainingSeconds}s`;
-    } else {
-      return `${remainingSeconds}s`;
-    }
-  };
-
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZone: 'America/New_York'
-    }) + ' ET';
-  };
-
-  const getContainmentBadge = (type: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      'selfService': 'default',
-      'agent': 'destructive',
-      'dropOff': 'secondary'
-    };
-    
-    const labels: Record<string, string> = {
-      'selfService': 'Self Service',
-      'agent': 'Agent',
-      'dropOff': 'Drop Off'
-    };
-    
-    return (
-      <Badge variant={variants[type] || 'secondary'}>
-        {labels[type] || type}
-      </Badge>
-    );
-  };
 
   const SortButton = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
     <Button
@@ -303,7 +256,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
                     )
                   }</TableCell>
                   <TableCell className="text-left">
-                    {getContainmentBadge(session.containment_type)}
+                    <ContainmentBadge type={session.containment_type} />
                   </TableCell>
                   </TableRow>
                 );
