@@ -178,4 +178,4 @@ export default function SessionsPage() {
       </div>
     </ErrorBoundary>
   );
-} 
+}

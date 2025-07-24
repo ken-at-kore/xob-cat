@@ -37,7 +37,21 @@ XOB CAT/
 ├── frontend/                 # Next.js 15 Frontend Application
 │   ├── src/
 │   │   ├── app/             # Next.js App Router
+│   │   │   ├── layout.tsx   # Root layout (minimal, no header)
+│   │   │   ├── page.tsx     # Credentials/Home page
+│   │   │   └── (dashboard)/ # Dashboard route group
+│   │   │       ├── layout.tsx    # Dashboard layout with TopNav + Sidebar
+│   │   │       ├── page.tsx      # Default dashboard (redirects to /sessions)
+│   │   │       ├── sessions/     # View Sessions page (default active)
+│   │   │       │   └── page.tsx  # Sessions list with filtering and table
+│   │   │       └── analyze/      # Analyze Sessions page
+│   │   │           └── page.tsx  # Coming soon placeholder
 │   │   ├── components/      # React Components
+│   │   │   ├── ui/          # shadcn/ui components
+│   │   │   ├── TopNav.tsx   # Top navigation: "XOB CAT" + subtitle (left), Bot ID + disconnect (right)
+│   │   │   ├── Sidebar.tsx  # Left sidebar with "Pages" navigation
+│   │   │   ├── SessionTable.tsx  # Main data table (cleaned up, no Cards)
+│   │   │   └── SessionDetailsDialog.tsx # Session detail modal
 │   │   ├── lib/             # Utilities and API Client
 │   │   └── types/           # Frontend-specific Types
 │   ├── public/              # Static Assets
@@ -66,8 +80,10 @@ XOB CAT/
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **UI Components**: shadcn/ui
+- **Navigation**: App Router with route groups, TopNav + Sidebar pattern
 - **State Management**: React Hooks + Context
 - **Build Tool**: Turbopack (development)
+- **Testing**: Jest + React Testing Library + Playwright E2E
 
 ### Backend Stack
 - **Runtime**: Node.js 18+
@@ -180,10 +196,12 @@ Raw Sessions → SessionWithTranscript → AnalysisResult → Charts
 
 ### Test Coverage Goals
 - **ConfigManager**: 100% (✅ Achieved)
+- **Navigation Components**: 100% (✅ TopNav, Sidebar)
 - **KoreApiService**: 90%+
 - **MockDataService**: 85%+
 - **API Routes**: 80%+
 - **Frontend Components**: 70%+
+- **E2E Navigation**: Comprehensive Playwright coverage
 
 ## 🚀 Deployment Architecture
 
@@ -216,6 +234,8 @@ Raw Sessions → SessionWithTranscript → AnalysisResult → Charts
 
 ### Frontend State
 - **Local State**: React useState/useReducer
+- **Navigation State**: usePathname hook for active route detection
+- **Session Storage**: Credentials management
 - **Global State**: React Context (planned)
 - **Server State**: React Query (planned)
 - **Form State**: React Hook Form (planned)
@@ -238,6 +258,63 @@ Raw Sessions → SessionWithTranscript → AnalysisResult → Charts
 - **Backend**: Response caching and compression
 - **API**: Rate limiting and connection pooling
 - **Analysis**: Batch processing and queuing
+
+## 🧭 Navigation Architecture
+
+### Navigation Pattern
+The application uses a **TopNav + Sidebar** pattern with Next.js 15 App Router:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ TopNav: XOB CAT + subtitle    │    Bot ID • Disconnect  │
+├─────────────────────────────────────────────────────────┤
+│ Sidebar │                                              │
+│ Pages   │              Main Content                    │
+│ • View  │                                              │
+│ • Analyze│                                             │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Component Architecture
+- **TopNav** (`components/TopNav.tsx`):
+  - Fixed positioning at top of screen (`z-50`)
+  - Left side: "XOB CAT" title + "XO Bot Conversation Analysis Tools" subtitle
+  - Right side: "Bot ID" label + value + bullet separator + "Disconnect" button
+  - Handles disconnect navigation back to credentials page
+
+- **Sidebar** (`components/Sidebar.tsx`):
+  - Fixed positioning on left side below TopNav
+  - "Pages" section with navigation links
+  - Active state management using `usePathname()` hook
+  - Current pages: "View Sessions" (default), "Analyze Sessions"
+
+- **Dashboard Layout** (`app/(dashboard)/layout.tsx`):
+  - Manages credential verification and loading states
+  - Renders TopNav and Sidebar components
+  - Provides main content area with proper spacing (`ml-64 pt-16`)
+
+### Route Structure
+```
+/ (credentials page)
+└── (dashboard)/
+    ├── page.tsx (redirects to /sessions)
+    ├── sessions/
+    │   └── page.tsx (View Sessions - default active)
+    └── analyze/
+        └── page.tsx (Analyze Sessions - coming soon)
+```
+
+### Navigation State Management
+- **Active Route Detection**: Uses Next.js `usePathname()` hook
+- **Route Constants**: Centralized in `src/routes.ts` for type safety
+- **Credential Management**: Session storage for bot configuration
+- **Navigation Actions**: Router push for programmatic navigation
+
+### Testing Coverage
+- **Unit Tests**: 100% coverage for TopNav and Sidebar components
+- **Integration Tests**: Navigation flow and credential handling
+- **E2E Tests**: Complete user navigation scenarios with Playwright
+- **Edge Cases**: Long bot IDs, special characters, accessibility
 
 ## 🔮 Future Architecture Considerations
 

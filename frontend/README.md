@@ -51,22 +51,26 @@ npm run test:all     # Run all tests (unit + E2E)
 ```
 src/
 ├── app/                    # Next.js 15 App Router
-│   ├── layout.tsx         # Root layout with header
-│   ├── page.tsx           # Home page
-│   ├── (dashboard)/       # Dashboard route group
-│   │   ├── layout.tsx     # Dashboard layout
-│   │   ├── sessions/      # Session management pages
-│   │   └── analyze/       # Analysis pages
-│   └── dashboard/         # Legacy dashboard routes
+│   ├── layout.tsx         # Minimal root layout (no header)
+│   ├── page.tsx           # Credentials/Home page
+│   └── (dashboard)/       # Dashboard route group
+│       ├── layout.tsx     # Dashboard layout with TopNav + Sidebar
+│       ├── page.tsx       # Default dashboard (redirects to /sessions)
+│       ├── sessions/      # View Sessions page (default active)
+│       │   └── page.tsx   # Sessions list with filtering and table
+│       └── analyze/       # Analyze Sessions page
+│           └── page.tsx   # Coming soon placeholder
 ├── components/            # React components
-│   ├── SessionTable.tsx  # Main data table
+│   ├── TopNav.tsx         # Top navigation bar (app name + bot info)
+│   ├── Sidebar.tsx        # Left sidebar with "Pages" navigation
+│   ├── SessionTable.tsx   # Main data table (cleaned up, no Cards)
 │   ├── SessionDetailsDialog.tsx  # Session detail modal
-│   ├── ErrorBoundary.tsx # Error handling
-│   └── ui/               # shadcn/ui components
-├── lib/                  # Utilities
-│   ├── api.ts           # Type-safe API client
-│   └── utils.ts         # Helper functions
-└── routes.ts            # Route constants registry
+│   ├── ErrorBoundary.tsx  # Error handling
+│   └── ui/                # shadcn/ui components
+├── lib/                   # Utilities
+│   ├── api.ts            # Type-safe API client
+│   └── utils.ts          # Helper functions
+└── routes.ts             # Route constants registry
 ```
 
 ## Key Features
