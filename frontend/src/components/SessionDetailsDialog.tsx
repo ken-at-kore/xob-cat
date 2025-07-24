@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { formatDuration, formatDateTime, formatTime } from '@/lib/dateUtils';
+import { ContainmentBadge } from './ContainmentBadge';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SessionWithTranscript } from '@/shared/types';
 
@@ -54,66 +56,6 @@ export function SessionDetailsDialog({
     return null;
   }
 
-  const formatDuration = (seconds?: number | string | null) => {
-    const value = Number(seconds);
-    
-    // Fix: Check for null/undefined specifically, but allow 0 
-    if (seconds === null || seconds === undefined || isNaN(value) || value < 0) return 'N/A';
-    
-    const hours = Math.floor(value / 3600);
-    const minutes = Math.floor((value % 3600) / 60);
-    const remainingSeconds = Math.floor(value % 60);
-    if (hours > 0) {
-      return `${hours}h ${minutes}m ${remainingSeconds}s`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${remainingSeconds}s`;
-    } else {
-      return `${remainingSeconds}s`;
-    }
-  };
-
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZone: 'America/New_York'
-    }) + ' ET';
-  };
-
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZone: 'America/New_York'
-    });
-  };
-
-  const getContainmentBadge = (type: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      'selfService': 'default',
-      'agent': 'destructive',
-      'dropOff': 'secondary'
-    };
-    
-    const labels: Record<string, string> = {
-      'selfService': 'Self Service',
-      'agent': 'Agent',
-      'dropOff': 'Drop Off'
-    };
-    
-    return (
-      <Badge variant={variants[type] || 'secondary'}>
-        {labels[type] || type}
-      </Badge>
-    );
-  };
 
   const isFirstSession = currentSessionIndex === 0;
   const isLastSession = currentSessionIndex === sessions.length - 1;
@@ -178,7 +120,7 @@ export function SessionDetailsDialog({
               <div>
                 <span className="font-medium text-muted-foreground">Containment Type</span>
               </div>
-              <div>{getContainmentBadge(currentSession.containment_type)}</div>
+              <div><ContainmentBadge type={currentSession.containment_type} /></div>
               
               <div>
                 <span className="font-medium text-muted-foreground">Start Time</span>

@@ -1,23 +1,18 @@
-import { createKoreApiService, KoreApiConfig } from '../backend/src/services/koreApiService';
-import { configManager } from '../backend/src/utils/configManager';
-import * as fs from 'fs';
-import * as path from 'path';
+import {
+  initializeKoreApiService,
+  ensureDataDirectory,
+  writeJsonFile,
+  logScriptStart,
+  logScriptComplete,
+  handleScriptError
+} from './common/scriptUtils';
 
 async function collectFullJuly6to13Data() {
-  console.log('🚀 Collecting conversation history data for FULL July 6-13, 2025...');
+  logScriptStart('collect-july-6-13-full-range', 'Collecting conversation history data for FULL July 6-13, 2025');
   
   try {
     // Initialize Kore API service with real credentials
-    const koreConfig = configManager.getKoreConfig();
-    const config: KoreApiConfig = {
-      botId: koreConfig.bot_id,
-      clientId: koreConfig.client_id,
-      clientSecret: koreConfig.client_secret,
-      baseUrl: koreConfig.base_url
-    };
-    
-    console.log(`🔗 Using real Kore.ai API with bot: ${koreConfig.name}`);
-    const koreApiService = createKoreApiService(config);
+    const koreApiService = initializeKoreApiService();
     
     // Create array of daily date ranges
     const dailyRanges = [
