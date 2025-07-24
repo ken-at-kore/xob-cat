@@ -11,41 +11,24 @@ Welcome to the XOB CAT documentation! This directory contains comprehensive docu
 
 ### 🚀 Getting Started
 - **[Installation Guide](./installation.md)** - Step-by-step setup instructions
-- **[Configuration Guide](./configuration.md)** - Environment variables and settings
-- **[Quick Start Guide](./quick-start.md)** - Get up and running in 5 minutes
-
-### 🛠️ Development
-- **[Development Guide](./development.md)** - Development workflow and best practices
 - **[Testing Guide](./testing.md)** - Testing strategy and test execution
-- **[Deployment Guide](./deployment.md)** - Production deployment instructions
-
-### 📊 User Guides
-- **[User Manual](./user-manual.md)** - End-user documentation for session analysis
-- **[Analysis Features](./analysis-features.md)** - Detailed guide to LLM analysis capabilities
-- **[Data Visualization](./visualization.md)** - Charts and analytics features
 
 ### 🔧 Technical Reference
-- **[Database Schema](./database-schema.md)** - Data models and relationships
-- **[Security Guide](./security.md)** - Security considerations and best practices
-- **[Troubleshooting](./troubleshooting.md)** - Common issues and solutions
+- **[Architecture Overview](./architecture.md)** - System design and technical decisions
+- **[API Reference](./api-reference.md)** - Complete endpoint documentation
 
 ## 🎯 Quick Navigation
 
 ### For New Users
 1. Start with the [Product Requirements Document](./Product%20Requirements%20Document.md) to understand the platform
-2. Follow the [Quick Start Guide](./quick-start.md) to get running
-3. Read the [User Manual](./user-manual.md) for feature usage
+2. Follow the [Installation Guide](./installation.md) to get running
+3. Review the main [README.md](../README.md) for usage examples
 
 ### For Developers
 1. Review the [Architecture Overview](./architecture.md)
 2. Follow the [Installation Guide](./installation.md)
-3. Read the [Development Guide](./development.md)
-4. Check the [API Reference](./api-reference.md)
-
-### For DevOps
-1. Review the [Deployment Guide](./deployment.md)
-2. Check the [Configuration Guide](./configuration.md)
-3. Read the [Security Guide](./security.md)
+3. Check the [API Reference](./api-reference.md)
+4. Read the [Testing Guide](./testing.md)
 
 ## 📝 Contributing to Documentation
 

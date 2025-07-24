@@ -2,6 +2,116 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Commands
+
+### Development
+```bash
+npm run dev                    # Start both frontend (3000) and backend (3001)
+npm run dev:frontend          # Next.js dev server only
+npm run dev:backend           # Express API server only
+./start-dev.sh               # Alternative dev startup script
+```
+
+### Testing
+```bash
+npm run test                  # Run all tests (frontend + backend)  
+npm run test:frontend         # Jest + React Testing Library
+npm run test:backend          # Backend Jest unit tests
+npm run test:e2e             # Playwright E2E tests
+./run-sessions-e2e.sh        # Run specific sessions E2E test
+
+# Backend test variations
+cd backend && npm run test:unit         # Unit tests only
+cd backend && npm run test:integration  # Integration tests
+cd backend && npm run test:real-api     # Real Kore.ai API tests
+cd backend && npm run test:coverage     # With coverage report
+```
+
+### Building & Quality
+```bash
+npm run build                 # Build both projects
+npm run typecheck            # TypeScript type checking for both projects
+npm run lint                  # Lint both projects
+npm run lint:fix             # Auto-fix linting (backend only)
+```
+
+### Data Collection
+```bash
+npm run collect-data          # Collect production data via scripts/collect-production-data.ts
+npx tsx scripts/collect-july-6-13-full-range.ts    # Historical data collection
+```
+
+## File Map
+
+### Frontend (`frontend/src/`)
+```
+app/
+├── layout.tsx               # Root Next.js layout with header
+├── page.tsx                 # Home page
+├── (dashboard)/
+│   ├── layout.tsx          # Dashboard layout wrapper
+│   ├── sessions/           # Session list/detail pages  
+│   └── analyze/            # Analysis pages
+└── dashboard/sessions/     # Legacy session pages
+
+components/
+├── SessionTable.tsx        # Main sessions data table
+├── SessionDetailsDialog.tsx # Session detail modal
+├── ErrorBoundary.tsx       # Error handling wrapper
+└── ui/                     # shadcn/ui components (Button, Card, etc.)
+
+lib/
+├── api.ts                  # Type-safe API client with error handling
+└── utils.ts                # Utility functions (cn, etc.)
+```
+
+### Backend (`backend/src/`)
+```
+routes/
+├── analysis.ts             # POST /api/analysis/* - OpenAI session analysis
+└── kore.ts                 # GET /api/kore/* - Kore.ai API integration
+
+services/
+├── openaiService.ts        # GPT-4o-mini function calling integration
+├── koreApiService.ts       # Kore.ai JWT auth + rate limiting
+├── mockDataService.ts      # Test data generation
+└── swtService.ts           # Session analysis business logic
+
+models/
+└── swtModels.ts           # Domain models for session analysis
+
+middleware/
+├── errorHandler.ts         # Global error handling
+└── credentials.ts          # Auth middleware
+```
+
+### Shared & Configuration
+```
+shared/types/index.ts       # TypeScript interfaces shared by frontend/backend
+scripts/                   # Data collection utilities (TypeScript)
+data/                      # Sanitized production test data (JSON)
+docs/                      # Product requirements and architecture docs
+```
+
+## Development Guidelines
+
+### Code Quality Standards
+- **Strict TypeScript**: No `any` types allowed
+- **TDD Approach**: Write failing tests first, then implement
+- **Conventional Commits**: `<type>(scope): message` format
+- **Pre-commit**: Run `npm run typecheck` before committing
+- **Update claude.md**: When workflows, scripts, or structure changes
+
+### Key Integrations
+- **OpenAI**: GPT-4o-mini with function calling via `shared/types/ANALYSIS_FUNCTION_SCHEMA`
+- **Kore.ai**: JWT auth with 60/min, 1800/hour rate limits
+- **Testing**: Jest unit, integration, and Playwright E2E with real production data
+
+### Reference Documentation
+- **Product Requirements**: `docs/Product Requirements Document.md` - Complete feature specifications and user stories
+- **Architecture**: `docs/architecture.md` - System design decisions  
+- **API Reference**: `docs/api-reference.md` - Complete endpoint documentation
+
 ## 🏗️ Project Architecture
 
 **XOB CAT** is a monorepo full-stack analytics platform for Kore.ai Expert Services teams to analyze chatbot conversations using OpenAI GPT-4o-mini.
