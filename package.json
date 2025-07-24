@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.27.1",
+    "@playwright/mcp": "^0.0.31",
     "concurrently": "^8.2.2",
     "ts-jest": "^29.4.0"
   },

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDuration, formatDateTime } from '@/lib/dateUtils';
 import { ContainmentBadge } from './ContainmentBadge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -107,56 +106,51 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Session Overview</CardTitle>
-          <CardDescription>Loading sessions...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading sessions...</p>
-            </div>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Session Overview</h2>
+          <p className="text-gray-600">Loading sessions...</p>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading sessions...</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Session Overview</CardTitle>
-          <CardDescription>Error loading sessions</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <p className="text-destructive mb-4">{error}</p>
-            {onRefresh && (
-              <Button onClick={onRefresh}>
-                Retry
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Session Overview</h2>
+          <p className="text-gray-600">Error loading sessions</p>
+        </div>
+        <div className="text-center py-12">
+          <p className="text-red-600 mb-4">{error}</p>
+          {onRefresh && (
+            <Button onClick={onRefresh} className="bg-blue-600 hover:bg-blue-700 text-white">
+              Retry
+            </Button>
+          )}
+        </div>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
       {/* Filter UI */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Filters</CardTitle>
-          <CardDescription>
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold mb-1">Filters</h3>
+          <p className="text-sm text-gray-600">
             Filter sessions by date, time, and other criteria (Eastern Time)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <div className="space-y-2">
               <Label htmlFor="startDate">Start Date</Label>
               <Input
@@ -199,18 +193,17 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
               </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
       {/* Sessions Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Session Overview</CardTitle>
-          <CardDescription>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold mb-1">Session Overview</h2>
+          <p className="text-gray-600">
             {sortedSessions.length} sessions found
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
@@ -266,11 +259,11 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
           
           {sortedSessions.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">No sessions found matching your filters.</p>
+              <p className="text-gray-600">No sessions found matching your filters.</p>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 } 

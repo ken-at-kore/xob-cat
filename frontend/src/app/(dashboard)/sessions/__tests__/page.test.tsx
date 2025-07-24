@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import SessionsPage from '../../../../../../frontend/src/app/dashboard/sessions/page'
+import SessionsPage from '../page'
 import { apiClient } from '../../../../lib/api'
 const mockGetSessions = apiClient.getSessions as jest.Mock
 

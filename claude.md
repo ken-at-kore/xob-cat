@@ -46,19 +46,23 @@ npx tsx scripts/collect-july-6-13-full-range.ts    # Historical data collection
 ### Frontend (`frontend/src/`)
 ```
 app/
-├── layout.tsx               # Root Next.js layout with header
-├── page.tsx                 # Home page
-├── (dashboard)/
-│   ├── layout.tsx          # Dashboard layout wrapper
-│   ├── sessions/           # Session list/detail pages  
-│   └── analyze/            # Analysis pages
-└── dashboard/sessions/     # Legacy session pages
+├── layout.tsx               # Minimal root Next.js layout
+├── page.tsx                 # Credentials/Home page
+├── (dashboard)/             # Dashboard route group
+│   ├── layout.tsx          # Dashboard layout with TopNav + Sidebar
+│   ├── page.tsx            # Default dashboard page (redirects to /sessions)
+│   ├── sessions/           # View Sessions page (default active)
+│   │   └── page.tsx        # Sessions list with filtering and table
+│   └── analyze/            # Analyze Sessions page
+│       └── page.tsx        # Coming soon placeholder
 
 components/
-├── SessionTable.tsx        # Main sessions data table
+├── TopNav.tsx              # Top navigation: "XOB CAT" + subtitle | "Bot ID" + id + • + "Disconnect"
+├── Sidebar.tsx             # Left sidebar navigation with "Pages" section
+├── SessionTable.tsx        # Main sessions data table (cleaned up, no Card wrappers)
 ├── SessionDetailsDialog.tsx # Session detail modal
 ├── ErrorBoundary.tsx       # Error handling wrapper
-└── ui/                     # shadcn/ui components (Button, Card, etc.)
+└── ui/                     # shadcn/ui components (Button, Table, etc.)
 
 lib/
 ├── api.ts                  # Type-safe API client with error handling
@@ -101,6 +105,17 @@ docs/                      # Product requirements and architecture docs
 - **Conventional Commits**: `<type>(scope): message` format
 - **Pre-commit**: Run `npm run typecheck` before committing
 - **Update claude.md**: When workflows, scripts, or structure changes
+
+### Navigation Architecture
+- **Route Structure**: Uses Next.js 15 App Router with `(dashboard)` route group
+- **TopNav Component**: Fixed header with app branding and bot connection info
+  - Left: "XOB CAT" title + "XO Bot Conversation Analysis Tools" subtitle
+  - Right: "Bot ID" label + bot ID value + bullet separator + "Disconnect" link
+- **Sidebar Component**: Fixed left navigation with "Pages" section
+  - "View Sessions" (default active, routes to `/sessions`)
+  - "Analyze Sessions" (routes to `/analyze`)
+- **Layout Pattern**: Nested layouts with dashboard wrapper containing TopNav + Sidebar
+- **Authentication Flow**: Credentials page → `/sessions` (not `/dashboard/sessions`)
 
 ### Key Integrations
 - **OpenAI**: GPT-4o-mini with function calling via `shared/types/ANALYSIS_FUNCTION_SCHEMA`
@@ -207,9 +222,11 @@ All data models are defined here and imported by both frontend and backend:
 - **Coverage**: Comprehensive coverage reporting with lcov
 
 ### Frontend Testing (`frontend/src/__tests__/`)
-- **Component Tests**: React Testing Library for UI components
+- **Component Tests**: React Testing Library for UI components (100% coverage on TopNav, Sidebar)
+- **Navigation Tests**: Comprehensive edge case testing for long bot IDs, accessibility, responsive design
+- **Integration Tests**: Full navigation flow from credentials to dashboard
+- **E2E Tests**: Playwright for complete user workflows with screenshots
 - **API Tests**: Frontend API client testing
-- **E2E Tests**: Playwright for full user workflows
 
 ### Test Data (`data/`)
 - Sanitized production data for realistic testing

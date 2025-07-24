@@ -48,14 +48,21 @@ As more clients deploy XO IVAs into production, the need has grown for a flexibl
 
 ## MVP Features
 
-### 1. Session Management
+### 1. Navigation & Layout
+
+- **Top Navigation Bar:** Fixed header with left side containing "XOB CAT" title followed by de-emphasized "XO Bot Conversation Analysis Tools" subtitle. Right side shows "Bot ID" label, the actual bot ID, a bullet separator, and "Disconnect" link. Disconnect returns user to credentials page.
+- **Sidebar Navigation:** Left sidebar with "Pages" section containing links to "View Sessions" (default) and "Analyze Sessions" pages.
+- **Layout Structure:** Dashboard layout with top nav + sidebar, main content area for page-specific content.
+- **Routing:** Authenticated users are redirected from credentials page to dashboard after successful connection verification.
+
+### 2. Session Management
 
 - **Session Viewer:** View of production bot sessions; supports browsing and filtering by timestamp. Pagination may be supported but is not required.
 - **Session Detail View:** Displays full message-by-message transcript with speaker labels, timestamps, metadata, and raw payload visibility.
 - **Navigation Controls:** Previous/Next session buttons with date retention across views.
 - **Search & Filter:** Filter sessions by date range and session-level metadata fields (e.g. bot name, channel, session ID).
 
-### 2. Analysis Tools
+### 3. Analysis Tools
 
 - **LLM Integration:** Uses OpenAI GPT-4o-mini via function calling to generate insights about each session, such as intent, outcome, drop-off location, escalation status, and key issues, using structured output via function calling.
 - **Token Usage Monitoring:** Tracks token usage per session, user, and day; displays token and cost metrics.

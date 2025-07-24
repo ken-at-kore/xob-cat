@@ -17,21 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen bg-background">
-          <header className="border-b">
-            <div className="container mx-auto px-4 py-4">
-              <h1 className="text-2xl font-bold text-foreground">
-                XOB CAT
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                XO Bot Conversation Analysis Tools
-              </p>
-            </div>
-          </header>
-          <main className="container mx-auto px-4 py-8">
-            {children}
-          </main>
-        </div>
+        {children}
       </body>
     </html>
   );

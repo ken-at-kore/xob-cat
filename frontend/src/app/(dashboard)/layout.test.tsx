@@ -8,6 +8,19 @@ jest.mock('../../lib/utils', () => ({
 }));
 import { redirectTo } from '../../lib/utils';
 
+// Mock navigation components
+jest.mock('../../components/TopNav', () => {
+  return function MockTopNav({ botId }: { botId: string }) {
+    return <div data-testid="top-nav">TopNav - Bot: {botId}</div>;
+  };
+});
+
+jest.mock('../../components/Sidebar', () => {
+  return function MockSidebar() {
+    return <div data-testid="sidebar">Sidebar</div>;
+  };
+});
+
 // Mock sessionStorage
 const mockSessionStorage = {
   getItem: jest.fn(),
@@ -16,7 +29,7 @@ const mockSessionStorage = {
   clear: jest.fn(),
 };
 
-describe('DashboardLayout - Navigation Bar', () => {
+describe('DashboardLayout', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'sessionStorage', {
       value: mockSessionStorage,
@@ -34,24 +47,65 @@ describe('DashboardLayout - Navigation Bar', () => {
     );
   });
 
-  it('displays the Bot ID in the nav bar', () => {
-    render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
-    expect(screen.getByText(/Connected Bot ID:/i)).toBeInTheDocument();
-    expect(screen.getByText('test-bot-id')).toBeInTheDocument();
+  describe('Navigation Components', () => {
+    it('renders TopNav component with bot ID', () => {
+      render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
+      
+      const topNav = screen.getByTestId('top-nav');
+      expect(topNav).toBeInTheDocument();
+      expect(topNav).toHaveTextContent('TopNav - Bot: test-bot-id');
+    });
+
+    it('renders Sidebar component', () => {
+      render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
+      
+      const sidebar = screen.getByTestId('sidebar');
+      expect(sidebar).toBeInTheDocument();
+      expect(sidebar).toHaveTextContent('Sidebar');
+    });
+
+    it('renders main content area for children', () => {
+      render(<DashboardLayout> <div data-testid="child-content">Test Content</div> </DashboardLayout>);
+      
+      const childContent = screen.getByTestId('child-content');
+      expect(childContent).toBeInTheDocument();
+      expect(childContent).toHaveTextContent('Test Content');
+    });
   });
 
-  it('shows a Disconnect link that clears credentials and redirects', () => {
-    render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
-    const disconnectBtn = screen.getByRole('button', { name: /disconnect/i });
-    fireEvent.click(disconnectBtn);
-    expect(mockSessionStorage.removeItem).toHaveBeenCalledWith('botCredentials');
-    expect(redirectTo).toHaveBeenCalledWith('/');
+  describe('Layout Structure', () => {
+    it('has proper layout with TopNav, Sidebar, and main content', () => {
+      render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
+      
+      const topNav = screen.getByTestId('top-nav');
+      const sidebar = screen.getByTestId('sidebar');
+      const mainContent = screen.getByText('Test Content');
+      
+      expect(topNav).toBeInTheDocument();
+      expect(sidebar).toBeInTheDocument();
+      expect(mainContent).toBeInTheDocument();
+    });
+
+    it('positions main content with proper margins for TopNav and Sidebar', () => {
+      render(<DashboardLayout> <div data-testid="child-content">Test Content</div> </DashboardLayout>);
+      
+      const mainElement = screen.getByTestId('child-content').parentElement?.parentElement;
+      expect(mainElement).toHaveClass('ml-64', 'pt-16'); // Left margin for sidebar, top padding for nav
+    });
   });
 
-  it('shows loading state if credentials are missing', () => {
-    mockSessionStorage.getItem.mockReturnValueOnce(null);
-    render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
-    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
-    expect(screen.getByText(/Setting up your dashboard/i)).toBeInTheDocument();
+  describe('Credentials Handling', () => {
+    it('shows loading state if credentials are missing', () => {
+      mockSessionStorage.getItem.mockReturnValueOnce(null);
+      render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
+      expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+      expect(screen.getByText(/Setting up your dashboard/i)).toBeInTheDocument();
+    });
+
+    it('redirects to home page if credentials are invalid', () => {
+      mockSessionStorage.getItem.mockReturnValueOnce('invalid-json');
+      render(<DashboardLayout> <div>Test Content</div> </DashboardLayout>);
+      expect(redirectTo).toHaveBeenCalledWith('/');
+    });
   });
 }); 
