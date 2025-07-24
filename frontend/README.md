@@ -1,72 +1,220 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# XOB CAT Frontend
+
+The frontend application for XOB CAT (XO Bot Conversation Analysis Tools) - a Next.js 15 web application for analyzing chatbot sessions.
+
+## Overview
+
+Built with modern React patterns and TypeScript, this frontend provides an intuitive interface for Kore.ai Expert Services teams to analyze bot sessions, view conversation transcripts, and generate AI-powered insights.
+
+## Tech Stack
+
+- **Next.js 15** with App Router
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **shadcn/ui** component library
+- **React Testing Library** for component testing
+- **Playwright** for E2E testing
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- Running backend API (see `../backend/README.md`)
+
+### Development Setup
 
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Available Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev          # Start Next.js development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run test         # Run Jest unit tests
+npm run test:watch   # Run tests in watch mode
+npm run test:e2e     # Run Playwright E2E tests
+npm run test:all     # Run all tests (unit + E2E)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+src/
+├── app/                    # Next.js 15 App Router
+│   ├── layout.tsx         # Root layout with header
+│   ├── page.tsx           # Home page
+│   ├── (dashboard)/       # Dashboard route group
+│   │   ├── layout.tsx     # Dashboard layout
+│   │   ├── sessions/      # Session management pages
+│   │   └── analyze/       # Analysis pages
+│   └── dashboard/         # Legacy dashboard routes
+├── components/            # React components
+│   ├── SessionTable.tsx  # Main data table
+│   ├── SessionDetailsDialog.tsx  # Session detail modal
+│   ├── ErrorBoundary.tsx # Error handling
+│   └── ui/               # shadcn/ui components
+├── lib/                  # Utilities
+│   ├── api.ts           # Type-safe API client
+│   └── utils.ts         # Helper functions
+└── routes.ts            # Route constants registry
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Key Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Session Management
+- **SessionTable**: Filterable data table with session metadata
+- **SessionDetailsDialog**: Modal for viewing full conversation transcripts
+- **Filtering**: Date range, containment type, and text search
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### API Integration
+- **Type-safe client**: Full TypeScript integration with backend APIs
+- **Error handling**: Comprehensive error states and user feedback
+- **Loading states**: Skeleton loaders and loading indicators
 
-## Deploy on Vercel
+### Testing
+- **Unit tests**: Component testing with React Testing Library
+- **E2E tests**: Full user journey testing with Playwright
+- **Route testing**: Ensures all routes are properly configured
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Route Registry System
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project uses a central route registry (`src/routes.ts`) for type-safe navigation:
 
-## Route Registry and Routing Robustness
+```typescript
+export const ROUTES = {
+  HOME: '/',
+  DASHBOARD_SESSIONS: '/dashboard/sessions',
+  // etc...
+} as const;
+```
 
-This project uses a **central route registry** (`src/routes.ts`) to define all main application routes as constants. This pattern ensures:
-- All links, navigation, and tests use a single source of truth for route paths.
-- Refactors or renames only require updating the route in one place.
-- Accidental 404 errors due to missing or misnamed files are caught early.
+**Benefits**:
+- Single source of truth for all routes
+- Type safety for navigation
+- Easy refactoring when routes change
+- Early detection of missing pages
 
-### How to Add a New Route
-1. **Add the route to `src/routes.ts`:**
-   ```ts
-   export const ROUTES = {
-     DASHBOARD_SESSIONS: '/dashboard/sessions',
-     // Add your new route here
-   };
-   ```
-2. **Create the corresponding page file:**
-   - For `/dashboard/sessions`, create `src/app/dashboard/sessions/page.tsx`.
-3. **Use the route constant everywhere:**
-   ```tsx
-   import { ROUTES } from '@/routes';
-   <Link href={ROUTES.DASHBOARD_SESSIONS}>Sessions</Link>
-   ```
+### Adding New Routes
+1. Add route constant to `src/routes.ts`
+2. Create the page file in `src/app/`
+3. Update navigation components to use the constant
+4. Add route test to `__tests__/routesExist.test.ts`
 
-### Route Existence Tests
-- **Unit/Integration Test:** `src/__tests__/routesExist.test.ts`
-  - Fails if any route in the registry is missing its `page.tsx` file.
-- **E2E Test:** `e2e/sessions-route.spec.ts`
-  - Fails if the route returns a 404 at runtime.
+## Environment Variables
 
-### Why This Matters
-- Prevents accidental 404s during refactors or test runs.
-- Ensures all navigation and tests stay in sync with the actual app routes.
-- Makes the codebase safer and easier to maintain.
+Create `.env.local` for local development:
 
-**Always add new routes to the registry and use the constants throughout your code and tests!**
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+## API Communication
+
+The frontend communicates with the Express backend via a type-safe API client:
+
+```typescript
+import { apiClient } from '@/lib/api';
+
+// Get sessions with filtering
+const sessions = await apiClient.getSessions({
+  start_date: '2024-01-01',
+  limit: 50
+});
+
+// Analyze a session
+const analysis = await apiClient.analyzeSession(sessionId, messages);
+```
+
+## Component Architecture
+
+### UI Components
+- Uses **shadcn/ui** for consistent design system
+- Custom components built on top of Radix UI primitives
+- Fully accessible with keyboard navigation and screen reader support
+
+### State Management
+- React hooks for local component state
+- No global state management (Redux/Zustand) - API client handles data fetching
+- Server state managed through API client with proper error boundaries
+
+### Error Handling
+- **ErrorBoundary**: Global error catching for React components
+- **API errors**: Typed error responses with user-friendly messages
+- **Loading states**: Proper loading indicators throughout the app
+
+## Development Guidelines
+
+### Code Quality
+- **TypeScript strict mode**: No `any` types allowed
+- **ESLint**: Configured for Next.js and React best practices
+- **Prettier**: Consistent code formatting
+- **Import organization**: Absolute imports with `@/` prefix
+
+### Testing Strategy
+- **Unit tests**: Test component logic and rendering
+- **Integration tests**: Test component interactions
+- **E2E tests**: Test complete user workflows
+- **Route tests**: Ensure all routes resolve correctly
+
+### Styling
+- **Tailwind CSS**: Utility-first CSS framework
+- **shadcn/ui**: Consistent component library
+- **No custom CSS**: Use Tailwind utilities exclusively
+- **Responsive design**: Desktop-first with mobile considerations
+
+## Deployment
+
+### Build Process
+```bash
+npm run build    # Creates optimized production build
+npm run start    # Serves production build locally
+```
+
+### Environment Setup
+- Set `NEXT_PUBLIC_API_URL` to production API endpoint
+- Ensure backend API is accessible from frontend domain
+- Configure CORS on backend for production frontend URL
+
+## Troubleshooting
+
+### Common Issues
+
+**API Connection Failed**:
+- Verify backend is running on correct port
+- Check `NEXT_PUBLIC_API_URL` environment variable
+- Ensure CORS is configured on backend
+
+**Build Errors**:
+- Run `npm run lint` to check for TypeScript errors
+- Verify all imports are correct
+- Check that all referenced routes exist
+
+**Test Failures**:
+- Ensure test data is properly mocked
+- Check that components render without required props
+- Verify E2E tests have backend running
+
+### Development Tips
+- Use React DevTools for component debugging
+- Check Network tab for API request/response details
+- Use TypeScript error overlay for quick issue identification
+
+## Contributing
+
+1. Follow the TDD approach - write tests first
+2. Use TypeScript strictly - no `any` types
+3. Update route registry when adding new pages
+4. Follow conventional commit format
+5. Update documentation for significant changes
+
+See the main [README.md](../README.md) for general contributing guidelines.

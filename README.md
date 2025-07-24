@@ -1,262 +1,252 @@
 # XOB CAT (XO Bot Conversation Analysis Tools)
 
-A full-stack web analytics platform for Kore.ai Expert Services teams to investigate and analyze production chatbot and IVA sessions built using the Kore.ai XO Platform.
+## Overview / Purpose
 
-> 📋 **Product Vision**: To become the definitive analytics platform for Kore.ai Expert Services teams, enabling data-driven bot optimization and improved client satisfaction through comprehensive conversation analysis and AI-enhanced insight generation.
+XOB CAT is a full-stack web analytics platform designed for Kore.ai Expert Services teams to investigate and analyze production chatbot and IVA sessions built using the Kore.ai XO Platform. The platform provides structured conversation analysis, AI-powered insights, and actionable intelligence for bot optimization.
 
-📚 **[📖 Complete Documentation](./docs/README.md)** | 📋 **[📄 Product Requirements Document](./docs/Product%20Requirements%20Document.md)**
+**Product Vision**: To become the definitive analytics platform for Kore.ai Expert Services teams, enabling data-driven bot optimization and improved client satisfaction through comprehensive conversation analysis and AI-enhanced insight generation.
 
-## 🚀 Quick Start
+**Key Capabilities**:
+- Session management with filtering and detailed transcript views
+- AI-powered conversation analysis using OpenAI GPT-4o-mini
+- Intent classification, outcome analysis, and drop-off identification
+- Token usage tracking and cost monitoring
+- Real-time integration with Kore.ai XO Platform APIs
+
+📋 **[Complete Product Requirements Document](./docs/Product%20Requirements%20Document.md)** - Detailed feature specifications and user stories
+
+## Installation & Setup
 
 ### Prerequisites
-
 - Node.js 18+ and npm
-- OpenAI API key (for session analysis)
+- OpenAI API key (required for session analysis)
 
-### Installation
+### Setup Steps
 
-1. **Clone the repository**
+1. **Clone and navigate to the repository**
    ```bash
    git clone <repository-url>
-   cd XOB CAT
+   cd "XOB CAT"
    ```
 
-2. **Install dependencies**
+2. **Install all dependencies**
    ```bash
    npm run install:all
    ```
 
-3. **Set up environment variables**
+3. **Configure environment variables**
    ```bash
-   # Backend
+   # Backend configuration
    cp backend/env.example backend/.env
-   # Edit backend/.env and add your OpenAI API key
+   # Edit backend/.env and add your OpenAI API key:
+   # OPENAI_API_KEY=your_openai_api_key_here
    ```
 
-4. **Start the development servers**
+4. **Start development servers**
    ```bash
    npm run dev
    ```
 
-This will start:
+This starts both services concurrently:
 - **Frontend**: http://localhost:3000 (Next.js)
 - **Backend**: http://localhost:3001 (Express API)
 
-## 🏗️ Architecture
+### Environment Configuration
 
-### Monorepo Structure
-```
-XOB CAT/
-├── frontend/          # Next.js 15 + TypeScript + Tailwind CSS + shadcn/ui
-├── backend/           # Node.js + Express + TypeScript
-├── shared/            # Shared TypeScript types
-│   └── types/
-└── package.json       # Root package.json with concurrent scripts
+**Backend (.env)**:
+```env
+OPENAI_API_KEY=your_openai_api_key_here  # Required for AI analysis
+PORT=3001                                # API server port
+NODE_ENV=development                     # Environment
+FRONTEND_URL=http://localhost:3000       # CORS origin
 ```
 
-### Tech Stack
+**Frontend (.env.local)**:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
-**Frontend:**
-- Next.js 15 (App Router)
-- TypeScript
-- Tailwind CSS
-- shadcn/ui components
-- React hooks for state management
+## Core Concepts
 
-**Backend:**
-- Node.js + Express
-- TypeScript
-- OpenAI GPT-4o-mini integration
-- CORS enabled for frontend communication
+### Architecture Overview
+XOB CAT is a TypeScript monorepo with three main components:
 
-**Shared:**
-- TypeScript interfaces for data models
-- API response types
-- OpenAI function calling schemas
+- **Frontend**: Next.js 15 with App Router, Tailwind CSS, and shadcn/ui components
+- **Backend**: Express.js API server with OpenAI integration and Kore.ai connectivity  
+- **Shared**: Common TypeScript types and schemas shared between frontend and backend
 
-## 📊 Features
+### Data Flow
+1. **Session Data**: Retrieved from Kore.ai APIs or loaded from sanitized test data
+2. **AI Analysis**: Sessions processed through OpenAI GPT-4o-mini using function calling
+3. **Structured Output**: Analysis results formatted as JSON with intent, outcome, and transfer reasons
+4. **Frontend Display**: Results presented in filterable tables and detailed session views
 
-### MVP Features
+### Key Data Types
+- **SessionWithTranscript**: Core session data with messages and metadata
+- **AnalysisResult**: AI analysis output with intent classification and outcomes
+- **Message**: Individual conversation messages with timestamps and types
+- **ANALYSIS_FUNCTION_SCHEMA**: OpenAI function calling schema for structured analysis
 
-1. **Session Management**
-   - View list of bot sessions with filtering
-   - Session detail view with full message transcripts
-   - Navigation between sessions
-   - Search and filter by date range
+## Usage (with working examples)
 
-2. **Analysis Tools**
-   - LLM integration with GPT-4o-mini
-   - Structured output via function calling
-   - Intent classification and outcome analysis
-   - Drop-off location identification
-   - Token usage monitoring
-
-3. **Data Visualization** (Planned)
-   - Pareto charts for intents and drop-offs
-   - Transfer reason analysis
-   - Session metrics dashboard
-
-> 📋 **For detailed feature specifications, see the [Product Requirements Document](./docs/Product%20Requirements%20Document.md)**
-
-## 🔧 Development
-
-### Available Scripts
+### Development Workflow
 
 ```bash
-# Development
-npm run dev              # Start both frontend and backend
-npm run dev:frontend     # Start frontend only
-npm run dev:backend      # Start backend only
+# Start both frontend and backend
+npm run dev
 
-# Building
-npm run build            # Build both frontend and backend
-npm run build:frontend   # Build frontend only
-npm run build:backend    # Build backend only
+# Run tests
+npm run test                    # All tests
+npm run test:backend           # Backend unit tests
+npm run test:e2e              # Playwright E2E tests
 
-# Testing
-npm run test             # Run tests for both
-npm run test:frontend    # Test frontend only
-npm run test:backend     # Test backend only
+# Build for production
+npm run build
 
-# Linting
-npm run lint             # Lint both frontend and backend
-npm run lint:frontend    # Lint frontend only
-npm run lint:backend     # Lint backend only
+# Lint code
+npm run lint
 ```
 
-### API Endpoints
+### Data Collection
 
-**Sessions:**
-- `GET /api/sessions` - Get sessions with optional filtering
-- `GET /api/sessions/:sessionId` - Get specific session details
+```bash
+# Collect production data for testing
+npm run collect-data
 
-**Analysis:**
-- `POST /api/analysis/session` - Analyze a single session
-- `POST /api/analysis/batch` - Analyze multiple sessions
-
-**Health:**
-- `GET /health` - Health check endpoint
-
-### Environment Variables
-
-**Backend (.env):**
-```env
-PORT=3001
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
-OPENAI_API_KEY=your_openai_api_key_here
+# Historical data collection
+npx tsx scripts/collect-july-6-13-full-range.ts
 ```
 
-**Frontend (.env.local):**
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
+### API Usage Examples
+
+**Get sessions with filtering**:
+```bash
+curl "http://localhost:3001/api/analysis/sessions?start_date=2024-07-01&limit=10"
 ```
 
-## 📁 Project Structure
-
-### Frontend (`frontend/`)
-```
-src/
-├── app/                 # Next.js App Router pages
-│   ├── page.tsx        # Home page
-│   ├── sessions/       # Sessions pages
-│   └── layout.tsx      # Root layout
-├── components/         # React components
-│   └── ui/            # shadcn/ui components
-├── lib/               # Utilities and API client
-└── types/             # TypeScript type definitions
+**Analyze a session**:
+```bash
+curl -X POST http://localhost:3001/api/analysis/session \
+  -H "Content-Type: application/json" \
+  -d '{"session_id": "abc123", "messages": [...]}'
 ```
 
-### Backend (`backend/`)
-```
-src/
-├── index.ts           # Express server entry point
-├── routes/            # API route handlers
-│   ├── sessions.ts    # Session endpoints
-│   └── analysis.ts    # Analysis endpoints
-└── services/          # Business logic
-    ├── mockDataService.ts  # Mock data generation
-    └── openaiService.ts    # OpenAI integration
+**Health check**:
+```bash
+curl http://localhost:3001/health
 ```
 
-### Shared (`shared/`)
-```
-types/
-└── index.ts           # Shared TypeScript interfaces
-```
+## API Overview or Key Components
 
-## 🔌 Integration Points
+### API Routes
 
-### OpenAI Integration
-- Uses GPT-4o-mini for session analysis
-- Function calling for structured output
-- Token usage tracking and cost calculation
-- Configurable prompts and analysis criteria
+**Analysis Routes** (`/api/analysis/*`):
+- `GET /api/analysis/sessions` - Retrieve sessions with optional filtering
+- `GET /api/analysis/sessions/:id` - Get specific session details
+- `POST /api/analysis/session` - Analyze single session with OpenAI
+- `POST /api/analysis/batch` - Batch analyze multiple sessions
 
-### Kore.ai Integration (Future)
-- Session history retrieval
-- Conversation transcript fetching
-- Bot metadata access
-- JWT authentication
+**Kore.ai Integration** (`/api/kore/*`):
+- Session history retrieval with JWT authentication
+- Rate-limited API calls (60/min, 1800/hour)
+- Message and transcript fetching
 
-## 🧪 Testing
+**Health Check**:
+- `GET /health` - Service health and status information
 
-The project includes comprehensive testing setup:
+### Key Backend Services
 
-- **Frontend**: Jest + React Testing Library
-- **Backend**: Jest for unit tests with 100% coverage on core components
-- **E2E**: Playwright (planned)
+- **openaiService.ts**: GPT-4o-mini integration with function calling and cost tracking
+- **koreApiService.ts**: Kore.ai API client with JWT auth and rate limiting
+- **mockDataService.ts**: Test data generation for development
+- **swtService.ts**: Session analysis business logic
 
-> 🧪 **For testing details, see the [Testing Guide](./docs/testing.md)**
+### Frontend Components
 
-## 📈 Deployment
+- **SessionTable**: Main data table with filtering and pagination
+- **SessionDetailsDialog**: Modal for detailed session transcript view
+- **ErrorBoundary**: Global error handling wrapper
+- **ui/**: shadcn/ui component library (Button, Card, Dialog, etc.)
 
-### Development
-- Frontend: `npm run dev:frontend` (http://localhost:3000)
-- Backend: `npm run dev:backend` (http://localhost:3001)
+## Integration or Deployment Notes
 
-### Production
-- Frontend: Build and deploy to Vercel/Netlify
-- Backend: Deploy to AWS Lambda/Fargate or similar
+### Development Integration
+- **Monorepo Structure**: Uses npm workspaces for dependency management
+- **Concurrent Development**: Frontend and backend run simultaneously via `concurrently`
+- **Shared Types**: TypeScript interfaces ensure type safety across services
+- **Hot Reload**: Next.js and tsx provide instant development feedback
 
-## 🤝 Contributing
+### Testing Integration
+- **Unit Tests**: Jest for both frontend (React Testing Library) and backend
+- **Integration Tests**: Real API workflow testing with hybrid mock/live data
+- **E2E Tests**: Playwright for full user journey testing
+- **Test Data**: Sanitized production data in `data/` folder for realistic testing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+### Deployment Considerations
+- **Environment Variables**: Ensure OpenAI API key is configured in production
+- **CORS Configuration**: Update `FRONTEND_URL` for production domain
+- **Build Process**: Both frontend and backend require separate build steps
+- **Dependencies**: Node.js 18+ required for both services
 
-> 📚 **For development guidelines, see the [Development Guide](./docs/development.md)**
+**Production Deployment Options**:
+- Frontend: Vercel, Netlify, or static hosting
+- Backend: AWS Lambda, Fargate, or containerized deployment
 
-## 📄 License
+## Troubleshooting & Contributing
 
-MIT License - see LICENSE file for details
+### Common Issues
 
-## 🆘 Support
+**Development Server Won't Start**:
+- Check Node.js version (18+ required)
+- Verify all dependencies installed: `npm run install:all`
+- Ensure ports 3000 and 3001 are available
 
-For questions or issues:
-1. Check the [documentation](./docs/README.md)
-2. Search existing issues
-3. Create a new issue with detailed information
+**OpenAI Analysis Failing**:
+- Verify `OPENAI_API_KEY` is set in `backend/.env`
+- Check API key has sufficient credits and permissions
+- Review backend logs for specific error messages
 
-## 📊 Recent Updates
+**Tests Failing**:
+- Run `npm run test:coverage` to identify uncovered code
+- Check test data in `data/` folder is properly formatted
+- Verify mock services are properly configured
 
-See **[CHANGELOG.md](CHANGELOG.md)** for detailed information about recent updates including:
-- ✅ Comprehensive test data collection system with sanitized production data
-- ✅ Enhanced unit test infrastructure (89% pass rate)
-- ✅ Organized development tooling structure
-- ✅ Real API integration tests for all major workflows
+### Development Guidelines
 
-## 📚 Additional Resources
+**Code Quality**:
+- Use strict TypeScript (no `any` types)
+- Follow TDD approach: write failing tests first
+- Use Conventional Commits format: `<type>(scope): message`
+- Run typecheck before committing
+- Update `claude.md` when workflows or structure changes
+
+**Testing Requirements**:
+- Unit tests for new services and components
+- Integration tests for API workflows
+- E2E tests for critical user journeys
+- Maintain test coverage above 80%
+
+### Contributing Process
+
+1. **Fork the repository** and create a feature branch
+2. **Follow TDD**: Write failing tests, then implement functionality
+3. **Ensure code quality**: Run `npm run lint` and fix any issues
+4. **Add documentation**: Update relevant docs for new features
+5. **Submit pull request** with clear description of changes
+
+**Documentation to Update**:
+- `claude.md` for new commands or architectural changes
+- `docs/api-reference.md` for new API endpoints
+- `README.md` for significant feature additions
+
+### Additional Resources
 
 - **[📖 Complete Documentation](./docs/README.md)** - All project documentation
-- **[📋 Product Requirements Document](./docs/Product%20Requirements%20Document.md)** - Detailed product specifications
 - **[🏗️ Architecture Overview](./docs/architecture.md)** - System design and technical decisions
-- **[🔧 API Reference](./docs/api-reference.md)** - Complete API documentation
+- **[🔧 API Reference](./docs/api-reference.md)** - Complete endpoint documentation
+- **[🧪 Testing Guide](./docs/testing.md)** - Testing strategies and setup
 - **[🛠️ Development Tools](tools/README.md)** - Data collection and testing utilities
-- **[📋 Test Data](data/README.md)** - Sanitized production data for realistic testing
 
 ---
 
-**Built by Kore.ai Expert Services Team** 
+**Built by Kore.ai Expert Services Team**
