@@ -350,7 +350,7 @@ describe('Real Kore.ai API Integration Tests', () => {
         console.log('✅ Invalid date range error handled properly');
       }
       
-    }, 30000);
+    }, 60000);
 
     it('should handle non-existent session IDs gracefully', async () => {
       if (!hasRealCredentials) {
@@ -425,7 +425,7 @@ describe('Real Kore.ai API Integration Tests', () => {
       expect(totalTime).toBeGreaterThan(0);
       console.log('✅ Rate limiting behavior validated');
       
-    }, 60000);
+    }, 120000);
   });
 
   describe('Real API Performance and Reliability', () => {

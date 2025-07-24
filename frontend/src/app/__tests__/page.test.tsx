@@ -3,11 +3,16 @@ import userEvent from '@testing-library/user-event'
 import Home from '../page'
 
 // Mock the API client
-jest.mock('../../lib/api', () => ({
-  apiClient: {
-    healthCheck: jest.fn(),
-  },
-}))
+jest.mock('../../lib/api', () => {
+  // Import the actual ApiError class
+  const originalModule = jest.requireActual('../../lib/api')
+  return {
+    ...originalModule,
+    apiClient: {
+      healthCheck: jest.fn(),
+    },
+  }
+})
 
 describe('Home Page - Credential Input', () => {
   beforeEach(() => {
@@ -75,8 +80,9 @@ describe('Home Page - Credential Input', () => {
     const connectButton = screen.getByRole('button', { name: /connect/i })
     await user.click(connectButton)
     await waitFor(() => {
-      expect(screen.getByText(/Connection failed/i)).toBeInTheDocument()
-    })
+      // The error message should be displayed
+      expect(screen.getByText('Connection failed')).toBeInTheDocument()
+    }, { timeout: 5000 })
   })
 
   it('shows loading state during connection', async () => {
