@@ -137,7 +137,7 @@ export interface SessionWithFacts extends SessionWithTranscript {
 
 export interface AnalysisProgress {
   analysisId: string;
-  phase: 'sampling' | 'analyzing' | 'complete' | 'error';
+  phase: 'sampling' | 'analyzing' | 'generating_summary' | 'complete' | 'error';
   currentStep: string;
   sessionsFound: number;
   sessionsProcessed: number;
@@ -150,6 +150,25 @@ export interface AnalysisProgress {
   error?: string;
   startTime: string;
   endTime?: string;
+}
+
+export interface AnalysisSummary {
+  overview: string;
+  summary: string;
+  generatedAt: string;
+  sessionsAnalyzed: number;
+  statistics: {
+    totalSessions: number;
+    transferRate: number;
+    containmentRate: number;
+    averageSessionLength: number;
+    averageMessagesPerSession: number;
+  };
+}
+
+export interface AnalysisResults {
+  sessions: SessionWithFacts[];
+  analysisSummary?: AnalysisSummary;
 }
 
 export interface BatchTokenUsage {

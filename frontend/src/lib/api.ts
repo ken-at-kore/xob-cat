@@ -7,6 +7,7 @@ import {
   AnalysisConfig,
   AnalysisProgress,
   SessionWithFacts,
+  AnalysisResults,
   ApiResponse
 } from '@/shared/types';
 
@@ -163,7 +164,7 @@ class ApiClient {
     return response.json();
   }
 
-  async getAutoAnalysisResults(analysisId: string): Promise<ApiResponse<SessionWithFacts[]>> {
+  async getAutoAnalysisResults(analysisId: string): Promise<ApiResponse<AnalysisResults>> {
     const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/results/${analysisId}`, {
       headers: {
         'x-bot-id': 'default-bot',
