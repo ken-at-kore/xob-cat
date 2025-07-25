@@ -23,7 +23,8 @@
     "lint": "npm run lint:backend && npm run lint:frontend",
     "lint:frontend": "cd frontend && npm run lint",
     "lint:backend": "cd backend && npm run lint",
-    "collect-data": "npx tsx scripts/collect-production-data.ts"
+    "collect-data": "npx tsx scripts/collect-production-data.ts",
+    "generate-mock-analysis": "npx tsx scripts/generate-mock-analysis.ts"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.27.1",

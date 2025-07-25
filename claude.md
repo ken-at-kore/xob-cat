@@ -35,9 +35,10 @@ npm run lint                  # Lint both projects
 npm run lint:fix             # Auto-fix linting (backend only)
 ```
 
-### Data Collection
+### Data Collection & Mock Data
 ```bash
 npm run collect-data          # Collect production data via scripts/collect-production-data.ts
+npm run generate-mock-analysis # Generate mock analysis results for testing UI
 npx tsx scripts/collect-july-6-13-full-range.ts    # Historical data collection
 ```
 
@@ -261,6 +262,8 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 - Navigation between sessions using arrow keys or Previous/Next buttons
 
 **Time Window Strategy**: 3-hour initial window → 6-hour → 12-hour → 6-day expansion until sufficient sessions found
+
+**Mock Reports Feature**: For development and testing purposes, the Auto-Analyze page includes a "See Mock Reports" button that bypasses the analysis step and displays sample results using mock data generated from real session transcripts. This allows developers to test the reporting interface without needing to perform actual AI analysis or use OpenAI API keys.
 
 ## 🏗️ Project Architecture
 
