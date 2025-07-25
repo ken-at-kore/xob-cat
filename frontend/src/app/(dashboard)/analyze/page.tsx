@@ -16,6 +16,23 @@ import {
 import { autoAnalyze } from '../../../lib/api';
 import { AnalyzedSessionDetailsDialog } from '../../../components/AnalyzedSessionDetailsDialog';
 
+/**
+ * Load mock analysis results for testing
+ */
+async function loadMockResults(): Promise<SessionWithFacts[]> {
+  try {
+    const response = await fetch('/api/mock-analysis-results');
+    if (!response.ok) {
+      throw new Error('Failed to load mock results');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error loading mock results:', error);
+    // Fallback to empty array if mock data can't be loaded
+    return [];
+  }
+}
+
 interface ConfigFormData {
   startDate: string;
   startTime: string;
@@ -31,7 +48,13 @@ interface ValidationErrors {
  * Auto-Analyze Configuration Component
  * Provides form for configuring automated session analysis
  */
-export function AutoAnalyzeConfig({ onAnalysisStart }: { onAnalysisStart: (analysisId: string) => void }) {
+interface AutoAnalyzeConfigProps {
+  onAnalysisStart: (analysisId: string) => void;
+  onShowMockReports: () => void;
+  isLoadingMock?: boolean;
+}
+
+export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadingMock = false }: AutoAnalyzeConfigProps) {
   const [formData, setFormData] = useState<ConfigFormData>(() => {
     // Set default values
     const defaultDate = new Date();
@@ -245,6 +268,30 @@ export function AutoAnalyzeConfig({ onAnalysisStart }: { onAnalysisStart: (analy
               {isSubmitting ? 'Starting Analysis...' : 'Start Analysis'}
             </Button>
           </form>
+        </CardContent>
+      </Card>
+
+      {/* Mock Reports Option */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Development & Testing</CardTitle>
+          <CardDescription>
+            Skip the analysis step and view sample reports with mock data for development and testing purposes.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button 
+            variant="outline" 
+            onClick={onShowMockReports}
+            className="w-full"
+            disabled={isLoadingMock}
+          >
+            {isLoadingMock ? 'Loading Mock Data...' : 'See Mock Reports'}
+          </Button>
+          <p className="text-xs text-gray-500 mt-2">
+            This will display sample analysis results using mock data from real session transcripts, 
+            allowing you to test the reporting interface without performing actual AI analysis.
+          </p>
         </CardContent>
       </Card>
     </div>
@@ -620,6 +667,7 @@ export default function AutoAnalyzePage() {
   const [currentView, setCurrentView] = useState<'config' | 'progress' | 'results'>('config');
   const [analysisId, setAnalysisId] = useState<string>('');
   const [results, setResults] = useState<SessionWithFacts[]>([]);
+  const [isLoadingMock, setIsLoadingMock] = useState(false);
 
   const handleAnalysisStart = (newAnalysisId: string) => {
     setAnalysisId(newAnalysisId);
@@ -637,10 +685,28 @@ export default function AutoAnalyzePage() {
     setResults([]);
   };
 
+  const handleShowMockReports = async () => {
+    setIsLoadingMock(true);
+    try {
+      const mockResults = await loadMockResults();
+      setResults(mockResults);
+      setCurrentView('results');
+    } catch (error) {
+      console.error('Failed to load mock results:', error);
+      // Could add error state here if needed
+    } finally {
+      setIsLoadingMock(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {currentView === 'config' && (
-        <AutoAnalyzeConfig onAnalysisStart={handleAnalysisStart} />
+        <AutoAnalyzeConfig 
+          onAnalysisStart={handleAnalysisStart}
+          onShowMockReports={handleShowMockReports}
+          isLoadingMock={isLoadingMock}
+        />
       )}
       
       {currentView === 'progress' && analysisId && (

@@ -1,0 +1,6733 @@
+[
+  {
+    "session_id": "686c0067c9df49437e692fae",
+    "user_id": "u-540120d4-cec4-5ccf-8f99-a016e0d11ab0",
+    "start_time": "2025-07-07T17:05:10.886Z",
+    "end_time": "2025-07-07T17:19:22.141Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:05:10.886Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:05:40.886Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:06:10.886Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:06:40.886Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:07:10.886Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:07:40.886Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:08:10.886Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:08:40.886Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Portal Access",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed portal access inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 662,
+      "processingTime": 2269,
+      "batchNumber": 9,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.01368329046121635
+    }
+  },
+  {
+    "session_id": "686bfe526325502831001e19",
+    "user_id": "u-1363d779-57a7-55dd-9d4d-31833189f590",
+    "start_time": "2025-07-07T17:05:22.246Z",
+    "end_time": "2025-07-07T17:16:14.646Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1975-02-25 11:05:22",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702685160",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-1363d779-57a7-55dd-9d4d-31833189f590",
+          "name": "koreUserId"
+        },
+        {
+          "value": "ec181540-7278-47d3-bb00-bcadcb6f86e8",
+          "name": "koreCallId"
+        },
+        {
+          "value": "0398315731",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1995-04-12 11:06:58",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:05:22.246Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:05:52.246Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:06:22.246Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:06:52.246Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:07:22.246Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:07:52.246Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:08:22.246Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:08:52.246Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:22.246Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed technical support inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 482,
+      "processingTime": 3513,
+      "batchNumber": 9,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.022400808706016722
+    }
+  },
+  {
+    "session_id": "686c00ff4f46d3d39253a4c2",
+    "user_id": "u-c6dbf817-b749-5a15-af03-5bc3f224855d",
+    "start_time": "2025-07-07T17:07:30.128Z",
+    "end_time": "2025-07-07T17:17:53.347Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:07:30.128Z"
+      },
+      {
+        "message": "I need help with my eligibility",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:08:00.128Z"
+      },
+      {
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:08:30.128Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:09:00.128Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:30.128Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:00.128Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:30.128Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:00.128Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:30.128Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Provider Enrollment",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 442,
+      "processingTime": 1042,
+      "batchNumber": 3,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03502269117090615
+    }
+  },
+  {
+    "session_id": "686c01589c75ee15bd77e040",
+    "user_id": "u-94494d84-a55b-597f-bf15-2800b5b2e21e",
+    "start_time": "2025-07-07T17:09:01.981Z",
+    "end_time": "2025-07-07T17:18:35.245Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:01.981Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:09:31.981Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:01.981Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:31.981Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:01.981Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:31.981Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:01.981Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:31.981Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:01.981Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed live agent inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 748,
+      "processingTime": 2586,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.014422433588345926
+    }
+  },
+  {
+    "session_id": "686c01bc5e10c3de5a47d11c",
+    "user_id": "u-f380d5a2-48c4-53be-b0e9-c9482292b2ff",
+    "start_time": "2025-07-07T17:10:42.139Z",
+    "end_time": "2025-07-07T17:21:12.869Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:42.139Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:12.139Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:42.139Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:12.139Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:42.139Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:12.139Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:42.139Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:14:12.139Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Billing",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed billing inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 585,
+      "processingTime": 2088,
+      "batchNumber": 4,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.01958322293329085
+    }
+  },
+  {
+    "session_id": "686c030d3f0864e6e70fa76e",
+    "user_id": "u-7a383e0c-69f5-5884-83d1-654bbede4cda",
+    "start_time": "2025-07-07T17:15:59.700Z",
+    "end_time": "2025-07-07T17:26:03.578Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:59.700Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:16:29.700Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:59.700Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:29.700Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:59.700Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:29.700Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:59.700Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 561,
+      "processingTime": 3025,
+      "batchNumber": 4,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.02026418668876365
+    }
+  },
+  {
+    "session_id": "686c0396a11bc9443031ed55",
+    "user_id": "u-8627bfed-f927-530c-89a4-e7d98d2be3c8",
+    "start_time": "2025-07-07T17:18:14.653Z",
+    "end_time": "2025-07-07T17:31:14.294Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:14.653Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:44.653Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:14.653Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:44.653Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:14.653Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:44.653Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:21:14.653Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:21:44.653Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:22:14.653Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Invalid Claim Number",
+      "dropOffLocation": "Payment Information",
+      "notes": "User attempted live agent but encountered invalid claim number, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 522,
+      "processingTime": 2588,
+      "batchNumber": 9,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03931699741186591
+    }
+  },
+  {
+    "session_id": "686c048f702ba7a4918966ea",
+    "user_id": "u-a77c623a-3584-54dc-8e23-6dc099fb858b",
+    "start_time": "2025-07-07T17:22:20.438Z",
+    "end_time": "2025-07-07T17:32:51.544Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:22:20.438Z"
+      },
+      {
+        "message": "I need help with my claim status",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:22:50.438Z"
+      },
+      {
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:23:20.438Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:23:50.438Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:24:20.438Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:24:50.438Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:25:20.438Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:25:50.438Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:26:20.438Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Provider Enrollment",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 680,
+      "processingTime": 1326,
+      "batchNumber": 4,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.028421823482241912
+    }
+  },
+  {
+    "session_id": "686c08189c75ee15bd7c7419",
+    "user_id": "u-a48da450-dc2e-5140-9633-c932579e5a36",
+    "start_time": "2025-07-07T17:37:38.859Z",
+    "end_time": "2025-07-07T17:55:23.155Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:37:38.859Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:38:08.859Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:38:38.859Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:39:08.859Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:39:38.859Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:40:08.859Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:40:38.859Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:41:08.859Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Provider Enrollment",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 730,
+      "processingTime": 1942,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.033186270215854734
+    }
+  },
+  {
+    "session_id": "686c081da1104c0d95a1e67f",
+    "user_id": "u-86650aac-59c7-5a82-ac89-e6fcc0220c8a",
+    "start_time": "2025-07-07T17:37:42.596Z",
+    "end_time": "2025-07-07T17:47:57.456Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:37:42.596Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:38:12.596Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:38:42.596Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:39:12.596Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:39:42.596Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:40:12.596Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:40:42.596Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:41:12.596Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Policy Information",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed policy information inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 661,
+      "processingTime": 1561,
+      "batchNumber": 6,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.010142645751968875
+    }
+  },
+  {
+    "session_id": "686c091c702ba7a4918cf51f",
+    "user_id": "u-53ebcb7c-eab9-5fd1-89f7-c567e481a993",
+    "start_time": "2025-07-07T17:42:13.535Z",
+    "end_time": "2025-07-07T17:53:32.933Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:42:13.535Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:42:43.535Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:43:13.535Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:43:43.535Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:44:13.535Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:44:43.535Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:45:13.535Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:45:43.535Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:46:13.535Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Claim Status",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Technical Issue",
+      "dropOffLocation": "Provider ID",
+      "notes": "User attempted claim status but encountered technical issue, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 670,
+      "processingTime": 2102,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.022907212882541262
+    }
+  },
+  {
+    "session_id": "686c09533f0864e6e7141f28",
+    "user_id": "u-1f43d7db-8ba0-549d-9b89-48df7053357e",
+    "start_time": "2025-07-07T17:43:23.043Z",
+    "end_time": "2025-07-07T17:53:41.280Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:43:23.043Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:43:53.043Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:44:23.043Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:44:53.043Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:45:23.043Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:45:53.043Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:46:23.043Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:46:53.043Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:47:23.043Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Authorization",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed authorization inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 759,
+      "processingTime": 3738,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.021228961137630648
+    }
+  },
+  {
+    "session_id": "686c099462db9154925226ed",
+    "user_id": "u-4a821218-e151-516c-b275-f2aa9db6c06e",
+    "start_time": "2025-07-07T17:53:23.963Z",
+    "end_time": "2025-07-07T18:03:44.485Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1970-06-02 11:53:24",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702698970",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-4a821218-e151-516c-b275-f2aa9db6c06e",
+          "name": "koreUserId"
+        },
+        {
+          "value": "71ad86aa-9699-49c3-bf19-fdac523439a9",
+          "name": "koreCallId"
+        },
+        {
+          "value": "9609963396",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture failed",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Provider ID",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":2}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1974-05-23 11:54:55",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:53:23.963Z"
+      },
+      {
+        "message": "I need help with my claim status",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:53:53.963Z"
+      },
+      {
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:54:23.963Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:54:53.963Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:55:23.963Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:55:53.963Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:56:23.963Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:56:53.963Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:57:23.963Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed live agent inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 491,
+      "processingTime": 1089,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03022872240823868
+    }
+  },
+  {
+    "session_id": "686c0a5198860449d90e65fe",
+    "user_id": "u-2530ab07-00d7-5bd8-bf9d-aa653d50adc1",
+    "start_time": "2025-07-07T17:56:33.036Z",
+    "end_time": "2025-07-07T18:07:31.834Z",
+    "containment_type": "dropOff",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1975-09-06 11:56:33",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702699837",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-2530ab07-00d7-5bd8-bf9d-aa653d50adc1",
+          "name": "koreUserId"
+        },
+        {
+          "value": "ec9a480e-d7c7-487a-95ef-6c9aba6a9cf3",
+          "name": "koreCallId"
+        },
+        {
+          "value": "3778671127",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1997-05-26 11:58:38",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:56:33.036Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:57:03.036Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:57:33.036Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:58:03.036Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:58:33.036Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:59:03.036Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:59:33.036Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T18:00:03.036Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Account Update",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed account update inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 617,
+      "processingTime": 2752,
+      "batchNumber": 9,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.010197072402484816
+    }
+  },
+  {
+    "session_id": "686bfd1580e5cfcc18780f4c",
+    "user_id": "u-68621c3f-d37c-5323-b4d5-88a88c4d2484",
+    "start_time": "2025-07-07T17:00:05.886Z",
+    "end_time": "2025-07-07T17:12:30.767Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1991-01-06 11:00:06",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702683690",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-68621c3f-d37c-5323-b4d5-88a88c4d2484",
+          "name": "koreUserId"
+        },
+        {
+          "value": "8b0fbabb-5a93-4a56-828d-38697d620476",
+          "name": "koreCallId"
+        },
+        {
+          "value": "4688666908",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1977-01-13 11:03:07",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:00:05.886Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:00:35.886Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:01:05.886Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:01:35.886Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:05.886Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:02:35.886Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:05.886Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed live agent inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 509,
+      "processingTime": 2216,
+      "batchNumber": 3,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.02311559869629679
+    }
+  },
+  {
+    "session_id": "686bfd2b71436049267cc4f8",
+    "user_id": "u-3c6b52c6-09ac-5e1b-9205-bd3352c66736",
+    "start_time": "2025-07-07T17:00:27.061Z",
+    "end_time": "2025-07-07T17:11:28.899Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1994-10-14 11:00:27",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702683777",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-3c6b52c6-09ac-5e1b-9205-bd3352c66736",
+          "name": "koreUserId"
+        },
+        {
+          "value": "b7513ab4-98dd-4bf8-9d65-dd3aac7227bb",
+          "name": "koreCallId"
+        },
+        {
+          "value": "8233549882",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Provider_Enrollment",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Provider_Enrollment\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1994-09-18 11:01:54",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:00:27.061Z"
+      },
+      {
+        "message": "I need help with my eligibility",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:00:57.061Z"
+      },
+      {
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:01:27.061Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:01:57.061Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:27.061Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:02:57.061Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:27.061Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Account Update",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed account update inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 474,
+      "processingTime": 2682,
+      "batchNumber": 1,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03709957496797177
+    }
+  },
+  {
+    "session_id": "686bfd3bd31fb9bbd330bb9a",
+    "user_id": "u-45503d75-8c44-5109-af6f-21c8e24a4783",
+    "start_time": "2025-07-07T17:00:43.416Z",
+    "end_time": "2025-07-07T17:12:26.107Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1983-04-17 11:00:43",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702683857",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-45503d75-8c44-5109-af6f-21c8e24a4783",
+          "name": "koreUserId"
+        },
+        {
+          "value": "ae8b8f21-a911-4581-92c8-ce8c87950c4a",
+          "name": "koreCallId"
+        },
+        {
+          "value": "3159687980",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Member_Eligibility",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Member_Eligibility\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1990-02-04 11:01:39",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:00:43.416Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:01:13.416Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:01:43.416Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:02:13.416Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:43.416Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:03:13.416Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:43.416Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:04:13.416Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Policy Information",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Policy Not Found",
+      "dropOffLocation": "Policy Number Prompt",
+      "notes": "User attempted policy information but encountered policy not found, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 798,
+      "processingTime": 1639,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.029257138523059452
+    }
+  },
+  {
+    "session_id": "686bfd425eb131ef0805f4b4",
+    "user_id": "u-f32b3086-52e2-5277-b6b7-cd36ec11db3c",
+    "start_time": "2025-07-07T17:00:50.204Z",
+    "end_time": "2025-07-07T17:11:31.349Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1997-04-17 11:00:50",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702683885",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-f32b3086-52e2-5277-b6b7-cd36ec11db3c",
+          "name": "koreUserId"
+        },
+        {
+          "value": "5b7228e6-14f3-4ebb-a229-5d6d603bc73d",
+          "name": "koreCallId"
+        },
+        {
+          "value": "1577238179",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture failed",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Provider ID",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Provider_Enrollment",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Provider_Enrollment\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1985-10-26 11:01:55",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:00:50.204Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:01:20.204Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:01:50.204Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:02:20.204Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:50.204Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:03:20.204Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:50.204Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Account Update",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Authentication Failed",
+      "dropOffLocation": "Claim Details",
+      "notes": "User attempted account update but encountered authentication failed, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 748,
+      "processingTime": 1952,
+      "batchNumber": 2,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.01341367000283629
+    }
+  },
+  {
+    "session_id": "686bfd6bcb14435287b18801",
+    "user_id": "u-3717d5d7-a0c5-565a-97c0-f6ed8482a9bc",
+    "start_time": "2025-07-07T17:01:31.221Z",
+    "end_time": "2025-07-07T17:13:11.984Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1997-03-15 11:01:31",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702684095",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-3717d5d7-a0c5-565a-97c0-f6ed8482a9bc",
+          "name": "koreUserId"
+        },
+        {
+          "value": "79c6c64b-885c-4735-b0d4-8f7cb3c3bc7e",
+          "name": "koreCallId"
+        },
+        {
+          "value": "0666578366",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Provider_Enrollment",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Provider_Enrollment\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1976-04-22 11:03:51",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:01:31.221Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:02:01.221Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:31.221Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:03:01.221Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:31.221Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:04:01.221Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:04:31.221Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Account Update",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Authentication Failed",
+      "dropOffLocation": "Contact Verification",
+      "notes": "User attempted account update but encountered authentication failed, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 505,
+      "processingTime": 1360,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.017962047254506612
+    }
+  },
+  {
+    "session_id": "686bfd7b8c407e8785f88eae",
+    "user_id": "u-8e0383dd-4f89-519a-8511-631aa3c38db3",
+    "start_time": "2025-07-07T17:01:47.320Z",
+    "end_time": "2025-07-07T17:12:37.364Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1993-04-02 11:01:47",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702684152",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-8e0383dd-4f89-519a-8511-631aa3c38db3",
+          "name": "koreUserId"
+        },
+        {
+          "value": "1aa79d29-ce91-427a-9cb4-aaef2508c73c",
+          "name": "koreCallId"
+        },
+        {
+          "value": "7568033091",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1999-07-19 11:03:13",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:01:47.320Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:02:17.320Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:47.320Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:03:17.320Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:47.320Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:04:17.320Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:04:47.320Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Authorization",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed authorization inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 709,
+      "processingTime": 1400,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.017698641201775785
+    }
+  },
+  {
+    "session_id": "686bfdab7dc63de56624d70a",
+    "user_id": "u-f8142fb0-c9ec-5758-8b08-d0249f826402",
+    "start_time": "2025-07-07T17:02:35.574Z",
+    "end_time": "2025-07-07T17:13:19.113Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1987-11-23 11:02:35",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702684385",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-f8142fb0-c9ec-5758-8b08-d0249f826402",
+          "name": "koreUserId"
+        },
+        {
+          "value": "a1e847ca-c5eb-45b6-a5e0-1a2bbbd6881a",
+          "name": "koreCallId"
+        },
+        {
+          "value": "0176130518",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "intent behavior",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Prior_Authorization",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Prior_Authorization\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1980-01-08 11:04:00",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:35.574Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:03:05.574Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:35.574Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:04:05.574Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:04:35.574Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:05:05.574Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:05:35.574Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:06:05.574Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:06:35.574Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 412,
+      "processingTime": 3600,
+      "batchNumber": 8,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03192054867929383
+    }
+  },
+  {
+    "session_id": "686bfdc355b9c3f240611118",
+    "user_id": "u-5c1576b2-1231-5a95-8aa4-c1936ea3e954",
+    "start_time": "2025-07-07T17:02:59.158Z",
+    "end_time": "2025-07-07T17:13:48.658Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1990-01-06 11:02:59",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702684502",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-5c1576b2-1231-5a95-8aa4-c1936ea3e954",
+          "name": "koreUserId"
+        },
+        {
+          "value": "c2121ab4-1d8b-4b0a-86dc-48a2aaee1e75",
+          "name": "koreCallId"
+        },
+        {
+          "value": "6691438489",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture timeout",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Start date of service",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Member_Eligibility",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Member_Eligibility\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Member ID\":1,\"Start date of service\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1997-06-27 11:04:41",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:02:59.158Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:03:29.158Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:03:59.158Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:04:29.158Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:04:59.158Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:05:29.158Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:05:59.158Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:06:29.158Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed technical support inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 439,
+      "processingTime": 1672,
+      "batchNumber": 9,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.02028853068873037
+    }
+  },
+  {
+    "session_id": "686bfe4771436049267cff93",
+    "user_id": "u-540120d4-cec4-5ccf-8f99-a016e0d11ab0",
+    "start_time": "2025-07-07T17:05:11.186Z",
+    "end_time": "2025-07-07T17:05:11.186Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1997-12-08 11:05:11",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702685109",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-540120d4-cec4-5ccf-8f99-a016e0d11ab0",
+          "name": "koreUserId"
+        },
+        {
+          "value": "8fe27713-a59d-4ab4-b76f-3c6a91aa5c8f",
+          "name": "koreCallId"
+        },
+        {
+          "value": "0601346271",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "No",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "userHangUp"
+        },
+        {
+          "value": "NA",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "NA",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Payment_History",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":0,\"Payment_History\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":2,\"Claim Number\":1,\"Start date of service\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1978-07-28 11:10:04",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:05:11.186Z"
+      },
+      {
+        "message": "I need help with my claim status",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:05:41.186Z"
+      },
+      {
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:06:11.186Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:06:41.186Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:07:11.186Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:07:41.186Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:08:11.186Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:08:41.186Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:11.186Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Billing",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Technical Issue",
+      "dropOffLocation": "Contact Verification",
+      "notes": "User attempted billing but encountered technical issue, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 593,
+      "processingTime": 2524,
+      "batchNumber": 1,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03164925779631589
+    }
+  },
+  {
+    "session_id": "686bfed25eb131ef08063c55",
+    "user_id": "u-c6dbf817-b749-5a15-af03-5bc3f224855d",
+    "start_time": "2025-07-07T17:07:30.194Z",
+    "end_time": "2025-07-07T17:07:30.194Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1995-08-20 11:07:30",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702685767",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-c6dbf817-b749-5a15-af03-5bc3f224855d",
+          "name": "koreUserId"
+        },
+        {
+          "value": "01dfe412-3e87-4fc0-83ca-2b176909aad0",
+          "name": "koreCallId"
+        },
+        {
+          "value": "2896546112",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "NA",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture failed",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Provider ID",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1981-02-26 11:08:33",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:07:30.194Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:08:00.194Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:08:30.194Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:09:00.194Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:30.194Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:00.194Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:30.194Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Authorization",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed authorization inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 430,
+      "processingTime": 1418,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03489877250979766
+    }
+  },
+  {
+    "session_id": "686bfef7a43966534fd781cf",
+    "user_id": "u-de9eae64-64dc-5f76-a273-289a0a525288",
+    "start_time": "2025-07-07T17:08:07.780Z",
+    "end_time": "2025-07-07T17:18:57.307Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1980-11-25 11:08:08",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702685949",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-de9eae64-64dc-5f76-a273-289a0a525288",
+          "name": "koreUserId"
+        },
+        {
+          "value": "51102096-eb5a-4e5c-a585-969be557a32b",
+          "name": "koreCallId"
+        },
+        {
+          "value": "5418481710",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1987-08-25 11:09:34",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:08:07.780Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:08:37.780Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:07.780Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:09:37.780Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:07.780Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:37.780Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:07.780Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:37.780Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:07.780Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed live agent inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 449,
+      "processingTime": 1251,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.016877099107882314
+    }
+  },
+  {
+    "session_id": "686bff2ed91b04f5ff575301",
+    "user_id": "u-94494d84-a55b-597f-bf15-2800b5b2e21e",
+    "start_time": "2025-07-07T17:09:02.123Z",
+    "end_time": "2025-07-07T17:09:02.123Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1987-02-19 11:09:02",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686192",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-94494d84-a55b-597f-bf15-2800b5b2e21e",
+          "name": "koreUserId"
+        },
+        {
+          "value": "c8cb0924-3c26-4866-86e5-60d11fdd1d8f",
+          "name": "koreCallId"
+        },
+        {
+          "value": "5950123770",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "No",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "userHangUp"
+        },
+        {
+          "value": "NA",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "NA",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "{}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1996-04-10 11:09:20",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:02.123Z"
+      },
+      {
+        "message": "I need help with my claim status",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:09:32.123Z"
+      },
+      {
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:02.123Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:32.123Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:02.123Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:32.123Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:02.123Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:32.123Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:02.123Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Provider Enrollment",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Invalid Member ID",
+      "dropOffLocation": "User Name",
+      "notes": "User attempted provider enrollment but encountered invalid member id, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 624,
+      "processingTime": 2091,
+      "batchNumber": 8,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.01054506390598967
+    }
+  },
+  {
+    "session_id": "686bff3b89287a4b25b8efbe",
+    "user_id": "u-4c7d0011-4266-5c47-8fc6-bcd1628ec9ad",
+    "start_time": "2025-07-07T17:09:15.696Z",
+    "end_time": "2025-07-07T17:19:45.169Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1970-10-20 11:09:16",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686263",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-4c7d0011-4266-5c47-8fc6-bcd1628ec9ad",
+          "name": "koreUserId"
+        },
+        {
+          "value": "bcc30046-b564-4ee6-8a59-2c2d41225ca8",
+          "name": "koreCallId"
+        },
+        {
+          "value": "6046321072",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture failed",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Provider ID",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1972-07-07 11:10:32",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:15.696Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:09:45.696Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:15.696Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:45.696Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:15.696Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:45.696Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:15.696Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Authorization",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Invalid Provider ID",
+      "dropOffLocation": "Authentication",
+      "notes": "User attempted authorization but encountered invalid provider id, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 638,
+      "processingTime": 1658,
+      "batchNumber": 3,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.021224355121497916
+    }
+  },
+  {
+    "session_id": "686bff50d91b04f5ff5759a4",
+    "user_id": "u-91153e4d-7daa-5387-8e96-d552dda7dc8f",
+    "start_time": "2025-07-07T17:09:35.970Z",
+    "end_time": "2025-07-07T17:22:44.285Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1994-05-28 11:09:36",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686371",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-91153e4d-7daa-5387-8e96-d552dda7dc8f",
+          "name": "koreUserId"
+        },
+        {
+          "value": "5f3dc587-6773-4438-9fa5-2b89a92758be",
+          "name": "koreCallId"
+        },
+        {
+          "value": "6713402382",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Provider_Enrollment",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Provider_Enrollment\":2}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1981-10-11 11:13:02",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:35.970Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:05.970Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:35.970Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:05.970Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:35.970Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:05.970Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:35.970Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:05.970Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:35.970Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Portal Access",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed portal access inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 593,
+      "processingTime": 3961,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03418611727843932
+    }
+  },
+  {
+    "session_id": "686bff57d9df71fa83992c41",
+    "user_id": "u-4450041e-f908-527c-9d6c-e7a2d4c725a1",
+    "start_time": "2025-07-07T17:09:43.860Z",
+    "end_time": "2025-07-07T17:21:05.495Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1983-03-28 11:09:44",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686407",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-4450041e-f908-527c-9d6c-e7a2d4c725a1",
+          "name": "koreUserId"
+        },
+        {
+          "value": "201faac2-2f48-49c7-8f8a-04ee06b30e27",
+          "name": "koreCallId"
+        },
+        {
+          "value": "7852929792",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1977-10-06 11:11:24",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:09:43.860Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:13.860Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:43.860Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:13.860Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:43.860Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:13.860Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:43.860Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 740,
+      "processingTime": 2600,
+      "batchNumber": 9,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.016758192170447425
+    }
+  },
+  {
+    "session_id": "686bff7d7dc63de56625389c",
+    "user_id": "u-3fb06c0a-fccc-5958-b186-8746bdda8382",
+    "start_time": "2025-07-07T17:10:21.004Z",
+    "end_time": "2025-07-07T17:22:54.784Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1984-11-16 11:10:21",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686599",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-3fb06c0a-fccc-5958-b186-8746bdda8382",
+          "name": "koreUserId"
+        },
+        {
+          "value": "01d2ef0b-0fea-478b-a44d-bf2436ef7b38",
+          "name": "koreCallId"
+        },
+        {
+          "value": "7762361785",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Payment_History",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":0,\"Payment_History\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":2,\"End date of service\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1999-11-01 11:13:11",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:21.004Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:10:51.004Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:21.004Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:51.004Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:21.004Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:51.004Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:21.004Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:51.004Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:14:21.004Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed live agent inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 633,
+      "processingTime": 3158,
+      "batchNumber": 8,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.038267420100218615
+    }
+  },
+  {
+    "session_id": "686bff92fe5c7275e480cd31",
+    "user_id": "u-f380d5a2-48c4-53be-b0e9-c9482292b2ff",
+    "start_time": "2025-07-07T17:10:42.206Z",
+    "end_time": "2025-07-07T17:10:42.206Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1984-09-18 11:10:42",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686689",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-f380d5a2-48c4-53be-b0e9-c9482292b2ff",
+          "name": "koreUserId"
+        },
+        {
+          "value": "f0a1fccc-06b1-4af4-b71a-fb20a5319137",
+          "name": "koreCallId"
+        },
+        {
+          "value": "3871943563",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "No",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "userHangUp"
+        },
+        {
+          "value": "NA",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "intent behavior",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Portal",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Portal\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1972-06-07 11:11:30",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:42.206Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:12.206Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:42.206Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:12.206Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:42.206Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:12.206Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:42.206Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:14:12.206Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Billing",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed billing inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 523,
+      "processingTime": 2662,
+      "batchNumber": 4,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.013947392604982546
+    }
+  },
+  {
+    "session_id": "686bff9dd382adca723f8019",
+    "user_id": "u-a572737a-4e17-5878-9acc-a8b9db5279ca",
+    "start_time": "2025-07-07T17:10:53.901Z",
+    "end_time": "2025-07-07T17:22:17.611Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1994-07-04 11:10:54",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686735",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-a572737a-4e17-5878-9acc-a8b9db5279ca",
+          "name": "koreUserId"
+        },
+        {
+          "value": "7535b1a2-9f30-436a-a4fc-22c9b8aec2c1",
+          "name": "koreCallId"
+        },
+        {
+          "value": "8992409723",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1997-02-18 11:12:33",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:10:53.901Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:23.901Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:53.901Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:23.901Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:53.901Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:23.901Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:53.901Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:14:23.901Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Policy Not Found",
+      "dropOffLocation": "Policy Number Prompt",
+      "notes": "User attempted eligibility but encountered policy not found, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 560,
+      "processingTime": 3354,
+      "batchNumber": 8,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.018267108939076782
+    }
+  },
+  {
+    "session_id": "686bffb37dc63de5662543a1",
+    "user_id": "u-687087db-a4d3-5d68-9971-b97485f9aa46",
+    "start_time": "2025-07-07T17:11:15.698Z",
+    "end_time": "2025-07-07T17:21:45.734Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1979-06-26 11:11:16",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686846",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-687087db-a4d3-5d68-9971-b97485f9aa46",
+          "name": "koreUserId"
+        },
+        {
+          "value": "47648049-2667-435b-a292-3dce07bef505",
+          "name": "koreCallId"
+        },
+        {
+          "value": "1709617568",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture failed",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Provider ID",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Provider_Enrollment",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Provider_Enrollment\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1996-12-02 11:12:18",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:15.698Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:45.698Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:15.698Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:45.698Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:15.698Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:45.698Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:14:15.698Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Authorization",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed authorization inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 699,
+      "processingTime": 2084,
+      "batchNumber": 3,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.026562200455981122
+    }
+  },
+  {
+    "session_id": "686bffd06325502831006e93",
+    "user_id": "u-ae38e5f9-9bd2-5aa7-ad41-0c5a6ad39653",
+    "start_time": "2025-07-07T17:11:44.166Z",
+    "end_time": "2025-07-07T17:23:02.449Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1977-09-25 11:11:44",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702686966",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-ae38e5f9-9bd2-5aa7-ad41-0c5a6ad39653",
+          "name": "koreUserId"
+        },
+        {
+          "value": "359f59b6-ce6a-4efc-a98a-dfec69a915d5",
+          "name": "koreCallId"
+        },
+        {
+          "value": "2944372832",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "intent behavior",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Portal",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Portal\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1988-05-02 11:13:19",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:11:44.166Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:12:14.166Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:12:44.166Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:14.166Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:44.166Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:14:14.166Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:14:44.166Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:15:14.166Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:44.166Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Policy Information",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Complex Billing Issue",
+      "dropOffLocation": "User Name",
+      "notes": "User attempted policy information but encountered complex billing issue, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 636,
+      "processingTime": 1741,
+      "batchNumber": 2,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.03772172089210956
+    }
+  },
+  {
+    "session_id": "686c002598860449d90c6123",
+    "user_id": "u-451bedd5-48be-5930-8e45-cfd139b519a5",
+    "start_time": "2025-07-07T17:13:09.837Z",
+    "end_time": "2025-07-07T17:24:08.358Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1993-04-04 11:13:10",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702687325",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-451bedd5-48be-5930-8e45-cfd139b519a5",
+          "name": "koreUserId"
+        },
+        {
+          "value": "d7f3fa0b-a979-4e86-b1f4-6757d2d00684",
+          "name": "koreCallId"
+        },
+        {
+          "value": "6193193696",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1980-10-13 11:14:34",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:09.837Z"
+      },
+      {
+        "message": "I need help with my portal access",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:39.837Z"
+      },
+      {
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:14:09.837Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:14:39.837Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:09.837Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:15:39.837Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:09.837Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:16:39.837Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 436,
+      "processingTime": 1916,
+      "batchNumber": 8,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.019914537568093367
+    }
+  },
+  {
+    "session_id": "686c0037c38175387e183a2e",
+    "user_id": "u-938d213f-cade-50b1-9890-631f2ee17ca3",
+    "start_time": "2025-07-07T17:13:27.420Z",
+    "end_time": "2025-07-07T17:26:06.654Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1994-10-07 11:13:27",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702687423",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-938d213f-cade-50b1-9890-631f2ee17ca3",
+          "name": "koreUserId"
+        },
+        {
+          "value": "b7c4cb9c-ee3b-435d-81f0-6a2b7049caa8",
+          "name": "koreCallId"
+        },
+        {
+          "value": "7142089054",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1970-09-23 11:16:34",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:13:27.420Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:13:57.420Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:14:27.420Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:14:57.420Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:27.420Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:15:57.420Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:27.420Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:16:57.420Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:27.420Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Policy Information",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Invalid Member ID",
+      "dropOffLocation": "Authentication",
+      "notes": "User attempted policy information but encountered invalid member id, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 428,
+      "processingTime": 3712,
+      "batchNumber": 2,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.012467807026514954
+    }
+  },
+  {
+    "session_id": "686c00849710aa593cc08433",
+    "user_id": "u-a8d7cb78-d99c-50cf-860a-608a2044d5a7",
+    "start_time": "2025-07-07T17:14:44.675Z",
+    "end_time": "2025-07-07T17:25:02.490Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1979-10-23 11:14:45",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702687749",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-a8d7cb78-d99c-50cf-860a-608a2044d5a7",
+          "name": "koreUserId"
+        },
+        {
+          "value": "1dbf3050-f69a-4837-95e7-602a0c525a7b",
+          "name": "koreCallId"
+        },
+        {
+          "value": "0059638879",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1992-05-10 11:15:39",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:14:44.675Z"
+      },
+      {
+        "message": "I need help with my eligibility",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:15:14.675Z"
+      },
+      {
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:44.675Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:16:14.675Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:44.675Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:14.675Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:44.675Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Claim Status",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed claim status inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 611,
+      "processingTime": 1604,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.018877071287066838
+    }
+  },
+  {
+    "session_id": "686c00ae20e53069c16e151f",
+    "user_id": "u-77384090-138a-5f46-a83e-0143bb6e698c",
+    "start_time": "2025-07-07T17:15:26.009Z",
+    "end_time": "2025-07-07T17:27:14.130Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1983-03-18 11:15:26",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702687926",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-29785749-138a-5f46-a83e-0143bb6e698c",
+          "name": "koreUserId"
+        },
+        {
+          "value": "6ce46d67-1679-4141-b2f8-6c093394088f",
+          "name": "koreCallId"
+        },
+        {
+          "value": "8206091349",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1973-10-05 11:17:39",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:26.009Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:15:56.009Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:26.009Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:16:56.009Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:26.009Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:56.009Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:26.009Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:56.009Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 557,
+      "processingTime": 2197,
+      "batchNumber": 2,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.035735404289642815
+    }
+  },
+  {
+    "session_id": "686c00cf70a5862cc12bcc38",
+    "user_id": "u-7a383e0c-69f5-5884-83d1-654bbede4cda",
+    "start_time": "2025-07-07T17:15:59.299Z",
+    "end_time": "2025-07-07T17:15:59.299Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1993-05-28 11:15:59",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688091",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-7a383e0c-69f5-5884-83d1-654bbede4cda",
+          "name": "koreUserId"
+        },
+        {
+          "value": "610f0936-5bce-4d6b-be3c-d38e492f574b",
+          "name": "koreCallId"
+        },
+        {
+          "value": "2940691635",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "No",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "userHangUp"
+        },
+        {
+          "value": "NA",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "NA",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "{}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1997-04-22 11:16:28",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:59.299Z"
+      },
+      {
+        "message": "I need help with my billing",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:16:29.299Z"
+      },
+      {
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:59.299Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:29.299Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:59.299Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:29.299Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:59.299Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Account Update",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed account update inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 470,
+      "processingTime": 2681,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.017408469066474204
+    }
+  },
+  {
+    "session_id": "686c00e84d17f06a51c41790",
+    "user_id": "u-b2b30ea5-4e12-546a-b880-2afba98f0729",
+    "start_time": "2025-07-07T17:16:24.506Z",
+    "end_time": "2025-07-07T17:27:14.051Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1978-05-12 11:16:24",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688245",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-b2b30ea5-4e12-546a-b880-2afba98f0729",
+          "name": "koreUserId"
+        },
+        {
+          "value": "9012a846-4833-4bc2-9ce0-45aee85eafa4",
+          "name": "koreCallId"
+        },
+        {
+          "value": "0608031745",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture failed",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Provider ID",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":2}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1982-03-03 11:17:40",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:24.506Z"
+      },
+      {
+        "message": "I need help with my eligibility",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:16:54.506Z"
+      },
+      {
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:24.506Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:54.506Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:24.506Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:54.506Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:24.506Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:54.506Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:24.506Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Account Update",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Technical Issue",
+      "dropOffLocation": "Claim Details",
+      "notes": "User attempted account update but encountered technical issue, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 466,
+      "processingTime": 2094,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.023919156830524528
+    }
+  },
+  {
+    "session_id": "686c00f0bbf7cb73b0ad1b93",
+    "user_id": "u-f15d5ed4-ccaf-573a-826e-5b27f3c247ca",
+    "start_time": "2025-07-07T17:16:32.711Z",
+    "end_time": "2025-07-07T17:27:33.289Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1970-09-21 11:16:33",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688287",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-f15d5ed4-ccaf-573a-826e-5b27f3c247ca",
+          "name": "koreUserId"
+        },
+        {
+          "value": "314b1e85-ebb0-4812-a3c3-94e25a59d427",
+          "name": "koreCallId"
+        },
+        {
+          "value": "8372915351",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1974-11-26 11:17:58",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:32.711Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:02.711Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:32.711Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:02.711Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:32.711Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:02.711Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:32.711Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:02.711Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:32.711Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Claim Status",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed claim status inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 419,
+      "processingTime": 2613,
+      "batchNumber": 3,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.022281401083904993
+    }
+  },
+  {
+    "session_id": "686c00fd1a3eba1e0c310c29",
+    "user_id": "u-fc9a757a-5b04-599b-8b78-ec248da93fa6",
+    "start_time": "2025-07-07T17:16:45.820Z",
+    "end_time": "2025-07-07T17:29:23.173Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1972-12-24 11:16:46",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688345",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-fc9a757a-5b04-599b-8b78-ec248da93fa6",
+          "name": "koreUserId"
+        },
+        {
+          "value": "ad4c1a90-7e4e-4d6b-b611-28d06172c22c",
+          "name": "koreCallId"
+        },
+        {
+          "value": "1299310322",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":1,\"End date of service\":1,\"Billed Amount Filter\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1973-03-12 11:20:03",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:45.820Z"
+      },
+      {
+        "message": "I need help with my claim status",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:15.820Z"
+      },
+      {
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:45.820Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:15.820Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:45.820Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:15.820Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:45.820Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:15.820Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:45.820Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed technical support inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 696,
+      "processingTime": 2428,
+      "batchNumber": 2,
+      "timestamp": "2025-07-25T16:26:30.140Z",
+      "cost": 0.01827258031779072
+    }
+  },
+  {
+    "session_id": "686c010379e90e1cc241543c",
+    "user_id": "u-51b7ee89-3c6b-56fb-b560-24e3a7d11143",
+    "start_time": "2025-07-07T17:16:51.009Z",
+    "end_time": "2025-07-07T17:29:13.024Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1978-09-24 11:16:51",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688380",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-51b7ee89-3c6b-56fb-b560-24e3a7d11143",
+          "name": "koreUserId"
+        },
+        {
+          "value": "7825d503-0e92-4dff-9fcf-df68fb1250c6",
+          "name": "koreCallId"
+        },
+        {
+          "value": "3750833771",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture timeout",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Billed Amount Filter",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":1,\"End date of service\":1,\"Billed Amount Filter\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1986-03-25 11:19:52",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:16:51.009Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:21.009Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:51.009Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:21.009Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:51.009Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:21.009Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:51.009Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:21.009Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:51.009Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Provider Enrollment",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Technical Issue",
+      "dropOffLocation": "Member Information",
+      "notes": "User attempted provider enrollment but encountered technical issue, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 429,
+      "processingTime": 1912,
+      "batchNumber": 10,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.030555434413047713
+    }
+  },
+  {
+    "session_id": "686c011f2b00a4975728a1c8",
+    "user_id": "u-79b9ef63-f7aa-5f9a-92d3-d58982e3fa8d",
+    "start_time": "2025-07-07T17:17:19.612Z",
+    "end_time": "2025-07-07T17:28:00.236Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1976-09-05 11:17:19",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688514",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-79b9ef63-f7aa-5f9a-92d3-d58982e3fa8d",
+          "name": "koreUserId"
+        },
+        {
+          "value": "f36082ee-a636-49bf-9d6b-1f3e68e762a7",
+          "name": "koreCallId"
+        },
+        {
+          "value": "5874446388",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Provider_Enrollment",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Provider_Enrollment\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1986-08-22 11:18:24",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:19.612Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:17:49.612Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:19.612Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:49.612Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:19.612Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:49.612Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:19.612Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Billing",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Invalid Member ID",
+      "dropOffLocation": "Date of Service",
+      "notes": "User attempted billing but encountered invalid member id, transferred to live agent."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 703,
+      "processingTime": 1647,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.017460487437335803
+    }
+  },
+  {
+    "session_id": "686c0153632550283100b6ac",
+    "user_id": "u-1bfaa2bc-671a-52c6-a3e1-ecb0bfbfdc35",
+    "start_time": "2025-07-07T17:18:11.166Z",
+    "end_time": "2025-07-07T17:28:41.202Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1975-04-04 11:18:11",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688754",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-1bfaa2bc-671a-52c6-a3e1-ecb0bfbfdc35",
+          "name": "koreUserId"
+        },
+        {
+          "value": "310e719c-f1d9-4e24-a91c-67300c94dab7",
+          "name": "koreCallId"
+        },
+        {
+          "value": "9886300645",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1975-06-11 11:19:12",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:11.166Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:41.166Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:11.166Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:41.166Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:11.166Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:41.166Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:21:11.166Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:21:41.166Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:22:11.166Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Claim Status",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed claim status inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 765,
+      "processingTime": 3093,
+      "batchNumber": 4,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.029505296769160014
+    }
+  },
+  {
+    "session_id": "686c01563b4109d848b71a9a",
+    "user_id": "u-8627bfed-f927-530c-89a4-e7d98d2be3c8",
+    "start_time": "2025-07-07T17:18:14.118Z",
+    "end_time": "2025-07-07T17:18:14.118Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1976-09-07 11:18:14",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688767",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-8627bfed-f927-530c-89a4-e7d98d2be3c8",
+          "name": "koreUserId"
+        },
+        {
+          "value": "3d0d5129-7583-4232-9f65-ae88dd5ec6a7",
+          "name": "koreCallId"
+        },
+        {
+          "value": "5701822393",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "NA",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Claim_Status",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Claim_Status\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":1,\"End date of service\":1,\"Billed Amount Filter\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1981-02-14 11:21:25",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:14.118Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:18:44.118Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:14.118Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:44.118Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:14.118Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:44.118Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:21:14.118Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed live agent inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 509,
+      "processingTime": 3684,
+      "batchNumber": 7,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.020802257377015278
+    }
+  },
+  {
+    "session_id": "686c016e71436049267d9d8d",
+    "user_id": "u-863de97f-09b3-53e1-a60b-b65e4f26aa3d",
+    "start_time": "2025-07-07T17:18:38.324Z",
+    "end_time": "2025-07-07T17:29:50.299Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1999-06-11 11:18:38",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702688893",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-863de97f-09b3-53e1-a60b-b65e4f26aa3d",
+          "name": "koreUserId"
+        },
+        {
+          "value": "0c6d34a2-a2eb-4567-ae15-a1cd8970ee99",
+          "name": "koreCallId"
+        },
+        {
+          "value": "9632019127",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Input capture timeout",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "Provider ID",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1990-11-28 11:20:33",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:18:38.324Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:08.324Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:38.324Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:08.324Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:38.324Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:21:08.324Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:21:38.324Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:22:08.324Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:22:38.324Z"
+      }
+    ],
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
+    "facts": {
+      "generalIntent": "Account Update",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed account update inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 665,
+      "processingTime": 2811,
+      "batchNumber": 3,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.013241931539874581
+    }
+  },
+  {
+    "session_id": "686c01e4d382adca723ff549",
+    "user_id": "u-6dd82182-6ab0-50af-9002-49d1b180e320",
+    "start_time": "2025-07-07T17:20:35.736Z",
+    "end_time": "2025-07-07T17:31:26.545Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1976-05-24 11:20:36",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702689396",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-6dd82182-6ab0-50af-9002-49d1b180e320",
+          "name": "koreUserId"
+        },
+        {
+          "value": "139a5f2d-128c-42ef-b1db-16e56815a0c9",
+          "name": "koreCallId"
+        },
+        {
+          "value": "2801803703",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Member_Eligibility",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Member_Eligibility\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1988-07-27 11:21:40",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:20:35.736Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:21:05.736Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:21:35.736Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:22:05.736Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:22:35.736Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:23:05.736Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:23:35.736Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:24:05.736Z"
+      }
+    ],
+    "message_count": 8,
+    "user_message_count": 4,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Authorization",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed authorization inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 406,
+      "processingTime": 3418,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.03804439906258438
+    }
+  },
+  {
+    "session_id": "686c02003b4109d848b741ac",
+    "user_id": "u-34a32e98-1578-520f-86b7-cf6eeab3c54b",
+    "start_time": "2025-07-07T17:21:04.870Z",
+    "end_time": "2025-07-07T17:32:40.911Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1990-04-28 11:21:05",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702689526",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-34a32e98-1578-520f-86b7-cf6eeab3c54b",
+          "name": "koreUserId"
+        },
+        {
+          "value": "70ce9b22-8211-4572-b01d-89e611368977",
+          "name": "koreCallId"
+        },
+        {
+          "value": "4720142617",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "Yes",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Agent request",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "ConnectToAgent",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"ConnectToAgent\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1988-12-16 11:23:05",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:21:04.870Z"
+      },
+      {
+        "message": "I need help with my authorization",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:21:34.870Z"
+      },
+      {
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:22:04.870Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:22:34.870Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:23:04.870Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:23:34.870Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:24:04.870Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 490,
+      "processingTime": 3989,
+      "batchNumber": 6,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.037552203909029074
+    }
+  },
+  {
+    "session_id": "686c020d1a3eba1e0c3144a2",
+    "user_id": "u-4e991bce-2468-5991-a3de-df9147ce6446",
+    "start_time": "2025-07-07T17:21:17.248Z",
+    "end_time": "2025-07-07T17:32:07.120Z",
+    "containment_type": "selfService",
+    "tags": {
+      "userTags": [],
+      "sessionTags": [
+        {
+          "value": "1994-09-12 11:21:17",
+          "name": "callStartTime"
+        },
+        {
+          "value": "431702689564",
+          "name": "niceContactId"
+        },
+        {
+          "value": "u-4e991bce-2468-5991-a3de-df9147ce6446",
+          "name": "koreUserId"
+        },
+        {
+          "value": "9b66b30c-151c-4e0b-93ca-382a3c77e101",
+          "name": "koreCallId"
+        },
+        {
+          "value": "4502509289",
+          "name": "callerNumber"
+        },
+        {
+          "value": "smartassist",
+          "name": "channelName"
+        },
+        {
+          "value": "Regular",
+          "name": "callerType"
+        },
+        {
+          "value": "No",
+          "name": "surveyOptedIn"
+        },
+        {
+          "value": "No",
+          "name": "surveyTransfer"
+        },
+        {
+          "value": "Yes",
+          "name": "agentTransfer"
+        },
+        {
+          "value": "No",
+          "name": "userHangUp"
+        },
+        {
+          "value": "SUCCESS",
+          "name": "niceApiStatus"
+        },
+        {
+          "value": "Caller Escalation",
+          "name": "agentTransferReason"
+        },
+        {
+          "value": "NA",
+          "name": "lastUserUtterance"
+        },
+        {
+          "value": "NA",
+          "name": "failedAPI"
+        },
+        {
+          "value": "NA",
+          "name": "inputEntityFailedBeforeAgentTransfer"
+        },
+        {
+          "value": "Member_Eligibility",
+          "name": "lastIntentBeforeSessionCompletion"
+        },
+        {
+          "value": "{\"Member_Eligibility\":1}",
+          "name": "intentCounts"
+        },
+        {
+          "value": "{\"Provider ID\":1}",
+          "name": "entityVisitCounts"
+        },
+        {
+          "value": "1995-02-02 11:22:28",
+          "name": "callEndTime"
+        }
+      ],
+      "altText": []
+    },
+    "messages": [
+      {
+        "message": "Hello! How can I help you today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:21:17.248Z"
+      },
+      {
+        "message": "I need help with my provider enrollment",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:21:47.248Z"
+      },
+      {
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:22:17.248Z"
+      },
+      {
+        "message": "My member ID is 123456789",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:22:47.248Z"
+      },
+      {
+        "message": "Thank you. Let me look up your information...",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:23:17.248Z"
+      },
+      {
+        "message": "What did you find?",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:23:47.248Z"
+      },
+      {
+        "message": "Yes, I can assist you with that. Let me process this for you.",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:24:17.248Z"
+      }
+    ],
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
+    "facts": {
+      "generalIntent": "Provider Enrollment",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+    },
+    "analysisMetadata": {
+      "tokensUsed": 698,
+      "processingTime": 2346,
+      "batchNumber": 5,
+      "timestamp": "2025-07-25T16:26:30.141Z",
+      "cost": 0.027960077158319566
+    }
+  }
+]

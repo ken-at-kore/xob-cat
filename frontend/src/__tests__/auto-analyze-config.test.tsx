@@ -23,14 +23,16 @@ jest.mock('next/navigation', () => ({
 
 describe('AutoAnalyzeConfig Component', () => {
   const mockOnAnalysisStart = jest.fn();
+  const mockOnShowMockReports = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockOnAnalysisStart.mockClear();
+    mockOnShowMockReports.mockClear();
   });
 
   it('renders configuration form with default values', () => {
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     // Check form elements exist
     expect(screen.getByLabelText(/start date/i)).toBeInTheDocument();
@@ -55,7 +57,7 @@ describe('AutoAnalyzeConfig Component', () => {
   });
 
   it('displays feature explanation', () => {
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     expect(screen.getByText(/comprehensive bot performance analysis/i)).toBeInTheDocument();
     expect(screen.getByText(/randomly samples sessions/i)).toBeInTheDocument();
@@ -64,7 +66,7 @@ describe('AutoAnalyzeConfig Component', () => {
 
   it('validates session count range', async () => {
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     const sessionCountInput = screen.getByLabelText(/number of sessions/i);
     const submitButton = screen.getByRole('button', { name: /start analysis/i });
@@ -98,7 +100,7 @@ describe('AutoAnalyzeConfig Component', () => {
 
   it('validates OpenAI API key format', async () => {
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     const apiKeyInput = screen.getByLabelText(/openai api key/i);
     const submitButton = screen.getByRole('button', { name: /start analysis/i });
@@ -122,7 +124,7 @@ describe('AutoAnalyzeConfig Component', () => {
 
   it('validates date is in the past', async () => {
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     const dateInput = screen.getByLabelText(/start date/i);
     const submitButton = screen.getByRole('button', { name: /start analysis/i });
@@ -141,7 +143,7 @@ describe('AutoAnalyzeConfig Component', () => {
 
   it('validates time format', async () => {
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     const timeInput = screen.getByLabelText(/start time/i);
     const submitButton = screen.getByRole('button', { name: /start analysis/i });
@@ -166,7 +168,7 @@ describe('AutoAnalyzeConfig Component', () => {
 
   it('requires all fields to be filled', async () => {
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     const submitButton = screen.getByRole('button', { name: /start analysis/i });
     const apiKeyInput = screen.getByLabelText(/openai api key/i);
@@ -191,7 +193,7 @@ describe('AutoAnalyzeConfig Component', () => {
     mockStartAnalysis.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
 
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     // Fill form with valid data
     await user.type(screen.getByLabelText(/openai api key/i), 'sk-1234567890abcdef1234567890abcdef12345678');
@@ -214,7 +216,7 @@ describe('AutoAnalyzeConfig Component', () => {
     mockStartAnalysis.mockRejectedValue(new Error('Service unavailable'));
 
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     // Fill form with valid data
     await user.type(screen.getByLabelText(/openai api key/i), 'sk-1234567890abcdef1234567890abcdef12345678');
@@ -231,13 +233,13 @@ describe('AutoAnalyzeConfig Component', () => {
   });
 
   it('displays timezone information for time input', () => {
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     expect(screen.getByText(/eastern time/i)).toBeInTheDocument();
   });
 
   it('shows helpful hints for configuration options', () => {
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     expect(screen.getByText(/analyzing more than 1000 sessions/i)).toBeInTheDocument();
     expect(screen.getByText(/fewer than 10 sessions/i)).toBeInTheDocument();
@@ -245,7 +247,7 @@ describe('AutoAnalyzeConfig Component', () => {
 
   it('updates form state correctly on input changes', async () => {
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     const sessionCountInput = screen.getByLabelText(/number of sessions/i) as HTMLInputElement;
     const timeInput = screen.getByLabelText(/start time/i) as HTMLInputElement;
@@ -260,7 +262,7 @@ describe('AutoAnalyzeConfig Component', () => {
   });
 
   it('has proper accessibility attributes', () => {
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     // Check form labels are properly associated
     const sessionCountInput = screen.getByLabelText(/number of sessions/i);
@@ -280,7 +282,7 @@ describe('AutoAnalyzeConfig Component', () => {
 
   it('handles keyboard navigation properly', async () => {
     const user = userEvent.setup();
-    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} />);
+    render(<AutoAnalyzeConfig onAnalysisStart={mockOnAnalysisStart} onShowMockReports={mockOnShowMockReports} />);
 
     const dateInput = screen.getByLabelText(/start date/i);
     const timeInput = screen.getByLabelText(/start time/i);
