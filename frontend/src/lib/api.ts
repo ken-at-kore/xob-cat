@@ -1,4 +1,14 @@
-import { SessionWithTranscript, AnalysisResult, SessionsResponse, AnalysisResponse, SessionFilters } from '@/shared/types';
+import { 
+  SessionWithTranscript, 
+  AnalysisResult, 
+  SessionsResponse, 
+  AnalysisResponse, 
+  SessionFilters,
+  AnalysisConfig,
+  AnalysisProgress,
+  SessionWithFacts,
+  ApiResponse
+} from '@/shared/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -126,10 +136,68 @@ class ApiClient {
     });
   }
 
+  // Auto-Analyze API
+  async startAutoAnalysis(config: AnalysisConfig): Promise<ApiResponse<{ analysisId: string }>> {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/start`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // In a real implementation, these would come from authentication context
+        'x-bot-id': 'default-bot',
+        'x-jwt-token': 'default-token'
+      },
+      body: JSON.stringify(config)
+    });
+    
+    return response.json();
+  }
+
+  async getAutoAnalysisProgress(analysisId: string): Promise<ApiResponse<AnalysisProgress>> {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/progress/${analysisId}`, {
+      headers: {
+        'x-bot-id': 'default-bot',
+        'x-jwt-token': 'default-token'
+      }
+    });
+    
+    return response.json();
+  }
+
+  async getAutoAnalysisResults(analysisId: string): Promise<ApiResponse<SessionWithFacts[]>> {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/results/${analysisId}`, {
+      headers: {
+        'x-bot-id': 'default-bot',
+        'x-jwt-token': 'default-token'
+      }
+    });
+    
+    return response.json();
+  }
+
+  async cancelAutoAnalysis(analysisId: string): Promise<ApiResponse<{ cancelled: boolean }>> {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/${analysisId}`, {
+      method: 'DELETE',
+      headers: {
+        'x-bot-id': 'default-bot',
+        'x-jwt-token': 'default-token'
+      }
+    });
+    
+    return response.json();
+  }
+
   // Health check
   async healthCheck(): Promise<{ status: string; service: string; environment: string; uptime: number }> {
     return this.request<{ status: string; service: string; environment: string; uptime: number }>('/health');
   }
 }
 
-export const apiClient = new ApiClient(API_BASE_URL); 
+export const apiClient = new ApiClient(API_BASE_URL);
+
+// Auto-Analyze API convenience object
+export const autoAnalyze = {
+  startAnalysis: (config: AnalysisConfig) => apiClient.startAutoAnalysis(config),
+  getProgress: (analysisId: string) => apiClient.getAutoAnalysisProgress(analysisId),
+  getResults: (analysisId: string) => apiClient.getAutoAnalysisResults(analysisId),
+  cancel: (analysisId: string) => apiClient.cancelAutoAnalysis(analysisId)
+}; 

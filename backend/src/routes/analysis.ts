@@ -4,6 +4,7 @@ import { analyzeSessionWithOpenAI } from '../services/openaiService';
 import { getSessions } from '../services/mockDataService';
 import { successResponse, validationErrorResponse, internalServerErrorResponse } from '../utils/apiResponse';
 import { asyncHandler } from '../middleware/errorHandler';
+import { autoAnalyzeRouter } from './autoAnalyze';
 
 const router = Router();
 
@@ -113,5 +114,8 @@ router.post('/batch', asyncHandler(async (req: Request, res: Response): Promise<
   
   successResponse(res, responseData, `Analyzed ${analyses.length} sessions`);
 }));
+
+// Mount auto-analyze routes
+router.use('/auto-analyze', autoAnalyzeRouter);
 
 export { router as analysisRouter }; 

@@ -16,8 +16,8 @@ import { usePathname } from 'next/navigation';
  * Navigation Structure:
  * ┌─────────────┐
  * │ Pages       │
- * │ • View Sessions     │ (default active)
- * │ • Analyze Sessions  │ (coming soon)
+ * │ • View Sessions  │ (default active)
+ * │ • Auto-Analyze  │ (AI-powered analysis)
  * └─────────────┘
  */
 
@@ -30,7 +30,7 @@ export default function Sidebar() {
   /** Navigation items configuration */
   const navigationItems = [
     { name: 'View Sessions', href: '/sessions' },
-    { name: 'Analyze Sessions', href: '/analyze' },
+    { name: 'Auto-Analyze', href: '/analyze' },
   ];
 
   /**
