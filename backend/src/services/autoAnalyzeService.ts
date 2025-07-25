@@ -3,12 +3,15 @@ import { SessionSamplingService } from './sessionSamplingService';
 import { BatchAnalysisService } from './batchAnalysisService';
 import { OpenAIAnalysisService } from './openaiAnalysisService';
 import { KoreApiService } from './koreApiService';
+import { AnalysisSummaryService } from './analysisSummaryService';
 import { 
   AnalysisConfig, 
   AnalysisProgress, 
   SessionWithFacts, 
   ExistingClassifications,
-  BatchTokenUsage
+  BatchTokenUsage,
+  AnalysisSummary,
+  AnalysisResults
 } from '../../../shared/types';
 
 interface AnalysisSession {
@@ -16,6 +19,7 @@ interface AnalysisSession {
   config: AnalysisConfig;
   progress: AnalysisProgress;
   results?: SessionWithFacts[];
+  analysisSummary?: AnalysisSummary;
   cancelled: boolean;
 }
 
@@ -79,7 +83,7 @@ export class AutoAnalyzeService {
     return session.progress;
   }
 
-  async getResults(analysisId: string): Promise<SessionWithFacts[]> {
+  async getResults(analysisId: string): Promise<AnalysisResults> {
     const session = this.activeSessions.get(analysisId);
     if (!session) {
       throw new Error('Analysis not found');
@@ -93,7 +97,10 @@ export class AutoAnalyzeService {
       throw new Error('Results not available');
     }
 
-    return session.results;
+    return {
+      sessions: session.results,
+      analysisSummary: session.analysisSummary
+    };
   }
 
   async cancelAnalysis(analysisId: string): Promise<boolean> {
@@ -207,12 +214,35 @@ export class AutoAnalyzeService {
 
       if (session.cancelled) return;
 
-      // Phase 3: Complete
+      // Phase 3: Generate Analysis Summary
+      this.updateProgress(analysisId, {
+        phase: 'generating_summary',
+        currentStep: 'Generating analysis summary...'
+      });
+
+      try {
+        const analysisSummaryService = new AnalysisSummaryService(session.config.openaiApiKey);
+        const analysisSummary = await analysisSummaryService.generateAnalysisSummary(allResults);
+        session.analysisSummary = analysisSummary;
+
+        // Update token usage to include summary generation
+        totalTokenUsage.totalTokens += 1000; // Approximate tokens for summary generation
+        totalTokenUsage.cost += 0.002; // Approximate cost for summary generation
+      } catch (error) {
+        console.error('Failed to generate analysis summary:', error);
+        // Continue without summary - non-critical feature
+      }
+
+      if (session.cancelled) return;
+
+      // Phase 4: Complete
       session.results = allResults;
       this.updateProgress(analysisId, {
         phase: 'complete',
         currentStep: 'Analysis complete',
         sessionsProcessed: allResults.length,
+        tokensUsed: totalTokenUsage.totalTokens,
+        estimatedCost: totalTokenUsage.cost,
         endTime: new Date().toISOString()
       });
 

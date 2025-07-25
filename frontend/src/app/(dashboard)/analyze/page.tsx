@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Label } from '../../../components/ui/label';
@@ -11,7 +13,9 @@ import { Alert, AlertDescription } from '../../../components/ui/alert';
 import { 
   AnalysisConfig,
   AnalysisProgress,
-  SessionWithFacts
+  SessionWithFacts,
+  AnalysisResults,
+  AnalysisSummary
 } from '../../../../../shared/types';
 import { autoAnalyze } from '../../../lib/api';
 import { AnalyzedSessionDetailsDialog } from '../../../components/AnalyzedSessionDetailsDialog';
@@ -19,17 +23,34 @@ import { AnalyzedSessionDetailsDialog } from '../../../components/AnalyzedSessio
 /**
  * Load mock analysis results for testing
  */
-async function loadMockResults(): Promise<SessionWithFacts[]> {
+async function loadMockResults(): Promise<AnalysisResults> {
   try {
-    const response = await fetch('/api/mock-analysis-results');
-    if (!response.ok) {
-      throw new Error('Failed to load mock results');
+    const sessionsResponse = await fetch('/api/mock-analysis-results');
+    if (!sessionsResponse.ok) {
+      throw new Error('Failed to load mock sessions');
     }
-    return await response.json();
+    const sessions: SessionWithFacts[] = await sessionsResponse.json();
+
+    // Load the analysis summary
+    const summaryResponse = await fetch('/api/mock-analysis-summary');
+    let analysisSummary: AnalysisSummary | undefined;
+    
+    try {
+      if (summaryResponse.ok) {
+        analysisSummary = await summaryResponse.json();
+      }
+    } catch (error) {
+      console.warn('Failed to load mock analysis summary:', error);
+    }
+    
+    return {
+      sessions,
+      analysisSummary
+    };
   } catch (error) {
     console.error('Error loading mock results:', error);
-    // Fallback to empty array if mock data can't be loaded
-    return [];
+    // Fallback to empty results if mock data can't be loaded
+    return { sessions: [] };
   }
 }
 
@@ -304,12 +325,23 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
  */
 interface ProgressViewProps {
   analysisId: string;
-  onComplete: (results: SessionWithFacts[]) => void;
+  onComplete: (results: AnalysisResults) => void;
 }
 
 export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
   const [progress, setProgress] = useState<AnalysisProgress | null>(null);
   const [error, setError] = useState<string>('');
+
+  const getPhaseLabel = (phase: string): string => {
+    switch (phase) {
+      case 'sampling': return 'Sampling';
+      case 'analyzing': return 'Analyzing';
+      case 'generating_summary': return 'Generating Summary';
+      case 'complete': return 'Complete';
+      case 'error': return 'Error';
+      default: return phase.charAt(0).toUpperCase() + phase.slice(1);
+    }
+  };
 
   React.useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -377,7 +409,7 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
           <CardTitle className="flex items-center justify-between">
             <span>Progress</span>
             <Badge variant={progress.phase === 'error' ? 'destructive' : 'default'}>
-              {progress.phase.charAt(0).toUpperCase() + progress.phase.slice(1)}
+              {getPhaseLabel(progress.phase)}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -425,7 +457,7 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
  * Displays analyzed sessions with extracted facts
  */
 interface ResultsViewProps {
-  results: SessionWithFacts[];
+  results: AnalysisResults;
   onStartNew: () => void;
 }
 
@@ -460,7 +492,7 @@ export function ResultsView({ results, onStartNew }: ResultsViewProps) {
     setSelectedSessionIndex(newIndex);
   };
 
-  const filteredResults = results.filter(result => {
+  const filteredResults = results.sessions.filter(result => {
     if (filterIntent && !result.facts.generalIntent.toLowerCase().includes(filterIntent.toLowerCase())) {
       return false;
     }
@@ -498,11 +530,42 @@ export function ResultsView({ results, onStartNew }: ResultsViewProps) {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Analysis Results</h1>
           <p className="mt-2 text-gray-600">
-            {results.length} sessions analyzed with AI-extracted facts and insights.
+            {results.sessions.length} sessions analyzed with AI-extracted facts and insights.
           </p>
         </div>
         <Button onClick={onStartNew}>Start New Analysis</Button>
       </div>
+
+      {/* Analysis Summary */}
+      {results.analysisSummary && (
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle>Analysis Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose prose-sm max-w-none">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {results.analysisSummary.overview}
+                </ReactMarkdown>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Detailed Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose prose-sm max-w-none">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {results.analysisSummary.summary}
+                </ReactMarkdown>
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
 
       {/* Filters */}
       <Card>
@@ -615,14 +678,14 @@ export function ResultsView({ results, onStartNew }: ResultsViewProps) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{results.length}</div>
+            <div className="text-2xl font-bold text-blue-600">{results.sessions.length}</div>
             <div className="text-sm text-gray-500">Total Sessions</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-green-600">
-              {results.filter(r => r.facts.sessionOutcome === 'Contained').length}
+              {results.sessions.filter((r: SessionWithFacts) => r.facts.sessionOutcome === 'Contained').length}
             </div>
             <div className="text-sm text-gray-500">Contained</div>
           </CardContent>
@@ -630,7 +693,7 @@ export function ResultsView({ results, onStartNew }: ResultsViewProps) {
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-red-600">
-              {results.filter(r => r.facts.sessionOutcome === 'Transfer').length}
+              {results.sessions.filter((r: SessionWithFacts) => r.facts.sessionOutcome === 'Transfer').length}
             </div>
             <div className="text-sm text-gray-500">Transferred</div>
           </CardContent>
@@ -638,7 +701,7 @@ export function ResultsView({ results, onStartNew }: ResultsViewProps) {
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-purple-600">
-              {[...new Set(results.map(r => r.facts.generalIntent))].length}
+              {[...new Set(results.sessions.map((r: SessionWithFacts) => r.facts.generalIntent))].length}
             </div>
             <div className="text-sm text-gray-500">Unique Intents</div>
           </CardContent>
@@ -666,7 +729,7 @@ export function ResultsView({ results, onStartNew }: ResultsViewProps) {
 export default function AutoAnalyzePage() {
   const [currentView, setCurrentView] = useState<'config' | 'progress' | 'results'>('config');
   const [analysisId, setAnalysisId] = useState<string>('');
-  const [results, setResults] = useState<SessionWithFacts[]>([]);
+  const [results, setResults] = useState<AnalysisResults>({ sessions: [] });
   const [isLoadingMock, setIsLoadingMock] = useState(false);
 
   const handleAnalysisStart = (newAnalysisId: string) => {
@@ -674,7 +737,7 @@ export default function AutoAnalyzePage() {
     setCurrentView('progress');
   };
 
-  const handleAnalysisComplete = (analysisResults: SessionWithFacts[]) => {
+  const handleAnalysisComplete = (analysisResults: AnalysisResults) => {
     setResults(analysisResults);
     setCurrentView('results');
   };
@@ -682,7 +745,7 @@ export default function AutoAnalyzePage() {
   const handleStartNew = () => {
     setCurrentView('config');
     setAnalysisId('');
-    setResults([]);
+    setResults({ sessions: [] });
   };
 
   const handleShowMockReports = async () => {
@@ -716,7 +779,7 @@ export default function AutoAnalyzePage() {
         />
       )}
       
-      {currentView === 'results' && results.length > 0 && (
+      {currentView === 'results' && results.sessions.length > 0 && (
         <ResultsView 
           results={results}
           onStartNew={handleStartNew}
