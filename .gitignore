@@ -60,6 +60,13 @@ pids/
 coverage/
 *.lcov
 
+# Test results and artifacts
+test-results/
+frontend/test-results/
+backend/test-results/
+playwright-report/
+*.xml
+
 # nyc test coverage
 .nyc_output
 
