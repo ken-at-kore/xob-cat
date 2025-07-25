@@ -39,6 +39,7 @@ npm run lint:fix             # Auto-fix linting (backend only)
 ```bash
 npm run collect-data          # Collect production data via scripts/collect-production-data.ts
 npm run generate-mock-analysis # Generate mock analysis results for testing UI
+npm run generate-analysis-summary # Generate AI-powered analysis summaries from mock data
 npx tsx scripts/collect-july-6-13-full-range.ts    # Historical data collection
 ```
 
@@ -102,7 +103,7 @@ docs/                      # Product requirements and architecture docs
 ## Auto-Analyze Feature
 
 ### Overview
-The Auto-Analyze feature provides AI-powered batch analysis of customer service sessions using OpenAI GPT-4o-mini. It implements intelligent session sampling with time window expansion and maintains classification consistency across analysis batches.
+The Auto-Analyze feature provides AI-powered batch analysis of customer service sessions using OpenAI GPT-4o-mini. It implements intelligent session sampling with time window expansion, maintains classification consistency across analysis batches, and generates comprehensive analysis summaries with actionable insights.
 
 ### Key Components
 
@@ -112,6 +113,7 @@ autoAnalyzeService.ts         # Main orchestration service (singleton pattern)
 ├── sessionSamplingService.ts # Time window expansion algorithm (3hr → 6hr → 12hr → 6day)
 ├── batchAnalysisService.ts   # Batch processing with classification consistency
 ├── openaiAnalysisService.ts  # GPT-4o-mini integration with function calling
+├── analysisSummaryService.ts # Analysis summary generation with markdown output
 └── koreApiService.ts         # Session data retrieval with rate limiting
 ```
 
@@ -147,6 +149,7 @@ DELETE /api/analysis/auto-analyze/:id           # Cancel analysis
 3. **Rate Limiting**: 2-second intervals between batches
 4. **Token Tracking**: Real-time cost calculation and usage monitoring
 5. **Error Handling**: Continue processing despite individual session failures
+6. **Summary Generation**: Generate analysis overview and detailed summary using aggregated session data
 
 #### OpenAI Integration
 - **Model**: GPT-4o-mini with function calling
@@ -246,7 +249,7 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
   - Summary Notes (one-sentence session summary)
 - **Batch Processing**: Processes sessions in batches (~5 sessions) while maintaining classification consistency across all batches
 - **Progress Tracking**: Real-time progress indicators with token usage and cost estimation
-- **Results Display**: Clean table with clickable rows for detailed session views (transcript column removed for better usability)
+- **Results Display**: Comprehensive analysis summaries displayed above session table with markdown formatting, followed by clean table with clickable rows for detailed session views
 - **Error Handling**: Robust error recovery with fallback classifications and retry logic
 
 **Configuration Options**:
