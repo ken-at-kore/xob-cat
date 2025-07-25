@@ -1,0 +1,296 @@
+import { v4 as uuidv4 } from 'uuid';
+import { SessionSamplingService } from './sessionSamplingService';
+import { BatchAnalysisService } from './batchAnalysisService';
+import { OpenAIAnalysisService } from './openaiAnalysisService';
+import { KoreApiService } from './koreApiService';
+import { 
+  AnalysisConfig, 
+  AnalysisProgress, 
+  SessionWithFacts, 
+  ExistingClassifications,
+  BatchTokenUsage
+} from '../../../shared/types';
+
+interface AnalysisSession {
+  id: string;
+  config: AnalysisConfig;
+  progress: AnalysisProgress;
+  results?: SessionWithFacts[];
+  cancelled: boolean;
+}
+
+export class AutoAnalyzeService {
+  private readonly BATCH_SIZE = 5;
+  private readonly POLLING_INTERVAL = 2000; // 2 seconds between batches
+  
+  private static instance: AutoAnalyzeService | null = null;
+  private activeSessions = new Map<string, AnalysisSession>();
+
+  constructor(
+    private koreApiService: KoreApiService,
+    private sessionSamplingService: SessionSamplingService,
+    private batchAnalysisService: BatchAnalysisService,
+    private openaiAnalysisService: OpenAIAnalysisService
+  ) {}
+
+  async startAnalysis(config: AnalysisConfig): Promise<string> {
+    const analysisId = uuidv4();
+    
+    const analysisSession: AnalysisSession = {
+      id: analysisId,
+      config,
+      progress: {
+        analysisId,
+        phase: 'sampling',
+        currentStep: 'Initializing analysis...',
+        sessionsFound: 0,
+        sessionsProcessed: 0,
+        totalSessions: config.sessionCount,
+        batchesCompleted: 0,
+        totalBatches: 0,
+        tokensUsed: 0,
+        estimatedCost: 0,
+        startTime: new Date().toISOString()
+      },
+      cancelled: false
+    };
+
+    this.activeSessions.set(analysisId, analysisSession);
+
+    // Start analysis in background
+    this.runAnalysis(analysisId).catch(error => {
+      console.error(`Analysis ${analysisId} failed:`, error);
+      this.updateProgress(analysisId, {
+        phase: 'error',
+        currentStep: 'Analysis failed',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        endTime: new Date().toISOString()
+      });
+    });
+
+    return analysisId;
+  }
+
+  async getProgress(analysisId: string): Promise<AnalysisProgress> {
+    const session = this.activeSessions.get(analysisId);
+    if (!session) {
+      throw new Error('Analysis not found');
+    }
+    return session.progress;
+  }
+
+  async getResults(analysisId: string): Promise<SessionWithFacts[]> {
+    const session = this.activeSessions.get(analysisId);
+    if (!session) {
+      throw new Error('Analysis not found');
+    }
+    
+    if (session.progress.phase !== 'complete') {
+      throw new Error('Analysis not complete');
+    }
+
+    if (!session.results) {
+      throw new Error('Results not available');
+    }
+
+    return session.results;
+  }
+
+  async cancelAnalysis(analysisId: string): Promise<boolean> {
+    const session = this.activeSessions.get(analysisId);
+    if (!session) {
+      throw new Error('Analysis not found');
+    }
+
+    if (session.progress.phase === 'complete') {
+      return false; // Already complete
+    }
+
+    session.cancelled = true;
+    this.updateProgress(analysisId, {
+      phase: 'error',
+      currentStep: 'Analysis cancelled by user',
+      error: 'Cancelled',
+      endTime: new Date().toISOString()
+    });
+
+    return true;
+  }
+
+  private async runAnalysis(analysisId: string): Promise<void> {
+    const session = this.activeSessions.get(analysisId);
+    if (!session) return;
+
+    try {
+      // Phase 1: Sample sessions
+      this.updateProgress(analysisId, {
+        currentStep: 'Searching for sessions...',
+        phase: 'sampling'
+      });
+
+      const samplingResult = await this.sessionSamplingService.sampleSessions(session.config);
+      
+      if (session.cancelled) return;
+
+      this.updateProgress(analysisId, {
+        currentStep: `Found ${samplingResult.sessions.length} sessions`,
+        sessionsFound: samplingResult.sessions.length,
+        totalSessions: samplingResult.sessions.length
+      });
+
+      // Phase 2: Analyze sessions in batches
+      this.updateProgress(analysisId, {
+        phase: 'analyzing',
+        currentStep: 'Starting session analysis...',
+        totalBatches: Math.ceil(samplingResult.sessions.length / this.BATCH_SIZE)
+      });
+
+      const allResults: SessionWithFacts[] = [];
+      let existingClassifications: ExistingClassifications = {
+        generalIntent: new Set(),
+        transferReason: new Set(),
+        dropOffLocation: new Set()
+      };
+
+      let totalTokenUsage: BatchTokenUsage = {
+        promptTokens: 0,
+        completionTokens: 0,
+        totalTokens: 0,
+        cost: 0,
+        model: 'gpt-4o-mini-2024-07-18'
+      };
+
+      // Process sessions in batches
+      for (let i = 0; i < samplingResult.sessions.length; i += this.BATCH_SIZE) {
+        if (session.cancelled) return;
+
+        const batch = samplingResult.sessions.slice(i, i + this.BATCH_SIZE);
+        const batchNumber = Math.floor(i / this.BATCH_SIZE) + 1;
+
+        this.updateProgress(analysisId, {
+          currentStep: `Processing batch ${batchNumber} of ${Math.ceil(samplingResult.sessions.length / this.BATCH_SIZE)} (${batch.length} sessions)`
+        });
+
+        try {
+          const batchResult = await this.batchAnalysisService.processSessionsBatch(
+            batch,
+            existingClassifications,
+            session.config.openaiApiKey
+          );
+
+          allResults.push(...batchResult.results);
+          existingClassifications = batchResult.updatedClassifications;
+          totalTokenUsage = this.accumulateTokenUsage(totalTokenUsage, batchResult.tokenUsage);
+
+          this.updateProgress(analysisId, {
+            sessionsProcessed: allResults.length,
+            batchesCompleted: batchNumber,
+            tokensUsed: totalTokenUsage.totalTokens,
+            estimatedCost: totalTokenUsage.cost,
+            eta: this.calculateETA(
+              batchNumber,
+              Math.ceil(samplingResult.sessions.length / this.BATCH_SIZE),
+              Date.now() - new Date(session.progress.startTime).getTime()
+            )
+          });
+
+          // Rate limiting between batches
+          if (i + this.BATCH_SIZE < samplingResult.sessions.length) {
+            await this.sleep(this.POLLING_INTERVAL);
+          }
+
+        } catch (error) {
+          console.error(`Batch ${batchNumber} failed:`, error);
+          // Continue with next batch - the batch service handles individual failures
+        }
+      }
+
+      if (session.cancelled) return;
+
+      // Phase 3: Complete
+      session.results = allResults;
+      this.updateProgress(analysisId, {
+        phase: 'complete',
+        currentStep: 'Analysis complete',
+        sessionsProcessed: allResults.length,
+        endTime: new Date().toISOString()
+      });
+
+      // Clean up after some time (could be moved to a separate cleanup service)
+      setTimeout(() => {
+        this.activeSessions.delete(analysisId);
+      }, 3600000); // 1 hour
+
+    } catch (error) {
+      console.error(`Analysis ${analysisId} failed:`, error);
+      this.updateProgress(analysisId, {
+        phase: 'error',
+        currentStep: 'Analysis failed',
+        error: error instanceof Error ? error.message : 'Unknown error',
+        endTime: new Date().toISOString()
+      });
+    }
+  }
+
+  private updateProgress(analysisId: string, updates: Partial<AnalysisProgress>): void {
+    const session = this.activeSessions.get(analysisId);
+    if (!session) return;
+
+    session.progress = { ...session.progress, ...updates };
+  }
+
+  private calculateETA(
+    completedBatches: number, 
+    totalBatches: number, 
+    elapsedMs: number
+  ): number {
+    if (completedBatches === 0) return 0;
+    
+    const avgBatchTime = elapsedMs / completedBatches;
+    const remainingBatches = totalBatches - completedBatches;
+    
+    return Math.round((remainingBatches * avgBatchTime) / 1000); // seconds
+  }
+
+  private accumulateTokenUsage(
+    accumulated: BatchTokenUsage,
+    newUsage: BatchTokenUsage
+  ): BatchTokenUsage {
+    return {
+      promptTokens: accumulated.promptTokens + newUsage.promptTokens,
+      completionTokens: accumulated.completionTokens + newUsage.completionTokens,
+      totalTokens: accumulated.totalTokens + newUsage.totalTokens,
+      cost: accumulated.cost + newUsage.cost,
+      model: newUsage.model
+    };
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // Singleton pattern to maintain state across requests
+  static create(botId: string, jwtToken: string): AutoAnalyzeService {
+    if (!AutoAnalyzeService.instance) {
+      const koreApiConfig = {
+        botId,
+        clientId: 'mock-client-id', // This would come from environment/config in real implementation
+        clientSecret: 'mock-client-secret', // This would come from environment/config in real implementation
+        baseUrl: 'https://bots.kore.ai'
+      };
+      const koreApiService = new KoreApiService(koreApiConfig);
+      const sessionSamplingService = new SessionSamplingService(koreApiService);
+      const openaiAnalysisService = new OpenAIAnalysisService();
+      const batchAnalysisService = new BatchAnalysisService(openaiAnalysisService);
+
+      AutoAnalyzeService.instance = new AutoAnalyzeService(
+        koreApiService,
+        sessionSamplingService,
+        batchAnalysisService,
+        openaiAnalysisService
+      );
+    }
+    
+    return AutoAnalyzeService.instance;
+  }
+}

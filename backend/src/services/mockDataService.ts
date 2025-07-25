@@ -97,8 +97,29 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
       console.log('Using real Kore.ai API to fetch sessions');
       
       // Convert filters to date range for Kore.ai API
-      const dateFrom = filters.start_date || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      const dateTo = filters.end_date || new Date().toISOString();
+      let dateFrom: string;
+      let dateTo: string;
+      
+      
+      if (filters.start_date) {
+        dateFrom = filters.start_date;
+        if (filters.end_date) {
+          // When both dates provided, add 1 day to end_date to make it inclusive
+          const endDate = new Date(filters.end_date);
+          endDate.setDate(endDate.getDate() + 1);
+          dateTo = endDate.toISOString().split('T')[0];
+        } else {
+          // If only start_date is provided, filter for that entire day
+          const startDate = new Date(filters.start_date);
+          const endDate = new Date(startDate);
+          endDate.setDate(endDate.getDate() + 1); // Add 1 day
+          dateTo = endDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+        }
+      } else {
+        // Default: last 7 days
+        dateFrom = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        dateTo = new Date().toISOString();
+      }
       
       const sessions = await koreApiService.getSessions(
         dateFrom,
@@ -158,6 +179,46 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
           filteredSessions = filteredSessions.filter((s: SessionWithTranscript) => 
             s.containment_type === filters.containment_type
           );
+        }
+
+        // Apply time filtering (UI specifies Eastern Time)
+        if (filters.start_date) {
+          let startDate: Date;
+          if (filters.start_time) {
+            // Parse as Eastern Time explicitly
+            const timeParts = filters.start_time.split(':');
+            if (timeParts.length === 2) {
+              const hours = parseInt(timeParts[0] || '0');
+              const minutes = parseInt(timeParts[1] || '0');
+              // Create date in Eastern Time, then convert to UTC for comparison
+              startDate = new Date(`${filters.start_date}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00.000-04:00`);
+            } else {
+              startDate = new Date(`${filters.start_date}T00:00:00.000-04:00`);
+            }
+          } else {
+            startDate = new Date(`${filters.start_date}T00:00:00.000-04:00`);
+          }
+          filteredSessions = filteredSessions.filter(s => new Date(s.start_time) >= startDate);
+        }
+        
+        if (filters.end_date) {
+          let endDate: Date;
+          if (filters.end_time) {
+            // Parse as Eastern Time explicitly
+            const timeParts = filters.end_time.split(':');
+            if (timeParts.length === 2) {
+              const hours = parseInt(timeParts[0] || '23');
+              const minutes = parseInt(timeParts[1] || '59');
+              // Create date in Eastern Time, then convert to UTC for comparison
+              endDate = new Date(`${filters.end_date}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:59.999-04:00`);
+            } else {
+              endDate = new Date(`${filters.end_date}T23:59:59.999-04:00`);
+            }
+          } else {
+            // If no end time specified, include the whole end date (Eastern Time)
+            endDate = new Date(`${filters.end_date}T23:59:59.999-04:00`);
+          }
+          filteredSessions = filteredSessions.filter(s => new Date(s.start_time) <= endDate);
         }
 
         return filteredSessions;
