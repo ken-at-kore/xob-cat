@@ -223,7 +223,7 @@ describe('Auto-Analyze API Routes', () => {
         }
       ];
 
-      mockAutoAnalyzeService.getResults.mockResolvedValue(mockResults);
+      mockAutoAnalyzeService.getResults.mockResolvedValue({ sessions: mockResults });
 
       const response = await request(app)
         .get(`/api/analysis/auto-analyze/results/${mockAnalysisId}`)
@@ -231,7 +231,7 @@ describe('Auto-Analyze API Routes', () => {
 
       expect(response.body).toEqual({
         success: true,
-        data: mockResults
+        data: { sessions: mockResults }
       });
 
       expect(mockAutoAnalyzeService.getResults).toHaveBeenCalledWith(mockAnalysisId);
