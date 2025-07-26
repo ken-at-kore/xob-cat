@@ -64,6 +64,8 @@ components/
 ├── SessionTable.tsx        # Main sessions data table (cleaned up, no Card wrappers)
 ├── SessionDetailsDialog.tsx # Session detail modal for View Sessions
 ├── AnalyzedSessionDetailsDialog.tsx # Session detail modal for Auto-Analyze with AI facts
+├── AnalysisCharts.tsx      # Recharts visualizations (Pie, Pareto, Bar charts)
+├── AnalysisReportView.tsx  # Comprehensive Auto-Analyze report with charts and markdown
 ├── ErrorBoundary.tsx       # Error handling wrapper
 └── ui/                     # shadcn/ui components (Button, Table, etc.)
 
@@ -249,7 +251,8 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
   - Summary Notes (one-sentence session summary)
 - **Batch Processing**: Processes sessions in batches (~5 sessions) while maintaining classification consistency across all batches
 - **Progress Tracking**: Real-time progress indicators with token usage and cost estimation
-- **Results Display**: Comprehensive analysis summaries displayed above session table with markdown formatting, followed by clean table with clickable rows for detailed session views
+- **Results Display**: Comprehensive analysis report with multiple visualizations, markdown summaries, and interactive data exploration
+- **Data Visualization**: Professional charts using Recharts library including pie charts, Pareto analysis, and bar charts
 - **Error Handling**: Robust error recovery with fallback classifications and retry logic
 
 **Configuration Options**:
@@ -266,7 +269,16 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 
 **Time Window Strategy**: 3-hour initial window → 6-hour → 12-hour → 6-day expansion until sufficient sessions found
 
-**Mock Reports Feature**: For development and testing purposes, the Auto-Analyze page includes a "See Mock Reports" button that bypasses the analysis step and displays sample results using mock data generated from real session transcripts. This allows developers to test the reporting interface without needing to perform actual AI analysis or use OpenAI API keys.
+**Mock Reports Feature**: For development and testing purposes, the Auto-Analyze page includes a "See Mock Reports" button that bypasses the analysis step and displays comprehensive sample results using mock data generated from real session transcripts. This allows developers to test the complete reporting interface with all visualizations without needing to perform actual AI analysis or use OpenAI API keys.
+
+**Analysis Report Visualizations**: The results page displays a comprehensive analytics dashboard featuring:
+- **Analysis Overview & Summary**: AI-generated markdown insights with performance metrics and actionable recommendations
+- **Session Outcomes Pie Chart**: Visual breakdown of contained vs transferred sessions with percentages
+- **Transfer Reasons Pareto Chart**: Ranked analysis of why sessions were escalated to live agents  
+- **Drop-off Locations Bar Chart**: Visualization of where users abandoned their sessions
+- **General Intents Bar Chart**: Distribution of user intents and goals
+- **Cost Analysis Card**: Token usage, estimated costs, and model information
+- **Interactive Sessions Table**: Filterable table with detailed session exploration via clickable rows
 
 ## 🏗️ Project Architecture
 
@@ -277,6 +289,7 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 - **Backend**: Node.js + Express + TypeScript (port 3001)
 - **Shared**: TypeScript types in `shared/types/`
 - **LLM Integration**: OpenAI GPT-4o-mini with function calling
+- **Data Visualization**: Recharts library for interactive charts and graphs
 - **Testing**: Jest (unit), Playwright (E2E)
 - **No Database**: In-memory data only (MVP constraint)
 
@@ -435,9 +448,12 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 - Token usage tracking and cost calculation
 - Batch analysis capabilities
 
-### Data Visualization (Planned)
-- Pareto charts for intent/drop-off frequency using nivo charts
-- Transfer reason analysis dashboards
-- Session metrics visualization
+### Data Visualization
+- **Session Outcomes**: Pie chart visualization showing containment vs transfer rates with percentages
+- **Transfer Reasons**: Pareto chart analysis ranking reasons for session escalation
+- **Drop-off Analysis**: Bar chart showing where users abandon sessions in the conversation flow  
+- **Intent Distribution**: Bar chart displaying the frequency of different user intents
+- **Cost Analytics**: Token usage, model information, and cost breakdown visualization
+- All charts built with Recharts library providing interactive tooltips and responsive design
 
 When working on this codebase, always reference the shared types, follow the monorepo structure, and ensure tests pass before committing changes.

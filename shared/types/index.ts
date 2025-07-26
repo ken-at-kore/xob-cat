@@ -132,6 +132,7 @@ export interface SessionWithFacts extends SessionWithTranscript {
     processingTime: number;
     batchNumber: number;
     timestamp: string;
+    model?: string;
   };
 }
 
@@ -168,7 +169,7 @@ export interface AnalysisSummary {
 
 export interface AnalysisResults {
   sessions: SessionWithFacts[];
-  analysisSummary?: AnalysisSummary;
+  analysisSummary?: AnalysisSummary | undefined;
 }
 
 export interface BatchTokenUsage {

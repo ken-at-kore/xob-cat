@@ -107,13 +107,13 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
           // When both dates provided, add 1 day to end_date to make it inclusive
           const endDate = new Date(filters.end_date);
           endDate.setDate(endDate.getDate() + 1);
-          dateTo = endDate.toISOString().split('T')[0];
+          dateTo = endDate.toISOString().split('T')[0] || '';
         } else {
           // If only start_date is provided, filter for that entire day
           const startDate = new Date(filters.start_date);
           const endDate = new Date(startDate);
           endDate.setDate(endDate.getDate() + 1); // Add 1 day
-          dateTo = endDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+          dateTo = endDate.toISOString().split('T')[0] || ''; // Format as YYYY-MM-DD
         }
       } else {
         // Default: last 7 days
@@ -198,7 +198,7 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
           } else {
             startDate = new Date(`${filters.start_date}T00:00:00.000-04:00`);
           }
-          filteredSessions = filteredSessions.filter(s => new Date(s.start_time) >= startDate);
+          filteredSessions = filteredSessions.filter((s: SessionWithTranscript) => new Date(s.start_time) >= startDate);
         }
         
         if (filters.end_date) {
@@ -218,7 +218,7 @@ export async function getSessions(filters: SessionFilters): Promise<SessionWithT
             // If no end time specified, include the whole end date (Eastern Time)
             endDate = new Date(`${filters.end_date}T23:59:59.999-04:00`);
           }
-          filteredSessions = filteredSessions.filter(s => new Date(s.start_time) <= endDate);
+          filteredSessions = filteredSessions.filter((s: SessionWithTranscript) => new Date(s.start_time) <= endDate);
         }
 
         return filteredSessions;
