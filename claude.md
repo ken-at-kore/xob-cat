@@ -272,7 +272,7 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 **Mock Reports Feature**: For development and testing purposes, the Auto-Analyze page includes a "See Mock Reports" button that bypasses the analysis step and displays comprehensive sample results using mock data generated from real session transcripts. This allows developers to test the complete reporting interface with all visualizations without needing to perform actual AI analysis or use OpenAI API keys.
 
 **Analysis Report Visualizations**: The results page displays a comprehensive analytics dashboard featuring:
-- **Analysis Overview & Summary**: AI-generated markdown insights with performance metrics and actionable recommendations
+- **Analysis Overview & Summary**: AI-generated markdown insights with performance metrics and actionable recommendations (properly styled with @tailwindcss/typography)
 - **Session Outcomes Pie Chart**: Visual breakdown of contained vs transferred sessions with percentages
 - **Transfer Reasons Pareto Chart**: Ranked analysis of why sessions were escalated to live agents  
 - **Drop-off Locations Bar Chart**: Visualization of where users abandoned their sessions
@@ -280,12 +280,14 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 - **Cost Analysis Card**: Token usage, estimated costs, and model information
 - **Interactive Sessions Table**: Filterable table with detailed session exploration via clickable rows
 
+**Markdown Rendering**: Analysis summaries use ReactMarkdown with remark-gfm and Tailwind Typography plugin for proper header hierarchy (H1: 32px, H2: 24px, H3: 18.72px) and bold text styling.
+
 ## 🏗️ Project Architecture
 
 **XOB CAT** is a monorepo full-stack analytics platform for Kore.ai Expert Services teams to analyze chatbot conversations using OpenAI GPT-4o-mini.
 
 ### Tech Stack
-- **Frontend**: Next.js 15 (App Router) + TypeScript + Tailwind CSS + shadcn/ui
+- **Frontend**: Next.js 15 (App Router) + TypeScript + Tailwind CSS v4 + @tailwindcss/typography + shadcn/ui
 - **Backend**: Node.js + Express + TypeScript (port 3001)
 - **Shared**: TypeScript types in `shared/types/`
 - **LLM Integration**: OpenAI GPT-4o-mini with function calling
