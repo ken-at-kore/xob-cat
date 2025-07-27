@@ -424,6 +424,26 @@ FRONTEND_URL=http://localhost:3000  # CORS origin
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
+## Visual Actions: `snapshot` and `visually test`
+
+These are shorthand commands for using Playwright MCP to interact with and analyze a web page:
+
+- `snapshot [page]` → Use Playwright MCP to open the specified page and take a screenshot. Consider describing what you see.
+
+- `visually test [page or feature]` → Use Playwright MCP to open the page, take a screenshot, and analyze the UI for bugs, layout issues, or UX problems. Consider describing your findings and take further action if appropriate.
+
+These verbs may appear in instructions or conversation. When used, treat them as cues to perform these specific actions.
+
+## Playwright MCP Usage Guidelines
+
+You have access to Playwright MCP and should use it to visually inspect the UI when helpful. (Though be mindful of your token usage.) This includes:
+
+- Responding to prompts that mention `snapshot` or `visually test`
+- Situations where a visual understanding of a page or layout would clarify a bug, behavior, or refinement opportunity
+- Cases where viewing the rendered app will help you write, evaluate, or improve front-end code
+
+Use your judgment to decide when launching a Playwright MCP browser to capture a screenshot or inspect a page will enhance your response.
+
 ## 🎯 Development Guidelines
 
 ### OpenAI Integration
