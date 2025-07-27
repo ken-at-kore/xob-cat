@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "bash ./scripts/dev-start.sh",
     "stop": "lsof -ti:3000 -sTCP:LISTEN | xargs kill -9 2>/dev/null || true && lsof -ti:3001 -sTCP:LISTEN | xargs kill -9 2>/dev/null || true",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "bash ./scripts/dev-start-frontend.sh",
+    "dev:backend": "bash ./scripts/dev-start-backend.sh",
     "status": "npm run status:backend && npm run status:frontend",
     "status:backend": "curl -sf http://localhost:3001/health || echo '❌ Backend is not responding'",
     "status:frontend": "curl -sf http://localhost:3000 || echo '❌ Frontend is not responding'",
