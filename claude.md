@@ -6,9 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Development
 ```bash
-npm run dev                    # Start both frontend (3000) and backend (3001)
-npm run dev:frontend          # Next.js dev server only
-npm run dev:backend           # Express API server only
+npm run dev                    # Start both frontend (3000) and backend (3001) via scripts/dev-start.sh
+npm run dev:frontend          # Start Next.js dev server only via scripts/dev-start-frontend.sh  
+npm run dev:backend           # Start Express API server only via scripts/dev-start-backend.sh
+npm run stop                  # Stop all dev servers (kills processes on ports 3000 and 3001)
+```
+
+### Server Status & Health Checks
+```bash
+npm run status                # Check both frontend and backend server status
+npm run status:frontend       # Check frontend server health (curl http://localhost:3000)
+npm run status:backend        # Check backend server health (curl http://localhost:3001/health)
 ```
 
 ### Testing
@@ -215,6 +223,13 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 - **Pre-commit**: Run `npm run typecheck` before committing
 - **Update claude.md**: When workflows, scripts, or structure changes
 
+### Required Development Commands
+**IMPORTANT**: Always use the standardized npm scripts defined in package.json:
+- **Server Management**: Use `npm run dev`, `npm run stop`, `npm run status` commands only
+- **Individual Servers**: Use `npm run dev:frontend` and `npm run dev:backend` (not direct cd commands)
+- **Health Checks**: Use `npm run status:backend` and `npm run status:frontend` for server monitoring
+- **Script Location**: All development scripts are in `scripts/` directory with proper error handling and logging
+
 ### Navigation Architecture
 - **Route Structure**: Uses Next.js 15 App Router with `(dashboard)` route group
 - **TopNav Component**: Fixed header with app branding and bot connection info
@@ -310,11 +325,17 @@ XOB CAT/
 ### Development
 ```bash
 # Start both frontend and backend concurrently
-npm run dev
+npm run dev             # Uses scripts/dev-start.sh with health checks
 
-# Individual services
-npm run dev:frontend    # Next.js dev server (port 3000)
-npm run dev:backend     # Express API server (port 3001)
+# Individual services  
+npm run dev:frontend    # Next.js dev server (port 3000) via scripts/dev-start-frontend.sh
+npm run dev:backend     # Express API server (port 3001) via scripts/dev-start-backend.sh
+
+# Server management
+npm run stop            # Kill all dev servers on ports 3000 and 3001
+npm run status          # Check health of both servers
+npm run status:frontend # Check frontend server (curl localhost:3000)
+npm run status:backend  # Check backend server (curl localhost:3001/health)
 ```
 
 ### Testing
