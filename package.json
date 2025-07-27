@@ -4,9 +4,13 @@
   "description": "XO Bot Conversation Analysis Tools - Full-stack web app for chatbot session analysis",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev": "bash ./scripts/dev-start.sh",
+    "stop": "lsof -ti:3000 -sTCP:LISTEN | xargs kill -9 2>/dev/null || true && lsof -ti:3001 -sTCP:LISTEN | xargs kill -9 2>/dev/null || true",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
+    "status": "npm run status:backend && npm run status:frontend",
+    "status:backend": "curl -sf http://localhost:3001/health || echo '❌ Backend is not responding'",
+    "status:frontend": "curl -sf http://localhost:3000 || echo '❌ Frontend is not responding'",
     "build": "npm run build:backend && npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd backend && npm run build",
@@ -31,7 +35,9 @@
     "@babel/preset-typescript": "^7.27.1",
     "@playwright/mcp": "^0.0.31",
     "concurrently": "^8.2.2",
-    "ts-jest": "^29.4.0"
+    "kill-port": "^2.0.1",
+    "ts-jest": "^29.4.0",
+    "wait-on": "^8.0.4"
   },
   "engines": {
     "node": ">=18.0.0",
