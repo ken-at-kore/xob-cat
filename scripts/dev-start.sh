@@ -9,13 +9,13 @@ nohup bash -c "cd backend && npm run dev"  > backend.log 2>&1 &
 # Wait for both servers to respond (timeout after ~30s)
 echo "Starting servers, please wait..."
 for i in {1..30}; do
-  curl -sf http://localhost:3000 && curl -sf http://localhost:8000 && break
+  curl -sf http://localhost:3000 && curl -sf http://localhost:3001/health && break
   sleep 1
 done
 
 # Check if servers are up, then output result
-if curl -sf http://localhost:3000 && curl -sf http://localhost:8000; then
-  echo "✅ Servers ready (frontend: http://localhost:3000, backend: http://localhost:8000)"
+if curl -sf http://localhost:3000 && curl -sf http://localhost:3001/health; then
+  echo "✅ Servers ready (frontend: http://localhost:3000, backend: http://localhost:3001)"
 else
   echo "❌ Server failed to start within timeout."
   echo "Frontend log last 10 lines:" && tail -10 frontend.log

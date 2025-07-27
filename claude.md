@@ -9,7 +9,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev                    # Start both frontend (3000) and backend (3001)
 npm run dev:frontend          # Next.js dev server only
 npm run dev:backend           # Express API server only
-./start-dev.sh               # Alternative dev startup script
 ```
 
 ### Testing
