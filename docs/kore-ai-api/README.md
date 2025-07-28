@@ -8,7 +8,7 @@ XOB CAT integrates with Kore.ai's APIs to retrieve bot conversation data for ana
 
 ## Documentation Files
 
-*Documentation files will be added here as they become available.*
+- **[fetch-debug-logs.md](./fetch-debug-logs.md)** - Debug Logs API documentation for fetching conversation debug logs
 
 ## API Integration Details
 
