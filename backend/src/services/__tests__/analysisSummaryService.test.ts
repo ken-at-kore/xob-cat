@@ -1,273 +1,269 @@
+/**
+ * Tests for AnalysisSummaryService
+ * 
+ * This test suite verifies the updated analysis summary service that uses
+ * the shared LLMInferenceService for consistent prompt engineering.
+ */
+
 import { AnalysisSummaryService } from '../analysisSummaryService';
-import { SessionWithFacts, AnalysisSummary } from '../../../../shared/types';
-import OpenAI from 'openai';
+import { SessionWithFacts } from '../../../../shared/types';
+import { LLMInferenceService } from '../../../../shared/services/llmInferenceService';
 
-// Mock OpenAI
-jest.mock('openai', () => {
-  return jest.fn().mockImplementation(() => ({
-    chat: {
-      completions: {
-        create: jest.fn()
-      }
-    }
-  }));
-});
+// Mock the shared LLM service
+jest.mock('../../../../shared/services/llmInferenceService');
 
-const MockedOpenAI = OpenAI as jest.MockedClass<typeof OpenAI>;
+const MockedLLMService = LLMInferenceService as jest.MockedClass<typeof LLMInferenceService>;
 
 describe('AnalysisSummaryService', () => {
   let service: AnalysisSummaryService;
-  let mockOpenAI: jest.Mocked<OpenAI>;
+  let mockLLMService: jest.Mocked<LLMInferenceService>;
 
   const mockSessions: SessionWithFacts[] = [
     {
       session_id: 'session1',
       user_id: 'user1',
-      start_time: '2025-07-25T09:00:00Z',
-      end_time: '2025-07-25T09:10:00Z',
+      start_time: '2025-07-07T09:00:00Z',
+      end_time: '2025-07-07T09:15:00Z',
       containment_type: 'selfService',
       tags: [],
       metrics: {},
+      duration_seconds: 900,
+      message_count: 8,
+      user_message_count: 4,
+      bot_message_count: 4,
       messages: [
-        { message: 'Hello', message_type: 'bot', timestamp: '2025-07-25T09:00:00Z' },
-        { message: 'Hi, I need help', message_type: 'user', timestamp: '2025-07-25T09:01:00Z' }
+        { message: 'Hello, I need help', message_type: 'user', timestamp: '2025-07-07T09:00:00Z' },
+        { message: 'How can I help you?', message_type: 'bot', timestamp: '2025-07-07T09:00:30Z' }
       ],
-      duration_seconds: 600,
-      message_count: 2,
-      user_message_count: 1,
-      bot_message_count: 1,
       facts: {
-        generalIntent: 'Billing',
-        sessionOutcome: 'Contained',
-        transferReason: '',
-        dropOffLocation: '',
-        notes: 'User successfully completed billing inquiry'
+        generalIntent: 'Technical Support',
+        sessionOutcome: 'Transfer',
+        transferReason: 'No Provider ID',
+        dropOffLocation: 'Provider ID Prompt',
+        notes: 'User needed help with provider verification but could not provide ID'
       },
       analysisMetadata: {
-        tokensUsed: 500,
+        tokensUsed: 450,
         processingTime: 2000,
         batchNumber: 1,
-        timestamp: '2025-07-25T09:10:00Z'
+        timestamp: '2025-07-07T09:00:00Z'
       }
     },
     {
       session_id: 'session2',
       user_id: 'user2',
-      start_time: '2025-07-25T10:00:00Z',
-      end_time: '2025-07-25T10:15:00Z',
+      start_time: '2025-07-07T10:00:00Z',
+      end_time: '2025-07-07T10:10:00Z',
       containment_type: 'agent',
       tags: [],
       metrics: {},
+      duration_seconds: 600,
+      message_count: 6,
+      user_message_count: 3,
+      bot_message_count: 3,
       messages: [
-        { message: 'Hello', message_type: 'bot', timestamp: '2025-07-25T10:00:00Z' },
-        { message: 'I need help with claims', message_type: 'user', timestamp: '2025-07-25T10:01:00Z' }
+        { message: 'I want to check my eligibility', message_type: 'user', timestamp: '2025-07-07T10:00:00Z' },
+        { message: 'I can help with that', message_type: 'bot', timestamp: '2025-07-07T10:00:30Z' }
       ],
-      duration_seconds: 900,
-      message_count: 2,
-      user_message_count: 1,
-      bot_message_count: 1,
       facts: {
-        generalIntent: 'Claim Status',
-        sessionOutcome: 'Transfer',
-        transferReason: 'Technical Issue',
-        dropOffLocation: 'Authentication',
-        notes: 'User encountered technical issue and was transferred to agent'
+        generalIntent: 'Eligibility',
+        sessionOutcome: 'Contained',
+        transferReason: '',
+        dropOffLocation: '',
+        notes: 'User successfully checked eligibility through self-service'
       },
       analysisMetadata: {
-        tokensUsed: 450,
+        tokensUsed: 380,
         processingTime: 1800,
         batchNumber: 1,
-        timestamp: '2025-07-25T10:15:00Z'
+        timestamp: '2025-07-07T10:00:00Z'
       }
     }
   ];
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    
+    mockLLMService = {
+      generateAnalysisSummary: jest.fn(),
+      createAnalysisSummary: jest.fn(),
+      aggregateAnalysisData: jest.fn()
+    } as any;
+
+    MockedLLMService.mockImplementation(() => mockLLMService);
     service = new AnalysisSummaryService('test-api-key');
-    // Access the mocked instance
-    mockOpenAI = (service as any).openai;
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('generateAnalysisSummary', () => {
-    it('should generate analysis summary successfully', async () => {
-      const mockResponse = {
-        choices: [{
-          message: {
-            content: `# ANALYSIS_OVERVIEW
-This analysis examined 2 chatbot sessions from Jul 25, 2025, revealing a 50% transfer rate with 1 transferred and 1 contained session.
+    const mockLLMResponse = {
+      overview: 'This report presents analysis of the **XO bot\'s performance** based on 2 sessions.',
+      summary: '## Key Performance Patterns\n- **Transfer Rate**: 50% of sessions resulted in transfers',
+      containmentSuggestion: 'Enhance provider ID verification flow to reduce 50% of transfers',
+      tokensUsed: 1500,
+      cost: 0.0011
+    };
 
-# ANALYSIS_SUMMARY  
-## Performance Analysis
-The analysis shows mixed performance with opportunities for improvement in technical issue handling.
+    const mockAnalysisSummary = {
+      overview: mockLLMResponse.overview,
+      summary: mockLLMResponse.summary,
+      containmentSuggestion: mockLLMResponse.containmentSuggestion,
+      generatedAt: '2025-07-28T17:00:00.000Z',
+      sessionsAnalyzed: 2,
+      statistics: {
+        totalSessions: 2,
+        transferRate: 50,
+        containmentRate: 50,
+        averageSessionLength: 12.5,
+        averageMessagesPerSession: 7
+      }
+    };
 
-# CONTAINMENT_SUGGESTION
-Improve technical issue handling to reduce the 50% transfer rate caused by authentication problems.`
-          }
-        }],
-        usage: {
-          total_tokens: 1000,
-          prompt_tokens: 800,
-          completion_tokens: 200
-        }
-      };
+    beforeEach(() => {
+      mockLLMService.generateAnalysisSummary.mockResolvedValue(mockLLMResponse);
+      mockLLMService.createAnalysisSummary.mockReturnValue(mockAnalysisSummary);
+    });
 
-      (mockOpenAI.chat.completions.create as jest.Mock).mockResolvedValue(mockResponse);
-
+    it('should generate analysis summary using shared LLM service', async () => {
       const result = await service.generateAnalysisSummary(mockSessions);
 
-      expect(result).toEqual({
-        overview: 'This analysis examined 2 chatbot sessions from Jul 25, 2025, revealing a 50% transfer rate with 1 transferred and 1 contained session.',
-        summary: '## Performance Analysis\nThe analysis shows mixed performance with opportunities for improvement in technical issue handling.',
-        containmentSuggestion: 'Improve technical issue handling to reduce the 50% transfer rate caused by authentication problems.',
-        generatedAt: expect.any(String),
+      expect(mockLLMService.generateAnalysisSummary).toHaveBeenCalledWith(mockSessions);
+      expect(mockLLMService.createAnalysisSummary).toHaveBeenCalledWith(mockLLMResponse, mockSessions);
+      expect(result).toEqual(mockAnalysisSummary);
+    });
+
+    it('should handle LLM service errors', async () => {
+      const error = new Error('LLM service error');
+      mockLLMService.generateAnalysisSummary.mockRejectedValue(error);
+
+      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('LLM service error');
+    });
+
+    it('should pass through structured analysis summary', async () => {
+      const result = await service.generateAnalysisSummary(mockSessions);
+
+      expect(result.overview).toContain('XO bot\'s performance');
+      expect(result.summary).toContain('Key Performance Patterns');
+      expect(result.containmentSuggestion).toContain('Enhance provider ID verification');
+      expect(result.generatedAt).toBeDefined();
+      expect(result.sessionsAnalyzed).toBe(2);
+      expect(result.statistics).toEqual({
+        totalSessions: 2,
+        transferRate: 50,
+        containmentRate: 50,
+        averageSessionLength: 12.5,
+        averageMessagesPerSession: 7
+      });
+    });
+
+    it('should handle empty sessions array', async () => {
+      const error = new Error('No sessions provided for analysis');
+      mockLLMService.generateAnalysisSummary.mockRejectedValue(error);
+
+      await expect(service.generateAnalysisSummary([])).rejects.toThrow('No sessions provided for analysis');
+    });
+
+    it('should use the correct API key for LLM service', () => {
+      expect(MockedLLMService).toHaveBeenCalledWith('test-api-key');
+    });
+  });
+
+  describe('error handling and edge cases', () => {
+    it('should propagate LLM service analysis errors', async () => {
+      const analysisError = new Error('OpenAI API rate limit exceeded');
+      mockLLMService.generateAnalysisSummary.mockRejectedValue(analysisError);
+
+      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('OpenAI API rate limit exceeded');
+      expect(mockLLMService.generateAnalysisSummary).toHaveBeenCalledWith(mockSessions);
+    });
+
+    it('should propagate LLM service parsing errors', async () => {
+      const parsingError = new Error('Could not parse OpenAI response into required sections');
+      mockLLMService.generateAnalysisSummary.mockRejectedValue(parsingError);
+
+      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('Could not parse OpenAI response');
+    });
+
+    it('should handle network errors gracefully', async () => {
+      const networkError = new Error('Network timeout');
+      mockLLMService.generateAnalysisSummary.mockRejectedValue(networkError);
+
+      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('Network timeout');
+    });
+  });
+
+  describe('integration with shared LLM service', () => {
+    it('should delegate aggregation logic to shared service', async () => {
+      const mockLLMResponse = {
+        overview: 'Test overview',
+        summary: 'Test summary',
+        containmentSuggestion: 'Test suggestion',
+        tokensUsed: 1000,
+        cost: 0.005
+      };
+
+      mockLLMService.generateAnalysisSummary.mockResolvedValue(mockLLMResponse);
+      mockLLMService.createAnalysisSummary.mockReturnValue({
+        overview: 'Test overview',
+        summary: 'Test summary',
+        containmentSuggestion: 'Test suggestion',
+        generatedAt: '2025-07-28T17:00:00.000Z',
         sessionsAnalyzed: 2,
         statistics: {
           totalSessions: 2,
           transferRate: 50,
           containmentRate: 50,
-          averageSessionLength: 12.5, // (10 + 15) / 2
-          averageMessagesPerSession: 2
+          averageSessionLength: 12.5,
+          averageMessagesPerSession: 7
         }
       });
 
-      expect(mockOpenAI.chat.completions.create).toHaveBeenCalledWith({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: expect.stringContaining('XOB CAT Bot Analysis Context') }],
-        temperature: 0.7,
-        max_tokens: 2000
+      await service.generateAnalysisSummary(mockSessions);
+
+      expect(mockLLMService.generateAnalysisSummary).toHaveBeenCalledTimes(1);
+      expect(mockLLMService.createAnalysisSummary).toHaveBeenCalledWith(mockLLMResponse, mockSessions);
+    });
+
+    it('should maintain backwards compatibility with existing interface', async () => {
+      const mockResult = {
+        overview: 'Test',
+        summary: 'Test',
+        containmentSuggestion: 'Test',
+        generatedAt: '2025-07-28T17:00:00.000Z',
+        sessionsAnalyzed: 2,
+        statistics: {
+          totalSessions: 2,
+          transferRate: 50,
+          containmentRate: 50,
+          averageSessionLength: 12.5,
+          averageMessagesPerSession: 7
+        }
+      };
+
+      mockLLMService.generateAnalysisSummary.mockResolvedValue({
+        overview: 'Test',
+        summary: 'Test',
+        containmentSuggestion: 'Test',
+        tokensUsed: 1000,
+        cost: 0.005
       });
-    });
-
-    it('should handle empty sessions array', async () => {
-      await expect(service.generateAnalysisSummary([])).rejects.toThrow('No sessions provided for analysis');
-    });
-
-    it('should handle malformed OpenAI response', async () => {
-      const mockResponse = {
-        choices: [{
-          message: {
-            content: 'Invalid response without proper sections'
-          }
-        }],
-        usage: { total_tokens: 100 }
-      };
-
-      (mockOpenAI.chat.completions.create as jest.Mock).mockResolvedValue(mockResponse);
-
-      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('Could not parse OpenAI response into required sections');
-    });
-
-    it('should handle OpenAI API errors', async () => {
-      const apiError = new Error('OpenAI API error');
-      (mockOpenAI.chat.completions.create as jest.Mock).mockRejectedValue(apiError);
-
-      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('OpenAI API error');
-    });
-
-    it('should handle missing containment suggestion section', async () => {
-      const mockResponse = {
-        choices: [{
-          message: {
-            content: `# ANALYSIS_OVERVIEW
-This analysis examined 2 chatbot sessions.
-
-# ANALYSIS_SUMMARY  
-The analysis shows mixed performance.`
-          }
-        }],
-        usage: { total_tokens: 100 }
-      };
-
-      (mockOpenAI.chat.completions.create as jest.Mock).mockResolvedValue(mockResponse);
-
-      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('Could not parse OpenAI response into required sections');
-    });
-
-    it('should extract containment suggestion correctly', async () => {
-      const mockResponse = {
-        choices: [{
-          message: {
-            content: `# ANALYSIS_OVERVIEW
-This is the overview section.
-
-# ANALYSIS_SUMMARY  
-This is the summary section.
-
-# CONTAINMENT_SUGGESTION
-Enhance the member verification flow to reduce authentication failures by 25%.`
-          }
-        }],
-        usage: { total_tokens: 1000 }
-      };
-
-      (mockOpenAI.chat.completions.create as jest.Mock).mockResolvedValue(mockResponse);
+      mockLLMService.createAnalysisSummary.mockReturnValue(mockResult);
 
       const result = await service.generateAnalysisSummary(mockSessions);
 
-      expect(result.containmentSuggestion).toBe('Enhance the member verification flow to reduce authentication failures by 25%.');
-    });
-  });
-
-  describe('aggregateAnalysisData', () => {
-    it('should correctly aggregate session statistics', () => {
-      const aggregation = (service as any).aggregateAnalysisData(mockSessions);
-
-      expect(aggregation).toEqual({
-        totalSessions: 2,
-        transferCount: 1,
-        containedCount: 1,
-        transferRate: 50,
-        containmentRate: 50,
-        averageSessionLength: 12.5,
-        totalMessages: 4,
-        averageMessagesPerSession: 2,
-        intentBreakdown: {
-          'Billing': 1,
-          'Claim Status': 1
-        },
-        transferReasonBreakdown: {
-          'Technical Issue': 1
-        },
-        dropOffLocationBreakdown: {
-          'Authentication': 1
-        },
-        allSessionNotes: [
-          'User successfully completed billing inquiry',
-          'User encountered technical issue and was transferred to agent'
-        ],
-        sampleTranscripts: expect.arrayContaining([
-          expect.objectContaining({
-            sessionId: expect.any(String),
-            intent: expect.any(String),
-            outcome: expect.any(String),
-            messages: expect.any(Array)
-          })
-        ])
-      });
-    });
-  });
-
-  describe('calculateAnalysisPeriod', () => {
-    it('should return single date for same-day sessions', () => {
-      const sameDaySessions = mockSessions.map(s => ({
-        ...s,
-        start_time: '2025-07-25T09:00:00Z'
-      }));
-      
-      const period = (service as any).calculateAnalysisPeriod(sameDaySessions);
-      expect(period).toBe('Jul 25, 2025');
-    });
-
-    it('should return date range for multi-day sessions', () => {
-      const multiDaySessions = [
-        { ...mockSessions[0], start_time: '2025-07-25T09:00:00Z' },
-        { ...mockSessions[1], start_time: '2025-07-26T10:00:00Z' }
-      ];
-      
-      const period = (service as any).calculateAnalysisPeriod(multiDaySessions);
-      expect(period).toBe('Jul 25, 2025 - Jul 26, 2025');
+      // Verify the result has all expected properties for backwards compatibility
+      expect(result).toHaveProperty('overview');
+      expect(result).toHaveProperty('summary');
+      expect(result).toHaveProperty('containmentSuggestion');
+      expect(result).toHaveProperty('generatedAt');
+      expect(result).toHaveProperty('sessionsAnalyzed');
+      expect(result).toHaveProperty('statistics');
+      expect(result.statistics).toHaveProperty('totalSessions');
+      expect(result.statistics).toHaveProperty('transferRate');
+      expect(result.statistics).toHaveProperty('containmentRate');
+      expect(result.statistics).toHaveProperty('averageSessionLength');
+      expect(result.statistics).toHaveProperty('averageMessagesPerSession');
     });
   });
 });
