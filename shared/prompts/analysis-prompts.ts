@@ -32,98 +32,98 @@ export interface AnalysisAggregation {
 }
 
 /**
- * Enhanced Analysis Overview Prompt (richer formatting, reduced cognitive load)
+ * Analysis Overview Prompt - Conversational yet professional
  */
 export const ANALYSIS_OVERVIEW_PROMPT = `
 ## 1. Analysis Overview (~150-200 words)
-Create a **concise executive summary** that appears at the top of the analysis report following this exact 3-section structure:
+Write a clear, engaging summary that kicks off the analysis report. Think of this as explaining your findings to a colleague who wants the big picture first:
 
-**Section 1: Scope & Methodology (1-2 sentences, NO section heading)**
-- Briefly describe the XO bot analysis scope, dataset size, timeframe, and AI-powered methodology
-- Set context for the analysis with professional language
+**Start with the basics (1-2 sentences, NO section heading)**
+- Tell us what you analyzed - how many conversations, over what timeframe, and how you did it
+- Keep it straightforward and skip the jargon
 - Do NOT include any section heading like "Section 1:" or "Scope & Methodology"
 
-**Section 2: Key Performance Metrics & User Intents (1 paragraph, no bullets, NO section heading)**
-- Combine performance metrics and top user intents into a single flowing paragraph
-- Use **bold formatting** for critical statistics (transfer rate, containment rate, session metrics)
-- Include top 3-4 user intent categories with percentages in natural sentence flow
-- NO bullet points in this section - write as continuous prose
+**Share the key numbers and what people were asking about (1 paragraph, no bullets, NO section heading)**
+- Weave together the main performance numbers and what users were trying to accomplish
+- Use **bold formatting** for the important stats (transfer rate, containment rate, session length)
+- Mention the top 3-4 things people were asking the bot about, with percentages worked naturally into your sentences
+- Write this as a flowing paragraph - no bullet points here
 - Do NOT include any section heading like "Section 2:" or "Key Performance Metrics"
 
-**Section 3: Critical Findings (bullet points allowed, small heading only)**
-- Include ONLY the heading "**Critical Findings**" (using ## markdown for smaller heading)
-- Summarize the most important patterns, pain points, and insights from session data
-- Use bullet points for listing findings, but keep the bullet text in normal formatting
-- Use *italics* ONLY for specific data points and key terms within bullet points, NOT for entire sentences
-- Include both challenges and positive observations about bot effectiveness
+**Highlight what stood out (bullet points OK, small heading only)**
+- Use the heading "**What Stood Out**" (using ## markdown for smaller heading)
+- Point out the most interesting patterns you found - both good and concerning
+- Use bullet points to list your observations, keeping each one conversational
+- Use *italics* only for specific numbers and key terms, not whole sentences
+- Include wins and challenges - give us the real picture
 
-**Formatting Requirements:**
-- NO section headings for the first two sections
-- Only use "**Critical Findings**" as a ## heading for section 3
-- Use **bold** for key metrics and performance statistics
-- Use *italics* sparingly for emphasis on specific data points and key terms only
-- Keep paragraphs concise (2-3 sentences max)
-- Maintain professional tone appropriate for stakeholders
-- Refer to the system as "XO bot" or "bot" consistently
+**Keep it readable:**
+- NO section headings for the first two parts
+- Only use "**What Stood Out**" as a ## heading for the third part
+- Use **bold** for important numbers and stats
+- Use *italics* sparingly - just for emphasis on specific details
+- Keep paragraphs short and digestible (2-3 sentences max)
+- Write like you're talking to a smart colleague, not writing a formal report
+- Call it "XO bot" or "bot" throughout
 `;
 
 /**
- * Enhanced Detailed Analysis Prompt (concise recommendations, better structure)
+ * Detailed Analysis Prompt - In-depth but accessible
  */
 export const DETAILED_ANALYSIS_PROMPT = `
-## 2. Detailed Analysis (~300-400 words, reduced from 400-600)
-Create a **structured analysis** that appears at the bottom of the report. This should:
+## 2. Detailed Analysis (~600-800 words, thorough but readable)
+Now dive deeper into what the data is telling us. This is where you get to tell the full story behind the numbers - write this for people who need to understand what's really happening and what to do about it.
 
-**Content Requirements:**
-- **Performance Insights**: Deeper analysis of XO bot performance patterns based on session data
-- **Containment Focus**: Identify improvement opportunities from transfer patterns
-- **Pain Point Analysis**: Specific issues causing transfers based on transfer reasons and drop-off locations
-- **Actionable Recommendations**: **Concise** suggestions for UX, task completion, and bot training (reduce text by ~50% from current)
-- **Data-Driven**: Reference specific analysis data (transfer reasons, drop-off locations, intent patterns)
-- **Expert Tone**: Consultative language appropriate for bot optimization teams
+**What to cover:**
+- **How the bot is really performing**: Look at the patterns in how users interact with the bot and what leads to success or frustration
+- **When things go well vs. when they don't**: Dig into what makes some conversations work while others end up getting transferred
+- **The user experience journey**: Walk through where people get stuck, where they drop off, and what that tells us about pain points
+- **Why transfers happen**: Get into the real reasons - not just the categories, but what's actually going wrong from the user's perspective
+- **What to do about it**: Give specific, practical suggestions that can actually be implemented
+- **Connect the dots**: Use the actual numbers and patterns you're seeing to back up your insights
+- **Expert insight**: Share your analysis like you're the go-to person who really understands how bots work
 
-**Formatting Requirements:**
-- Use structured markdown with headers (##, ###)
-- Use bullet points for recommendations and findings
-- Use **bold** for key insights and section headers
-- Use *italics* for emphasis on critical data points
-- Keep recommendations concise and actionable (1-2 sentences each)
-- Reference "XO bot" or "bot" terminology consistently
+**Make it readable:**
+- Write in flowing paragraphs that tell a story, not bullet-heavy lists
+- Use clear section headers (##, ###) to break things up
+- Use **bold** for the important insights and key numbers
+- Use *italics* for specific data points and key terms
+- Write substantial paragraphs (4-6 sentences) that really explore what's happening
+- Keep calling it "XO bot" or "bot" consistently
+- Give us enough detail to really understand the situation
 
-**Structure Suggestion:**
-### Key Performance Patterns
-- Bullet point findings with data
+**Try this structure:**
+### How Users Actually Interact with the Bot
+[2-3 paragraphs that dig into the real patterns you're seeing - how people engage, what they're trying to accomplish, where things work well, and what the numbers tell us about user behavior. Include specific data points and trends.]
 
-### Transfer Analysis
-- Top transfer reasons with percentages
-- Critical drop-off locations
+### When Conversations Break Down
+[2-3 paragraphs exploring what leads to transfers - the user experience that causes problems, common failure points, and how different issues affect people's satisfaction. Look at the connection between where people drop off and why they need help.]
 
-### Recommendations
-- **Priority 1**: [Concise actionable item]
-- **Priority 2**: [Concise actionable item]
-- **Priority 3**: [Concise actionable item]
+### What We Can Do About It
+[2-3 paragraphs with practical recommendations that make sense based on what you found. Give context about what would have the biggest impact, how changes might improve containment rates, and what would make the biggest difference for users. Include both quick wins and longer-term improvements.]
 `;
 
 /**
- * Containment Improvement Prompt (single actionable sentence)
+ * Containment Improvement Prompt - One clear, actionable suggestion
  */
 export const CONTAINMENT_SUGGESTION_PROMPT = `
-## 3. Containment Improvement Suggestion (1 sentence)
-Create a **single, actionable sentence** explaining the most impactful change to improve XO bot containment. This should:
+## 3. Top Improvement Suggestion (1 sentence, plain text only)
+Give us the one change that would make the biggest difference in keeping more conversations contained. Write this as one clear, actionable sentence:
 
-- **Specific & Actionable**: Reference actual data patterns, not generic advice  
-- **Data-Driven**: Reference top transfer reasons, drop-off locations, or percentages from analysis
-- **High-Impact Focus**: Target the improvement opportunity with the greatest potential effect
-- **Concise Format**: Fit nicely in a card display (under 100 characters ideal)
-- **Professional Language**: Engaging tone appropriate for stakeholders
-- **Metric Integration**: Include specific percentages or numbers when relevant
-- **Terminology**: Use "XO bot" or "bot" terminology
+- **Be specific**: Point to actual patterns in the data, not generic advice  
+- **Use the numbers**: Reference the top transfer reasons, drop-off spots, or percentages you found
+- **Focus on impact**: Go after the improvement that would help the most people
+- **Keep it concise**: Should fit nicely in a card display (under 120 characters works best)
+- **Make it sound natural**: Write like you're giving advice to a colleague, not writing a manual
+- **Include the data**: Work in specific percentages or numbers when they help make the point
+- **Stay consistent**: Keep using "XO bot" or "bot" 
+- **Plain text only**: Don't use any markdown formatting (*italics*, **bold**, etc.) since this displays as regular text
 
-**Examples of Strong Containment Suggestions:**
-- "Enhance account verification flow to reduce the 34% of transfers caused by authentication failures"
-- "Add proactive help prompts during billing inquiries to contain 28% more sessions before transfer"
-- "Expand XO bot knowledge base for technical issues to handle 19% of sessions that currently transfer"
-- "Optimize policy number capture flow to prevent 41% of authentication-related transfers"
+**Good examples of what we're looking for:**
+- "Fix the account verification flow to prevent the 34% of transfers caused by authentication problems"
+- "Add help prompts during billing questions to keep 28% more conversations from getting transferred"  
+- "Expand the bot's knowledge about technical issues to handle the 19% of sessions that currently need human help"
+- "Make policy number entry easier to stop 41% of authentication-related transfers"
 `;
 
 /**
@@ -165,7 +165,7 @@ export function createAnalysisPrompt(aggregation: AnalysisAggregation, sessions:
 
   return `# XOB CAT Bot Analysis Context
 
-You are analyzing conversation data for a chatbot to understand performance patterns and identify improvement opportunities. This analysis is conducted using the XOB CAT (XO Bot Conversation Analysis Tools) platform by Kore.ai Expert Services teams.
+You're analyzing chatbot conversations to figure out what's working, what isn't, and how to make things better. You're using the XOB CAT (XO Bot Conversation Analysis Tools) platform, which helps Kore.ai Expert Services teams understand bot performance.
 
 ## Analysis Dataset Overview
 
@@ -184,14 +184,14 @@ ${formatBreakdown(aggregation.transferReasonBreakdown)}
 ## Drop-off Location Analysis (where users left before transfer)
 ${formatBreakdown(aggregation.dropOffLocationBreakdown)}
 
-## Session Summary Notes
-Here are AI-generated notes for each session analyzed:
+## What Happened in Each Session
+Here's a quick summary of each conversation we analyzed:
 
 ${aggregation.allSessionNotes.map((note, index) => `${index + 1}. ${note}`).join('\n')}
 
-## Sample Conversation Transcripts
+## Real Conversation Examples
 
-Below are 5 randomly selected complete conversation transcripts to give you context on actual user interactions:
+Here are 5 actual conversations to show you what users are experiencing:
 
 ${aggregation.sampleTranscripts.map((transcript, index) => `
 ### Sample ${index + 1}: ${transcript.intent} (${transcript.outcome})
@@ -204,9 +204,9 @@ ${transcript.messages.map(msg =>
 
 ---
 
-# Your Task
+# What You Need to Do
 
-Generate three distinct sections for a bot performance analysis report:
+Create three parts for a bot performance analysis report:
 
 ${ANALYSIS_OVERVIEW_PROMPT}
 
@@ -214,7 +214,7 @@ ${DETAILED_ANALYSIS_PROMPT}
 
 ${CONTAINMENT_SUGGESTION_PROMPT}
 
-All three sections should be written from the perspective of a bot performance analyst providing insights to improve XO bot effectiveness and user experience based on the conversation data analyzed.
+Write all three sections like you're a bot performance expert sharing insights with your team to help improve how the XO bot works and what users experience.
 
 Format your response as:
 
