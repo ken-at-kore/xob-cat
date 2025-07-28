@@ -131,25 +131,42 @@ export class AutoAnalyzeService {
     try {
       // Phase 1: Sample sessions
       this.updateProgress(analysisId, {
-        currentStep: 'Searching for sessions...',
+        currentStep: 'Initializing session search...',
         phase: 'sampling'
       });
 
-      const samplingResult = await this.sessionSamplingService.sampleSessions(session.config);
+      const samplingResult = await this.sessionSamplingService.sampleSessions(
+        session.config, 
+        (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string) => {
+          this.updateProgress(analysisId, {
+            currentStep,
+            sessionsFound,
+            samplingProgress: {
+              currentWindowIndex: windowIndex,
+              totalWindows: 4, // We have 4 expansion strategy windows
+              currentWindowLabel: windowLabel,
+              targetSessionCount: session.config.sessionCount
+            }
+          });
+        }
+      );
       
       if (session.cancelled) return;
 
+      const calculatedTotalBatches = Math.ceil(samplingResult.sessions.length / this.BATCH_SIZE);
+      
       this.updateProgress(analysisId, {
         currentStep: `Found ${samplingResult.sessions.length} sessions`,
         sessionsFound: samplingResult.sessions.length,
-        totalSessions: samplingResult.sessions.length
+        totalSessions: samplingResult.sessions.length,
+        totalBatches: calculatedTotalBatches
       });
 
       // Phase 2: Analyze sessions in batches
       this.updateProgress(analysisId, {
         phase: 'analyzing',
-        currentStep: 'Starting session analysis...',
-        totalBatches: Math.ceil(samplingResult.sessions.length / this.BATCH_SIZE)
+        currentStep: 'Starting session analysis...'
+        // totalBatches already set above
       });
 
       const allResults: SessionWithFacts[] = [];

@@ -392,9 +392,46 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
     return <div>Loading...</div>;
   }
 
-  const progressPercentage = progress.totalSessions > 0 
-    ? (progress.sessionsProcessed / progress.totalSessions) * 100 
-    : 0;
+  const progressPercentage = (() => {
+    // Calculate total workflow steps: session collection + batches + summary generation
+    const totalBatches = progress.totalBatches || 1;
+    const totalWorkflowSteps = 1 + totalBatches + 1; // collection + batches + summary
+    const stepSize = 100 / totalWorkflowSteps;
+    
+    if (progress.phase === 'sampling') {
+      // During sampling: show partial progress toward first step completion
+      if (progress.samplingProgress) {
+        // Show gradual progress during sampling (0% to stepSize%)
+        const windowProgressWeight = 0.6;
+        const sessionProgressWeight = 0.4;
+        
+        const windowProgress = (progress.samplingProgress.currentWindowIndex / progress.samplingProgress.totalWindows);
+        const sessionProgress = Math.min(progress.sessionsFound / progress.samplingProgress.targetSessionCount, 1);
+        
+        const samplingProgress = (windowProgress * windowProgressWeight) + (sessionProgress * sessionProgressWeight);
+        return Math.min(samplingProgress * stepSize, stepSize);
+      }
+      return 0;
+    } else if (progress.phase === 'analyzing') {
+      // Session collection complete (1 step) + completed batches + current batch progress
+      const collectionComplete = stepSize;
+      const completedBatchesProgress = progress.batchesCompleted * stepSize;
+      
+      // Calculate current batch progress
+      const sessionsInCurrentBatch = Math.min(progress.sessionsProcessed - (progress.batchesCompleted * 5), 5);
+      const currentBatchProgress = (sessionsInCurrentBatch / 5) * stepSize;
+      
+      return collectionComplete + completedBatchesProgress + currentBatchProgress;
+    } else if (progress.phase === 'generating_summary') {
+      // Collection + all batches complete, working on summary
+      const collectionAndBatchesComplete = (1 + totalBatches) * stepSize;
+      return collectionAndBatchesComplete + (stepSize * 0.5); // 50% through summary
+    } else if (progress.phase === 'complete') {
+      return 100;
+    }
+    
+    return 0;
+  })();
 
   return (
     <div className="space-y-6">
@@ -418,9 +455,30 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
           <div>
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>{progress.currentStep}</span>
-              <span>{progress.sessionsProcessed} / {progress.totalSessions} sessions</span>
+              <span>
+                {progress.phase === 'sampling' && progress.samplingProgress
+                  ? `${progress.sessionsFound} / ${progress.samplingProgress.targetSessionCount} sessions • Window ${progress.samplingProgress.currentWindowIndex + 1} / ${progress.samplingProgress.totalWindows}`
+                  : progress.phase === 'sampling' 
+                    ? `${progress.sessionsFound} sessions found`
+                    : progress.phase === 'analyzing'
+                      ? `Batch ${progress.batchesCompleted + 1} / ${progress.totalBatches} • ${progress.sessionsProcessed} / ${progress.totalSessions} sessions`
+                      : progress.phase === 'generating_summary'
+                        ? 'Generating analysis summary...'
+                        : `${progress.sessionsProcessed} / ${progress.totalSessions} sessions`
+                }
+              </span>
             </div>
             <Progress value={progressPercentage} className="w-full" />
+            {progress.phase === 'sampling' && progress.samplingProgress && (
+              <div className="text-xs text-gray-500 mt-1">
+                Current window: {progress.samplingProgress.currentWindowLabel}
+              </div>
+            )}
+            {progress.totalBatches > 0 && (
+              <div className="text-xs text-gray-500 mt-1">
+                Workflow: Session Collection → {progress.totalBatches} Analysis Batch{progress.totalBatches !== 1 ? 'es' : ''} → Summary Generation
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

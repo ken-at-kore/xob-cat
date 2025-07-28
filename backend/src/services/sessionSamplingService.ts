@@ -21,12 +21,25 @@ export class SessionSamplingService {
 
   constructor(private koreApiService: KoreApiService) {}
 
-  async sampleSessions(config: AnalysisConfig): Promise<SamplingResult> {
+  async sampleSessions(
+    config: AnalysisConfig, 
+    progressCallback?: (
+      currentStep: string, 
+      sessionsFound: number, 
+      windowIndex: number, 
+      windowLabel: string
+    ) => void
+  ): Promise<SamplingResult> {
     const timeWindows = this.generateTimeWindows(config.startDate, config.startTime);
     const allSessions = new Map<string, SessionWithTranscript>(); // Use Map for deduplication
     const usedWindows: TimeWindow[] = [];
 
-    for (const window of timeWindows) {
+    for (let i = 0; i < timeWindows.length; i++) {
+      const window = timeWindows[i]!;
+      const windowIndex = i;
+      
+      progressCallback?.(`Searching in ${window.label}...`, allSessions.size, windowIndex, window.label);
+      
       const sessionsInWindow = await this.getSessionsInTimeWindow(window);
       const validSessions = this.filterValidSessions(sessionsInWindow);
 
@@ -36,9 +49,12 @@ export class SessionSamplingService {
       });
 
       usedWindows.push(window);
+      
+      progressCallback?.(`Found ${allSessions.size} sessions in ${window.label}`, allSessions.size, windowIndex, window.label);
 
       // Check if we have enough sessions
       if (allSessions.size >= config.sessionCount) {
+        progressCallback?.(`Found sufficient sessions (${allSessions.size}), completing search...`, allSessions.size, windowIndex, window.label);
         break;
       }
     }
