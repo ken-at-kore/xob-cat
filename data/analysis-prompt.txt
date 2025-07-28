@@ -101,8 +101,8 @@ Here are AI-generated notes for each session analyzed:
 Below are 5 randomly selected complete conversation transcripts to give you context on actual user interactions:
 
 
-### Sample 1: Eligibility (Contained)
-**Session ID:** 686bfdab7dc63de56624d70a
+### Sample 1: Technical Support (Contained)
+**Session ID:** 686bfe526325502831001e19
 
 **Bot**: Hello! How can I help you today?
 **User**: I need help with my portal access
@@ -116,11 +116,11 @@ Below are 5 randomly selected complete conversation transcripts to give you cont
 
 
 ### Sample 2: Live Agent (Contained)
-**Session ID:** 686c01589c75ee15bd77e040
+**Session ID:** 686bff7d7dc63de56625389c
 
 **Bot**: Hello! How can I help you today?
-**User**: I need help with my billing
-**Bot**: I can help you with your billing. Please provide your member ID to get started.
+**User**: I need help with my portal access
+**Bot**: I can help you with your portal access. Please provide your member ID to get started.
 **User**: My member ID is 123456789
 **Bot**: Thank you. Let me look up your information...
 **User**: What did you find?
@@ -129,34 +129,33 @@ Below are 5 randomly selected complete conversation transcripts to give you cont
 **Bot**: You're welcome! Is there anything else I can help you with today?
 
 
-### Sample 3: Claim Status (Contained)
-**Session ID:** 686c00849710aa593cc08433
+### Sample 3: Authorization (Contained)
+**Session ID:** 686c01e4d382adca723ff549
 
 **Bot**: Hello! How can I help you today?
-**User**: I need help with my eligibility
-**Bot**: I can help you with your eligibility. Please provide your member ID to get started.
-**User**: My member ID is 123456789
-**Bot**: Thank you. Let me look up your information...
-**User**: What did you find?
-**Bot**: Yes, I can assist you with that. Let me process this for you.
-
-
-### Sample 4: Policy Information (Transfer)
-**Session ID:** 686c0037c38175387e183a2e
-
-**Bot**: Hello! How can I help you today?
-**User**: I need help with my authorization
-**Bot**: I can help you with your authorization. Please provide your member ID to get started.
+**User**: I need help with my provider enrollment
+**Bot**: I can help you with your provider enrollment. Please provide your member ID to get started.
 **User**: My member ID is 123456789
 **Bot**: Thank you. Let me look up your information...
 **User**: What did you find?
 **Bot**: Yes, I can assist you with that. Let me process this for you.
 **User**: Thank you for your help
-**Bot**: You're welcome! Is there anything else I can help you with today?
 
 
-### Sample 5: Eligibility (Transfer)
-**Session ID:** 686bff9dd382adca723f8019
+### Sample 4: Eligibility (Contained)
+**Session ID:** 686bff57d9df71fa83992c41
+
+**Bot**: Hello! How can I help you today?
+**User**: I need help with my portal access
+**Bot**: I can help you with your portal access. Please provide your member ID to get started.
+**User**: My member ID is 123456789
+**Bot**: Thank you. Let me look up your information...
+**User**: What did you find?
+**Bot**: Yes, I can assist you with that. Let me process this for you.
+
+
+### Sample 5: Account Update (Contained)
+**Session ID:** 686c0a5198860449d90e65fe
 
 **Bot**: Hello! How can I help you today?
 **User**: I need help with my provider enrollment
@@ -194,7 +193,21 @@ Create a detailed analysis that would appear at the bottom of the report page. T
 - Use structured markdown with headers, bullet points, and emphasis
 - Include data-driven recommendations based on the session patterns and user behavior observed
 
-Both sections should be written from the perspective of a bot performance analyst providing insights to improve bot effectiveness and user experience based on the conversation data analyzed.
+## 3. Containment Improvement Suggestion (1 sentence)
+Create a single, actionable sentence that explains the most impactful change that could be made to improve bot containment based on the analysis data. This should:
+- Be specific and actionable, not generic advice
+- Reference the actual data patterns observed (top transfer reasons, drop-off locations, etc.)
+- Focus on the highest-impact improvement opportunity
+- Be concise and fit nicely in a card display
+- Use engaging, professional language appropriate for stakeholders
+- Include a specific metric or percentage when relevant
+
+Examples of good containment suggestions:
+- "Improve account verification flow to reduce 34% of transfers caused by authentication issues"
+- "Add proactive clarification prompts during billing inquiries to contain 28% more sessions"
+- "Expand knowledge base for technical issues to handle the 19% of sessions that transfer due to connectivity problems"
+
+All three sections should be written from the perspective of a bot performance analyst providing insights to improve bot effectiveness and user experience based on the conversation data analyzed.
 
 Format your response as:
 
@@ -203,3 +216,6 @@ Format your response as:
 
 # ANALYSIS_SUMMARY  
 [detailed analysis markdown content]
+
+# CONTAINMENT_SUGGESTION
+[single actionable sentence for improving containment]

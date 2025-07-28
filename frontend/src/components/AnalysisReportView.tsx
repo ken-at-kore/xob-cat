@@ -15,6 +15,7 @@ import {
   AnalysisCostCard 
 } from './AnalysisCharts';
 import { AnalyzedSessionDetailsDialog } from './AnalyzedSessionDetailsDialog';
+import { ContainmentSuggestionCard } from './ContainmentSuggestionCard';
 
 interface AnalysisReportViewProps {
   results: AnalysisResults;
@@ -97,7 +98,7 @@ export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewPr
         <Button onClick={onStartNew}>Start New Analysis</Button>
       </div>
 
-      {/* Top Row: Analysis Overview + Session Outcomes Pie Chart */}
+      {/* Top Row: Analysis Overview + Session Outcomes Area */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Analysis Overview */}
         {results.analysisSummary && (
@@ -115,8 +116,16 @@ export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewPr
           </Card>
         )}
 
-        {/* Session Outcomes Pie Chart */}
-        <SessionOutcomePieChart sessions={results.sessions} />
+        {/* Session Outcomes Area - Split into Pie Chart + Containment Suggestion */}
+        <div className="space-y-6">
+          {/* Session Outcomes Pie Chart (no legend) */}
+          <SessionOutcomePieChart sessions={results.sessions} showLegend={false} />
+          
+          {/* Containment Improvement Suggestion */}
+          {results.analysisSummary?.containmentSuggestion && (
+            <ContainmentSuggestionCard suggestion={results.analysisSummary.containmentSuggestion} />
+          )}
+        </div>
       </div>
 
       {/* Transfer Reasons Pareto Chart */}
