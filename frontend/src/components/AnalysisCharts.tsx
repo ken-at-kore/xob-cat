@@ -225,6 +225,10 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
   // Reverse for horizontal bar chart display (highest bars at top)
   .reverse();
 
+  // Calculate dynamic tick values based on actual data
+  const maxCount = Math.max(...chartData.map(d => d.count));
+  const tickInterval = Math.ceil(maxCount / 5);
+  const dynamicTickValues = Array.from({length: Math.ceil(maxCount / tickInterval) + 1}, (_, i) => i * tickInterval);
 
   return (
     <Card>
@@ -254,7 +258,7 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
               legend: 'Count',
               legendPosition: 'middle',
               legendOffset: 32,
-              tickValues: [0, 1, 2, 3, 4]
+              tickValues: dynamicTickValues
             }}
             axisLeft={{
               tickSize: 5,
@@ -266,7 +270,7 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
             }}
             enableLabel={false}
             enableGridX={true}
-            gridXValues={[0, 1, 2, 3, 4]}
+            gridXValues={dynamicTickValues}
             enableGridY={false}
             tooltip={({ id, value, data }) => (
               <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-md w-80">
@@ -358,6 +362,11 @@ export function DropOffLocationsBar({ sessions }: ChartProps) {
     }))
     .reverse(); // Reverse for display (highest at top)
 
+  // Calculate dynamic tick values based on actual data
+  const maxCount = Math.max(...chartData.map(d => d.count));
+  const tickInterval = Math.max(1, Math.ceil(maxCount / 5));
+  const dynamicTickValues = Array.from({length: Math.ceil(maxCount / tickInterval) + 1}, (_, i) => i * tickInterval);
+
   return (
     <Card>
       <CardHeader>
@@ -386,7 +395,7 @@ export function DropOffLocationsBar({ sessions }: ChartProps) {
               legend: 'Count',
               legendPosition: 'middle',
               legendOffset: 32,
-              tickValues: [0, 1, 2]
+              tickValues: dynamicTickValues
             }}
             axisLeft={{
               tickSize: 5,
@@ -398,7 +407,7 @@ export function DropOffLocationsBar({ sessions }: ChartProps) {
             }}
             enableLabel={false}
             enableGridX={true}
-            gridXValues={[0, 1, 2]}
+            gridXValues={dynamicTickValues}
             enableGridY={false}
             tooltip={({ id, value, data }) => (
               <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-md w-80">
@@ -456,6 +465,11 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
     }))
     .reverse(); // Reverse for display (highest at top)
 
+  // Calculate dynamic tick values based on actual data
+  const maxCount = Math.max(...chartData.map(d => d.count));
+  const tickInterval = Math.max(1, Math.ceil(maxCount / 5));
+  const dynamicTickValues = Array.from({length: Math.ceil(maxCount / tickInterval) + 1}, (_, i) => i * tickInterval);
+
   return (
     <Card>
       <CardHeader>
@@ -484,7 +498,7 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
               legend: 'Count',
               legendPosition: 'middle',
               legendOffset: 32,
-              tickValues: [0, 1, 2, 3, 4, 5, 6, 7]
+              tickValues: dynamicTickValues
             }}
             axisLeft={{
               tickSize: 5,
@@ -496,7 +510,7 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
             }}
             enableLabel={false}
             enableGridX={true}
-            gridXValues={[0, 1, 2, 3, 4, 5, 6, 7]}
+            gridXValues={dynamicTickValues}
             enableGridY={false}
             tooltip={({ id, value, data }) => (
               <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-md w-80">
