@@ -299,6 +299,27 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 
 **Markdown Rendering**: Analysis summaries use ReactMarkdown with remark-gfm and Tailwind Typography plugin for proper header hierarchy (H1: 32px, H2: 24px, H3: 18.72px) and bold text styling.
 
+### Recent Analysis Report Improvements (July 2025)
+
+The analysis overview and detailed analysis cards have been significantly enhanced with the following improvements:
+
+#### Enhanced Formatting & UX
+- **Rich Markdown Formatting**: Analysis overview now uses **bold text** for key metrics, *italics* for emphasis, and bullet points for lists to reduce cognitive load
+- **Improved Readability**: Detailed analysis card padding increased (`px-8 py-6`) for better text readability with lengthy content
+- **Consistent Terminology**: All references updated to use "XO bot" or "bot" terminology consistently throughout the application
+- **Reduced Recommendations**: Recommendation text optimized to be ~50% more concise while maintaining clarity and actionability
+
+#### Technical Architecture Improvements  
+- **Centralized Prompt Engineering**: Created `/shared/prompts/analysis-prompts.ts` containing all analysis prompt templates for easy review and modification
+- **Shared LLM Service**: Extracted common LLM inference logic into `/shared/services/llmInferenceService.ts` for consistency between main app and utility scripts
+- **Type Safety**: Improved TypeScript types using `Record<string, number>` instead of index signatures for better type safety
+- **Code Quality**: Centralized prose styling constants in frontend components to reduce duplication and improve maintainability
+
+#### Testing & Quality Assurance
+- **Comprehensive Test Coverage**: Added full test suites for both the shared LLM service and backend analysis service integration
+- **Visual Testing Verified**: All formatting improvements confirmed through browser-based testing with mock reports
+- **Backwards Compatibility**: All changes maintain existing API interfaces and functionality while adding enhancements
+
 ## 🏗️ Project Architecture
 
 **XOB CAT** is a monorepo full-stack analytics platform for Kore.ai Expert Services teams to analyze chatbot conversations using OpenAI GPT-4o-mini.

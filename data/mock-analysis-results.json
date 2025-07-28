@@ -17,12 +17,12 @@
         "timestamp": "2025-07-07T17:05:10.886Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:05:40.886Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:06:10.886Z"
       },
@@ -56,18 +56,18 @@
     "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Portal Access",
+      "generalIntent": "Policy Information",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed portal access inquiry through self-service flow."
+      "notes": "User successfully completed policy information inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 662,
-      "processingTime": 2269,
-      "batchNumber": 9,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.01368329046121635
+      "tokensUsed": 477,
+      "processingTime": 2411,
+      "batchNumber": 1,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.022612901934656433
     }
   },
   {
@@ -197,34 +197,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:08:22.246Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:08:52.246Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:09:22.246Z"
       }
     ],
-    "message_count": 9,
-    "user_message_count": 4,
-    "bot_message_count": 5,
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Technical Support",
+      "generalIntent": "Eligibility",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed technical support inquiry through self-service flow."
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 482,
-      "processingTime": 3513,
-      "batchNumber": 9,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.022400808706016722
+      "tokensUsed": 435,
+      "processingTime": 2150,
+      "batchNumber": 3,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.024844965972465022
     }
   },
   {
@@ -245,12 +235,12 @@
         "timestamp": "2025-07-07T17:07:30.128Z"
       },
       {
-        "message": "I need help with my eligibility",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:08:00.128Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:08:30.128Z"
       },
@@ -273,34 +263,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:30.128Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:11:00.128Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:11:30.128Z"
       }
     ],
-    "message_count": 9,
-    "user_message_count": 4,
-    "bot_message_count": 5,
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Provider Enrollment",
+      "generalIntent": "Live Agent",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+      "notes": "User successfully completed live agent inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 442,
-      "processingTime": 1042,
-      "batchNumber": 3,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03502269117090615
+      "tokensUsed": 545,
+      "processingTime": 1737,
+      "batchNumber": 2,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03205259926622037
     }
   },
   {
@@ -321,12 +301,12 @@
         "timestamp": "2025-07-07T17:09:01.981Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:09:31.981Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:01.981Z"
       },
@@ -354,29 +334,24 @@
         "message": "Thank you for your help",
         "message_type": "user",
         "timestamp": "2025-07-07T17:12:31.981Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:13:01.981Z"
       }
     ],
-    "message_count": 9,
+    "message_count": 8,
     "user_message_count": 4,
-    "bot_message_count": 5,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Live Agent",
+      "generalIntent": "Portal Access",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed live agent inquiry through self-service flow."
+      "notes": "User successfully completed portal access inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 748,
-      "processingTime": 2586,
+      "tokensUsed": 554,
+      "processingTime": 1983,
       "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.014422433588345926
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.02732578423436991
     }
   },
   {
@@ -397,12 +372,12 @@
         "timestamp": "2025-07-07T17:10:42.139Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my portal access",
         "message_type": "user",
         "timestamp": "2025-07-07T17:11:12.139Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:11:42.139Z"
       },
@@ -425,29 +400,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:13:42.139Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:14:12.139Z"
       }
     ],
-    "message_count": 8,
-    "user_message_count": 4,
+    "message_count": 7,
+    "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Billing",
+      "generalIntent": "Account Update",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed billing inquiry through self-service flow."
+      "notes": "User successfully completed account update inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 585,
-      "processingTime": 2088,
-      "batchNumber": 4,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.01958322293329085
+      "tokensUsed": 789,
+      "processingTime": 2279,
+      "batchNumber": 2,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.022933548214127224
     }
   },
   {
@@ -468,12 +438,12 @@
         "timestamp": "2025-07-07T17:15:59.700Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:16:29.700Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:16:59.700Z"
       },
@@ -502,18 +472,18 @@
     "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Eligibility",
+      "generalIntent": "Billing",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed eligibility inquiry through self-service flow."
+      "notes": "User successfully completed billing inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 561,
-      "processingTime": 3025,
-      "batchNumber": 4,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.02026418668876365
+      "tokensUsed": 703,
+      "processingTime": 1590,
+      "batchNumber": 10,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.023522598944555516
     }
   },
   {
@@ -578,18 +548,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Live Agent",
-      "sessionOutcome": "Transfer",
-      "transferReason": "Invalid Claim Number",
-      "dropOffLocation": "Payment Information",
-      "notes": "User attempted live agent but encountered invalid claim number, transferred to live agent."
+      "generalIntent": "Claim Status",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed claim status inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 522,
-      "processingTime": 2588,
-      "batchNumber": 9,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03931699741186591
+      "tokensUsed": 474,
+      "processingTime": 1633,
+      "batchNumber": 6,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.011895380106317695
     }
   },
   {
@@ -610,12 +580,12 @@
         "timestamp": "2025-07-07T17:22:20.438Z"
       },
       {
-        "message": "I need help with my claim status",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:22:50.438Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:23:20.438Z"
       },
@@ -638,34 +608,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:25:20.438Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:25:50.438Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:26:20.438Z"
       }
     ],
-    "message_count": 9,
-    "user_message_count": 4,
-    "bot_message_count": 5,
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Provider Enrollment",
-      "sessionOutcome": "Contained",
-      "transferReason": "",
-      "dropOffLocation": "",
-      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Transfer",
+      "transferReason": "No Provider ID",
+      "dropOffLocation": "Provider ID",
+      "notes": "User attempted technical support but encountered no provider id, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 680,
-      "processingTime": 1326,
-      "batchNumber": 4,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.028421823482241912
+      "tokensUsed": 537,
+      "processingTime": 2676,
+      "batchNumber": 7,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.026583168906655276
     }
   },
   {
@@ -686,12 +646,12 @@
         "timestamp": "2025-07-07T17:37:38.859Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my portal access",
         "message_type": "user",
         "timestamp": "2025-07-07T17:38:08.859Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:38:38.859Z"
       },
@@ -719,24 +679,29 @@
         "message": "Thank you for your help",
         "message_type": "user",
         "timestamp": "2025-07-07T17:41:08.859Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:41:38.859Z"
       }
     ],
-    "message_count": 8,
+    "message_count": 9,
     "user_message_count": 4,
-    "bot_message_count": 4,
+    "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Provider Enrollment",
+      "generalIntent": "Account Update",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+      "notes": "User successfully completed account update inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 730,
-      "processingTime": 1942,
-      "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.033186270215854734
+      "tokensUsed": 706,
+      "processingTime": 1352,
+      "batchNumber": 5,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03927283029508159
     }
   },
   {
@@ -757,12 +722,12 @@
         "timestamp": "2025-07-07T17:37:42.596Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:38:12.596Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:38:42.596Z"
       },
@@ -785,29 +750,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:40:42.596Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:41:12.596Z"
       }
     ],
-    "message_count": 8,
-    "user_message_count": 4,
+    "message_count": 7,
+    "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Policy Information",
+      "generalIntent": "Billing",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed policy information inquiry through self-service flow."
+      "notes": "User successfully completed billing inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 661,
-      "processingTime": 1561,
-      "batchNumber": 6,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.010142645751968875
+      "tokensUsed": 729,
+      "processingTime": 2451,
+      "batchNumber": 8,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.014995449376121774
     }
   },
   {
@@ -828,12 +788,12 @@
         "timestamp": "2025-07-07T17:42:13.535Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:42:43.535Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:43:13.535Z"
       },
@@ -861,29 +821,24 @@
         "message": "Thank you for your help",
         "message_type": "user",
         "timestamp": "2025-07-07T17:45:43.535Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:46:13.535Z"
       }
     ],
-    "message_count": 9,
+    "message_count": 8,
     "user_message_count": 4,
-    "bot_message_count": 5,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Claim Status",
+      "generalIntent": "Policy Information",
       "sessionOutcome": "Transfer",
-      "transferReason": "Technical Issue",
-      "dropOffLocation": "Provider ID",
-      "notes": "User attempted claim status but encountered technical issue, transferred to live agent."
+      "transferReason": "Can't Capture Policy Number",
+      "dropOffLocation": "Contact Verification",
+      "notes": "User attempted policy information but encountered can't capture policy number, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 670,
-      "processingTime": 2102,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.022907212882541262
+      "tokensUsed": 464,
+      "processingTime": 2461,
+      "batchNumber": 10,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.033195748348070514
     }
   },
   {
@@ -904,12 +859,12 @@
         "timestamp": "2025-07-07T17:43:23.043Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my authorization",
         "message_type": "user",
         "timestamp": "2025-07-07T17:43:53.043Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your authorization. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:44:23.043Z"
       },
@@ -955,11 +910,11 @@
       "notes": "User successfully completed authorization inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 759,
-      "processingTime": 3738,
-      "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.021228961137630648
+      "tokensUsed": 664,
+      "processingTime": 2305,
+      "batchNumber": 5,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.02276018544078371
     }
   },
   {
@@ -1061,12 +1016,12 @@
         "timestamp": "2025-07-07T17:53:23.963Z"
       },
       {
-        "message": "I need help with my claim status",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:53:53.963Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:54:23.963Z"
       },
@@ -1105,18 +1060,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Live Agent",
+      "generalIntent": "Eligibility",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed live agent inquiry through self-service flow."
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 491,
-      "processingTime": 1089,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03022872240823868
+      "tokensUsed": 772,
+      "processingTime": 1453,
+      "batchNumber": 2,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03048743372944447
     }
   },
   {
@@ -1218,12 +1173,12 @@
         "timestamp": "2025-07-07T17:56:33.036Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my portal access",
         "message_type": "user",
         "timestamp": "2025-07-07T17:57:03.036Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:57:33.036Z"
       },
@@ -1258,17 +1213,17 @@
     "bot_message_count": 4,
     "facts": {
       "generalIntent": "Account Update",
-      "sessionOutcome": "Contained",
-      "transferReason": "",
-      "dropOffLocation": "",
-      "notes": "User successfully completed account update inquiry through self-service flow."
+      "sessionOutcome": "Transfer",
+      "transferReason": "Technical Issue",
+      "dropOffLocation": "Authentication",
+      "notes": "User attempted account update but encountered technical issue, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 617,
-      "processingTime": 2752,
-      "batchNumber": 9,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.010197072402484816
+      "tokensUsed": 684,
+      "processingTime": 1574,
+      "batchNumber": 8,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.026964289236096443
     }
   },
   {
@@ -1370,12 +1325,12 @@
         "timestamp": "2025-07-07T17:00:05.886Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:00:35.886Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:01:05.886Z"
       },
@@ -1404,18 +1359,18 @@
     "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Live Agent",
-      "sessionOutcome": "Contained",
-      "transferReason": "",
-      "dropOffLocation": "",
-      "notes": "User successfully completed live agent inquiry through self-service flow."
+      "generalIntent": "Billing",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Authentication Failed",
+      "dropOffLocation": "Policy Number Prompt",
+      "notes": "User attempted billing but encountered authentication failed, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 509,
-      "processingTime": 2216,
+      "tokensUsed": 727,
+      "processingTime": 2171,
       "batchNumber": 3,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.02311559869629679
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.011836837992320782
     }
   },
   {
@@ -1517,12 +1472,12 @@
         "timestamp": "2025-07-07T17:00:27.061Z"
       },
       {
-        "message": "I need help with my eligibility",
+        "message": "I need help with my portal access",
         "message_type": "user",
         "timestamp": "2025-07-07T17:00:57.061Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:01:27.061Z"
       },
@@ -1551,18 +1506,18 @@
     "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Account Update",
+      "generalIntent": "Technical Support",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed account update inquiry through self-service flow."
+      "notes": "User successfully completed technical support inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 474,
-      "processingTime": 2682,
-      "batchNumber": 1,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03709957496797177
+      "tokensUsed": 508,
+      "processingTime": 3663,
+      "batchNumber": 7,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.01573421758757878
     }
   },
   {
@@ -1703,18 +1658,18 @@
     "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Policy Information",
+      "generalIntent": "Live Agent",
       "sessionOutcome": "Transfer",
-      "transferReason": "Policy Not Found",
-      "dropOffLocation": "Policy Number Prompt",
-      "notes": "User attempted policy information but encountered policy not found, transferred to live agent."
+      "transferReason": "No Provider ID",
+      "dropOffLocation": "Provider ID",
+      "notes": "User attempted live agent but encountered no provider id, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 798,
-      "processingTime": 1639,
-      "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.029257138523059452
+      "tokensUsed": 434,
+      "processingTime": 3028,
+      "batchNumber": 2,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.02103407475657317
     }
   },
   {
@@ -1816,12 +1771,12 @@
         "timestamp": "2025-07-07T17:00:50.204Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:01:20.204Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:01:50.204Z"
       },
@@ -1844,24 +1799,29 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:03:50.204Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:04:20.204Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
+    "message_count": 8,
+    "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Account Update",
-      "sessionOutcome": "Transfer",
-      "transferReason": "Authentication Failed",
-      "dropOffLocation": "Claim Details",
-      "notes": "User attempted account update but encountered authentication failed, transferred to live agent."
+      "generalIntent": "Live Agent",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed live agent inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 748,
-      "processingTime": 1952,
-      "batchNumber": 2,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.01341367000283629
+      "tokensUsed": 663,
+      "processingTime": 3954,
+      "batchNumber": 10,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.037543235737604624
     }
   },
   {
@@ -1963,12 +1923,12 @@
         "timestamp": "2025-07-07T17:01:31.221Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:02:01.221Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:02:31.221Z"
       },
@@ -1991,24 +1951,34 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:04:31.221Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:05:01.221Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:05:31.221Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
-    "bot_message_count": 4,
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Account Update",
+      "generalIntent": "Billing",
       "sessionOutcome": "Transfer",
-      "transferReason": "Authentication Failed",
-      "dropOffLocation": "Contact Verification",
-      "notes": "User attempted account update but encountered authentication failed, transferred to live agent."
+      "transferReason": "Can't Capture Policy Number",
+      "dropOffLocation": "Policy Number Prompt",
+      "notes": "User attempted billing but encountered can't capture policy number, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 505,
-      "processingTime": 1360,
+      "tokensUsed": 519,
+      "processingTime": 3632,
       "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.017962047254506612
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.023473205186484897
     }
   },
   {
@@ -2110,12 +2080,12 @@
         "timestamp": "2025-07-07T17:01:47.320Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:02:17.320Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:02:47.320Z"
       },
@@ -2138,24 +2108,34 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:04:47.320Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:05:17.320Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:05:47.320Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
-    "bot_message_count": 4,
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Authorization",
+      "generalIntent": "Eligibility",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed authorization inquiry through self-service flow."
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 709,
-      "processingTime": 1400,
+      "tokensUsed": 532,
+      "processingTime": 1801,
       "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.017698641201775785
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.012193089421233769
     }
   },
   {
@@ -2257,12 +2237,12 @@
         "timestamp": "2025-07-07T17:02:35.574Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:03:05.574Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:03:35.574Z"
       },
@@ -2301,18 +2281,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Eligibility",
+      "generalIntent": "Authorization",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed eligibility inquiry through self-service flow."
+      "notes": "User successfully completed authorization inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 412,
-      "processingTime": 3600,
+      "tokensUsed": 758,
+      "processingTime": 2107,
       "batchNumber": 8,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03192054867929383
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.017736780583535137
     }
   },
   {
@@ -2414,12 +2394,12 @@
         "timestamp": "2025-07-07T17:02:59.158Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:03:29.158Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:03:59.158Z"
       },
@@ -2453,18 +2433,18 @@
     "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Technical Support",
+      "generalIntent": "Provider Enrollment",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed technical support inquiry through self-service flow."
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 439,
-      "processingTime": 1672,
-      "batchNumber": 9,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.02028853068873037
+      "tokensUsed": 448,
+      "processingTime": 3759,
+      "batchNumber": 3,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.024882286309631164
     }
   },
   {
@@ -2566,12 +2546,12 @@
         "timestamp": "2025-07-07T17:05:11.186Z"
       },
       {
-        "message": "I need help with my claim status",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:05:41.186Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:06:11.186Z"
       },
@@ -2610,18 +2590,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Billing",
+      "generalIntent": "Eligibility",
       "sessionOutcome": "Transfer",
-      "transferReason": "Technical Issue",
-      "dropOffLocation": "Contact Verification",
-      "notes": "User attempted billing but encountered technical issue, transferred to live agent."
+      "transferReason": "Invalid Member ID",
+      "dropOffLocation": "Date of Service",
+      "notes": "User attempted eligibility but encountered invalid member id, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 593,
-      "processingTime": 2524,
-      "batchNumber": 1,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03164925779631589
+      "tokensUsed": 562,
+      "processingTime": 1338,
+      "batchNumber": 7,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03848882649458447
     }
   },
   {
@@ -2723,12 +2703,12 @@
         "timestamp": "2025-07-07T17:07:30.194Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:08:00.194Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:08:30.194Z"
       },
@@ -2751,24 +2731,29 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:30.194Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:11:00.194Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
+    "message_count": 8,
+    "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Authorization",
+      "generalIntent": "Provider Enrollment",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed authorization inquiry through self-service flow."
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 430,
-      "processingTime": 1418,
+      "tokensUsed": 636,
+      "processingTime": 2147,
       "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03489877250979766
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.019555211113572824
     }
   },
   {
@@ -2870,12 +2855,12 @@
         "timestamp": "2025-07-07T17:08:07.780Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:08:37.780Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:09:07.780Z"
       },
@@ -2903,29 +2888,24 @@
         "message": "Thank you for your help",
         "message_type": "user",
         "timestamp": "2025-07-07T17:11:37.780Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:12:07.780Z"
       }
     ],
-    "message_count": 9,
+    "message_count": 8,
     "user_message_count": 4,
-    "bot_message_count": 5,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Live Agent",
-      "sessionOutcome": "Contained",
-      "transferReason": "",
-      "dropOffLocation": "",
-      "notes": "User successfully completed live agent inquiry through self-service flow."
+      "generalIntent": "Eligibility",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Policy Not Found",
+      "dropOffLocation": "Claim Details",
+      "notes": "User attempted eligibility but encountered policy not found, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 449,
-      "processingTime": 1251,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.016877099107882314
+      "tokensUsed": 794,
+      "processingTime": 2301,
+      "batchNumber": 1,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.018594946196967145
     }
   },
   {
@@ -3023,12 +3003,12 @@
         "timestamp": "2025-07-07T17:09:02.123Z"
       },
       {
-        "message": "I need help with my claim status",
+        "message": "I need help with my portal access",
         "message_type": "user",
         "timestamp": "2025-07-07T17:09:32.123Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:02.123Z"
       },
@@ -3051,34 +3031,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:12:02.123Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:12:32.123Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:13:02.123Z"
       }
     ],
-    "message_count": 9,
-    "user_message_count": 4,
-    "bot_message_count": 5,
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Provider Enrollment",
-      "sessionOutcome": "Transfer",
-      "transferReason": "Invalid Member ID",
-      "dropOffLocation": "User Name",
-      "notes": "User attempted provider enrollment but encountered invalid member id, transferred to live agent."
+      "generalIntent": "Portal Access",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed portal access inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 624,
-      "processingTime": 2091,
-      "batchNumber": 8,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.01054506390598967
+      "tokensUsed": 504,
+      "processingTime": 3371,
+      "batchNumber": 10,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.019295661776586273
     }
   },
   {
@@ -3180,12 +3150,12 @@
         "timestamp": "2025-07-07T17:09:15.696Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:09:45.696Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:15.696Z"
       },
@@ -3215,17 +3185,17 @@
     "bot_message_count": 4,
     "facts": {
       "generalIntent": "Authorization",
-      "sessionOutcome": "Transfer",
-      "transferReason": "Invalid Provider ID",
-      "dropOffLocation": "Authentication",
-      "notes": "User attempted authorization but encountered invalid provider id, transferred to live agent."
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed authorization inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 638,
-      "processingTime": 1658,
-      "batchNumber": 3,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.021224355121497916
+      "tokensUsed": 596,
+      "processingTime": 2465,
+      "batchNumber": 5,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.020716788749897824
     }
   },
   {
@@ -3327,12 +3297,12 @@
         "timestamp": "2025-07-07T17:09:35.970Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my portal access",
         "message_type": "user",
         "timestamp": "2025-07-07T17:10:05.970Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:35.970Z"
       },
@@ -3371,18 +3341,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Portal Access",
-      "sessionOutcome": "Contained",
-      "transferReason": "",
-      "dropOffLocation": "",
-      "notes": "User successfully completed portal access inquiry through self-service flow."
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Transfer",
+      "transferReason": "Technical Issue",
+      "dropOffLocation": "Authentication",
+      "notes": "User attempted technical support but encountered technical issue, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 593,
-      "processingTime": 3961,
-      "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03418611727843932
+      "tokensUsed": 505,
+      "processingTime": 3210,
+      "batchNumber": 9,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.011528745876003846
     }
   },
   {
@@ -3484,12 +3454,12 @@
         "timestamp": "2025-07-07T17:09:43.860Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:10:13.860Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:43.860Z"
       },
@@ -3518,18 +3488,18 @@
     "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Eligibility",
+      "generalIntent": "Account Update",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed eligibility inquiry through self-service flow."
+      "notes": "User successfully completed account update inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 740,
-      "processingTime": 2600,
-      "batchNumber": 9,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.016758192170447425
+      "tokensUsed": 577,
+      "processingTime": 1409,
+      "batchNumber": 4,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.021051052201577845
     }
   },
   {
@@ -3631,12 +3601,12 @@
         "timestamp": "2025-07-07T17:10:21.004Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:10:51.004Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:11:21.004Z"
       },
@@ -3675,18 +3645,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Live Agent",
+      "generalIntent": "Policy Information",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed live agent inquiry through self-service flow."
+      "notes": "User successfully completed policy information inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 633,
-      "processingTime": 3158,
-      "batchNumber": 8,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.038267420100218615
+      "tokensUsed": 788,
+      "processingTime": 1222,
+      "batchNumber": 3,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.026630143728527574
     }
   },
   {
@@ -3788,12 +3758,12 @@
         "timestamp": "2025-07-07T17:10:42.206Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:11:12.206Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:11:42.206Z"
       },
@@ -3816,29 +3786,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:13:42.206Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:14:12.206Z"
       }
     ],
-    "message_count": 8,
-    "user_message_count": 4,
+    "message_count": 7,
+    "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Billing",
+      "generalIntent": "Portal Access",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed billing inquiry through self-service flow."
+      "notes": "User successfully completed portal access inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 523,
-      "processingTime": 2662,
-      "batchNumber": 4,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.013947392604982546
+      "tokensUsed": 503,
+      "processingTime": 1787,
+      "batchNumber": 3,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03480580871932688
     }
   },
   {
@@ -3979,18 +3944,18 @@
     "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Eligibility",
-      "sessionOutcome": "Transfer",
-      "transferReason": "Policy Not Found",
-      "dropOffLocation": "Policy Number Prompt",
-      "notes": "User attempted eligibility but encountered policy not found, transferred to live agent."
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed technical support inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 560,
-      "processingTime": 3354,
-      "batchNumber": 8,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.018267108939076782
+      "tokensUsed": 766,
+      "processingTime": 1932,
+      "batchNumber": 9,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.011614817260360346
     }
   },
   {
@@ -4092,12 +4057,12 @@
         "timestamp": "2025-07-07T17:11:15.698Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:11:45.698Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:12:15.698Z"
       },
@@ -4120,11 +4085,21 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:14:15.698Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:14:45.698Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:15:15.698Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
-    "bot_message_count": 4,
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
     "facts": {
       "generalIntent": "Authorization",
       "sessionOutcome": "Contained",
@@ -4133,11 +4108,11 @@
       "notes": "User successfully completed authorization inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 699,
-      "processingTime": 2084,
-      "batchNumber": 3,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.026562200455981122
+      "tokensUsed": 527,
+      "processingTime": 1337,
+      "batchNumber": 10,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.019219974155314304
     }
   },
   {
@@ -4239,12 +4214,12 @@
         "timestamp": "2025-07-07T17:11:44.166Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my portal access",
         "message_type": "user",
         "timestamp": "2025-07-07T17:12:14.166Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:12:44.166Z"
       },
@@ -4267,34 +4242,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:14:44.166Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:15:14.166Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:15:44.166Z"
       }
     ],
-    "message_count": 9,
-    "user_message_count": 4,
-    "bot_message_count": 5,
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Policy Information",
-      "sessionOutcome": "Transfer",
-      "transferReason": "Complex Billing Issue",
-      "dropOffLocation": "User Name",
-      "notes": "User attempted policy information but encountered complex billing issue, transferred to live agent."
+      "generalIntent": "Provider Enrollment",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 636,
-      "processingTime": 1741,
-      "batchNumber": 2,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.03772172089210956
+      "tokensUsed": 659,
+      "processingTime": 2262,
+      "batchNumber": 8,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.017221618514647645
     }
   },
   {
@@ -4396,12 +4361,12 @@
         "timestamp": "2025-07-07T17:13:09.837Z"
       },
       {
-        "message": "I need help with my portal access",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:13:39.837Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:14:09.837Z"
       },
@@ -4429,24 +4394,29 @@
         "message": "Thank you for your help",
         "message_type": "user",
         "timestamp": "2025-07-07T17:16:39.837Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:17:09.837Z"
       }
     ],
-    "message_count": 8,
+    "message_count": 9,
     "user_message_count": 4,
-    "bot_message_count": 4,
+    "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Eligibility",
+      "generalIntent": "Provider Enrollment",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed eligibility inquiry through self-service flow."
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 436,
-      "processingTime": 1916,
-      "batchNumber": 8,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.019914537568093367
+      "tokensUsed": 647,
+      "processingTime": 2230,
+      "batchNumber": 9,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03602273615442639
     }
   },
   {
@@ -4548,12 +4518,12 @@
         "timestamp": "2025-07-07T17:13:27.420Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:13:57.420Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:14:27.420Z"
       },
@@ -4576,34 +4546,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:16:27.420Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:16:57.420Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:17:27.420Z"
       }
     ],
-    "message_count": 9,
-    "user_message_count": 4,
-    "bot_message_count": 5,
+    "message_count": 7,
+    "user_message_count": 3,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Policy Information",
+      "generalIntent": "Technical Support",
       "sessionOutcome": "Transfer",
-      "transferReason": "Invalid Member ID",
-      "dropOffLocation": "Authentication",
-      "notes": "User attempted policy information but encountered invalid member id, transferred to live agent."
+      "transferReason": "Policy Not Found",
+      "dropOffLocation": "Contact Verification",
+      "notes": "User attempted technical support but encountered policy not found, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 428,
-      "processingTime": 3712,
-      "batchNumber": 2,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.012467807026514954
+      "tokensUsed": 691,
+      "processingTime": 2422,
+      "batchNumber": 5,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.029502712366139792
     }
   },
   {
@@ -4705,12 +4665,12 @@
         "timestamp": "2025-07-07T17:14:44.675Z"
       },
       {
-        "message": "I need help with my eligibility",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:15:14.675Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:15:44.675Z"
       },
@@ -4739,18 +4699,18 @@
     "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Claim Status",
+      "generalIntent": "Policy Information",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed claim status inquiry through self-service flow."
+      "notes": "User successfully completed policy information inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 611,
-      "processingTime": 1604,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.018877071287066838
+      "tokensUsed": 494,
+      "processingTime": 1620,
+      "batchNumber": 4,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.01135403403343526
     }
   },
   {
@@ -4852,12 +4812,12 @@
         "timestamp": "2025-07-07T17:15:26.009Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:15:56.009Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:16:26.009Z"
       },
@@ -4880,29 +4840,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:18:26.009Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:18:56.009Z"
       }
     ],
-    "message_count": 8,
-    "user_message_count": 4,
+    "message_count": 7,
+    "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Eligibility",
+      "generalIntent": "Claim Status",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed eligibility inquiry through self-service flow."
+      "notes": "User successfully completed claim status inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 557,
-      "processingTime": 2197,
+      "tokensUsed": 782,
+      "processingTime": 3360,
       "batchNumber": 2,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.035735404289642815
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.028210594558072108
     }
   },
   {
@@ -5000,12 +4955,12 @@
         "timestamp": "2025-07-07T17:15:59.299Z"
       },
       {
-        "message": "I need help with my billing",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:16:29.299Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:16:59.299Z"
       },
@@ -5028,24 +4983,34 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:18:59.299Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:19:29.299Z"
+      },
+      {
+        "message": "You're welcome! Is there anything else I can help you with today?",
+        "message_type": "bot",
+        "timestamp": "2025-07-07T17:19:59.299Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
-    "bot_message_count": 4,
+    "message_count": 9,
+    "user_message_count": 4,
+    "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Account Update",
+      "generalIntent": "Eligibility",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed account update inquiry through self-service flow."
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 470,
-      "processingTime": 2681,
-      "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.017408469066474204
+      "tokensUsed": 518,
+      "processingTime": 2372,
+      "batchNumber": 3,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03309676999658152
     }
   },
   {
@@ -5147,12 +5112,12 @@
         "timestamp": "2025-07-07T17:16:24.506Z"
       },
       {
-        "message": "I need help with my eligibility",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:16:54.506Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:17:24.506Z"
       },
@@ -5180,29 +5145,24 @@
         "message": "Thank you for your help",
         "message_type": "user",
         "timestamp": "2025-07-07T17:19:54.506Z"
-      },
-      {
-        "message": "You're welcome! Is there anything else I can help you with today?",
-        "message_type": "bot",
-        "timestamp": "2025-07-07T17:20:24.506Z"
       }
     ],
-    "message_count": 9,
+    "message_count": 8,
     "user_message_count": 4,
-    "bot_message_count": 5,
+    "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Account Update",
-      "sessionOutcome": "Transfer",
-      "transferReason": "Technical Issue",
-      "dropOffLocation": "Claim Details",
-      "notes": "User attempted account update but encountered technical issue, transferred to live agent."
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Contained",
+      "transferReason": "",
+      "dropOffLocation": "",
+      "notes": "User successfully completed technical support inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 466,
-      "processingTime": 2094,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.023919156830524528
+      "tokensUsed": 769,
+      "processingTime": 3999,
+      "batchNumber": 9,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.035876031851787775
     }
   },
   {
@@ -5304,12 +5264,12 @@
         "timestamp": "2025-07-07T17:16:32.711Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:17:02.711Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:17:32.711Z"
       },
@@ -5348,18 +5308,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Claim Status",
+      "generalIntent": "Eligibility",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed claim status inquiry through self-service flow."
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 419,
-      "processingTime": 2613,
-      "batchNumber": 3,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.022281401083904993
+      "tokensUsed": 608,
+      "processingTime": 1769,
+      "batchNumber": 4,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03591206583907815
     }
   },
   {
@@ -5512,11 +5472,11 @@
       "notes": "User successfully completed technical support inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 696,
-      "processingTime": 2428,
-      "batchNumber": 2,
-      "timestamp": "2025-07-25T16:26:30.140Z",
-      "cost": 0.01827258031779072
+      "tokensUsed": 736,
+      "processingTime": 2014,
+      "batchNumber": 9,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.016329639575595935
     }
   },
   {
@@ -5618,12 +5578,12 @@
         "timestamp": "2025-07-07T17:16:51.009Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:17:21.009Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:17:51.009Z"
       },
@@ -5662,18 +5622,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Provider Enrollment",
+      "generalIntent": "Billing",
       "sessionOutcome": "Transfer",
-      "transferReason": "Technical Issue",
-      "dropOffLocation": "Member Information",
-      "notes": "User attempted provider enrollment but encountered technical issue, transferred to live agent."
+      "transferReason": "Inactive Provider ID",
+      "dropOffLocation": "Payment Information",
+      "notes": "User attempted billing but encountered inactive provider id, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 429,
-      "processingTime": 1912,
-      "batchNumber": 10,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.030555434413047713
+      "tokensUsed": 583,
+      "processingTime": 3052,
+      "batchNumber": 7,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.02396937171183399
     }
   },
   {
@@ -5775,12 +5735,12 @@
         "timestamp": "2025-07-07T17:17:19.612Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:17:49.612Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:18:19.612Z"
       },
@@ -5803,24 +5763,29 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:20:19.612Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:20:49.612Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
+    "message_count": 8,
+    "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Billing",
+      "generalIntent": "Portal Access",
       "sessionOutcome": "Transfer",
-      "transferReason": "Invalid Member ID",
-      "dropOffLocation": "Date of Service",
-      "notes": "User attempted billing but encountered invalid member id, transferred to live agent."
+      "transferReason": "Inactive Provider ID",
+      "dropOffLocation": "Contact Verification",
+      "notes": "User attempted portal access but encountered inactive provider id, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 703,
-      "processingTime": 1647,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.017460487437335803
+      "tokensUsed": 683,
+      "processingTime": 2077,
+      "batchNumber": 6,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.033776699670846996
     }
   },
   {
@@ -5922,12 +5887,12 @@
         "timestamp": "2025-07-07T17:18:11.166Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:18:41.166Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:19:11.166Z"
       },
@@ -5966,18 +5931,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Claim Status",
+      "generalIntent": "Provider Enrollment",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed claim status inquiry through self-service flow."
+      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 765,
-      "processingTime": 3093,
-      "batchNumber": 4,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.029505296769160014
+      "tokensUsed": 579,
+      "processingTime": 2576,
+      "batchNumber": 7,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.0267701745047417
     }
   },
   {
@@ -6079,12 +6044,12 @@
         "timestamp": "2025-07-07T17:18:14.118Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my eligibility",
         "message_type": "user",
         "timestamp": "2025-07-07T17:18:44.118Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:19:14.118Z"
       },
@@ -6113,18 +6078,18 @@
     "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Live Agent",
+      "generalIntent": "Policy Information",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed live agent inquiry through self-service flow."
+      "notes": "User successfully completed policy information inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 509,
-      "processingTime": 3684,
-      "batchNumber": 7,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.020802257377015278
+      "tokensUsed": 651,
+      "processingTime": 3781,
+      "batchNumber": 6,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.02305486592649878
     }
   },
   {
@@ -6226,12 +6191,12 @@
         "timestamp": "2025-07-07T17:18:38.324Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my billing",
         "message_type": "user",
         "timestamp": "2025-07-07T17:19:08.324Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:19:38.324Z"
       },
@@ -6270,18 +6235,18 @@
     "user_message_count": 4,
     "bot_message_count": 5,
     "facts": {
-      "generalIntent": "Account Update",
+      "generalIntent": "Technical Support",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed account update inquiry through self-service flow."
+      "notes": "User successfully completed technical support inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 665,
-      "processingTime": 2811,
-      "batchNumber": 3,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.013241931539874581
+      "tokensUsed": 693,
+      "processingTime": 1686,
+      "batchNumber": 7,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.021436634436973655
     }
   },
   {
@@ -6411,29 +6376,24 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:23:35.736Z"
-      },
-      {
-        "message": "Thank you for your help",
-        "message_type": "user",
-        "timestamp": "2025-07-07T17:24:05.736Z"
       }
     ],
-    "message_count": 8,
-    "user_message_count": 4,
+    "message_count": 7,
+    "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Authorization",
+      "generalIntent": "Policy Information",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed authorization inquiry through self-service flow."
+      "notes": "User successfully completed policy information inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 406,
-      "processingTime": 3418,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.03804439906258438
+      "tokensUsed": 738,
+      "processingTime": 1002,
+      "batchNumber": 4,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.03298431599643991
     }
   },
   {
@@ -6535,12 +6495,12 @@
         "timestamp": "2025-07-07T17:21:04.870Z"
       },
       {
-        "message": "I need help with my authorization",
+        "message": "I need help with my provider enrollment",
         "message_type": "user",
         "timestamp": "2025-07-07T17:21:34.870Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:22:04.870Z"
       },
@@ -6569,18 +6529,18 @@
     "user_message_count": 3,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Eligibility",
-      "sessionOutcome": "Contained",
-      "transferReason": "",
-      "dropOffLocation": "",
-      "notes": "User successfully completed eligibility inquiry through self-service flow."
+      "generalIntent": "Technical Support",
+      "sessionOutcome": "Transfer",
+      "transferReason": "No Provider ID",
+      "dropOffLocation": "User Name",
+      "notes": "User attempted technical support but encountered no provider id, transferred to live agent."
     },
     "analysisMetadata": {
-      "tokensUsed": 490,
-      "processingTime": 3989,
-      "batchNumber": 6,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.037552203909029074
+      "tokensUsed": 765,
+      "processingTime": 3818,
+      "batchNumber": 10,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.011259039706874512
     }
   },
   {
@@ -6682,12 +6642,12 @@
         "timestamp": "2025-07-07T17:21:17.248Z"
       },
       {
-        "message": "I need help with my provider enrollment",
+        "message": "I need help with my claim status",
         "message_type": "user",
         "timestamp": "2025-07-07T17:21:47.248Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member ID to get started.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:22:17.248Z"
       },
@@ -6710,24 +6670,29 @@
         "message": "Yes, I can assist you with that. Let me process this for you.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:24:17.248Z"
+      },
+      {
+        "message": "Thank you for your help",
+        "message_type": "user",
+        "timestamp": "2025-07-07T17:24:47.248Z"
       }
     ],
-    "message_count": 7,
-    "user_message_count": 3,
+    "message_count": 8,
+    "user_message_count": 4,
     "bot_message_count": 4,
     "facts": {
-      "generalIntent": "Provider Enrollment",
+      "generalIntent": "Eligibility",
       "sessionOutcome": "Contained",
       "transferReason": "",
       "dropOffLocation": "",
-      "notes": "User successfully completed provider enrollment inquiry through self-service flow."
+      "notes": "User successfully completed eligibility inquiry through self-service flow."
     },
     "analysisMetadata": {
-      "tokensUsed": 698,
-      "processingTime": 2346,
-      "batchNumber": 5,
-      "timestamp": "2025-07-25T16:26:30.141Z",
-      "cost": 0.027960077158319566
+      "tokensUsed": 705,
+      "processingTime": 3487,
+      "batchNumber": 7,
+      "timestamp": "2025-07-28T17:08:47.681Z",
+      "cost": 0.013732420546944735
     }
   }
 ]

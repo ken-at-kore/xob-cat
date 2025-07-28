@@ -17,6 +17,9 @@ import {
 import { AnalyzedSessionDetailsDialog } from './AnalyzedSessionDetailsDialog';
 import { ContainmentSuggestionCard } from './ContainmentSuggestionCard';
 
+// Centralized prose styling for consistent markdown rendering
+const PROSE_CLASSES = "prose prose-sm max-w-none prose-headings:text-gray-900 prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:text-gray-700 prose-li:text-gray-700 prose-em:text-gray-600 prose-em:font-medium";
+
 interface AnalysisReportViewProps {
   results: AnalysisResults;
   onStartNew: () => void;
@@ -106,8 +109,8 @@ export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewPr
             <CardHeader>
               <CardTitle>Analysis Overview</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="prose prose-sm max-w-none">
+            <CardContent className="px-6 py-5">
+              <div className={PROSE_CLASSES}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {results.analysisSummary.overview}
                 </ReactMarkdown>
@@ -143,8 +146,8 @@ export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewPr
           <CardHeader>
             <CardTitle>Detailed Analysis</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="prose prose-sm max-w-none">
+          <CardContent className="px-8 py-6">
+            <div className={PROSE_CLASSES}>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {results.analysisSummary.summary}
               </ReactMarkdown>
