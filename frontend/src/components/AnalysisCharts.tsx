@@ -118,18 +118,27 @@ export function SessionOutcomePieChart({ sessions }: ChartProps) {
             arcLinkLabelsTextColor="#333333"
             arcLinkLabelsThickness={2}
             arcLinkLabelsColor={{ from: 'color' }}
-            arcLabel={d => `${d.percentage}%`}
+            arcLabel={d => `${d.data.percentage}%`}
             arcLabelsSkipAngle={10}
             arcLabelsTextColor={{
               from: 'color',
               modifiers: [['darker', 2]]
             }}
             tooltip={({ datum }) => (
-              <div className="bg-white p-3 border rounded shadow-lg">
-                <p className="font-medium">{datum.label}</p>
-                <p className="text-sm text-gray-600">
-                  Count: {datum.value} ({datum.percentage}%)
-                </p>
+              <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg min-w-56">
+                <div className="space-y-2">
+                  <p className="font-semibold text-gray-900">{datum.label}</p>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-gray-500 text-xs uppercase tracking-wide">Sessions</p>
+                      <p className="font-medium text-gray-900">{datum.value}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500 text-xs uppercase tracking-wide">Percentage</p>
+                      <p className="font-medium text-gray-900">{datum.data.percentage}%</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           />
