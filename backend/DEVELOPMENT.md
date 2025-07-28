@@ -29,7 +29,7 @@ cp env.example .env
 ### Development Commands
 ```bash
 # Start development server with hot reload
-npm run dev
+npm run start
 
 # Run tests
 npm test
@@ -276,10 +276,10 @@ console.error('Error details:', {
 ### Debug Mode
 ```bash
 # Enable debug logging
-DEBUG=* npm run dev
+DEBUG=* npm run start
 
 # Debug specific module
-DEBUG=kore-api npm run dev
+DEBUG=kore-api npm run start
 ```
 
 ### Testing API Endpoints
