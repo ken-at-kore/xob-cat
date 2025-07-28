@@ -48,7 +48,7 @@ A Node.js/TypeScript backend service for the XOB CAT (XO Bot Conversation Analys
 
 ### Development Mode
 ```bash
-npm run dev
+npm run start
 ```
 
 ### Production Mode

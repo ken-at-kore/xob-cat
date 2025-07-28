@@ -28,7 +28,7 @@ Built with modern React patterns and TypeScript, this frontend provides an intui
 npm install
 
 # Start development server
-npm run dev
+npm run start
 
 # Open http://localhost:3000
 ```
@@ -36,7 +36,7 @@ npm run dev
 ### Available Scripts
 
 ```bash
-npm run dev          # Start Next.js development server
+npm run start        # Start Next.js development server
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint

@@ -131,11 +131,16 @@ npm list --depth=0
 
 ```bash
 # Start both frontend and backend
-npm run dev
+npm run start
 
 # Or start individually:
-npm run dev:frontend   # Frontend only (port 3000)
-npm run dev:backend    # Backend only (port 3001)
+npm run start:frontend   # Frontend only (port 3000)
+npm run start:backend    # Backend only (port 3001)
+
+# Stop servers:
+npm run stop            # Stop both servers
+npm run stop:frontend   # Stop frontend only
+npm run stop:backend    # Stop backend only
 ```
 
 ### Verify Everything is Working
@@ -223,7 +228,7 @@ npm install
 ls -la backend/.env
 
 # Verify environment variables are loaded
-cd backend && npm run dev
+cd backend && npm run start
 ```
 
 ### Getting Help

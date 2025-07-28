@@ -44,7 +44,7 @@ XOB CAT is a full-stack web analytics platform designed for Kore.ai Expert Servi
 
 4. **Start development servers**
    ```bash
-   npm run dev
+   npm run start
    ```
 
 This starts both services concurrently:
@@ -93,7 +93,12 @@ XOB CAT is a TypeScript monorepo with three main components:
 
 ```bash
 # Start both frontend and backend
-npm run dev
+npm run start
+
+# Stop servers
+npm run stop               # Stop both servers
+npm run stop:frontend      # Stop frontend only
+npm run stop:backend       # Stop backend only
 
 # Run tests
 npm run test                    # All tests

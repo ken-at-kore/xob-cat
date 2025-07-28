@@ -6,10 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Development
 ```bash
-npm run dev                    # Start both frontend (3000) and backend (3001) via scripts/dev-start.sh
-npm run dev:frontend          # Start Next.js dev server only via scripts/dev-start-frontend.sh  
-npm run dev:backend           # Start Express API server only via scripts/dev-start-backend.sh
+npm run start                  # Start both frontend (3000) and backend (3001) via scripts/dev-start.sh
+npm run start:frontend        # Start Next.js dev server only via scripts/dev-start-frontend.sh  
+npm run start:backend         # Start Express API server only via scripts/dev-start-backend.sh
 npm run stop                  # Stop all dev servers (kills processes on ports 3000 and 3001)
+npm run stop:frontend         # Stop frontend server only (kill process on port 3000)
+npm run stop:backend          # Stop backend server only (kill process on port 3001)
 ```
 
 ### Server Status & Health Checks
@@ -225,8 +227,9 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 
 ### Required Development Commands
 **IMPORTANT**: Always use the standardized npm scripts defined in package.json:
-- **Server Management**: Use `npm run dev`, `npm run stop`, `npm run status` commands only
-- **Individual Servers**: Use `npm run dev:frontend` and `npm run dev:backend` (not direct cd commands)
+- **Server Management**: Use `npm run start`, `npm run stop`, `npm run status` commands only
+- **Individual Servers**: Use `npm run start:frontend` and `npm run start:backend` (not direct cd commands)
+- **Individual Server Stopping**: Use `npm run stop:frontend` and `npm run stop:backend` to stop specific servers
 - **Health Checks**: Use `npm run status:backend` and `npm run status:frontend` for server monitoring
 - **Script Location**: All development scripts are in `scripts/` directory with proper error handling and logging
 
@@ -325,14 +328,16 @@ XOB CAT/
 ### Development
 ```bash
 # Start both frontend and backend concurrently
-npm run dev             # Uses scripts/dev-start.sh with health checks
+npm run start           # Uses scripts/dev-start.sh with health checks
 
 # Individual services  
-npm run dev:frontend    # Next.js dev server (port 3000) via scripts/dev-start-frontend.sh
-npm run dev:backend     # Express API server (port 3001) via scripts/dev-start-backend.sh
+npm run start:frontend  # Next.js dev server (port 3000) via scripts/dev-start-frontend.sh
+npm run start:backend   # Express API server (port 3001) via scripts/dev-start-backend.sh
 
 # Server management
 npm run stop            # Kill all dev servers on ports 3000 and 3001
+npm run stop:frontend   # Kill frontend server only (port 3000)
+npm run stop:backend    # Kill backend server only (port 3001)
 npm run status          # Check health of both servers
 npm run status:frontend # Check frontend server (curl localhost:3000)
 npm run status:backend  # Check backend server (curl localhost:3001/health)
