@@ -29,11 +29,26 @@ jest.mock('recharts', () => ({
 
 // Mock Nivo charts to avoid rendering issues in tests
 jest.mock('@nivo/bar', () => ({
-  ResponsiveBar: ({ data, tooltip }: any) => (
+  ResponsiveBar: ({ data, tooltip, colors, axisBottom, gridXValues }: any) => (
     <div data-testid="nivo-bar-chart">
+      <div data-testid="nivo-bar-config">
+        {colors && <span data-testid="bar-color">{colors[0]}</span>}
+        {axisBottom?.tickValues && <span data-testid="tick-values">{axisBottom.tickValues.join(',')}</span>}
+        {gridXValues && <span data-testid="grid-values">{gridXValues.join(',')}</span>}
+      </div>
       {data && data.map((item: any, index: number) => (
         <div key={index} data-testid={`bar-item-${index}`}>
-          {item.reason || item.location || item.intent}: {item.count}
+          <span data-testid={`bar-label-${index}`}>{item.reason || item.location || item.intent}</span>
+          <span data-testid={`bar-value-${index}`}>{item.count}</span>
+          {item.cumulative && <span data-testid={`bar-cumulative-${index}`}>{item.cumulative}</span>}
+          {tooltip && typeof tooltip === 'function' && (
+            <div data-testid={`tooltip-${index}`}>
+              {(() => {
+                const tooltipContent = tooltip({ id: 'test', value: item.count, data: item });
+                return tooltipContent;
+              })()}
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -143,6 +158,44 @@ describe('AnalysisCharts', () => {
       expect(screen.getByText('Session Outcomes')).toBeInTheDocument();
       expect(screen.getByText('No data available')).toBeInTheDocument();
     });
+
+    it('renders color legend correctly', () => {
+      render(<SessionOutcomePieChart sessions={mockSessions} />);
+      
+      // Check that color indicators are rendered
+      const colorIndicators = screen.getAllByRole('generic').filter(el => 
+        el.style.backgroundColor !== ''
+      );
+      expect(colorIndicators.length).toBeGreaterThan(0);
+    });
+
+    it('handles single outcome type', () => {
+      const containedOnlySessions = mockSessions.filter(s => s.facts.sessionOutcome === 'Contained');
+      render(<SessionOutcomePieChart sessions={containedOnlySessions} />);
+      
+      expect(screen.getByText('Contained: 1 (100.0%)')).toBeInTheDocument();
+      expect(screen.queryByText(/Transfer/)).not.toBeInTheDocument();
+    });
+
+    it('calculates percentages correctly for various distributions', () => {
+      const testSessions = [
+        ...Array(3).fill(null).map((_, i) => ({
+          ...mockSessions[0],
+          session_id: `contained-${i}`,
+          facts: { ...mockSessions[0].facts, sessionOutcome: 'Contained' as const }
+        })),
+        ...Array(7).fill(null).map((_, i) => ({
+          ...mockSessions[1],
+          session_id: `transfer-${i}`,
+          facts: { ...mockSessions[1].facts, sessionOutcome: 'Transfer' as const }
+        }))
+      ];
+      
+      render(<SessionOutcomePieChart sessions={testSessions} />);
+      
+      expect(screen.getByText('Contained: 3 (30.0%)')).toBeInTheDocument();
+      expect(screen.getByText('Transfer: 7 (70.0%)')).toBeInTheDocument();
+    });
   });
 
   describe('TransferReasonsPareto', () => {
@@ -159,8 +212,10 @@ describe('AnalysisCharts', () => {
       // Should show data in bar items but not as redundant text
       expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
       // Both reasons should be present in the chart data
-      expect(screen.getByText('Complex technical problem: 1')).toBeInTheDocument();
-      expect(screen.getByText('Invalid member ID: 1')).toBeInTheDocument();
+      expect(screen.getByTestId('bar-label-0')).toHaveTextContent('Invalid member ID');
+      expect(screen.getByTestId('bar-value-0')).toHaveTextContent('1');
+      expect(screen.getByTestId('bar-label-1')).toHaveTextContent('Complex technical problem');
+      expect(screen.getByTestId('bar-value-1')).toHaveTextContent('1');
     });
 
     it('handles sessions with no transfers', () => {
@@ -169,6 +224,47 @@ describe('AnalysisCharts', () => {
       
       expect(screen.getByText('Transfer Reasons')).toBeInTheDocument();
       expect(screen.getByText('No transfer reasons found')).toBeInTheDocument();
+    });
+
+    it('calculates cumulative percentages correctly', () => {
+      render(<TransferReasonsPareto sessions={mockSessions} />);
+      
+      // Check cumulative percentages are calculated (bars are reversed in display)
+      // First bar shown is "Invalid member ID" with cumulative 100% (since it's shown at top)
+      // Second bar shown is "Complex technical problem" with cumulative 50%
+      expect(screen.getByTestId('bar-cumulative-0')).toHaveTextContent('100.0');
+      expect(screen.getByTestId('bar-cumulative-1')).toHaveTextContent('50.0');
+    });
+
+    it('truncates long transfer reasons', () => {
+      const longReasonSessions = [{
+        ...mockSessions[1],
+        facts: {
+          ...mockSessions[1].facts,
+          transferReason: 'This is a very long transfer reason that should be truncated in the display'
+        }
+      }];
+      
+      render(<TransferReasonsPareto sessions={longReasonSessions} />);
+      
+      // Check that long text is truncated
+      expect(screen.getByTestId('bar-label-0')).toHaveTextContent('This is a very long trans...');
+    });
+
+    it('configures grid lines correctly', () => {
+      render(<TransferReasonsPareto sessions={mockSessions} />);
+      
+      // Check grid configuration
+      expect(screen.getByTestId('grid-values')).toHaveTextContent('0,1,2,3,4');
+      expect(screen.getByTestId('tick-values')).toHaveTextContent('0,1,2,3,4');
+    });
+
+    it('renders tooltip with correct content', () => {
+      render(<TransferReasonsPareto sessions={mockSessions} />);
+      
+      // Check tooltip rendering
+      expect(screen.getByTestId('tooltip-0')).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip-1')).toBeInTheDocument();
     });
   });
 
@@ -196,6 +292,33 @@ describe('AnalysisCharts', () => {
       expect(screen.getByText('Drop-off Locations')).toBeInTheDocument();
       expect(screen.getByText('No drop-off locations found')).toBeInTheDocument();
     });
+
+    it('sorts and limits to top 8 locations', () => {
+      const manyLocationSessions = Array.from({ length: 10 }, (_, i) => ({
+        ...mockSessions[0],
+        session_id: `session-${i}`,
+        facts: {
+          ...mockSessions[0].facts,
+          dropOffLocation: `Location ${i}`,
+          sessionOutcome: 'Transfer' as const
+        }
+      }));
+      
+      render(<DropOffLocationsBar sessions={manyLocationSessions} />);
+      
+      // Should only show 8 items (top 8)
+      const barItems = screen.getAllByTestId(/^bar-item-/);
+      expect(barItems).toHaveLength(8);
+    });
+
+    it('configures grid lines correctly', () => {
+      render(<DropOffLocationsBar sessions={mockSessions} />);
+      
+      // Check grid configuration for smaller data sets
+      expect(screen.getByTestId('grid-values')).toHaveTextContent('0,1,2');
+      expect(screen.getByTestId('tick-values')).toHaveTextContent('0,1,2');
+      expect(screen.getByTestId('bar-color')).toHaveTextContent('#F59E0B'); // warning color
+    });
   });
 
   describe('GeneralIntentsBar', () => {
@@ -211,8 +334,44 @@ describe('AnalysisCharts', () => {
       
       // Should show data in bar items
       expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
-      expect(screen.getByText('Account Update: 2')).toBeInTheDocument();
-      expect(screen.getByText('Technical Issue: 1')).toBeInTheDocument();
+      expect(screen.getByTestId('bar-label-0')).toHaveTextContent('Technical Issue');
+      expect(screen.getByTestId('bar-value-0')).toHaveTextContent('1');
+      expect(screen.getByTestId('bar-label-1')).toHaveTextContent('Account Update');
+      expect(screen.getByTestId('bar-value-1')).toHaveTextContent('2');
+    });
+
+    it('handles empty sessions gracefully', () => {
+      render(<GeneralIntentsBar sessions={[]} />);
+      
+      // Should still render the chart structure
+      expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
+      expect(screen.getByText('General Intents')).toBeInTheDocument();
+    });
+
+    it('configures grid lines with appropriate values', () => {
+      render(<GeneralIntentsBar sessions={mockSessions} />);
+      
+      // Check grid configuration
+      expect(screen.getByTestId('grid-values')).toHaveTextContent('0,1,2,3,4,5,6,7');
+      expect(screen.getByTestId('tick-values')).toHaveTextContent('0,1,2,3,4,5,6,7');
+      expect(screen.getByTestId('bar-color')).toHaveTextContent('#6366F1'); // info color
+    });
+
+    it('limits to top 8 intents when many exist', () => {
+      const manyIntentSessions = Array.from({ length: 12 }, (_, i) => ({
+        ...mockSessions[0],
+        session_id: `session-${i}`,
+        facts: {
+          ...mockSessions[0].facts,
+          generalIntent: `Intent ${i}`
+        }
+      }));
+      
+      render(<GeneralIntentsBar sessions={manyIntentSessions} />);
+      
+      // Should only show 8 items
+      const barItems = screen.getAllByTestId(/^bar-item-/);
+      expect(barItems).toHaveLength(8);
     });
   });
 
