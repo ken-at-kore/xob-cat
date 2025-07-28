@@ -290,11 +290,11 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 
 **Analysis Report Visualizations**: The results page displays a comprehensive analytics dashboard featuring:
 - **Analysis Overview & Summary**: AI-generated markdown insights with performance metrics and actionable recommendations (properly styled with @tailwindcss/typography)
-- **Session Outcomes Pie Chart**: Visual breakdown of contained vs transferred sessions with percentages
-- **Transfer Reasons Pareto Chart**: Ranked analysis of why sessions were escalated to live agents  
-- **Drop-off Locations Bar Chart**: Visualization of where users abandoned their sessions
-- **General Intents Bar Chart**: Distribution of user intents and goals
-- **Cost Analysis Card**: Token usage, estimated costs, and model information
+- **Session Outcomes Pie Chart**: Interactive Nivo pie chart showing contained vs transferred sessions with percentages and hover effects
+- **Transfer Reasons Pareto Chart**: Horizontal Nivo bar chart with Pareto analysis ranking transfer reasons by frequency with cumulative impact tooltips
+- **Drop-off Locations Bar Chart**: Nivo horizontal bar chart showing top 8 locations where users abandon sessions
+- **General Intents Bar Chart**: Nivo horizontal bar chart displaying top 8 user intent categories and distribution
+- **Cost Analysis Card**: Token usage, estimated costs, and model information with detailed breakdown
 - **Interactive Sessions Table**: Filterable table with detailed session exploration via clickable rows
 
 **Markdown Rendering**: Analysis summaries use ReactMarkdown with remark-gfm and Tailwind Typography plugin for proper header hierarchy (H1: 32px, H2: 24px, H3: 18.72px) and bold text styling.
@@ -308,7 +308,7 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 - **Backend**: Node.js + Express + TypeScript (port 3001)
 - **Shared**: TypeScript types in `shared/types/`
 - **LLM Integration**: OpenAI GPT-4o-mini with function calling
-- **Data Visualization**: Recharts library for interactive charts and graphs
+- **Data Visualization**: Nivo library for professional, accessible, and interactive charts
 - **Testing**: Jest (unit), Playwright (E2E)
 - **No Database**: In-memory data only (MVP constraint)
 
@@ -496,11 +496,11 @@ Use your judgment to decide when launching a Playwright MCP browser to capture a
 - Batch analysis capabilities
 
 ### Data Visualization
-- **Session Outcomes**: Pie chart visualization showing containment vs transfer rates with percentages
-- **Transfer Reasons**: Pareto chart analysis ranking reasons for session escalation
-- **Drop-off Analysis**: Bar chart showing where users abandon sessions in the conversation flow  
-- **Intent Distribution**: Bar chart displaying the frequency of different user intents
-- **Cost Analytics**: Token usage, model information, and cost breakdown visualization
-- All charts built with Recharts library providing interactive tooltips and responsive design
+- **Session Outcomes**: Interactive Nivo pie chart showing containment vs transfer rates with percentages, hover effects, and color-coded legend
+- **Transfer Reasons**: Nivo horizontal bar chart with Pareto analysis ranking reasons for session escalation, including cumulative impact percentages
+- **Drop-off Analysis**: Nivo horizontal bar chart showing top 8 locations where users abandon sessions in the conversation flow  
+- **Intent Distribution**: Nivo horizontal bar chart displaying the frequency and distribution of different user intents
+- **Cost Analytics**: Comprehensive card showing token usage, model information, and detailed cost breakdown
+- All charts built with Nivo library providing professional styling, accessibility features, interactive tooltips, and responsive design
 
 When working on this codebase, always reference the shared types, follow the monorepo structure, and ensure tests pass before committing changes.

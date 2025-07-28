@@ -10,20 +10,18 @@ import {
 } from '../AnalysisCharts';
 import { SessionWithFacts } from '@/shared/types';
 
-// Mock Recharts to avoid rendering issues in tests
-jest.mock('recharts', () => ({
-  PieChart: ({ children }: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
-  Pie: () => <div data-testid="pie" />,
-  Cell: () => <div data-testid="cell" />,
-  BarChart: ({ children }: { children: React.ReactNode }) => <div data-testid="bar-chart">{children}</div>,
-  Bar: () => <div data-testid="bar" />,
-  XAxis: () => <div data-testid="x-axis" />,
-  YAxis: () => <div data-testid="y-axis" />,
-  CartesianGrid: () => <div data-testid="cartesian-grid" />,
-  Tooltip: () => <div data-testid="tooltip" />,
-  Legend: () => <div data-testid="legend" />,
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="responsive-container">{children}</div>
+// Mock Nivo pie chart to avoid rendering issues in tests
+jest.mock('@nivo/pie', () => ({
+  ResponsivePie: ({ data, tooltip }: any) => (
+    <div data-testid="nivo-pie-chart">
+      {data && data.map((item: any, index: number) => (
+        <div key={index} data-testid={`pie-slice-${index}`}>
+          <span data-testid={`pie-label-${index}`}>{item.label}</span>
+          <span data-testid={`pie-value-${index}`}>{item.value}</span>
+          <span data-testid={`pie-percentage-${index}`}>{item.percentage}</span>
+        </div>
+      ))}
+    </div>
   ),
 }));
 
@@ -145,8 +143,7 @@ describe('AnalysisCharts', () => {
     it('renders pie chart with correct data', () => {
       render(<SessionOutcomePieChart sessions={mockSessions} />);
       
-      expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
-      expect(screen.getByTestId('pie')).toBeInTheDocument();
+      expect(screen.getByTestId('nivo-pie-chart')).toBeInTheDocument();
       expect(screen.getByText('Session Outcomes')).toBeInTheDocument();
       expect(screen.getByText('Contained: 1 (33.3%)')).toBeInTheDocument();
       expect(screen.getByText('Transfer: 2 (66.7%)')).toBeInTheDocument();

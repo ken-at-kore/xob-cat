@@ -1,31 +1,37 @@
+/**
+ * @file AnalysisCharts.tsx
+ * @description Data visualization components for XOB CAT analysis reports using Nivo charts
+ * 
+ * This module provides interactive charts for visualizing bot performance metrics:
+ * - Session outcomes (contained vs transferred)
+ * - Transfer reasons with Pareto analysis
+ * - User drop-off locations
+ * - General user intents
+ * - Cost analysis and token usage
+ * 
+ * All charts use the @nivo library for consistent, responsive, and accessible visualizations.
+ */
+
 import React from 'react';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ComposedChart
-} from 'recharts';
 import { ResponsiveBar } from '@nivo/bar';
-import { ResponsiveLine } from '@nivo/line';
+import { ResponsivePie } from '@nivo/pie';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { SessionWithFacts } from '@/shared/types';
 
-// Color palette for charts
+// Constants
+const TEXT_TRUNCATION_LENGTH = 25;
+const MAX_BAR_ITEMS = 8;
+const MAX_PARETO_ITEMS = 10;
+
+/**
+ * Color palette for consistent chart styling across the application
+ */
 const COLORS = {
-  primary: '#3B82F6',    // Blue
-  secondary: '#EF4444',  // Red
-  success: '#10B981',    // Green
-  warning: '#F59E0B',    // Amber
-  info: '#6366F1',       // Indigo
+  primary: '#3B82F6',    // Blue - Primary bars
+  secondary: '#EF4444',  // Red - Negative outcomes
+  success: '#10B981',    // Green - Positive outcomes
+  warning: '#F59E0B',    // Amber - Drop-offs
+  info: '#6366F1',       // Indigo - General intents
   purple: '#8B5CF6',     // Purple
   orange: '#F97316',     // Orange
   teal: '#14B8A6',       // Teal
@@ -33,16 +39,32 @@ const COLORS = {
   gray: '#6B7280'        // Gray
 };
 
+// Pie chart colors ordered for optimal visual contrast
 const PIE_COLORS = [COLORS.success, COLORS.secondary, COLORS.warning, COLORS.info, COLORS.purple];
-const BAR_COLOR = COLORS.primary;
 
 interface ChartProps {
   sessions: SessionWithFacts[];
 }
 
 /**
- * Session Outcomes Pie Chart
- * Shows distribution of Contained vs Transfer outcomes
+ * Truncates text to a maximum length with ellipsis
+ */
+const truncateText = (text: string, maxLength: number = TEXT_TRUNCATION_LENGTH): string => {
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+};
+
+/**
+ * SessionOutcomePieChart - Visualizes the distribution of session outcomes
+ * 
+ * @component
+ * @param {SessionWithFacts[]} sessions - Array of analyzed sessions
+ * @returns {JSX.Element} Pie chart showing percentage of contained vs transferred sessions
+ * 
+ * Features:
+ * - Interactive pie slices with hover effects
+ * - Percentage labels on each slice
+ * - Color-coded legend below the chart
+ * - Tooltips showing exact counts and percentages
  */
 export function SessionOutcomePieChart({ sessions }: ChartProps) {
   if (sessions.length === 0) {
@@ -64,26 +86,13 @@ export function SessionOutcomePieChart({ sessions }: ChartProps) {
     return acc;
   }, {} as Record<string, number>);
 
-  const chartData = Object.entries(outcomeData).map(([outcome, count]) => ({
-    name: outcome,
+  const chartData = Object.entries(outcomeData).map(([outcome, count], index) => ({
+    id: outcome,
+    label: outcome,
     value: count,
-    percentage: ((count / sessions.length) * 100).toFixed(1)
+    percentage: ((count / sessions.length) * 100).toFixed(1),
+    color: PIE_COLORS[index % PIE_COLORS.length]
   }));
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload[0]) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-3 border rounded shadow-lg">
-          <p className="font-medium">{data.name}</p>
-          <p className="text-sm text-gray-600">
-            Count: {data.value} ({data.percentage}%)
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <Card>
@@ -92,34 +101,48 @@ export function SessionOutcomePieChart({ sessions }: ChartProps) {
       </CardHeader>
       <CardContent>
         <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                innerRadius={40}
-                outerRadius={80}
-                dataKey="value"
-                label={({ name, percentage }) => `${name}: ${percentage}%`}
-              >
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
+          <ResponsivePie
+            data={chartData}
+            margin={{ top: 20, right: 80, bottom: 20, left: 80 }}
+            innerRadius={0.5}
+            padAngle={0.7}
+            cornerRadius={3}
+            activeOuterRadiusOffset={8}
+            colors={{ datum: 'data.color' }}
+            borderWidth={1}
+            borderColor={{
+              from: 'color',
+              modifiers: [['darker', 0.2]]
+            }}
+            arcLinkLabelsSkipAngle={10}
+            arcLinkLabelsTextColor="#333333"
+            arcLinkLabelsThickness={2}
+            arcLinkLabelsColor={{ from: 'color' }}
+            arcLabel={d => `${d.percentage}%`}
+            arcLabelsSkipAngle={10}
+            arcLabelsTextColor={{
+              from: 'color',
+              modifiers: [['darker', 2]]
+            }}
+            tooltip={({ datum }) => (
+              <div className="bg-white p-3 border rounded shadow-lg">
+                <p className="font-medium">{datum.label}</p>
+                <p className="text-sm text-gray-600">
+                  Count: {datum.value} ({datum.percentage}%)
+                </p>
+              </div>
+            )}
+          />
         </div>
         <div className="mt-4 space-y-2">
-          {chartData.map((entry, index) => (
-            <div key={entry.name} className="flex items-center justify-between">
+          {chartData.map((entry) => (
+            <div key={entry.id} className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <div 
                   className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
+                  style={{ backgroundColor: entry.color }}
                 />
-                <span className="text-sm">{entry.name}: {entry.value} ({entry.percentage}%)</span>
+                <span className="text-sm">{entry.label}: {entry.value} ({entry.percentage}%)</span>
               </div>
             </div>
           ))}
@@ -130,8 +153,20 @@ export function SessionOutcomePieChart({ sessions }: ChartProps) {
 }
 
 /**
- * Transfer Reasons Pareto Chart
- * Shows transfer reasons ordered by frequency (Pareto principle)
+ * TransferReasonsPareto - Visualizes transfer reasons using Pareto principle
+ * 
+ * @component
+ * @param {SessionWithFacts[]} sessions - Array of analyzed sessions
+ * @returns {JSX.Element} Horizontal bar chart with cumulative impact analysis
+ * 
+ * Features:
+ * - Bars ordered by frequency (highest at top)
+ * - Shows top 10 transfer reasons
+ * - Tooltips display individual and cumulative percentages
+ * - Grid lines aligned with tick marks for clarity
+ * 
+ * The Pareto principle helps identify the vital few reasons causing most transfers,
+ * enabling targeted improvements to bot performance.
  */
 export function TransferReasonsPareto({ sessions }: ChartProps) {
   const transferSessions = sessions.filter(s => 
@@ -159,8 +194,8 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
 
   // Sort by frequency (Pareto analysis) - highest frequency first
   const sortedReasons = Object.entries(reasonCounts)
-    .sort(([, a], [, b]) => b - a) // Descending order: highest count first
-    .slice(0, 10); // Top 10 reasons
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, MAX_PARETO_ITEMS);
 
   // Calculate cumulative impact percentages
   let cumulativeCount = 0;
@@ -168,37 +203,15 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
     cumulativeCount += count;
     const cumulativePercentage = ((cumulativeCount / transferSessions.length) * 100).toFixed(1);
     return {
-      id: reason.length > 25 ? reason.substring(0, 25) + '...' : reason,
-      reason: reason.length > 25 ? reason.substring(0, 25) + '...' : reason,
+      id: truncateText(reason),
+      reason: truncateText(reason),
       fullReason: reason,
       count,
       cumulative: cumulativePercentage
     };
   })
-  // Reverse the array for horizontal bar chart display (highest bars at top)
+  // Reverse for horizontal bar chart display (highest bars at top)
   .reverse();
-
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload[0]) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-3 border rounded shadow-lg max-w-xs">
-          <p className="font-medium">{data.fullReason}</p>
-          <p className="text-sm text-gray-600">Count: {data.count}</p>
-          <p className="text-sm text-gray-600">Cumulative: {data.cumulative}%</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Prepare data for line chart overlay - match Nivo bar positioning
-  const lineData = chartData.map((item, index) => ({
-    index: index, // Use same index as bars for proper alignment
-    cumulative: parseFloat(item.cumulative),
-    reason: item.reason
-  }));
 
 
   return (
@@ -215,7 +228,7 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
             layout="horizontal"
             margin={{ top: 20, right: 60, left: 150, bottom: 20 }}
             padding={0.3}
-            colors={[BAR_COLOR]}
+            colors={[COLORS.primary]}
             borderColor={{
               from: 'color',
               modifiers: [['darker', 1.6]]
@@ -288,8 +301,17 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
 }
 
 /**
- * Drop-off Locations Bar Chart
- * Shows where users dropped off during conversations
+ * DropOffLocationsBar - Visualizes where users abandon conversations
+ * 
+ * @component
+ * @param {SessionWithFacts[]} sessions - Array of analyzed sessions
+ * @returns {JSX.Element} Horizontal bar chart showing drop-off points
+ * 
+ * Features:
+ * - Shows top 8 drop-off locations
+ * - Orange color scheme to highlight areas of concern
+ * - Horizontal layout for better label readability
+ * - Interactive tooltips with full location names
  */
 export function DropOffLocationsBar({ sessions }: ChartProps) {
   const dropOffSessions = sessions.filter(s => s.facts.dropOffLocation.trim());
@@ -314,28 +336,15 @@ export function DropOffLocationsBar({ sessions }: ChartProps) {
   }, {} as Record<string, number>);
 
   const chartData = Object.entries(locationCounts)
-    .sort(([, a], [, b]) => a - b) // Changed to ascending for reverse display (highest at top)
-    .slice(0, 8) // Top 8 locations
+    .sort(([, a], [, b]) => b - a) // Sort descending by count
+    .slice(0, MAX_BAR_ITEMS)
     .map(([location, count]) => ({
-      id: location.length > 25 ? location.substring(0, 25) + '...' : location,
-      location: location.length > 25 ? location.substring(0, 25) + '...' : location,
+      id: truncateText(location),
+      location: truncateText(location),
       fullLocation: location,
       count
-    }));
-
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload[0]) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-3 border rounded shadow-lg">
-          <p className="font-medium">{data.fullLocation}</p>
-          <p className="text-sm text-gray-600">Count: {data.count}</p>
-        </div>
-      );
-    }
-    return null;
-  };
+    }))
+    .reverse(); // Reverse for display (highest at top)
 
   return (
     <Card>
@@ -405,8 +414,17 @@ export function DropOffLocationsBar({ sessions }: ChartProps) {
 }
 
 /**
- * General Intents Bar Chart
- * Shows distribution of user intents
+ * GeneralIntentsBar - Visualizes the distribution of user intents
+ * 
+ * @component
+ * @param {SessionWithFacts[]} sessions - Array of analyzed sessions
+ * @returns {JSX.Element} Horizontal bar chart showing user intent categories
+ * 
+ * Features:
+ * - Shows top 8 most common intents
+ * - Indigo color scheme for neutral categorization
+ * - Helps identify primary use cases and user needs
+ * - Interactive tooltips with full intent descriptions
  */
 export function GeneralIntentsBar({ sessions }: ChartProps) {
   const intentCounts = sessions.reduce((acc, session) => {
@@ -416,28 +434,15 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
   }, {} as Record<string, number>);
 
   const chartData = Object.entries(intentCounts)
-    .sort(([, a], [, b]) => a - b) // Changed to ascending for reverse display (highest at top)
-    .slice(0, 8) // Top 8 intents
+    .sort(([, a], [, b]) => b - a) // Sort descending by count
+    .slice(0, MAX_BAR_ITEMS)
     .map(([intent, count]) => ({
-      id: intent.length > 25 ? intent.substring(0, 25) + '...' : intent,
-      intent: intent.length > 25 ? intent.substring(0, 25) + '...' : intent,
+      id: truncateText(intent),
+      intent: truncateText(intent),
       fullIntent: intent,
       count
-    }));
-
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload[0]) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-3 border rounded shadow-lg">
-          <p className="font-medium">{data.fullIntent}</p>
-          <p className="text-sm text-gray-600">Count: {data.count}</p>
-        </div>
-      );
-    }
-    return null;
-  };
+    }))
+    .reverse(); // Reverse for display (highest at top)
 
   return (
     <Card>
@@ -507,8 +512,20 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
 }
 
 /**
- * Analysis Cost Card
- * Shows cost breakdown and token usage
+ * AnalysisCostCard - Displays cost metrics and token usage for AI analysis
+ * 
+ * @component
+ * @param {SessionWithFacts[]} sessions - Array of analyzed sessions
+ * @returns {JSX.Element} Card displaying cost breakdown and usage statistics
+ * 
+ * Features:
+ * - Total sessions analyzed count
+ * - Token usage statistics (total and average per session)
+ * - Cost estimation based on GPT-4o-mini pricing
+ * - Model information display
+ * - Cost per session calculation
+ * 
+ * Pricing is based on OpenAI's GPT-4o-mini model: $0.00015 per 1K tokens
  */
 export function AnalysisCostCard({ sessions }: ChartProps) {
   const totalTokens = sessions.reduce((sum, session) => sum + session.analysisMetadata.tokensUsed, 0);
