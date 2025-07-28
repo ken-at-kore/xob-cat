@@ -147,7 +147,7 @@ export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewPr
             <CardTitle>Detailed Analysis</CardTitle>
           </CardHeader>
           <CardContent className="px-8 py-6">
-            <div className={PROSE_CLASSES}>
+            <div className={`${PROSE_CLASSES} columns-2 gap-8 column-fill-balance`}>
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {results.analysisSummary.summary}
               </ReactMarkdown>
