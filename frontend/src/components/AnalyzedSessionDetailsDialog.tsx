@@ -61,7 +61,7 @@ export function AnalyzedSessionDetailsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-5xl w-[95vw] h-[90vh] flex flex-col" showCloseButton={false}>
+      <DialogContent className="max-w-7xl w-[98vw] h-[90vh] flex flex-col" showCloseButton={false}>
         <DialogHeader className="space-y-4">
           <div className="flex items-start justify-between">
             <div className="flex-1">
