@@ -47,7 +47,10 @@ export class LLMInferenceService {
     });
     
     const averageSessionLength = sessionLengths.reduce((a, b) => a + b, 0) / sessionLengths.length;
-    const totalMessages = sessions.reduce((sum, s) => sum + (s.message_count || 0), 0);
+    const totalMessages = sessions.reduce((sum, s) => {
+      // Use message_count if available, otherwise count messages array
+      return sum + (s.message_count || (s.messages?.length || 0));
+    }, 0);
     
     // Create breakdowns
     const intentBreakdown: Record<string, number> = {};
