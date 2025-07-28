@@ -100,7 +100,10 @@ This analysis examined 2 chatbot sessions from Jul 25, 2025, revealing a 50% tra
 
 # ANALYSIS_SUMMARY  
 ## Performance Analysis
-The analysis shows mixed performance with opportunities for improvement in technical issue handling.`
+The analysis shows mixed performance with opportunities for improvement in technical issue handling.
+
+# CONTAINMENT_SUGGESTION
+Improve technical issue handling to reduce the 50% transfer rate caused by authentication problems.`
           }
         }],
         usage: {
@@ -117,6 +120,7 @@ The analysis shows mixed performance with opportunities for improvement in techn
       expect(result).toEqual({
         overview: 'This analysis examined 2 chatbot sessions from Jul 25, 2025, revealing a 50% transfer rate with 1 transferred and 1 contained session.',
         summary: '## Performance Analysis\nThe analysis shows mixed performance with opportunities for improvement in technical issue handling.',
+        containmentSuggestion: 'Improve technical issue handling to reduce the 50% transfer rate caused by authentication problems.',
         generatedAt: expect.any(String),
         sessionsAnalyzed: 2,
         statistics: {
@@ -160,6 +164,49 @@ The analysis shows mixed performance with opportunities for improvement in techn
       (mockOpenAI.chat.completions.create as jest.Mock).mockRejectedValue(apiError);
 
       await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('OpenAI API error');
+    });
+
+    it('should handle missing containment suggestion section', async () => {
+      const mockResponse = {
+        choices: [{
+          message: {
+            content: `# ANALYSIS_OVERVIEW
+This analysis examined 2 chatbot sessions.
+
+# ANALYSIS_SUMMARY  
+The analysis shows mixed performance.`
+          }
+        }],
+        usage: { total_tokens: 100 }
+      };
+
+      (mockOpenAI.chat.completions.create as jest.Mock).mockResolvedValue(mockResponse);
+
+      await expect(service.generateAnalysisSummary(mockSessions)).rejects.toThrow('Could not parse OpenAI response into required sections');
+    });
+
+    it('should extract containment suggestion correctly', async () => {
+      const mockResponse = {
+        choices: [{
+          message: {
+            content: `# ANALYSIS_OVERVIEW
+This is the overview section.
+
+# ANALYSIS_SUMMARY  
+This is the summary section.
+
+# CONTAINMENT_SUGGESTION
+Enhance the member verification flow to reduce authentication failures by 25%.`
+          }
+        }],
+        usage: { total_tokens: 1000 }
+      };
+
+      (mockOpenAI.chat.completions.create as jest.Mock).mockResolvedValue(mockResponse);
+
+      const result = await service.generateAnalysisSummary(mockSessions);
+
+      expect(result.containmentSuggestion).toBe('Enhance the member verification flow to reduce authentication failures by 25%.');
     });
   });
 

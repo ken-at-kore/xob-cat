@@ -64,20 +64,23 @@ export class AnalysisSummaryService {
         throw new Error('No response from OpenAI');
       }
 
-      // Parse the response into overview and summary sections
-      const overviewMatch = response.match(/# ANALYSIS_OVERVIEW\s*([\s\S]*?)(?=# ANALYSIS_SUMMARY|$)/);
-      const summaryMatch = response.match(/# ANALYSIS_SUMMARY\s*([\s\S]*?)$/);
+      // Parse the response into overview, summary, and containment suggestion sections
+      const overviewMatch = response.match(/# ANALYSIS_OVERVIEW\s*([\s\S]*?)(?=# ANALYSIS_SUMMARY|# CONTAINMENT_SUGGESTION|$)/);
+      const summaryMatch = response.match(/# ANALYSIS_SUMMARY\s*([\s\S]*?)(?=# CONTAINMENT_SUGGESTION|$)/);
+      const containmentMatch = response.match(/# CONTAINMENT_SUGGESTION\s*([\s\S]*?)$/);
 
-      if (!overviewMatch || !summaryMatch) {
+      if (!overviewMatch || !summaryMatch || !containmentMatch) {
         throw new Error('Could not parse OpenAI response into required sections');
       }
 
       const overview = overviewMatch[1]?.trim() || '';
       const summary = summaryMatch[1]?.trim() || '';
+      const containmentSuggestion = containmentMatch[1]?.trim() || '';
 
       return {
         overview,
         summary,
+        containmentSuggestion,
         generatedAt: new Date().toISOString(),
         sessionsAnalyzed: sessions.length,
         statistics: {
@@ -264,7 +267,21 @@ Create a detailed analysis that would appear at the bottom of the report page. T
 - Use structured markdown with headers, bullet points, and emphasis
 - Include data-driven recommendations based on the session patterns and user behavior observed
 
-Both sections should be written from the perspective of a bot performance analyst providing insights to improve bot effectiveness and user experience based on the conversation data analyzed.
+## 3. Containment Improvement Suggestion (1 sentence)
+Create a single, actionable sentence that explains the most impactful change that could be made to improve bot containment based on the analysis data. This should:
+- Be specific and actionable, not generic advice
+- Reference the actual data patterns observed (top transfer reasons, drop-off locations, etc.)
+- Focus on the highest-impact improvement opportunity
+- Be concise and fit nicely in a card display
+- Use engaging, professional language appropriate for stakeholders
+- Include a specific metric or percentage when relevant
+
+Examples of good containment suggestions:
+- "Improve account verification flow to reduce 34% of transfers caused by authentication issues"
+- "Add proactive clarification prompts during billing inquiries to contain 28% more sessions"
+- "Expand knowledge base for technical issues to handle the 19% of sessions that transfer due to connectivity problems"
+
+All three sections should be written from the perspective of a bot performance analyst providing insights to improve bot effectiveness and user experience based on the conversation data analyzed.
 
 Format your response as:
 
@@ -272,7 +289,10 @@ Format your response as:
 [overview markdown content]
 
 # ANALYSIS_SUMMARY  
-[detailed analysis markdown content]`;
+[detailed analysis markdown content]
+
+# CONTAINMENT_SUGGESTION
+[single actionable sentence for improving containment]`;
 
     return prompt;
   }
