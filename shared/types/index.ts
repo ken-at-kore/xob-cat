@@ -151,6 +151,13 @@ export interface AnalysisProgress {
   error?: string;
   startTime: string;
   endTime?: string;
+  // Sampling phase specific progress
+  samplingProgress?: {
+    currentWindowIndex: number;
+    totalWindows: number;
+    currentWindowLabel: string;
+    targetSessionCount: number;
+  };
 }
 
 export interface AnalysisSummary {
