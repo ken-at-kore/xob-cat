@@ -156,6 +156,7 @@ export interface AnalysisProgress {
 export interface AnalysisSummary {
   overview: string;
   summary: string;
+  containmentSuggestion: string;
   generatedAt: string;
   sessionsAnalyzed: number;
   statistics: {

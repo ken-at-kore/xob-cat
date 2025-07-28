@@ -58,15 +58,16 @@ const truncateText = (text: string, maxLength: number = TEXT_TRUNCATION_LENGTH):
  * 
  * @component
  * @param {SessionWithFacts[]} sessions - Array of analyzed sessions
+ * @param {boolean} showLegend - Whether to show the legend below the chart
  * @returns {JSX.Element} Pie chart showing percentage of contained vs transferred sessions
  * 
  * Features:
  * - Interactive pie slices with hover effects
  * - Percentage labels on each slice
- * - Color-coded legend below the chart
+ * - Optional color-coded legend below the chart
  * - Tooltips showing exact counts and percentages
  */
-export function SessionOutcomePieChart({ sessions }: ChartProps) {
+export function SessionOutcomePieChart({ sessions, showLegend = true }: ChartProps & { showLegend?: boolean }) {
   if (sessions.length === 0) {
     return (
       <Card>
@@ -143,19 +144,21 @@ export function SessionOutcomePieChart({ sessions }: ChartProps) {
             )}
           />
         </div>
-        <div className="mt-4 space-y-2">
-          {chartData.map((entry) => (
-            <div key={entry.id} className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div 
-                  className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: entry.color }}
-                />
-                <span className="text-sm">{entry.label}: {entry.value} ({entry.percentage}%)</span>
+        {showLegend && (
+          <div className="mt-4 space-y-2">
+            {chartData.map((entry) => (
+              <div key={entry.id} className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  <span className="text-sm">{entry.label}: {entry.value} ({entry.percentage}%)</span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
