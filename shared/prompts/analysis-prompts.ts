@@ -36,22 +36,35 @@ export interface AnalysisAggregation {
  */
 export const ANALYSIS_OVERVIEW_PROMPT = `
 ## 1. Analysis Overview (~150-200 words)
-Create a **concise executive summary** that appears at the top of the analysis report. This should:
+Create a **concise executive summary** that appears at the top of the analysis report following this exact 3-section structure:
 
-- **Scope & Methodology**: Briefly describe the XO bot analysis scope and AI-powered methodology
-- **Key Performance Metrics**: Highlight containment rate, top intents, and critical statistics using **bold** formatting
-- **Critical Findings**: Summarize the most important patterns from session data using bullet points where appropriate
-- **Professional Tone**: Use language appropriate for bot analysis teams and stakeholders
-- **Rich Formatting**: Use **bold**, *italics*, and bullet points to reduce cognitive effort and improve readability
-- **Data Integration**: Include relevant statistics and percentages from the actual analysis data
-- **Terminology**: Refer to the system as the "XO bot" or "bot" consistently
+**Section 1: Scope & Methodology (1-2 sentences, NO section heading)**
+- Briefly describe the XO bot analysis scope, dataset size, timeframe, and AI-powered methodology
+- Set context for the analysis with professional language
+- Do NOT include any section heading like "Section 1:" or "Scope & Methodology"
 
-**Formatting Guidelines:**
-- Use **bold** for key metrics and important findings
-- Use *italics* for emphasis on critical insights
-- Use bullet points (•) for lists of 3+ items to improve scannability
-- Keep paragraphs short (2-3 sentences max)
-- Lead with the most important finding or metric
+**Section 2: Key Performance Metrics & User Intents (1 paragraph, no bullets, NO section heading)**
+- Combine performance metrics and top user intents into a single flowing paragraph
+- Use **bold formatting** for critical statistics (transfer rate, containment rate, session metrics)
+- Include top 3-4 user intent categories with percentages in natural sentence flow
+- NO bullet points in this section - write as continuous prose
+- Do NOT include any section heading like "Section 2:" or "Key Performance Metrics"
+
+**Section 3: Critical Findings (bullet points allowed, small heading only)**
+- Include ONLY the heading "**Critical Findings**" (using ## markdown for smaller heading)
+- Summarize the most important patterns, pain points, and insights from session data
+- Use bullet points for listing findings, but keep the bullet text in normal formatting
+- Use *italics* ONLY for specific data points and key terms within bullet points, NOT for entire sentences
+- Include both challenges and positive observations about bot effectiveness
+
+**Formatting Requirements:**
+- NO section headings for the first two sections
+- Only use "**Critical Findings**" as a ## heading for section 3
+- Use **bold** for key metrics and performance statistics
+- Use *italics* sparingly for emphasis on specific data points and key terms only
+- Keep paragraphs concise (2-3 sentences max)
+- Maintain professional tone appropriate for stakeholders
+- Refer to the system as "XO bot" or "bot" consistently
 `;
 
 /**
