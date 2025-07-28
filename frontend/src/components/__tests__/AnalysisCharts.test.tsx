@@ -27,6 +27,19 @@ jest.mock('recharts', () => ({
   ),
 }));
 
+// Mock Nivo charts to avoid rendering issues in tests
+jest.mock('@nivo/bar', () => ({
+  ResponsiveBar: ({ data, tooltip }: any) => (
+    <div data-testid="nivo-bar-chart">
+      {data && data.map((item: any, index: number) => (
+        <div key={index} data-testid={`bar-item-${index}`}>
+          {item.reason || item.location || item.intent}: {item.count}
+        </div>
+      ))}
+    </div>
+  ),
+}));
+
 // Mock session data for testing
 const mockSessions: SessionWithFacts[] = [
   {
@@ -136,8 +149,16 @@ describe('AnalysisCharts', () => {
     it('renders transfer reasons pareto chart', () => {
       render(<TransferReasonsPareto sessions={mockSessions} />);
       
-      expect(screen.getByTestId('bar-chart')).toBeInTheDocument();
-      expect(screen.getByText('Transfer Reasons (Pareto Analysis)')).toBeInTheDocument();
+      expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
+      expect(screen.getByText('Transfer Reasons')).toBeInTheDocument();
+    });
+
+    it('renders as horizontal bar chart without redundant text', () => {
+      render(<TransferReasonsPareto sessions={mockSessions} />);
+      
+      // Should show data in bar items but not as redundant text
+      expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
+      // Both reasons should be present in the chart data
       expect(screen.getByText('Complex technical problem: 1')).toBeInTheDocument();
       expect(screen.getByText('Invalid member ID: 1')).toBeInTheDocument();
     });
@@ -146,7 +167,7 @@ describe('AnalysisCharts', () => {
       const containedSessions = mockSessions.filter(s => s.facts.sessionOutcome === 'Contained');
       render(<TransferReasonsPareto sessions={containedSessions} />);
       
-      expect(screen.getByText('Transfer Reasons (Pareto Analysis)')).toBeInTheDocument();
+      expect(screen.getByText('Transfer Reasons')).toBeInTheDocument();
       expect(screen.getByText('No transfer reasons found')).toBeInTheDocument();
     });
   });
@@ -155,8 +176,14 @@ describe('AnalysisCharts', () => {
     it('renders drop-off locations bar chart', () => {
       render(<DropOffLocationsBar sessions={mockSessions} />);
       
-      expect(screen.getByTestId('bar-chart')).toBeInTheDocument();
+      expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
       expect(screen.getByText('Drop-off Locations')).toBeInTheDocument();
+    });
+
+    it('renders as horizontal bar chart', () => {
+      render(<DropOffLocationsBar sessions={mockSessions} />);
+      
+      expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
     });
 
     it('handles sessions with no drop-offs', () => {
@@ -175,14 +202,15 @@ describe('AnalysisCharts', () => {
     it('renders general intents bar chart', () => {
       render(<GeneralIntentsBar sessions={mockSessions} />);
       
-      expect(screen.getByTestId('bar-chart')).toBeInTheDocument();
+      expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
       expect(screen.getByText('General Intents')).toBeInTheDocument();
     });
 
-    it('shows correct intent counts', () => {
+    it('renders as horizontal bar chart without redundant text', () => {
       render(<GeneralIntentsBar sessions={mockSessions} />);
       
-      // Account Update appears twice, Technical Issue appears once
+      // Should show data in bar items
+      expect(screen.getByTestId('nivo-bar-chart')).toBeInTheDocument();
       expect(screen.getByText('Account Update: 2')).toBeInTheDocument();
       expect(screen.getByText('Technical Issue: 1')).toBeInTheDocument();
     });

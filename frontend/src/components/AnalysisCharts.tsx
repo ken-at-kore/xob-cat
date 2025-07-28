@@ -3,15 +3,19 @@ import {
   PieChart,
   Pie,
   Cell,
+  Tooltip,
+  ResponsiveContainer,
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
+  ComposedChart
 } from 'recharts';
+import { ResponsiveBar } from '@nivo/bar';
+import { ResponsiveLine } from '@nivo/line';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { SessionWithFacts } from '@/shared/types';
 
@@ -138,7 +142,7 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Transfer Reasons (Pareto Analysis)</CardTitle>
+          <CardTitle>Transfer Reasons</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-64">
           <p className="text-gray-500">No transfer reasons found</p>
@@ -153,21 +157,27 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
     return acc;
   }, {} as Record<string, number>);
 
-  // Sort by frequency (Pareto analysis)
+  // Sort by frequency (Pareto analysis) - highest frequency first
   const sortedReasons = Object.entries(reasonCounts)
-    .sort(([, a], [, b]) => b - a)
+    .sort(([, a], [, b]) => b - a) // Descending order: highest count first
     .slice(0, 10); // Top 10 reasons
 
+  // Calculate cumulative impact percentages
   let cumulativeCount = 0;
   const chartData = sortedReasons.map(([reason, count]) => {
     cumulativeCount += count;
+    const cumulativePercentage = ((cumulativeCount / transferSessions.length) * 100).toFixed(1);
     return {
-      reason: reason.length > 20 ? reason.substring(0, 20) + '...' : reason,
+      id: reason.length > 25 ? reason.substring(0, 25) + '...' : reason,
+      reason: reason.length > 25 ? reason.substring(0, 25) + '...' : reason,
       fullReason: reason,
       count,
-      cumulative: ((cumulativeCount / transferSessions.length) * 100).toFixed(1)
+      cumulative: cumulativePercentage
     };
-  });
+  })
+  // Reverse the array for horizontal bar chart display (highest bars at top)
+  .reverse();
+
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload[0]) {
@@ -183,35 +193,94 @@ export function TransferReasonsPareto({ sessions }: ChartProps) {
     return null;
   };
 
+  // Prepare data for line chart overlay - match Nivo bar positioning
+  const lineData = chartData.map((item, index) => ({
+    index: index, // Use same index as bars for proper alignment
+    cumulative: parseFloat(item.cumulative),
+    reason: item.reason
+  }));
+
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Transfer Reasons (Pareto Analysis)</CardTitle>
+        <CardTitle>Transfer Reasons</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="reason" 
-                angle={-45}
-                textAnchor="end"
-                height={80}
-                interval={0}
-              />
-              <YAxis />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill={BAR_COLOR} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="mt-4 space-y-1">
-          {chartData.slice(0, 5).map((item) => (
-            <div key={item.fullReason} className="text-sm text-gray-600">
-              {item.fullReason}: {item.count}
-            </div>
-          ))}
+        <div className="h-96">
+          <ResponsiveBar
+            data={chartData}
+            keys={['count']}
+            indexBy="reason"
+            layout="horizontal"
+            margin={{ top: 20, right: 60, left: 150, bottom: 20 }}
+            padding={0.3}
+            colors={[BAR_COLOR]}
+            borderColor={{
+              from: 'color',
+              modifiers: [['darker', 1.6]]
+            }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: 'Count',
+              legendPosition: 'middle',
+              legendOffset: 32,
+              tickValues: [0, 1, 2, 3, 4]
+            }}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: '',
+              legendPosition: 'middle',
+              legendOffset: -40
+            }}
+            enableLabel={false}
+            enableGridX={true}
+            gridXValues={[0, 1, 2, 3, 4]}
+            enableGridY={false}
+            tooltip={({ id, value, data }) => (
+              <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-md w-80">
+                <div className="space-y-3">
+                  {/* Transfer reason name - prominent header */}
+                  <div className="border-b border-gray-100 pb-2">
+                    <h4 className="font-semibold text-gray-900 text-sm leading-relaxed">
+                      {data.fullReason}
+                    </h4>
+                  </div>
+                  
+                  {/* Statistics grid */}
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="space-y-1">
+                      <p className="text-gray-500 text-xs uppercase tracking-wide">Sessions</p>
+                      <p className="font-medium text-gray-900">{value}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-gray-500 text-xs uppercase tracking-wide">Individual %</p>
+                      <p className="font-medium text-gray-900">
+                        {((value / transferSessions.length) * 100).toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Cumulative impact - highlighted */}
+                  <div className="bg-blue-50 rounded-md p-3 border border-blue-100">
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-700 font-medium text-sm">Cumulative Impact</span>
+                      <span className="text-blue-800 font-bold text-lg">{data.cumulative}%</span>
+                    </div>
+                    <p className="text-blue-600 text-xs mt-1 leading-relaxed">
+                      {data.cumulative}% of all transfers caused by this reason and those ranked above it
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
         </div>
       </CardContent>
     </Card>
@@ -245,13 +314,15 @@ export function DropOffLocationsBar({ sessions }: ChartProps) {
   }, {} as Record<string, number>);
 
   const chartData = Object.entries(locationCounts)
-    .sort(([, a], [, b]) => b - a)
+    .sort(([, a], [, b]) => a - b) // Changed to ascending for reverse display (highest at top)
     .slice(0, 8) // Top 8 locations
     .map(([location, count]) => ({
-      location: location.length > 15 ? location.substring(0, 15) + '...' : location,
+      id: location.length > 25 ? location.substring(0, 25) + '...' : location,
+      location: location.length > 25 ? location.substring(0, 25) + '...' : location,
       fullLocation: location,
       count
     }));
+
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload[0]) {
@@ -272,21 +343,61 @@ export function DropOffLocationsBar({ sessions }: ChartProps) {
         <CardTitle>Drop-off Locations</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="location" 
-                angle={-45}
-                textAnchor="end"
-                height={60}
-              />
-              <YAxis />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill={COLORS.warning} />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="h-80">
+          <ResponsiveBar
+            data={chartData}
+            keys={['count']}
+            indexBy="location"
+            layout="horizontal"
+            margin={{ top: 20, right: 50, left: 150, bottom: 20 }}
+            padding={0.3}
+            colors={[COLORS.warning]}
+            borderColor={{
+              from: 'color',
+              modifiers: [['darker', 1.6]]
+            }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: 'Count',
+              legendPosition: 'middle',
+              legendOffset: 32,
+              tickValues: [0, 1, 2]
+            }}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: '',
+              legendPosition: 'middle',
+              legendOffset: -40
+            }}
+            enableLabel={false}
+            enableGridX={true}
+            gridXValues={[0, 1, 2]}
+            enableGridY={false}
+            tooltip={({ id, value, data }) => (
+              <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-md w-80">
+                <div className="space-y-3">
+                  {/* Drop-off location name - prominent header */}
+                  <div className="border-b border-gray-100 pb-2">
+                    <h4 className="font-semibold text-gray-900 text-sm leading-relaxed">
+                      {data.fullLocation}
+                    </h4>
+                  </div>
+                  
+                  {/* Session count */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Sessions</span>
+                    <span className="font-bold text-gray-900">{value}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
         </div>
       </CardContent>
     </Card>
@@ -305,13 +416,15 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
   }, {} as Record<string, number>);
 
   const chartData = Object.entries(intentCounts)
-    .sort(([, a], [, b]) => b - a)
+    .sort(([, a], [, b]) => a - b) // Changed to ascending for reverse display (highest at top)
     .slice(0, 8) // Top 8 intents
     .map(([intent, count]) => ({
-      intent: intent.length > 15 ? intent.substring(0, 15) + '...' : intent,
+      id: intent.length > 25 ? intent.substring(0, 25) + '...' : intent,
+      intent: intent.length > 25 ? intent.substring(0, 25) + '...' : intent,
       fullIntent: intent,
       count
     }));
+
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload[0]) {
@@ -332,28 +445,61 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
         <CardTitle>General Intents</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="intent" 
-                angle={-45}
-                textAnchor="end"
-                height={60}
-              />
-              <YAxis />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill={COLORS.info} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="mt-4 space-y-1">
-          {chartData.slice(0, 5).map((item) => (
-            <div key={item.fullIntent} className="text-sm text-gray-600">
-              {item.fullIntent}: {item.count}
-            </div>
-          ))}
+        <div className="h-80">
+          <ResponsiveBar
+            data={chartData}
+            keys={['count']}
+            indexBy="intent"
+            layout="horizontal"
+            margin={{ top: 20, right: 50, left: 150, bottom: 20 }}
+            padding={0.3}
+            colors={[COLORS.info]}
+            borderColor={{
+              from: 'color',
+              modifiers: [['darker', 1.6]]
+            }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: 'Count',
+              legendPosition: 'middle',
+              legendOffset: 32,
+              tickValues: [0, 1, 2, 3, 4, 5, 6, 7]
+            }}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: '',
+              legendPosition: 'middle',
+              legendOffset: -40
+            }}
+            enableLabel={false}
+            enableGridX={true}
+            gridXValues={[0, 1, 2, 3, 4, 5, 6, 7]}
+            enableGridY={false}
+            tooltip={({ id, value, data }) => (
+              <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-md w-80">
+                <div className="space-y-3">
+                  {/* General intent name - prominent header */}
+                  <div className="border-b border-gray-100 pb-2">
+                    <h4 className="font-semibold text-gray-900 text-sm leading-relaxed">
+                      {data.fullIntent}
+                    </h4>
+                  </div>
+                  
+                  {/* Session count */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Sessions</span>
+                    <span className="font-bold text-gray-900">{value}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
         </div>
       </CardContent>
     </Card>
