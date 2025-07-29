@@ -10,7 +10,10 @@ describe('BatchAnalysisService', () => {
   let mockOpenaiService: jest.Mocked<OpenAIAnalysisService>;
 
   beforeEach(() => {
-    mockOpenaiService = new OpenAIAnalysisService() as jest.Mocked<OpenAIAnalysisService>;
+    mockOpenaiService = {
+      analyzeBatch: jest.fn(),
+      calculateCost: jest.fn()
+    } as any;
     batchAnalysisService = new BatchAnalysisService(mockOpenaiService);
   });
 
@@ -250,6 +253,13 @@ describe('BatchAnalysisService', () => {
         model: 'gpt-4o-mini-2024-07-18'
       };
 
+      // Mock Date.now to ensure processing time > 0
+      const originalDateNow = Date.now;
+      const mockTime = 1000000000;
+      Date.now = jest.fn()
+        .mockReturnValueOnce(mockTime)      // Start time
+        .mockReturnValueOnce(mockTime + 10); // End time (10ms later)
+
       mockOpenaiService.analyzeBatch.mockResolvedValue(mockAnalysisResult);
 
       const result = await batchAnalysisService.processSessionsBatch(
@@ -258,10 +268,13 @@ describe('BatchAnalysisService', () => {
         'sk-test-key'
       );
 
+      // Restore Date.now
+      Date.now = originalDateNow;
+
       const sessionWithFacts = result.results[0];
       expect(sessionWithFacts?.analysisMetadata.tokensUsed).toBe(150);
       expect(sessionWithFacts?.analysisMetadata.batchNumber).toBe(1);
-      expect(sessionWithFacts?.analysisMetadata.processingTime).toBeGreaterThan(0);
+      expect(sessionWithFacts?.analysisMetadata.processingTime).toBe(10);
       expect(sessionWithFacts?.analysisMetadata.timestamp).toBeDefined();
     });
   });

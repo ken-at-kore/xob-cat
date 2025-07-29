@@ -77,7 +77,7 @@ describe('Utils', () => {
     });
 
     afterEach(() => {
-      window.location = originalLocation;
+      window.location = originalLocation as any;
       jest.clearAllMocks();
     });
 

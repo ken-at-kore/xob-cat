@@ -39,7 +39,8 @@ describe('Auto-Analyze API Routes', () => {
       startDate: '2024-01-15',
       startTime: '09:00',
       sessionCount: 100,
-      openaiApiKey: 'sk-test-key-1234567890abcdef'
+      openaiApiKey: 'sk-test-key-1234567890abcdef',
+      modelId: 'gpt-4o-mini'
     };
 
     it('should start analysis with valid configuration', async () => {
@@ -313,7 +314,8 @@ describe('Auto-Analyze API Routes', () => {
         startDate: '2024-01-15',
         startTime: '09:00',
         sessionCount: 100,
-        openaiApiKey: 'sk-test-key-1234567890abcdef'
+        openaiApiKey: 'sk-test-key-1234567890abcdef',
+        modelId: 'gpt-4o-mini'
       };
 
       const response = await request(app)
@@ -330,7 +332,8 @@ describe('Auto-Analyze API Routes', () => {
         startDate: '2024-01-15',
         startTime: '09:00',
         sessionCount: 100,
-        openaiApiKey: 'sk-secret-key-abcdef123456'
+        openaiApiKey: 'sk-secret-key-abcdef123456',
+        modelId: 'gpt-4o-mini'
       };
 
       mockAutoAnalyzeService.startAnalysis.mockRejectedValue(
