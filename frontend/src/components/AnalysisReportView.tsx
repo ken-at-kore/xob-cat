@@ -23,9 +23,10 @@ const PROSE_CLASSES = "prose prose-sm max-w-none prose-headings:text-gray-900 pr
 interface AnalysisReportViewProps {
   results: AnalysisResults;
   onStartNew: () => void;
+  analysisId?: string; // Optional for report viewer mode
 }
 
-export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewProps) {
+export function AnalysisReportView({ results, onStartNew, analysisId }: AnalysisReportViewProps) {
   const [sortField, setSortField] = useState<keyof SessionWithFacts | keyof SessionWithFacts['facts']>('session_id');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [filterIntent, setFilterIntent] = useState<string>('');
@@ -45,6 +46,48 @@ export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewPr
   const handleRowClick = (sessionIndex: number) => {
     setSelectedSessionIndex(sessionIndex);
     setIsDialogOpen(true);
+  };
+
+  const handleDownload = async () => {
+    if (!analysisId) return;
+    
+    try {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${API_BASE_URL}/api/analysis/auto-analyze/export/${analysisId}`, {
+        headers: {
+          'x-bot-id': localStorage.getItem('bot-id') || 'default-bot',
+          'x-jwt-token': localStorage.getItem('jwt-token') || 'default-token'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to download analysis');
+      }
+      
+      // Get filename from Content-Disposition header
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = 'xob-cat-analysis.json';
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="(.+)"/);
+        if (match) {
+          filename = match[1];
+        }
+      }
+      
+      // Create blob and download
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to download analysis:', error);
+      alert('Failed to download analysis report. Please try again.');
+    }
   };
 
   const handleCloseDialog = () => {
@@ -98,7 +141,14 @@ export function AnalysisReportView({ results, onStartNew }: AnalysisReportViewPr
             Comprehensive analysis of {results.sessions.length} sessions with AI-powered insights and visualizations.
           </p>
         </div>
-        <Button onClick={onStartNew}>Start New Analysis</Button>
+        <div className="flex gap-2">
+          {analysisId && (
+            <Button onClick={handleDownload} variant="outline">
+              Download Report Data
+            </Button>
+          )}
+          <Button onClick={onStartNew}>Start New Analysis</Button>
+        </div>
       </div>
 
       {/* Top Row: Analysis Overview + Session Outcomes Area */}

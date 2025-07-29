@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { AutoAnalyzeService } from '../services/autoAnalyzeService';
+import { AnalysisExportService } from '../services/analysisExportService';
 import { AnalysisConfig, GPT_MODELS } from '../../../shared/types';
 import { ApiResponse } from '../../../shared/types';
 
@@ -238,6 +239,124 @@ autoAnalyzeRouter.delete('/:analysisId', async (req: Request, res: Response): Pr
     const response: ApiResponse<never> = {
       success: false,
       error: sanitizeError(error.message || 'Failed to cancel analysis')
+    };
+
+    res.status(statusCode).json(response);
+  }
+});
+
+// Export analysis results
+autoAnalyzeRouter.get('/export/:analysisId', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { analysisId } = req.params;
+
+    if (!analysisId) {
+      const response: ApiResponse<never> = {
+        success: false,
+        error: 'Analysis ID is required'
+      };
+      res.status(400).json(response);
+      return;
+    }
+
+    // Get bot credentials (simplified)
+    const botId = req.headers['x-bot-id'] as string || 'default-bot';
+    const jwtToken = req.headers['x-jwt-token'] as string || 'default-token';
+
+    let exportFile;
+    
+    // Handle mock analysis IDs
+    if (analysisId.startsWith('mock-analysis-')) {
+      // Load mock data from the same endpoints the frontend uses
+      const fs = await import('fs').then(m => m.promises);
+      const path = await import('path');
+      
+      // Load mock sessions (data files are in the root project directory)
+      const mockSessionsPath = path.join(process.cwd(), '..', 'data', 'mock-analysis-results.json');
+      const sessionsData = await fs.readFile(mockSessionsPath, 'utf-8');
+      const sessions = JSON.parse(sessionsData);
+      
+      // Load mock summary
+      let analysisSummary = undefined;
+      try {
+        const mockSummaryPath = path.join(process.cwd(), '..', 'data', 'analysis-summary.json');
+        const summaryData = await fs.readFile(mockSummaryPath, 'utf-8');
+        analysisSummary = JSON.parse(summaryData);
+      } catch (error) {
+        console.warn('Failed to load mock analysis summary:', error);
+      }
+      
+      const mockResults = {
+        sessions,
+        analysisSummary
+      };
+      
+      const mockConfig: AnalysisConfig = {
+        startDate: '2025-07-07',
+        startTime: '09:00',
+        sessionCount: sessions.length,
+        openaiApiKey: '', // Already excluded
+        modelId: 'gpt-4o-mini'
+      };
+      
+      const now = new Date().toISOString();
+      exportFile = AnalysisExportService.createExportFile(
+        mockResults,
+        mockConfig,
+        now,
+        now
+      );
+    } else {
+      // Handle real analysis IDs
+      const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken);
+      
+      // Get the analysis results
+      const results = await autoAnalyzeService.getResults(analysisId);
+      
+      // Get the progress to get request timestamps
+      const progress = await autoAnalyzeService.getProgress(analysisId);
+      
+      // Get the original analysis config
+      const config = await autoAnalyzeService.getConfig(analysisId);
+      
+      // Remove sensitive data from config for export
+      const exportConfig: AnalysisConfig = {
+        ...config,
+        openaiApiKey: '' // Don't include API key in export
+      };
+
+      // Create the export file
+      exportFile = AnalysisExportService.createExportFile(
+        results,
+        exportConfig,
+        progress.startTime,
+        progress.endTime || new Date().toISOString()
+      );
+    }
+
+    // Generate filename
+    const filename = AnalysisExportService.generateFileName();
+
+    // Set headers for file download
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+    res.json(exportFile);
+
+  } catch (error: any) {
+    console.error(`Failed to export analysis ${req.params.analysisId}:`, error);
+    
+    let statusCode = 500;
+    if (error.message.includes('not found')) {
+      statusCode = 404;
+    } else if (error.message.includes('not complete')) {
+      statusCode = 400;
+    }
+
+    const response: ApiResponse<never> = {
+      success: false,
+      error: sanitizeError(error.message || 'Failed to export analysis')
     };
 
     res.status(statusCode).json(response);

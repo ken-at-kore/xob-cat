@@ -320,4 +320,75 @@ export const AUTO_ANALYZE_FUNCTION_SCHEMA = {
     },
     required: ["sessions"]
   }
-} as const; 
+} as const;
+
+// Analysis Export File Types for Report Viewer Feature
+export interface AnalysisExportMetadata {
+  version: string;              // Semantic version (e.g., "1.0.0")
+  schemaVersion: string;        // Schema compatibility (e.g., "1.0")
+  exportedAt: string;           // ISO 8601 timestamp
+  exportedBy: string;           // App version (e.g., "XOB-CAT-1.0.0")
+  requiredFeatures: string[];   // Features needed to display properly
+  optionalFeatures: string[];   // Enhanced features if available
+}
+
+export interface AnalysisExportSummary {
+  overview: string;                               // AI-generated overview
+  detailedAnalysis: string;                      // AI-generated detailed analysis
+  totalSessions: number;
+  containmentRate: number;
+  topTransferReasons: Record<string, number>;
+  topIntents: Record<string, number>;
+  topDropOffLocations: Record<string, number>;
+}
+
+export interface AnalysisExportChartData {
+  sessionOutcomes: Array<{ name: string; value: number }>;
+  transferReasons: Array<{ reason: string; count: number; percentage: number }>;
+  dropOffLocations: Array<{ location: string; count: number }>;
+  generalIntents: Array<{ intent: string; count: number }>;
+}
+
+export interface AnalysisExportCostAnalysis {
+  totalTokens: number;
+  estimatedCost: number;
+  modelUsed: string;
+}
+
+export interface AnalysisExportFile {
+  metadata: AnalysisExportMetadata;
+  analysisConfig: {
+    startDate: string;
+    startTime: string;
+    sessionCount: number;
+    requestedAt: string;
+    completedAt: string;
+  };
+  sessions: SessionWithFacts[];
+  summary: AnalysisExportSummary;
+  chartData: AnalysisExportChartData;
+  costAnalysis: AnalysisExportCostAnalysis;
+}
+
+// Version compatibility types
+export interface VersionCompatibility {
+  supportedVersions: string[];
+  deprecatedVersions: string[];
+  unsupportedVersions: string[];
+  requiredFeatures: string[];
+  optionalFeatures?: string[];
+}
+
+export const ANALYSIS_FILE_VERSION = "1.0.0";
+export const ANALYSIS_FILE_SCHEMA_VERSION = "1.0";
+export const ANALYSIS_FILE_APP_VERSION = "XOB-CAT-1.0.0";
+
+export const VERSION_COMPATIBILITY_MATRIX: Record<string, VersionCompatibility> = {
+  "1.0": {
+    supportedVersions: ["1.0.0", "1.0.1", "1.0.2"],
+    deprecatedVersions: [],
+    unsupportedVersions: [],
+    requiredFeatures: ["basic-charts", "session-analysis"],
+    optionalFeatures: ["advanced-charts", "ai-summary"]
+  }
+}; 
