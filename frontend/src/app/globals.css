@@ -120,4 +120,35 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Hide Next.js development tools button and overlays */
+  button[aria-label*="Next.js"], 
+  button[title*="Next.js"],
+  [data-nextjs-toast-wrapper],
+  [data-nextjs-build-indicator],
+  [data-nextjs-dev-overlay],
+  [data-nextjs-dialog-overlay],
+  button:has(img[src*="next"]),
+  button:has(+ script[src*="__next"]),
+  [id*="__next"] button[style*="position: fixed"],
+  button[style*="position: fixed"][style*="bottom"],
+  div[style*="position: fixed"][style*="bottom: 16px"],
+  [style*="position: fixed"][style*="z-index: 99999"],
+  button[style*="background"][style*="position: fixed"],
+  /* Target development tool buttons more broadly */
+  div[data-nextjs] button,
+  div[id*="next"] button,
+  nextjs-portal button,
+  [data-overlay] button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  
+  /* Hide any floating dev tool containers */
+  div[style*="position: fixed"][style*="bottom"][style*="left"][style*="pointer-events"],
+  div[style*="position: fixed"][style*="z-index"][style*="background"] {
+    display: none !important;
+  }
 }
