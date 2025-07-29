@@ -111,12 +111,71 @@ export const ANALYSIS_FUNCTION_SCHEMA = {
   }
 } as const;
 
+// GPT model selection types
+export interface GptModel {
+  id: string;
+  name: string;
+  apiModelString: string;
+  inputPricePerMillion: number;
+  outputPricePerMillion: number;
+}
+
+export const GPT_MODELS: GptModel[] = [
+  {
+    id: 'gpt-4o',
+    name: 'GPT-4o',
+    apiModelString: 'gpt-4o',
+    inputPricePerMillion: 2.50,
+    outputPricePerMillion: 10.00
+  },
+  {
+    id: 'gpt-4o-mini',
+    name: 'GPT-4o mini',
+    apiModelString: 'gpt-4o-mini',
+    inputPricePerMillion: 0.15,
+    outputPricePerMillion: 0.60
+  },
+  {
+    id: 'gpt-4.1',
+    name: 'GPT-4.1 (base)',
+    apiModelString: 'gpt-4.1',
+    inputPricePerMillion: 2.00,
+    outputPricePerMillion: 8.00
+  },
+  {
+    id: 'gpt-4.1-mini',
+    name: 'GPT-4.1 mini',
+    apiModelString: 'gpt-4.1-mini',
+    inputPricePerMillion: 0.40,
+    outputPricePerMillion: 1.60
+  },
+  {
+    id: 'gpt-4.1-nano',
+    name: 'GPT-4.1 nano',
+    apiModelString: 'gpt-4.1-nano',
+    inputPricePerMillion: 0.10,
+    outputPricePerMillion: 0.40
+  }
+];
+
+// Utility functions for GPT models
+export function getGptModelById(id: string): GptModel | undefined {
+  return GPT_MODELS.find(model => model.id === id);
+}
+
+export function calculateModelCost(inputTokens: number, outputTokens: number, model: GptModel): number {
+  const inputCost = (inputTokens / 1_000_000) * model.inputPricePerMillion;
+  const outputCost = (outputTokens / 1_000_000) * model.outputPricePerMillion;
+  return inputCost + outputCost;
+}
+
 // Auto-Analyze feature types
 export interface AnalysisConfig {
   startDate: string; // ISO date string
   startTime: string; // HH:MM format in ET
   sessionCount: number; // 10-1000
   openaiApiKey: string;
+  modelId: string; // GPT model ID
 }
 
 export interface SessionWithFacts extends SessionWithTranscript {
@@ -147,6 +206,7 @@ export interface AnalysisProgress {
   totalBatches: number;
   tokensUsed: number;
   estimatedCost: number;
+  modelId?: string; // Selected GPT model for analysis
   eta?: number; // seconds
   error?: string;
   startTime: string;
