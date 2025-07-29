@@ -54,6 +54,7 @@ export class AutoAnalyzeService {
         totalBatches: 0,
         tokensUsed: 0,
         estimatedCost: 0,
+        modelId: config.modelId,
         startTime: new Date().toISOString()
       },
       cancelled: false
@@ -181,7 +182,7 @@ export class AutoAnalyzeService {
         completionTokens: 0,
         totalTokens: 0,
         cost: 0,
-        model: 'gpt-4o-mini-2024-07-18'
+        model: session.config.modelId
       };
 
       // Process sessions in batches
@@ -199,7 +200,8 @@ export class AutoAnalyzeService {
           const batchResult = await this.batchAnalysisService.processSessionsBatch(
             batch,
             existingClassifications,
-            session.config.openaiApiKey
+            session.config.openaiApiKey,
+            session.config.modelId
           );
 
           allResults.push(...batchResult.results);

@@ -28,7 +28,8 @@ export class BatchAnalysisService {
   async processSessionsBatch(
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
-    openaiApiKey: string
+    openaiApiKey: string,
+    modelId: string = 'gpt-4o-mini'
   ): Promise<BatchProcessingResult> {
     this.batchCounter++;
     const startTime = Date.now();
@@ -47,7 +48,7 @@ export class BatchAnalysisService {
         completionTokens: 0,
         totalTokens: 0,
         cost: 0,
-        model: 'gpt-4o-mini-2024-07-18'
+        model: modelId
       };
 
       // Process regular sessions in batch
@@ -55,7 +56,8 @@ export class BatchAnalysisService {
         const batchResult = await this.processBatch(
           regularSessions,
           updatedClassifications,
-          openaiApiKey
+          openaiApiKey,
+          modelId
         );
 
         allResults.push(...batchResult.sessions);
@@ -69,7 +71,8 @@ export class BatchAnalysisService {
           const individualResult = await this.processBatch(
             [oversizedSession],
             updatedClassifications,
-            openaiApiKey
+            openaiApiKey,
+            modelId
           );
 
           allResults.push(...individualResult.sessions);
@@ -78,7 +81,7 @@ export class BatchAnalysisService {
         } catch (error) {
           console.error(`Failed to process oversized session ${oversizedSession.session_id}:`, error);
           // Add fallback result
-          allResults.push(this.createFallbackResult(oversizedSession, `Failed individual processing: ${error}`));
+          allResults.push(this.createFallbackResult(oversizedSession, `Failed individual processing: ${error}`, modelId));
         }
       }
 
@@ -103,7 +106,7 @@ export class BatchAnalysisService {
       console.error('Batch processing failed:', error);
       // Return fallback results for all sessions
       const fallbackResults = sessions.map(session => 
-        this.createFallbackResult(session, `Error processing session: ${error}`)
+        this.createFallbackResult(session, `Error processing session: ${error}`, modelId)
       );
 
       return {
@@ -148,7 +151,8 @@ export class BatchAnalysisService {
   private async processBatch(
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
-    openaiApiKey: string
+    openaiApiKey: string,
+    modelId: string = 'gpt-4o-mini'
   ): Promise<{
     sessions: SessionWithFacts[];
     tokenUsage: BatchTokenUsage;
@@ -156,7 +160,8 @@ export class BatchAnalysisService {
     const analysisResult = await this.openaiService.analyzeBatch(
       sessions,
       existingClassifications,
-      openaiApiKey
+      openaiApiKey,
+      modelId
     );
 
     // Map OpenAI results back to SessionWithFacts
@@ -180,7 +185,8 @@ export class BatchAnalysisService {
             tokensUsed: analysisResult.totalTokens,
             processingTime: 0, // Will be set by caller
             batchNumber: this.batchCounter,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            model: analysisResult.model
           }
         });
         sessionsById.delete(result.user_id);
@@ -191,7 +197,7 @@ export class BatchAnalysisService {
     for (const [userId, session] of sessionsById) {
       console.warn(`Session ${userId} missing from analysis results, creating fallback`);
       sessionResults.push(
-        this.createFallbackResult(session, 'Failed individual processing: Missing from batch response')
+        this.createFallbackResult(session, 'Failed individual processing: Missing from batch response', modelId)
       );
     }
 
@@ -207,7 +213,7 @@ export class BatchAnalysisService {
     };
   }
 
-  private createFallbackResult(session: SessionWithTranscript, errorMessage: string): SessionWithFacts {
+  private createFallbackResult(session: SessionWithTranscript, errorMessage: string, modelId: string = 'gpt-4o-mini'): SessionWithFacts {
     return {
       ...session,
       facts: {
@@ -221,7 +227,8 @@ export class BatchAnalysisService {
         tokensUsed: 0,
         processingTime: 0,
         batchNumber: this.batchCounter,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        model: modelId
       }
     };
   }

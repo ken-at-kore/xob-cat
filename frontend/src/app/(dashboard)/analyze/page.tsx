@@ -10,12 +10,16 @@ import { Input } from '../../../components/ui/input';
 import { Badge } from '../../../components/ui/badge';
 import { Progress } from '../../../components/ui/progress';
 import { Alert, AlertDescription } from '../../../components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { 
   AnalysisConfig,
   AnalysisProgress,
   SessionWithFacts,
   AnalysisResults,
-  AnalysisSummary
+  AnalysisSummary,
+  GPT_MODELS,
+  GptModel,
+  getGptModelById
 } from '../../../../../shared/types';
 import { autoAnalyze } from '../../../lib/api';
 import { AnalyzedSessionDetailsDialog } from '../../../components/AnalyzedSessionDetailsDialog';
@@ -60,6 +64,7 @@ interface ConfigFormData {
   startTime: string;
   sessionCount: number;
   openaiApiKey: string;
+  modelId: string;
 }
 
 interface ValidationErrors {
@@ -86,7 +91,8 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
       startDate: defaultDate.toISOString().split('T')[0],
       startTime: '09:00',
       sessionCount: 100,
-      openaiApiKey: ''
+      openaiApiKey: '',
+      modelId: 'gpt-4.1' // Default to GPT-4.1 (base)
     };
   });
 
@@ -142,7 +148,8 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
         startDate: formData.startDate,
         startTime: formData.startTime,
         sessionCount: formData.sessionCount,
-        openaiApiKey: formData.openaiApiKey
+        openaiApiKey: formData.openaiApiKey,
+        modelId: formData.modelId
       };
 
       const response = await autoAnalyze.startAnalysis(config);
@@ -250,6 +257,54 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
               <p className="text-xs text-gray-500">
                 Number of sessions to analyze (10-1000). Analyzing more than 1000 sessions isn't allowed. 
                 If fewer than 10 sessions are found, the analysis won't proceed.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="modelId">GPT Model</Label>
+              <div className="flex items-start gap-6">
+                <div className="flex-1">
+                  <Select 
+                    value={formData.modelId} 
+                    onValueChange={(value) => handleInputChange('modelId', value)}
+                  >
+                    <SelectTrigger id="modelId">
+                      <SelectValue placeholder="Select a GPT model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GPT_MODELS.map((model) => (
+                        <SelectItem key={model.id} value={model.id}>
+                          {model.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  {(() => {
+                    const selectedModel = getGptModelById(formData.modelId);
+                    if (!selectedModel) return null;
+                    
+                    return (
+                      <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                        <div className="font-medium text-gray-900 mb-2">{selectedModel.name} Pricing</div>
+                        <div className="space-y-1 text-gray-600">
+                          <div className="flex justify-between">
+                            <span>Input:</span>
+                            <span>${selectedModel.inputPricePerMillion.toFixed(2)}/1M tokens</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Output:</span>
+                            <span>${selectedModel.outputPricePerMillion.toFixed(2)}/1M tokens</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+              <p className="text-xs text-gray-500">
+                Choose the GPT model for analysis. GPT-4.1 (base) provides the best balance of cost and accuracy.
               </p>
             </div>
 
@@ -481,7 +536,7 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
             )}
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">{progress.sessionsFound}</div>
               <div className="text-sm text-gray-500">Sessions Found</div>
@@ -497,6 +552,12 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
             <div className="text-center">
               <div className="text-2xl font-bold text-orange-600">${progress.estimatedCost.toFixed(4)}</div>
               <div className="text-sm text-gray-500">Estimated Cost</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-indigo-600">
+                {progress.modelId ? getGptModelById(progress.modelId)?.name || progress.modelId : 'N/A'}
+              </div>
+              <div className="text-sm text-gray-500">GPT Model</div>
             </div>
           </div>
 
