@@ -262,50 +262,44 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
 
             <div className="space-y-2">
               <Label htmlFor="modelId">GPT Model</Label>
-              <div className="flex items-start gap-6">
-                <div className="flex-1">
-                  <Select 
-                    value={formData.modelId} 
-                    onValueChange={(value) => handleInputChange('modelId', value)}
-                  >
-                    <SelectTrigger id="modelId">
-                      <SelectValue placeholder="Select a GPT model" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {GPT_MODELS.map((model) => (
-                        <SelectItem key={model.id} value={model.id}>
-                          {model.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex-1">
-                  {(() => {
-                    const selectedModel = getGptModelById(formData.modelId);
-                    if (!selectedModel) return null;
-                    
-                    return (
-                      <div className="bg-gray-50 p-3 rounded-lg text-sm">
-                        <div className="font-medium text-gray-900 mb-2">{selectedModel.name} Pricing</div>
-                        <div className="space-y-1 text-gray-600">
-                          <div className="flex justify-between">
-                            <span>Input:</span>
-                            <span>${selectedModel.inputPricePerMillion.toFixed(2)}/1M tokens</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Output:</span>
-                            <span>${selectedModel.outputPricePerMillion.toFixed(2)}/1M tokens</span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
+              <Select 
+                value={formData.modelId} 
+                onValueChange={(value) => handleInputChange('modelId', value)}
+              >
+                <SelectTrigger id="modelId">
+                  <SelectValue placeholder="Select a GPT model" />
+                </SelectTrigger>
+                <SelectContent>
+                  {GPT_MODELS.map((model) => (
+                    <SelectItem key={model.id} value={model.id}>
+                      {model.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <p className="text-xs text-gray-500">
                 Choose the GPT model for analysis. GPT-4.1 (base) provides the best balance of cost and accuracy.
               </p>
+              {(() => {
+                const selectedModel = getGptModelById(formData.modelId);
+                if (!selectedModel) return null;
+                
+                return (
+                  <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                    <div className="font-medium text-gray-900 mb-2">{selectedModel.name} Pricing</div>
+                    <div className="space-y-1 text-gray-600">
+                      <div className="flex justify-between">
+                        <span>Input:</span>
+                        <span>${selectedModel.inputPricePerMillion.toFixed(2)}/1M tokens</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Output:</span>
+                        <span>${selectedModel.outputPricePerMillion.toFixed(2)}/1M tokens</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="space-y-2">

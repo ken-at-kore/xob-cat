@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { AutoAnalyzeService } from '../services/autoAnalyzeService';
-import { AnalysisConfig } from '../../../shared/types';
+import { AnalysisConfig, GPT_MODELS } from '../../../shared/types';
 import { ApiResponse } from '../../../shared/types';
 
 export const autoAnalyzeRouter = Router();
@@ -14,6 +14,7 @@ function validateAnalysisConfig(config: any): { isValid: boolean; errors: string
   if (!config.startTime) errors.push('startTime is required');
   if (config.sessionCount === undefined) errors.push('sessionCount is required');
   if (!config.openaiApiKey) errors.push('OpenAI API key is required');
+  if (!config.modelId) errors.push('modelId is required');
 
   // Validate session count
   if (typeof config.sessionCount === 'number') {
@@ -47,6 +48,14 @@ function validateAnalysisConfig(config: any): { isValid: boolean; errors: string
     
     if (startDate >= today) {
       errors.push('Date must be in the past');
+    }
+  }
+
+  // Validate model ID
+  if (config.modelId) {
+    const validModelIds = GPT_MODELS.map(model => model.id);
+    if (!validModelIds.includes(config.modelId)) {
+      errors.push(`Invalid modelId. Must be one of: ${validModelIds.join(', ')}`);
     }
   }
 
