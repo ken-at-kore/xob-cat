@@ -31,6 +31,7 @@ const COLORS = {
   secondary: '#EF4444',  // Red - Negative outcomes
   success: '#10B981',    // Green - Positive outcomes
   warning: '#F59E0B',    // Amber - Drop-offs
+  lightYellow: '#FEF08A', // Light Yellow - Lighter option
   info: '#6366F1',       // Indigo - General intents
   purple: '#8B5CF6',     // Purple
   orange: '#F97316',     // Orange
@@ -87,12 +88,23 @@ export function SessionOutcomePieChart({ sessions, showLegend = true }: ChartPro
     return acc;
   }, {} as Record<string, number>);
 
-  const chartData = Object.entries(outcomeData).map(([outcome, count], index) => ({
+  const getOutcomeColor = (outcome: string): string => {
+    switch (outcome.toLowerCase()) {
+      case 'contained':
+        return COLORS.primary; // Blue
+      case 'transfer':
+        return COLORS.lightYellow; // Light Yellow
+      default:
+        return COLORS.info; // Indigo fallback
+    }
+  };
+
+  const chartData = Object.entries(outcomeData).map(([outcome, count]) => ({
     id: outcome,
     label: outcome,
     value: count,
     percentage: ((count / sessions.length) * 100).toFixed(1),
-    color: PIE_COLORS[index % PIE_COLORS.length]
+    color: getOutcomeColor(outcome)
   }));
 
   return (
