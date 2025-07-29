@@ -2,7 +2,9 @@ import OpenAI from 'openai';
 import { 
   SessionWithTranscript, 
   ExistingClassifications, 
-  AUTO_ANALYZE_FUNCTION_SCHEMA 
+  AUTO_ANALYZE_FUNCTION_SCHEMA,
+  GPT_MODELS,
+  getGptModelById
 } from '../../../shared/types';
 
 export interface OpenAIBatchResult {
@@ -22,22 +24,47 @@ export interface OpenAIBatchResult {
 }
 
 export class OpenAIAnalysisService {
-  // GPT-4o-mini pricing (per 1M tokens)
-  private readonly GPT4O_MINI_INPUT_COST = 0.000015;
-  private readonly GPT4O_MINI_OUTPUT_COST = 0.000060;
+  private readonly enableLogging = process.env.OPENAI_LOGGING === 'true';
 
   async analyzeBatch(
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
-    apiKey: string
+    apiKey: string,
+    modelId: string = 'gpt-4o-mini'
   ): Promise<OpenAIBatchResult> {
     const client = new OpenAI({ apiKey });
     
     const prompt = this.createAnalysisPrompt(sessions, existingClassifications);
 
     try {
+      // Get the actual API model string from our model configuration
+      const modelInfo = getGptModelById(modelId);
+      const apiModelString = modelInfo?.apiModelString || modelId;
+      
+      // Log request details if enabled
+      if (this.enableLogging) {
+        console.log('\n🤖 OpenAI API Request:', {
+          timestamp: new Date().toISOString(),
+          model: apiModelString,
+          modelId: modelId,
+          sessionCount: sessions.length,
+          apiKey: apiKey.substring(0, 8) + '...',
+          promptLength: prompt.length,
+          existingClassifications: {
+            intents: existingClassifications.generalIntent.size,
+            transferReasons: existingClassifications.transferReason.size,
+            dropOffLocations: existingClassifications.dropOffLocation.size
+          }
+        });
+        
+        if (process.env.OPENAI_LOGGING_VERBOSE === 'true') {
+          console.log('📝 Request Prompt Preview:', prompt.substring(0, 500) + '...');
+        }
+      }
+      
+      const requestStartTime = Date.now();
       const response = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: apiModelString,
         messages: [
           {
             role: 'system',
@@ -53,6 +80,20 @@ export class OpenAIAnalysisService {
         temperature: 0 // Deterministic results
       });
 
+      const requestDuration = Date.now() - requestStartTime;
+
+      // Log response details if enabled
+      if (this.enableLogging) {
+        console.log('✅ OpenAI API Response:', {
+          timestamp: new Date().toISOString(),
+          duration: `${requestDuration}ms`,
+          model: response.model,
+          usage: response.usage,
+          finishReason: response.choices[0]?.finish_reason,
+          hasToolCalls: !!response.choices[0]?.message?.tool_calls?.length
+        });
+      }
+
       // Extract function call results
       if (!response.choices[0]?.message?.tool_calls?.[0]) {
         throw new Error('No tool calls in response');
@@ -65,12 +106,36 @@ export class OpenAIAnalysisService {
         throw new Error('Invalid response format: missing sessions array');
       }
 
+      // Log parsed results if enabled
+      if (this.enableLogging) {
+        console.log('📊 Parsed Analysis Results:', {
+          sessionsAnalyzed: functionArgs.sessions.length,
+          intentsFound: [...new Set(functionArgs.sessions.map((s: any) => s.general_intent))],
+          transferCount: functionArgs.sessions.filter((s: any) => s.session_outcome === 'Transfer').length,
+          containedCount: functionArgs.sessions.filter((s: any) => s.session_outcome === 'Contained').length
+        });
+        
+        if (process.env.OPENAI_LOGGING_VERBOSE === 'true') {
+          console.log('📋 Full Function Arguments:', JSON.stringify(functionArgs, null, 2));
+        }
+      }
+
       // Calculate cost
       const cost = this.calculateCost(
         response.usage?.prompt_tokens || 0,
         response.usage?.completion_tokens || 0,
-        response.model
+        modelId
       );
+
+      if (this.enableLogging) {
+        console.log('💰 Cost Calculation:', {
+          promptTokens: response.usage?.prompt_tokens || 0,
+          completionTokens: response.usage?.completion_tokens || 0,
+          totalTokens: response.usage?.total_tokens || 0,
+          cost: `$${cost.toFixed(6)}`,
+          modelUsedForCost: modelId
+        });
+      }
 
       return {
         sessions: functionArgs.sessions,
@@ -78,11 +143,21 @@ export class OpenAIAnalysisService {
         completionTokens: response.usage?.completion_tokens || 0,
         totalTokens: response.usage?.total_tokens || 0,
         cost,
-        model: response.model
+        model: modelId // Use our modelId instead of OpenAI's response.model
       };
 
     } catch (error) {
-      console.error('OpenAI API error:', error);
+      if (this.enableLogging) {
+        console.error('❌ OpenAI API Error:', {
+          timestamp: new Date().toISOString(),
+          model: modelId,
+          sessionCount: sessions.length,
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined
+        });
+      } else {
+        console.error('OpenAI API error:', error);
+      }
       throw error;
     }
   }
@@ -147,13 +222,14 @@ IMPORTANT:
 ${sessionsText}`;
   }
 
-  calculateCost(promptTokens: number, completionTokens: number, model: string): number {
-    if (!model.includes('gpt-4o-mini')) {
+  calculateCost(promptTokens: number, completionTokens: number, modelId: string): number {
+    const modelInfo = getGptModelById(modelId);
+    if (!modelInfo) {
       return 0; // Unknown model
     }
 
-    const inputCost = (promptTokens * this.GPT4O_MINI_INPUT_COST) / 1_000_000;
-    const outputCost = (completionTokens * this.GPT4O_MINI_OUTPUT_COST) / 1_000_000;
+    const inputCost = (promptTokens / 1_000_000) * modelInfo.inputPricePerMillion;
+    const outputCost = (completionTokens / 1_000_000) * modelInfo.outputPricePerMillion;
     
     return inputCost + outputCost;
   }
