@@ -6,6 +6,10 @@ import {
   GPT_MODELS,
   getGptModelById
 } from '../../../shared/types';
+import { 
+  SESSION_ANALYSIS_SYSTEM_MESSAGE, 
+  createSessionAnalysisPrompt 
+} from '../../../shared/prompts/session-analysis-prompts';
 
 export interface OpenAIBatchResult {
   sessions: Array<{
@@ -34,7 +38,7 @@ export class OpenAIAnalysisService {
   ): Promise<OpenAIBatchResult> {
     const client = new OpenAI({ apiKey });
     
-    const prompt = this.createAnalysisPrompt(sessions, existingClassifications);
+    const prompt = createSessionAnalysisPrompt(sessions, existingClassifications);
 
     try {
       // Get the actual API model string from our model configuration
@@ -68,7 +72,7 @@ export class OpenAIAnalysisService {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert session analyst. Analyze the session transcripts and use the provided function to classify them consistently.'
+            content: SESSION_ANALYSIS_SYSTEM_MESSAGE
           },
           {
             role: 'user',
@@ -162,65 +166,6 @@ export class OpenAIAnalysisService {
     }
   }
 
-  createAnalysisPrompt(
-    sessions: SessionWithTranscript[],
-    existingClassifications: ExistingClassifications
-  ): string {
-    // Build classification guidance based on existing classifications
-    let intentGuidance = '';
-    let transferReasonGuidance = '';
-    let dropOffGuidance = '';
-
-    if (existingClassifications.generalIntent.size > 0) {
-      const sortedIntents = Array.from(existingClassifications.generalIntent).sort();
-      intentGuidance = `\nExisting General Intent classifications: ${sortedIntents.join(', ')}`;
-    }
-
-    if (existingClassifications.transferReason.size > 0) {
-      const sortedReasons = Array.from(existingClassifications.transferReason).sort();
-      transferReasonGuidance = `\nExisting Transfer Reason classifications: ${sortedReasons.join(', ')}`;
-    }
-
-    if (existingClassifications.dropOffLocation.size > 0) {
-      const sortedLocations = Array.from(existingClassifications.dropOffLocation).sort();
-      dropOffGuidance = `\nExisting Drop-Off Location classifications: ${sortedLocations.join(', ')}`;
-    }
-
-    // Format session transcripts
-    const sessionsText = sessions.map((session, index) => {
-      const transcript = session.messages
-        .map(msg => `${msg.message_type}: ${msg.message}`)
-        .join('\n');
-
-      return `--- Session ${index + 1} ---
-User ID: ${session.user_id}
-Transcript:
-${transcript}`;
-    }).join('\n\n');
-
-    return `Analyze the following session transcripts and classify each session according to the specified criteria.
-
-${intentGuidance}${transferReasonGuidance}${dropOffGuidance}
-
-For each session, provide the following classifications:
-
-1. **General Intent**: What the user is trying to accomplish (usually 1-2 words). Common examples: "Claim Status", "Billing", "Eligibility", "Live Agent", "Provider Enrollment", "Portal Access", "Authorization". If unknown, use "Unknown".
-
-2. **Session Outcome**: Either "Transfer" (if session was transferred to live agent) or "Contained" (if session was handled by bot). Classify sessions as "Transfer" if there's a transfer message toward the end of the session (e.g. "Please hold while I connect you with a customer service representative"). Classify sessions as "Contained" if the session was not transferred. Consider that some "Contained" sessions will end with the Bot saying it's ending the conversation ("I am closing our current conversation...").
-
-3. **Transfer Reason**: Why the session was transferred (only if Session Outcome is "Transfer"). Look for specific error messages or invalid responses that caused the transfer. Common reasons: "Invalid Provider ID" (when provider ID is rejected), "Invalid Member ID" (when member ID is rejected), "Invalid Claim Number" (when claim number is rejected), "No Provider ID" (when user says they don't have one), "Inactive Provider ID" (when provider ID is inactive), "Authentication Failed", "Technical Issue", "Policy Not Found", "Can't Capture Policy Number". If not transferred, leave blank.
-
-4. **Drop-Off Location**: Where in the session flow (at which prompt) the user dropped off (started getting routed to an agent). Will only have a value if session_outcome is "Transfer"). Example locations: "Policy Number Prompt", "Authentication", "Claim Details", "Member Information", "Provider ID", "Date of Service", "User Name". If not transferred, leave blank.
-
-5. **Notes**: One sentence summary of what happened in the session.
-
-IMPORTANT: 
-- Use existing classifications when possible to maintain consistency
-- If Session Outcome is "Contained", leave Transfer Reason and Drop-Off Location blank
-- Be concise but descriptive in your classifications
-
-${sessionsText}`;
-  }
 
   calculateCost(promptTokens: number, completionTokens: number, modelId: string): number {
     const modelInfo = getGptModelById(modelId);
