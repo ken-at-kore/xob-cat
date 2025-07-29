@@ -299,6 +299,67 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 
 **Markdown Rendering**: Analysis summaries use ReactMarkdown with remark-gfm and Tailwind Typography plugin for proper header hierarchy (H1: 32px, H2: 24px, H3: 18.72px) and bold text styling.
 
+### Report Viewer Feature
+
+The Report Viewer feature enables sharing of analysis reports without requiring access to the full XOB CAT application. Power users can export analysis results as versioned JSON files and stakeholders can view them through a standalone report viewer interface.
+
+**Export Functionality**:
+- **Download Report Data**: Button available on analysis results page (only visible when `analysisId` is available)
+- **Versioned JSON Format**: Exports use semantic versioning (v1.0.0) with schema compatibility tracking
+- **Complete Data Export**: Includes all sessions, analysis summaries, chart data, cost analysis, and metadata
+- **Secure Export**: API keys and sensitive data are excluded from export files
+- **Auto-Generated Filenames**: Format: `xob-cat-analysis-YYYY-MM-DDTHH-MM-SS.json`
+
+**Report Viewer Interface** (`/report-viewer`):
+- **Standalone Layout**: Minimal header without sidebar or main navigation
+- **File Upload**: Drag-and-drop interface with "Choose File" button
+- **File Validation**: Client-side validation with comprehensive error handling
+- **Version Compatibility**: Automatic version checking with clear error messages for unsupported files
+- **Navigation Integration**: "Go to XOB CAT" link to main application
+
+**Report Display** (`/report-viewer/view`):
+- **Complete Report Rendering**: Reuses `AnalysisReportView` component with custom navigation behavior
+- **Report Metadata**: Shows export timestamp, analysis period, and session count
+- **Interactive Features**: All charts, filters, and session exploration remain fully functional
+- **Custom Navigation**: "Start New Analysis" redirects to main app home page (credentials)
+- **Session Management**: Data stored in sessionStorage, cleared on navigation
+
+**Version Management**:
+- **Semantic Versioning**: Major.Minor.Patch format (currently v1.0.0)
+- **Backward Compatibility**: Minor version updates remain compatible
+- **Feature Flags**: Required and optional features tracked in metadata
+- **Error Handling**: Clear messages for version mismatches, missing features, or corrupted files
+- **Future-Proofing**: Schema designed for extensibility with new chart types and analysis features
+
+**File Structure** (v1.0.0):
+```json
+{
+  "metadata": {
+    "version": "1.0.0",
+    "schemaVersion": "1.0",
+    "exportedAt": "ISO-8601-timestamp",
+    "exportedBy": "XOB-CAT-1.0.0",
+    "requiredFeatures": ["basic-charts", "session-analysis"],
+    "optionalFeatures": ["advanced-charts", "ai-summary"]
+  },
+  "analysisConfig": { /* Analysis configuration */ },
+  "sessions": [ /* Complete session data with facts */ ],
+  "summary": { /* AI-generated summaries and statistics */ },
+  "chartData": { /* Pre-calculated chart data */ },
+  "costAnalysis": { /* Token usage and cost information */ }
+}
+```
+
+**API Endpoints**:
+- `GET /api/analysis/auto-analyze/export/{analysisId}`: Download analysis report as JSON file
+- File validation and version checking handled client-side for security and performance
+
+**Security & Validation**:
+- **Client-Side Validation**: File structure and version validation in browser
+- **Size Limits**: Maximum 50MB file size with warnings at 80% threshold
+- **Content Sanitization**: All rendered content properly escaped
+- **No Server Upload**: Files processed entirely in browser for security
+
 ### Recent Analysis Report Improvements (July 2025)
 
 The analysis overview and detailed analysis cards have been significantly enhanced with the following improvements:
