@@ -4,7 +4,7 @@ import path from 'path';
 import { AnalysisExportFile } from '../../shared/types';
 
 // Helper to wait for download
-async function waitForDownload(page, action) {
+async function waitForDownload(page: any, action: () => Promise<void>) {
   const downloadPromise = page.waitForEvent('download');
   await action();
   return await downloadPromise;

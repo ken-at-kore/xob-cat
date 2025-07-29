@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
-import { Input } from './ui/input';
 import { Badge } from './ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AnalysisResults, SessionWithFacts } from '@/shared/types';
 import { 
   SessionOutcomePieChart, 
@@ -29,8 +29,10 @@ interface AnalysisReportViewProps {
 export function AnalysisReportView({ results, onStartNew, analysisId }: AnalysisReportViewProps) {
   const [sortField, setSortField] = useState<keyof SessionWithFacts | keyof SessionWithFacts['facts']>('session_id');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [filterIntent, setFilterIntent] = useState<string>('');
-  const [filterOutcome, setFilterOutcome] = useState<string>('');
+  const [filterIntent, setFilterIntent] = useState<string>('all');
+  const [filterOutcome, setFilterOutcome] = useState<string>('all');
+  const [filterTransferReason, setFilterTransferReason] = useState<string>('all');
+  const [filterDropOffLocation, setFilterDropOffLocation] = useState<string>('all');
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -99,15 +101,66 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
     setSelectedSessionIndex(newIndex);
   };
 
+  // Memoize filter options for performance
+  const filterOptions = useMemo(() => {
+    const intents = [...new Set(results.sessions.map(s => s.facts.generalIntent))]
+      .filter(Boolean)
+      .sort();
+    const transferReasons = [...new Set(results.sessions
+      .filter(s => s.facts.sessionOutcome === 'Transfer' && s.facts.transferReason)
+      .map(s => s.facts.transferReason))]
+      .filter(Boolean)
+      .sort();
+    const dropOffLocations = [...new Set(results.sessions
+      .filter(s => s.facts.sessionOutcome === 'Transfer' && s.facts.dropOffLocation)
+      .map(s => s.facts.dropOffLocation))]
+      .filter(Boolean)
+      .sort();
+      
+    return { intents, transferReasons, dropOffLocations };
+  }, [results.sessions]);
+
+  // Enhanced filtering logic
   const filteredResults = results.sessions.filter(result => {
-    if (filterIntent && !result.facts.generalIntent.toLowerCase().includes(filterIntent.toLowerCase())) {
+    // Intent filter (exact match, skip if 'all')
+    if (filterIntent && filterIntent !== 'all' && result.facts.generalIntent !== filterIntent) {
       return false;
     }
-    if (filterOutcome && result.facts.sessionOutcome !== filterOutcome) {
+    
+    // Outcome filter (exact match, skip if 'all')
+    if (filterOutcome && filterOutcome !== 'all' && result.facts.sessionOutcome !== filterOutcome) {
       return false;
     }
+    
+    // Transfer-specific filters (only apply to Transfer sessions)
+    if (result.facts.sessionOutcome === 'Transfer') {
+      if (filterTransferReason && filterTransferReason !== 'all' && result.facts.transferReason !== filterTransferReason) {
+        return false;
+      }
+      if (filterDropOffLocation && filterDropOffLocation !== 'all' && result.facts.dropOffLocation !== filterDropOffLocation) {
+        return false;
+      }
+    }
+    
     return true;
   });
+
+  // Clear transfer-specific filters when outcome changes to Contained
+  const handleOutcomeChange = (value: string) => {
+    setFilterOutcome(value);
+    if (value === 'Contained') {
+      setFilterTransferReason('all');
+      setFilterDropOffLocation('all');
+    }
+  };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setFilterIntent('all');
+    setFilterOutcome('all');
+    setFilterTransferReason('all');
+    setFilterDropOffLocation('all');
+  };
 
   const sortedResults = [...filteredResults].sort((a, b) => {
     let aValue: any, bValue: any;
@@ -129,7 +182,6 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
     return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
   });
 
-  const outcomes = ['Transfer', 'Contained'];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -213,35 +265,92 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Analyzed Sessions</h2>
         
-        {/* Filters */}
+        {/* Enhanced Filters */}
         <Card>
           <CardHeader>
-            <CardTitle>Filters</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Filters</CardTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleClearFilters}
+                className="text-xs"
+              >
+                Clear Filters
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+            <div className="grid grid-cols-2 gap-4" data-testid="filters-grid">
+              {/* Filter by Intent */}
+              <div className="space-y-2">
                 <Label htmlFor="filterIntent">Filter by Intent</Label>
-                <Input
-                  id="filterIntent"
-                  placeholder="Search intents..."
-                  value={filterIntent}
-                  onChange={(e) => setFilterIntent(e.target.value)}
-                />
+                <Select value={filterIntent} onValueChange={setFilterIntent}>
+                  <SelectTrigger id="filterIntent" className="w-full">
+                    <SelectValue placeholder="All Intents" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Intents</SelectItem>
+                    {filterOptions.intents.map(intent => (
+                      <SelectItem key={intent} value={intent}>{intent}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div>
+
+              {/* Filter by Outcome */}
+              <div className="space-y-2">
                 <Label htmlFor="filterOutcome">Filter by Outcome</Label>
-                <select
-                  id="filterOutcome"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={filterOutcome}
-                  onChange={(e) => setFilterOutcome(e.target.value)}
+                <Select value={filterOutcome} onValueChange={handleOutcomeChange}>
+                  <SelectTrigger id="filterOutcome" className="w-full">
+                    <SelectValue placeholder="All Outcomes" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Outcomes</SelectItem>
+                    <SelectItem value="Transfer">Transfer</SelectItem>
+                    <SelectItem value="Contained">Contained</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filter by Transfer Reason */}
+              <div className="space-y-2">
+                <Label htmlFor="filterTransferReason">Filter by Transfer Reason</Label>
+                <Select 
+                  value={filterTransferReason} 
+                  onValueChange={setFilterTransferReason}
+                  disabled={filterOutcome === 'Contained'}
                 >
-                  <option value="">All Outcomes</option>
-                  {outcomes.map(outcome => (
-                    <option key={outcome} value={outcome}>{outcome}</option>
-                  ))}
-                </select>
+                  <SelectTrigger id="filterTransferReason" className="w-full">
+                    <SelectValue placeholder="All Transfer Reasons" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Transfer Reasons</SelectItem>
+                    {filterOptions.transferReasons.map(reason => (
+                      <SelectItem key={reason} value={reason}>{reason}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filter by Drop-off Location */}
+              <div className="space-y-2">
+                <Label htmlFor="filterDropOffLocation">Filter by Drop-off Location</Label>
+                <Select 
+                  value={filterDropOffLocation} 
+                  onValueChange={setFilterDropOffLocation}
+                  disabled={filterOutcome === 'Contained'}
+                >
+                  <SelectTrigger id="filterDropOffLocation" className="w-full">
+                    <SelectValue placeholder="All Drop-off Locations" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Drop-off Locations</SelectItem>
+                    {filterOptions.dropOffLocations.map(location => (
+                      <SelectItem key={location} value={location}>{location}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
