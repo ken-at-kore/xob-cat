@@ -572,10 +572,11 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
 interface ResultsViewProps {
   results: AnalysisResults;
   onStartNew: () => void;
+  analysisId?: string;
 }
 
-export function ResultsView({ results, onStartNew }: ResultsViewProps) {
-  return <AnalysisReportView results={results} onStartNew={onStartNew} />;
+export function ResultsView({ results, onStartNew, analysisId }: ResultsViewProps) {
+  return <AnalysisReportView results={results} onStartNew={onStartNew} analysisId={analysisId} />;
 }
 
 /**
@@ -609,6 +610,8 @@ export default function AutoAnalyzePage() {
     try {
       const mockResults = await loadMockResults();
       setResults(mockResults);
+      // Set a mock analysisId so the download button appears
+      setAnalysisId('mock-analysis-' + Date.now());
       setCurrentView('results');
     } catch (error) {
       console.error('Failed to load mock results:', error);
@@ -643,6 +646,7 @@ export default function AutoAnalyzePage() {
         <ResultsView 
           results={results}
           onStartNew={handleStartNew}
+          analysisId={analysisId}
         />
       )}
     </>

@@ -104,6 +104,14 @@ export class AutoAnalyzeService {
     };
   }
 
+  async getConfig(analysisId: string): Promise<AnalysisConfig> {
+    const session = this.activeSessions.get(analysisId);
+    if (!session) {
+      throw new Error('Analysis not found');
+    }
+    return session.config;
+  }
+
   async cancelAnalysis(analysisId: string): Promise<boolean> {
     const session = this.activeSessions.get(analysisId);
     if (!session) {
