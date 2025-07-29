@@ -7,13 +7,13 @@ import { useRouter } from 'next/navigation';
  * 
  * Features:
  * - Fixed positioning at top of screen with proper z-index layering
- * - Left side: "XOB CAT" title with de-emphasized subtitle
+ * - Left side: Kore logo + "XOB CAT" title with de-emphasized subtitle
  * - Right side: Bot ID label + value + bullet separator + disconnect button
  * - Handles disconnect navigation back to credentials page
  * 
  * Layout:
  * ┌─────────────────────────────────────────────────────────┐
- * │ XOB CAT  XO Bot Conversation...  │  Bot ID xxx • Disconnect │
+ * │ [Logo] XOB CAT  XO Bot Conversation...  │  Bot ID xxx • Disconnect │
  * └─────────────────────────────────────────────────────────┘
  */
 
@@ -38,8 +38,13 @@ export default function TopNav({ botId }: TopNavProps) {
       className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-3"
     >
       <div className="flex justify-between items-center">
-        {/* Left side: App name + subtitle */}
+        {/* Left side: Kore logo + app name + subtitle */}
         <div className="flex items-center space-x-3">
+          <img 
+            src="/assets/Kore.ai_Emblem_Black.svg" 
+            alt="Kore.ai" 
+            className="h-8 w-8"
+          />
           <h1 className="text-xl font-bold text-gray-900">XOB CAT</h1>
           <span className="text-sm text-gray-500">
             XO Bot Conversation Analysis Tools
