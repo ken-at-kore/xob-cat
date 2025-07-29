@@ -99,7 +99,7 @@ describe('OpenAIAnalysisService', () => {
       expect(result.promptTokens).toBe(150);
       expect(result.completionTokens).toBe(75);
       expect(result.totalTokens).toBe(225);
-      expect(result.cost).toBeCloseTo(0.00675); // (150 * 0.000015 + 75 * 0.000060) / 1
+      expect(result.cost).toBeCloseTo(0.000675); // GPT-4o-mini: (150 * 0.15 + 75 * 0.60) / 1_000_000
     });
 
     it('should include existing classifications in prompt for consistency', async () => {

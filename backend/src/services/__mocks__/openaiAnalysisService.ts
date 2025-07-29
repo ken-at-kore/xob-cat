@@ -52,10 +52,10 @@ export class MockOpenAIAnalysisService {
 
       return {
         user_id: session.user_id,
-        general_intent: intents[Math.floor(Math.random() * intents.length)],
+        general_intent: intents[Math.floor(Math.random() * intents.length)] || 'Unknown',
         session_outcome: (isTransfer ? 'Transfer' : 'Contained') as 'Transfer' | 'Contained',
-        transfer_reason: isTransfer ? transferReasons[Math.floor(Math.random() * transferReasons.length)] : '',
-        drop_off_location: isTransfer ? dropOffLocations[Math.floor(Math.random() * dropOffLocations.length)] : '',
+        transfer_reason: isTransfer ? (transferReasons[Math.floor(Math.random() * transferReasons.length)] || '') : '',
+        drop_off_location: isTransfer ? (dropOffLocations[Math.floor(Math.random() * dropOffLocations.length)] || '') : '',
         notes: `Mock analysis result for ${session.user_id} using ${modelId}`
       };
     });

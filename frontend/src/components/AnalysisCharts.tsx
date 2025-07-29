@@ -16,7 +16,7 @@ import React from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsivePie } from '@nivo/pie';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { SessionWithFacts } from '@/shared/types';
+import { SessionWithFacts, getGptModelById, calculateModelCost } from '@/shared/types';
 
 // Constants
 const TEXT_TRUNCATION_LENGTH = 25;
@@ -547,21 +547,41 @@ export function GeneralIntentsBar({ sessions }: ChartProps) {
  * Features:
  * - Total sessions analyzed count
  * - Token usage statistics (total and average per session)
- * - Cost estimation based on GPT-4o-mini pricing
+ * - Cost estimation based on actual model pricing
  * - Model information display
  * - Cost per session calculation
  * 
- * Pricing is based on OpenAI's GPT-4o-mini model: $0.00015 per 1K tokens
+ * Pricing is dynamically calculated based on the selected GPT model
  */
 export function AnalysisCostCard({ sessions }: ChartProps) {
   const totalTokens = sessions.reduce((sum, session) => sum + session.analysisMetadata.tokensUsed, 0);
   const avgTokensPerSession = sessions.length > 0 ? Math.round(totalTokens / sessions.length) : 0;
   
-  // GPT-4o-mini pricing: $0.00015 per 1K tokens
-  const estimatedCost = (totalTokens / 1000) * 0.00015;
-  
   // Get model from first session (assuming all sessions use same model)
-  const model = sessions.length > 0 ? sessions[0].analysisMetadata.model || 'GPT-4o-mini' : 'GPT-4o-mini';
+  const modelString = sessions.length > 0 ? sessions[0].analysisMetadata.model || 'gpt-4o-mini' : 'gpt-4o-mini';
+  
+  // Map API model string to our model ID for cost calculation
+  const getModelIdFromApiString = (apiString: string): string => {
+    // Handle both with and without version suffixes
+    if (apiString.includes('gpt-4o-mini')) return 'gpt-4o-mini';
+    if (apiString.includes('gpt-4o')) return 'gpt-4o';
+    if (apiString.includes('gpt-4.1-mini')) return 'gpt-4.1-mini';
+    if (apiString.includes('gpt-4.1-nano')) return 'gpt-4.1-nano';
+    if (apiString.includes('gpt-4.1')) return 'gpt-4.1';
+    return 'gpt-4o-mini'; // fallback
+  };
+  
+  const modelId = getModelIdFromApiString(modelString);
+  const modelInfo = getGptModelById(modelId);
+  
+  // Calculate cost based on model pricing
+  const estimatedCost = modelInfo ? calculateModelCost(
+    Math.round(totalTokens * 0.75), // Rough estimate: ~75% input tokens
+    Math.round(totalTokens * 0.25), // Rough estimate: ~25% output tokens
+    modelInfo
+  ) : 0;
+  
+  const displayModelName = modelInfo ? modelInfo.name : modelString;
 
   return (
     <Card>
@@ -579,7 +599,7 @@ export function AnalysisCostCard({ sessions }: ChartProps) {
             <div className="text-sm text-gray-500">Total Tokens Used</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">{model}</div>
+            <div className="text-2xl font-bold text-purple-600">{displayModelName}</div>
             <div className="text-sm text-gray-500">Model Used</div>
           </div>
           <div className="text-center">
@@ -598,7 +618,7 @@ export function AnalysisCostCard({ sessions }: ChartProps) {
             </div>
           </div>
           <div className="mt-2 text-xs text-gray-500">
-            * Cost estimate based on GPT-4o-mini pricing ($0.00015 per 1K tokens). Actual costs may vary.
+            * Cost estimate based on {displayModelName} pricing. Input: ${modelInfo?.inputPricePerMillion.toFixed(2)}/1M tokens, Output: ${modelInfo?.outputPricePerMillion.toFixed(2)}/1M tokens. Actual costs may vary.
           </div>
         </div>
       </CardContent>
