@@ -1,5 +1,6 @@
 import { OpenAIAnalysisService } from '../../services/openaiAnalysisService';
 import { SessionWithTranscript, ExistingClassifications } from '../../../../shared/types';
+import { createSessionAnalysisPrompt } from '../../../../shared/prompts/session-analysis-prompts';
 import OpenAI from 'openai';
 
 // Mock OpenAI
@@ -246,7 +247,7 @@ describe('OpenAIAnalysisService', () => {
     });
   });
 
-  describe('createAnalysisPrompt', () => {
+  describe('createSessionAnalysisPrompt', () => {
     const mockSessions: SessionWithTranscript[] = [
       {
         session_id: 'session-1',
@@ -273,7 +274,7 @@ describe('OpenAIAnalysisService', () => {
         dropOffLocation: new Set()
       };
 
-      const prompt = openaiAnalysisService.createAnalysisPrompt(mockSessions, emptyClassifications);
+      const prompt = createSessionAnalysisPrompt(mockSessions, emptyClassifications);
 
       expect(prompt).toContain('--- Session 1 ---');
       expect(prompt).toContain('User ID: user-1');
@@ -288,7 +289,7 @@ describe('OpenAIAnalysisService', () => {
         dropOffLocation: new Set(['Authentication'])
       };
 
-      const prompt = openaiAnalysisService.createAnalysisPrompt(mockSessions, classifications);
+      const prompt = createSessionAnalysisPrompt(mockSessions, classifications);
 
       expect(prompt).toContain('Existing General Intent classifications: Billing, Claim Status');
       expect(prompt).toContain('Existing Transfer Reason classifications: Invalid ID');
@@ -302,7 +303,7 @@ describe('OpenAIAnalysisService', () => {
         dropOffLocation: new Set()
       };
 
-      const prompt = openaiAnalysisService.createAnalysisPrompt(mockSessions, emptyClassifications);
+      const prompt = createSessionAnalysisPrompt(mockSessions, emptyClassifications);
 
       expect(prompt).not.toContain('Existing General Intent classifications:');
       expect(prompt).not.toContain('Existing Transfer Reason classifications:');

@@ -5,9 +5,17 @@ import { SessionWithTranscript, TimeWindow } from '../../../../shared/types';
 // Mock the KoreApiService
 jest.mock('../../services/koreApiService');
 
+// Mock the mockDataService that SessionSamplingService actually uses
+jest.mock('../../services/mockDataService', () => ({
+  getSessions: jest.fn()
+}));
+
+import { getSessions } from '../../services/mockDataService';
+
 describe('SessionSamplingService', () => {
   let sessionSamplingService: SessionSamplingService;
   let mockKoreApiService: jest.Mocked<KoreApiService>;
+  let mockGetSessions: jest.MockedFunction<typeof getSessions>;
 
   beforeEach(() => {
     const mockConfig = {
@@ -21,6 +29,10 @@ describe('SessionSamplingService', () => {
     // Set default mock to return empty array for all calls
     mockKoreApiService.getSessions = jest.fn().mockResolvedValue([]);
     
+    // Set up the mockDataService getSessions mock
+    mockGetSessions = getSessions as jest.MockedFunction<typeof getSessions>;
+    mockGetSessions.mockResolvedValue([]);
+    
     sessionSamplingService = new SessionSamplingService(mockKoreApiService);
   });
 
@@ -33,7 +45,8 @@ describe('SessionSamplingService', () => {
       startDate: '2024-01-15',
       startTime: '09:00',
       sessionCount: 50,
-      openaiApiKey: 'sk-test-key'
+      openaiApiKey: 'sk-test-key',
+      modelId: 'gpt-4o-mini'
     };
 
     it('should successfully sample sessions from initial 3-hour window', async () => {
@@ -55,26 +68,14 @@ describe('SessionSamplingService', () => {
       }));
 
       // Override the default empty mock for this test
-      mockKoreApiService.getSessions.mockResolvedValue(mockSessions.map(session => ({
-        sessionId: session.session_id,
-        userId: session.user_id,
-        start_time: session.start_time,
-        end_time: session.end_time,
-        containment_type: session.containment_type,
-        tags: session.tags,
-        metrics: {
-          total_messages: session.message_count,
-          user_messages: session.user_message_count,
-          bot_messages: session.bot_message_count
-        }
-      })));
+      mockGetSessions.mockResolvedValue(mockSessions);
 
       const result = await sessionSamplingService.sampleSessions(mockConfig);
 
       expect(result.sessions).toHaveLength(50);
       expect(result.timeWindows).toHaveLength(1);
       expect(result.timeWindows[0]?.label).toBe('Initial 3-hour window');
-      expect(mockKoreApiService.getSessions).toHaveBeenCalledTimes(1);
+      expect(mockGetSessions).toHaveBeenCalledTimes(1);
     });
 
     it('should expand time window when insufficient sessions found', async () => {
@@ -114,33 +115,9 @@ describe('SessionSamplingService', () => {
         bot_message_count: 1
       }));
 
-      mockKoreApiService.getSessions
-        .mockResolvedValueOnce(mockSessions1.map(session => ({
-          sessionId: session.session_id,
-          userId: session.user_id,
-          start_time: session.start_time,
-          end_time: session.end_time,
-          containment_type: session.containment_type,
-          tags: session.tags,
-          metrics: {
-            total_messages: session.message_count,
-            user_messages: session.user_message_count,
-            bot_messages: session.bot_message_count
-          }
-        })))
-        .mockResolvedValueOnce(mockSessions2.map(session => ({
-          sessionId: session.session_id,
-          userId: session.user_id,
-          start_time: session.start_time,
-          end_time: session.end_time,
-          containment_type: session.containment_type,
-          tags: session.tags,
-          metrics: {
-            total_messages: session.message_count,
-            user_messages: session.user_message_count,
-            bot_messages: session.bot_message_count
-          }
-        })));
+      mockGetSessions
+        .mockResolvedValueOnce(mockSessions1)
+        .mockResolvedValueOnce(mockSessions2);
 
       const result = await sessionSamplingService.sampleSessions(mockConfig);
 
@@ -148,7 +125,7 @@ describe('SessionSamplingService', () => {
       expect(result.timeWindows).toHaveLength(2);
       expect(result.timeWindows[0]?.label).toBe('Initial 3-hour window');
       expect(result.timeWindows[1]?.label).toBe('Extended to 6 hours');
-      expect(mockKoreApiService.getSessions).toHaveBeenCalledTimes(2);
+      expect(mockGetSessions).toHaveBeenCalledTimes(2);
     });
 
     it('should throw error when fewer than 10 sessions found after all expansions', async () => {
@@ -169,19 +146,7 @@ describe('SessionSamplingService', () => {
       }));
 
       // Mock all calls to return insufficient sessions
-      mockKoreApiService.getSessions.mockResolvedValue(mockSessions.map(session => ({
-        sessionId: session.session_id,
-        userId: session.user_id,
-        start_time: session.start_time,
-        end_time: session.end_time,
-        containment_type: session.containment_type,
-        tags: session.tags,
-        metrics: {
-          total_messages: session.message_count,
-          user_messages: session.user_message_count,
-          bot_messages: session.bot_message_count
-        }
-      })));
+      mockGetSessions.mockResolvedValue(mockSessions);
 
       await expect(sessionSamplingService.sampleSessions(mockConfig))
         .rejects.toThrow('Insufficient sessions found');
@@ -225,43 +190,41 @@ describe('SessionSamplingService', () => {
       ];
 
       // Mock with sessions that have different message counts to test filtering
-      const validSession = {
-        sessionId: 'session-1',
-        userId: 'user-1',
+      const validSession: SessionWithTranscript = {
+        session_id: 'session-1',
+        user_id: 'user-1',
         start_time: '2024-01-15T14:00:00Z', // 09:00 ET = 14:00 UTC (EST)
         end_time: '2024-01-15T14:30:00Z',
         containment_type: 'selfService',
         tags: [],
-        metrics: {
-          total_messages: 2,
-          user_messages: 1,
-          bot_messages: 1
-        },
+        metrics: {},
         messages: [
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' },
           { timestamp: '2024-01-15T14:01:00Z', message_type: 'bot', message: 'Hi there!' }
-        ]
+        ],
+        message_count: 2,
+        user_message_count: 1,
+        bot_message_count: 1
       };
 
-      const invalidSession = {
-        sessionId: 'session-2',
-        userId: 'user-2',
+      const invalidSession: SessionWithTranscript = {
+        session_id: 'session-2',
+        user_id: 'user-2',
         start_time: '2024-01-15T14:00:00Z', // 09:00 ET = 14:00 UTC (EST)
         end_time: '2024-01-15T14:30:00Z',
         containment_type: 'selfService',
         tags: [],
-        metrics: {
-          total_messages: 1,
-          user_messages: 1,
-          bot_messages: 0
-        },
+        metrics: {},
         messages: [
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' }
-        ]
+        ],
+        message_count: 1,
+        user_message_count: 1,
+        bot_message_count: 0
       };
 
       // Return both sessions - the service should filter out the invalid one
-      mockKoreApiService.getSessions.mockResolvedValue([validSession, invalidSession]);
+      mockGetSessions.mockResolvedValue([validSession, invalidSession]);
 
       // Should try all time windows but ultimately fail with insufficient sessions
       await expect(sessionSamplingService.sampleSessions({
@@ -270,7 +233,7 @@ describe('SessionSamplingService', () => {
       })).rejects.toThrow('Insufficient sessions found');
 
       // Should have called API multiple times (all time windows) due to insufficient sessions after filtering
-      expect(mockKoreApiService.getSessions).toHaveBeenCalledTimes(4); // All time windows
+      expect(mockGetSessions).toHaveBeenCalledTimes(4); // All time windows
     });
 
     it('should deduplicate sessions across time windows', async () => {
@@ -292,19 +255,7 @@ describe('SessionSamplingService', () => {
       };
 
       // Both calls return the same session (simulating overlap)
-      mockKoreApiService.getSessions.mockResolvedValue([{
-        sessionId: duplicateSession.session_id,
-        userId: duplicateSession.user_id,
-        start_time: duplicateSession.start_time,
-        end_time: duplicateSession.end_time,
-        containment_type: duplicateSession.containment_type,
-        tags: duplicateSession.tags,
-        metrics: {
-          total_messages: duplicateSession.message_count,
-          user_messages: duplicateSession.user_message_count,
-          bot_messages: duplicateSession.bot_message_count
-        }
-      }]);
+      mockGetSessions.mockResolvedValue([duplicateSession]);
 
       // Should try all time windows but ultimately fail with insufficient sessions (only 1 unique session)
       await expect(sessionSamplingService.sampleSessions({
@@ -313,7 +264,7 @@ describe('SessionSamplingService', () => {
       })).rejects.toThrow('Insufficient sessions found');
 
       // Should have called API multiple times (all time windows) due to insufficient unique sessions
-      expect(mockKoreApiService.getSessions).toHaveBeenCalledTimes(4); // All time windows
+      expect(mockGetSessions).toHaveBeenCalledTimes(4); // All time windows
     });
   });
 

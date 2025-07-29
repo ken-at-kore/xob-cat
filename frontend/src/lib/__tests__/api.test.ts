@@ -161,7 +161,7 @@ describe('API Client', () => {
       
       // Get realistic messages for this session
       const realisticMessages = staticMessageData.data
-        .filter(msg => msg.sessionId === sessionId)
+        .filter((msg: any) => msg.sessionId === sessionId)
         .slice(0, 5) // Use first 5 messages
       
       const analysisResult = {
@@ -213,7 +213,7 @@ describe('API Client', () => {
       const realisticSessions = staticSessionData.data.slice(0, 2) // First 2 sessions
       
       const batchResult = {
-        analyses: realisticSessions.map(session => ({
+        analyses: realisticSessions.map((session: any) => ({
           session_id: session.session_id,
           intent: 'Member Services',
           outcome: 'Contained',
@@ -240,10 +240,10 @@ describe('API Client', () => {
         json: async () => standardResponse
       })
 
-      const sessionsWithMessages = realisticSessions.map(session => ({
+      const sessionsWithMessages = realisticSessions.map((session: any) => ({
         session_id: session.session_id,
         messages: staticMessageData.data
-          .filter(msg => msg.sessionId === session.session_id)
+          .filter((msg: any) => msg.sessionId === session.session_id)
           .slice(0, 3) // First 3 messages per session
       }))
 
