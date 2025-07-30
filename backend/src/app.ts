@@ -17,11 +17,29 @@ const app = express();
 app.use(helmet());
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+  credentials: true,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'x-bot-id',
+    'x-client-id', 
+    'x-client-secret'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Root endpoint
+app.get('/', (req, res) => {
+  successResponse(res, {
+    service: 'XOB CAT Backend API',
+    version: '1.0.0',
+    status: 'running',
+    environment: process.env.NODE_ENV || 'development'
+  }, 'XOB CAT Backend API is running');
+});
 
 // Health check endpoint with standardized response
 app.get('/health', (req, res) => {
