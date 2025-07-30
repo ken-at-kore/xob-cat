@@ -13,7 +13,7 @@ cp -r ../shared src/shared
 
 # Build TypeScript
 echo "🔨 Compiling TypeScript..."
-npm run build
+npx typescript@latest -p tsconfig.build.json
 
 # Clean up temporary shared files
 rm -rf src/shared
