@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
@@ -35,6 +36,7 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
   const [filterDropOffLocation, setFilterDropOffLocation] = useState<string>('all');
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const handleSort = (field: keyof SessionWithFacts | keyof SessionWithFacts['facts']) => {
     if (sortField === field) {
@@ -162,6 +164,16 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
     setFilterDropOffLocation('all');
   };
 
+  // Count active filters for progressive disclosure
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filterIntent !== 'all') count++;
+    if (filterOutcome !== 'all') count++;
+    if (filterTransferReason !== 'all') count++;
+    if (filterDropOffLocation !== 'all') count++;
+    return count;
+  }, [filterIntent, filterOutcome, filterTransferReason, filterDropOffLocation]);
+
   const sortedResults = [...filteredResults].sort((a, b) => {
     let aValue: any, bValue: any;
     
@@ -265,95 +277,162 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Analyzed Sessions</h2>
         
-        {/* Enhanced Filters */}
+        {/* Progressive Disclosure Filters */}
         <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Filters</CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleClearFilters}
-                className="text-xs"
-              >
-                Clear Filters
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4" data-testid="filters-grid">
-              {/* Filter by Intent */}
-              <div className="space-y-2">
-                <Label htmlFor="filterIntent">Filter by Intent</Label>
-                <Select value={filterIntent} onValueChange={setFilterIntent}>
-                  <SelectTrigger id="filterIntent" className="w-full">
-                    <SelectValue placeholder="All Intents" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Intents</SelectItem>
-                    {filterOptions.intents.map(intent => (
-                      <SelectItem key={intent} value={intent}>{intent}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+          {!filtersExpanded ? (
+            /* Collapsed state - Compact single row */
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-gray-500" />
+                    <CardTitle className="text-base">Filter Sessions</CardTitle>
+                  </div>
+                  {activeFilterCount > 0 && (
+                    <Badge variant="secondary" className="text-xs">
+                      {activeFilterCount} active
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {activeFilterCount > 0 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleClearFilters}
+                      className="text-xs text-gray-600 hover:text-gray-900"
+                    >
+                      Clear All
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFiltersExpanded(true)}
+                    className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900"
+                  >
+                    <span>Show Filters</span>
+                    <ChevronDown className="h-3 w-3" />
+                  </Button>
+                </div>
               </div>
+            </CardHeader>
+          ) : (
+            /* Expanded state - Show all filters */
+            <>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <Filter className="h-4 w-4 text-gray-500" />
+                      <CardTitle className="text-base">Filter Sessions</CardTitle>
+                    </div>
+                    {activeFilterCount > 0 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {activeFilterCount} active
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {activeFilterCount > 0 && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleClearFilters}
+                        className="text-xs text-gray-600 hover:text-gray-900"
+                      >
+                        Clear All
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setFiltersExpanded(false)}
+                      className="flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900"
+                    >
+                      <span>Hide Filters</span>
+                      <ChevronUp className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* All filters in expanded state */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="filters-grid">
+                  {/* Filter by Intent */}
+                  <div className="space-y-2">
+                    <Label htmlFor="filterIntent" className="text-sm font-medium">Intent</Label>
+                    <Select value={filterIntent} onValueChange={setFilterIntent}>
+                      <SelectTrigger id="filterIntent" className="w-full">
+                        <SelectValue placeholder="All Intents" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Intents</SelectItem>
+                        {filterOptions.intents.map(intent => (
+                          <SelectItem key={intent} value={intent}>{intent}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {/* Filter by Outcome */}
-              <div className="space-y-2">
-                <Label htmlFor="filterOutcome">Filter by Outcome</Label>
-                <Select value={filterOutcome} onValueChange={handleOutcomeChange}>
-                  <SelectTrigger id="filterOutcome" className="w-full">
-                    <SelectValue placeholder="All Outcomes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Outcomes</SelectItem>
-                    <SelectItem value="Transfer">Transfer</SelectItem>
-                    <SelectItem value="Contained">Contained</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  {/* Filter by Outcome */}
+                  <div className="space-y-2">
+                    <Label htmlFor="filterOutcome" className="text-sm font-medium">Outcome</Label>
+                    <Select value={filterOutcome} onValueChange={handleOutcomeChange}>
+                      <SelectTrigger id="filterOutcome" className="w-full">
+                        <SelectValue placeholder="All Outcomes" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Outcomes</SelectItem>
+                        <SelectItem value="Transfer">Transfer</SelectItem>
+                        <SelectItem value="Contained">Contained</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {/* Filter by Transfer Reason */}
-              <div className="space-y-2">
-                <Label htmlFor="filterTransferReason">Filter by Transfer Reason</Label>
-                <Select 
-                  value={filterTransferReason} 
-                  onValueChange={setFilterTransferReason}
-                  disabled={filterOutcome === 'Contained'}
-                >
-                  <SelectTrigger id="filterTransferReason" className="w-full">
-                    <SelectValue placeholder="All Transfer Reasons" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Transfer Reasons</SelectItem>
-                    {filterOptions.transferReasons.map(reason => (
-                      <SelectItem key={reason} value={reason}>{reason}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                  {/* Filter by Transfer Reason */}
+                  <div className="space-y-2">
+                    <Label htmlFor="filterTransferReason" className="text-sm font-medium">Transfer Reason</Label>
+                    <Select 
+                      value={filterTransferReason} 
+                      onValueChange={setFilterTransferReason}
+                      disabled={filterOutcome === 'Contained'}
+                    >
+                      <SelectTrigger id="filterTransferReason" className="w-full">
+                        <SelectValue placeholder="All Transfer Reasons" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Transfer Reasons</SelectItem>
+                        {filterOptions.transferReasons.map(reason => (
+                          <SelectItem key={reason} value={reason}>{reason}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {/* Filter by Drop-off Location */}
-              <div className="space-y-2">
-                <Label htmlFor="filterDropOffLocation">Filter by Drop-off Location</Label>
-                <Select 
-                  value={filterDropOffLocation} 
-                  onValueChange={setFilterDropOffLocation}
-                  disabled={filterOutcome === 'Contained'}
-                >
-                  <SelectTrigger id="filterDropOffLocation" className="w-full">
-                    <SelectValue placeholder="All Drop-off Locations" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Drop-off Locations</SelectItem>
-                    {filterOptions.dropOffLocations.map(location => (
-                      <SelectItem key={location} value={location}>{location}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
+                  {/* Filter by Drop-off Location */}
+                  <div className="space-y-2">
+                    <Label htmlFor="filterDropOffLocation" className="text-sm font-medium">Drop-off Location</Label>
+                    <Select 
+                      value={filterDropOffLocation} 
+                      onValueChange={setFilterDropOffLocation}
+                      disabled={filterOutcome === 'Contained'}
+                    >
+                      <SelectTrigger id="filterDropOffLocation" className="w-full">
+                        <SelectValue placeholder="All Drop-off Locations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Drop-off Locations</SelectItem>
+                        {filterOptions.dropOffLocations.map(location => (
+                          <SelectItem key={location} value={location}>{location}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </>
+          )}
         </Card>
 
         {/* Sessions Table */}
