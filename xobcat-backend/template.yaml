@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: XOBCAT backend API (Express on Lambda)
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: nodejs18.x
+    Architectures:
+      - arm64
+
+Resources:
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../backend
+      Handler: dist/lambda.handler
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+        HealthCheck:
+          Type: HttpApi
+          Properties:
+            Path: /health
+            Method: GET
+      Environment:
+        Variables:
+          NODE_ENV: production
+          OPENAI_API_KEY: !Ref OpenAIAPIKey
+          FRONTEND_URL: !Ref FrontendUrl
+
+Parameters:
+  OpenAIAPIKey:
+    Type: String
+    NoEcho: true
+    Description: OpenAI API Key for GPT-4o-mini
+  FrontendUrl:
+    Type: String
+    Default: https://main.d72hemfmh671a.amplifyapp.com
+    Description: Frontend URL for CORS
+
+Outputs:
+  ApiUrl:
+    Description: HTTP API endpoint URL
+    Value: !Sub https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com
