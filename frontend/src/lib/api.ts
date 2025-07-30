@@ -51,6 +51,23 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private getCredentialHeaders(): Record<string, string> {
+    const credentials = sessionStorage.getItem('botCredentials');
+    if (credentials) {
+      try {
+        const parsed = JSON.parse(credentials);
+        return {
+          'x-bot-id': parsed.botId,
+          'x-client-id': parsed.clientId,
+          'x-client-secret': parsed.clientSecret,
+        };
+      } catch (error) {
+        console.warn('Failed to parse stored credentials:', error);
+      }
+    }
+    return {};
+  }
+
   private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     
@@ -58,6 +75,7 @@ class ApiClient {
       const response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
+          ...this.getCredentialHeaders(),
           ...options?.headers,
         },
         ...options,
@@ -143,9 +161,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // In a real implementation, these would come from authentication context
-        'x-bot-id': 'default-bot',
-        'x-jwt-token': 'default-token'
+        ...this.getCredentialHeaders(),
       },
       body: JSON.stringify(config)
     });
@@ -156,8 +172,8 @@ class ApiClient {
   async getAutoAnalysisProgress(analysisId: string): Promise<ApiResponse<AnalysisProgress>> {
     const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/progress/${analysisId}`, {
       headers: {
-        'x-bot-id': 'default-bot',
-        'x-jwt-token': 'default-token'
+        'Content-Type': 'application/json',
+        ...this.getCredentialHeaders(),
       }
     });
     
@@ -167,8 +183,8 @@ class ApiClient {
   async getAutoAnalysisResults(analysisId: string): Promise<ApiResponse<AnalysisResults>> {
     const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/results/${analysisId}`, {
       headers: {
-        'x-bot-id': 'default-bot',
-        'x-jwt-token': 'default-token'
+        'Content-Type': 'application/json',
+        ...this.getCredentialHeaders(),
       }
     });
     
@@ -179,8 +195,8 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/${analysisId}`, {
       method: 'DELETE',
       headers: {
-        'x-bot-id': 'default-bot',
-        'x-jwt-token': 'default-token'
+        'Content-Type': 'application/json',
+        ...this.getCredentialHeaders(),
       }
     });
     
