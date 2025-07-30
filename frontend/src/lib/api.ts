@@ -52,18 +52,30 @@ class ApiClient {
   }
 
   private getCredentialHeaders(): Record<string, string> {
+    // Check if we're running on the client side
+    if (typeof window === 'undefined' || typeof sessionStorage === 'undefined') {
+      console.warn('getCredentialHeaders: Not running on client side, no sessionStorage available');
+      return {};
+    }
+
     const credentials = sessionStorage.getItem('botCredentials');
+    console.log('getCredentialHeaders: Retrieved credentials from sessionStorage:', !!credentials);
+    
     if (credentials) {
       try {
         const parsed = JSON.parse(credentials);
-        return {
+        const headers = {
           'x-bot-id': parsed.botId,
           'x-client-id': parsed.clientId,
           'x-client-secret': parsed.clientSecret,
         };
+        console.log('getCredentialHeaders: Created headers:', Object.keys(headers));
+        return headers;
       } catch (error) {
         console.warn('Failed to parse stored credentials:', error);
       }
+    } else {
+      console.warn('getCredentialHeaders: No credentials found in sessionStorage');
     }
     return {};
   }
