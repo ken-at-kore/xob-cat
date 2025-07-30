@@ -219,6 +219,11 @@ class ApiClient {
   async healthCheck(): Promise<{ status: string; service: string; environment: string; uptime: number }> {
     return this.request<{ status: string; service: string; environment: string; uptime: number }>('/health');
   }
+
+  // Test Kore.ai connection with credentials
+  async testKoreConnection(): Promise<{ bot_name: string; sessions_count: number; date_range: any }> {
+    return this.request<{ bot_name: string; sessions_count: number; date_range: any }>('/api/kore/test');
+  }
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
