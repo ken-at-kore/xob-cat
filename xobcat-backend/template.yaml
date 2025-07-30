@@ -4,7 +4,7 @@ Description: XOBCAT backend API (Express on Lambda)
 
 Globals:
   Function:
-    Timeout: 30
+    Timeout: 60
     MemorySize: 512
     Runtime: nodejs18.x
     Architectures:
