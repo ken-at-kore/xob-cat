@@ -15,7 +15,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ../backend
-      Handler: dist/lambda.handler
+      Handler: simple-lambda.handler
       Events:
         Api:
           Type: HttpApi
@@ -30,14 +30,9 @@ Resources:
       Environment:
         Variables:
           NODE_ENV: production
-          OPENAI_API_KEY: !Ref OpenAIAPIKey
           FRONTEND_URL: !Ref FrontendUrl
 
 Parameters:
-  OpenAIAPIKey:
-    Type: String
-    NoEcho: true
-    Description: OpenAI API Key for GPT-4o-mini
   FrontendUrl:
     Type: String
     Default: https://main.d72hemfmh671a.amplifyapp.com
