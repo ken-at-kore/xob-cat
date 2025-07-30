@@ -23,7 +23,8 @@ app.use(cors({
     'Authorization',
     'x-bot-id',
     'x-client-id', 
-    'x-client-secret'
+    'x-client-secret',
+    'x-base-url'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));

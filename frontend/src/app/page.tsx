@@ -62,13 +62,14 @@ export default function Home({ onNavigate }: HomeProps = {}) {
     setIsConnecting(true);
     
     try {
-      // Test the connection by calling the health check endpoint
-      const response = await apiClient.healthCheck();
+      // Store credentials temporarily for the test
+      sessionStorage.setItem('botCredentials', JSON.stringify(credentials));
       
-      if (response.status === 'ok') {
-        // Store credentials in session storage for the dashboard
-        sessionStorage.setItem('botCredentials', JSON.stringify(credentials));
-        // Redirect to dashboard
+      // Test the connection by calling the Kore.ai test endpoint with credentials
+      const response = await apiClient.testKoreConnection();
+      
+      if (response.bot_name) {
+        // Connection successful, redirect to dashboard
         if (onNavigate) {
           onNavigate(ROUTES.DASHBOARD_SESSIONS);
         } else {
@@ -78,6 +79,9 @@ export default function Home({ onNavigate }: HomeProps = {}) {
         setConnectionError('Connection failed - invalid response');
       }
     } catch (error) {
+      // Clear stored credentials on connection failure
+      sessionStorage.removeItem('botCredentials');
+      
       if (error instanceof ApiError) {
         setConnectionError(`${error.message} (${error.status})`);
       } else {
