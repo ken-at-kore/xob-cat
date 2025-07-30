@@ -13,7 +13,11 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "amplify:dev": "next dev",
+    "amplify:build": "next build",
+    "amplify:start": "next start",
+    "build:amplify": "next build"
   },
   "resolutions": {
     "react": "18.3.1",
