@@ -14,19 +14,19 @@ Resources:
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ../backend
+      CodeUri: s3://xobcat-lambda-fix-1753902369/lambda-focused.zip
       Handler: simple-lambda.handler
       Events:
         Api:
-          Type: HttpApi
+          Type: Api
           Properties:
             Path: /{proxy+}
             Method: ANY
-        HealthCheck:
-          Type: HttpApi
+        RootApi:
+          Type: Api
           Properties:
-            Path: /health
-            Method: GET
+            Path: /
+            Method: ANY
       Environment:
         Variables:
           NODE_ENV: production
@@ -40,5 +40,5 @@ Parameters:
 
 Outputs:
   ApiUrl:
-    Description: HTTP API endpoint URL
-    Value: !Sub https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com
+    Description: REST API endpoint URL
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod

@@ -5,7 +5,7 @@ Complete deployment setup and reference for XOB CAT production infrastructure.
 ## 🌐 Live Production URLs
 
 - **Frontend**: https://main.d72hemfmh671a.amplifyapp.com
-- **Backend API**: https://yp9om1wit1.execute-api.us-east-2.amazonaws.com
+- **Backend API**: https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
 
 ## 🔧 AWS Configuration
 
@@ -59,7 +59,9 @@ applications:
 ```
 
 ### Environment Variables (Amplify Console)
-- **NEXT_PUBLIC_API_URL**: `https://yp9om1wit1.execute-api.us-east-2.amazonaws.com`
+- **NEXT_PUBLIC_API_URL**: `https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod`
+- **AMPLIFY_DIFF_DEPLOY**: `false`
+- **AMPLIFY_MONOREPO_APP_ROOT**: `frontend`
 
 ### Deployment Commands
 ```bash
@@ -91,40 +93,58 @@ aws amplify list-jobs \
 
 ### Infrastructure Overview
 - **Service**: AWS Lambda (Node.js 18.x, ARM64)
-- **API**: HTTP API Gateway
+- **API**: REST API Gateway (switched from HTTP API for aws-serverless-express compatibility)
 - **Stack Name**: `xobcat-backend`
 - **Framework**: Express.js via `aws-serverless-express`
+- **Function Name**: `xobcat-backend-ApiFunction-7yG0yqId5Qg2`
 
 ### CloudFormation Stack
 - **Template**: `xobcat-backend/template.yaml`
 - **Deployment Tool**: AWS CLI (CloudFormation)
-- **Handler**: `dist/lambda.handler`
+- **Handler**: `simple-lambda.handler`
+- **S3 Bucket**: `xobcat-lambda-fix-1753902369` (for Lambda code deployment)
 
 ### Build Process (`backend/`)
 ```bash
-# Build for Lambda deployment
-npm run build:lambda
+# Build for Lambda deployment (from project root)
+./package-lambda.sh
 
-# This runs: ./build-lambda.sh which:
+# This script:
 # 1. Copies shared files to backend/src/shared/
 # 2. Compiles TypeScript with tsconfig.build.json
-# 3. Cleans up temporary files
+# 3. Creates focused Lambda package with production dependencies
+# 4. Handles monorepo dependency hoisting issues
+# 5. Creates lambda-focused.zip for deployment
 ```
 
 ### Deployment Script
 ```bash
-# Full backend deployment
-./deploy-backend.sh
+# Full backend deployment (from project root)
+./package-lambda.sh
 
 # Manual deployment steps:
-cd backend && npm run build:lambda
-cd .. && zip -r lambda-deployment.zip backend/
-aws s3 cp lambda-deployment.zip s3://[deployment-bucket]/
-aws cloudformation deploy --template-file xobcat-backend/template.yaml \
+# 1. Build and package Lambda
+./package-lambda.sh
+
+# 2. Upload to S3
+cd backend/lambda-package
+zip -r ../lambda-focused.zip .
+aws s3 cp ../lambda-focused.zip s3://xobcat-lambda-fix-1753902369/ --profile ken-at-kore
+
+# 3. Deploy CloudFormation stack
+cd ../../xobcat-backend
+aws cloudformation deploy --template-file template.yaml \
   --stack-name xobcat-backend \
   --capabilities CAPABILITY_IAM \
   --parameter-overrides FrontendUrl="https://main.d72hemfmh671a.amplifyapp.com" \
   --region us-east-2 \
+  --profile ken-at-kore
+
+# 4. Update Lambda function code (if function exists)
+aws lambda update-function-code \
+  --function-name xobcat-backend-ApiFunction-7yG0yqId5Qg2 \
+  --s3-bucket xobcat-lambda-fix-1753902369 \
+  --s3-key lambda-focused.zip \
   --profile ken-at-kore
 ```
 
@@ -170,9 +190,17 @@ aws cloudformation delete-stack \
 ```bash
 # 1. Make code changes in backend/
 # 2. Build and deploy
-./deploy-backend.sh
+./package-lambda.sh
 
-# 3. No frontend changes needed (API URL stays same)
+# 3. Upload and update Lambda function
+cd backend/lambda-package && zip -r ../lambda-focused.zip .
+aws s3 cp ../lambda-focused.zip s3://xobcat-lambda-fix-1753902369/ --profile ken-at-kore
+aws lambda update-function-code \
+  --function-name xobcat-backend-ApiFunction-7yG0yqId5Qg2 \
+  --s3-bucket xobcat-lambda-fix-1753902369 \
+  --s3-key lambda-focused.zip --profile ken-at-kore
+
+# 4. No frontend changes needed (API URL stays same)
 ```
 
 ## 🛠️ Development vs Production
@@ -222,7 +250,10 @@ aws logs tail /aws/lambda/xobcat-backend-ApiFunction-* \
 curl https://main.d72hemfmh671a.amplifyapp.com
 
 # Backend health
-curl https://yp9om1wit1.execute-api.us-east-2.amazonaws.com/health
+curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod/health
+
+# Backend root endpoint
+curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
 ```
 
 ## 🔐 Security & Configuration
@@ -258,6 +289,25 @@ curl https://yp9om1wit1.execute-api.us-east-2.amazonaws.com/health
    - Expected ~2-3 second delay on first request
    - Subsequent requests are fast
 
+4. **"Load failed (0)" Frontend Errors**
+   - **Root Cause**: Backend routing issues or wrong API Gateway type
+   - **Symptoms**: Frontend shows "Unable to connect to the server (0)"
+   - **Solutions**:
+     - Ensure backend has root endpoint (`/`) defined
+     - Use REST API Gateway instead of HTTP API for aws-serverless-express
+     - Verify Lambda handler path is correct (`simple-lambda.handler`)
+     - Check that Lambda function has proper dependencies packaged
+
+5. **Lambda Routing Issues (All Routes Return Same Response)**
+   - **Root Cause**: HTTP API vs REST API compatibility with aws-serverless-express
+   - **Solution**: Switch CloudFormation template from `HttpApi` to `Api` (REST API)
+   - **Update template.yaml**: Change event types and output URLs accordingly
+
+6. **Monorepo Dependency Issues**
+   - **Root Cause**: npm hoisting dependencies to root, Lambda can't find them
+   - **Solution**: Use focused Lambda packaging with `./package-lambda.sh`
+   - **Creates**: `lambda-package/` with only required production dependencies
+
 ### Recovery Commands
 ```bash
 # Redeploy frontend
@@ -268,7 +318,7 @@ aws amplify start-job --app-id d72hemfmh671a --branch-name main --job-type RELEA
 
 # Check both services
 curl https://main.d72hemfmh671a.amplifyapp.com
-curl https://yp9om1wit1.execute-api.us-east-2.amazonaws.com/health
+curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod/health
 ```
 
 ## 📝 Notes
@@ -280,7 +330,22 @@ curl https://yp9om1wit1.execute-api.us-east-2.amazonaws.com/health
 - **Cost**: Serverless architecture, pay-per-use pricing
 - **Scaling**: Auto-scales based on demand
 
+## 🔧 Recent Fixes & Updates
+
+### July 30, 2025 - Backend Routing & API Gateway Fix
+- **Issue**: Frontend showing "Load failed (0)" errors
+- **Root Cause**: 
+  - Missing root endpoint (`/`) in Express app
+  - HTTP API Gateway incompatible with aws-serverless-express v3.4.0
+  - Monorepo dependency hoisting causing Lambda package issues
+- **Solutions Applied**:
+  - Added root endpoint to `backend/src/app.ts`
+  - Switched from HTTP API to REST API in CloudFormation template
+  - Created focused Lambda packaging script (`./package-lambda.sh`)
+  - Updated Amplify environment variable to new REST API URL
+- **Result**: ✅ Full-stack application now working properly
+
 ---
 
 *Last updated: July 30, 2025*
-*Deployment architecture: Amplify (SSR) + Lambda + API Gateway*
+*Deployment architecture: Amplify (SSR) + Lambda + REST API Gateway*

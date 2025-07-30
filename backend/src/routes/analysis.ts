@@ -1,48 +1,56 @@
 import { Router, Request, Response } from 'express';
 import { AnalysisResult, AnalysisResponse, ANALYSIS_FUNCTION_SCHEMA } from '../../../shared/types';
 import { analyzeSessionWithOpenAI } from '../services/openaiService';
-import { getSessions } from '../services/mockDataService';
+import { createSWTService } from '../services/swtService'; 
+import { loadKoreCredentials, getKoreCredentials } from '../middleware/credentials';
 import { successResponse, validationErrorResponse, internalServerErrorResponse } from '../utils/apiResponse';
 import { asyncHandler } from '../middleware/errorHandler';
 import { autoAnalyzeRouter } from './autoAnalyze';
 
 const router = Router();
 
-// GET /api/analysis/sessions - Get sessions (with mock data fallback)
+// Apply credential loading middleware to all routes that need Kore.ai access
+router.use('/sessions', loadKoreCredentials);
+
+// GET /api/analysis/sessions - Get sessions from real Kore.ai API
 router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
+  const { config, botName } = getKoreCredentials(req);
+  const swtService = createSWTService(config);
+  
   // Fix parameter mapping - use the correct query parameter names that frontend sends
   const startDate = req.query.start_date as string;
   const endDate = req.query.end_date as string;
   const startTime = req.query.start_time as string;
   const endTime = req.query.end_time as string;
   const containmentType = req.query.containment_type as string;
-  const botId = req.query.bot_id as string;
   const limit = parseInt(req.query.limit as string) || 100;
-  const skip = parseInt(req.query.skip as string) || 0;
   
-  // Build filters object with all supported parameters
-  const filters: any = {
-    limit,
-    skip
-  };
+  // Use default date range (last 7 days) if no dates provided
+  const dateFrom = startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const dateTo = endDate || new Date().toISOString();
   
-  if (startDate) filters.start_date = startDate;
-  if (endDate) filters.end_date = endDate;
-  if (startTime) filters.start_time = startTime;
-  if (endTime) filters.end_time = endTime;
-  if (containmentType) filters.containment_type = containmentType;
-  if (botId) filters.bot_id = botId;
+  console.log(`Fetching real Kore.ai sessions from ${dateFrom} to ${dateTo} for ${botName} (limit=${limit})`);
   
-  console.log(`Fetching sessions with filters:`, filters);
-  const sessions = await getSessions(filters);
+  const result = await swtService.generateSWTs({
+    dateFrom,
+    dateTo, 
+    limit
+  });
   
   successResponse(
     res,
-    sessions,
-    `Found ${sessions.length} sessions`,
+    result.swts,
+    `Found ${result.swts.length} sessions from ${botName}`,
     {
-      total_count: sessions.length,
-      filters_applied: filters
+      total_count: result.swts.length,
+      bot_name: botName,
+      date_range: { dateFrom, dateTo },
+      generation_stats: {
+        total_sessions: result.totalSessions,
+        total_messages: result.totalMessages,
+        sessions_with_messages: result.sessionsWithMessages,
+        generation_time: result.generationTime
+      }
     }
   );
 }));

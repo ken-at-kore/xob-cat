@@ -56,11 +56,27 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
     if (!analysisId) return;
     
     try {
+      // Note: We need to make a direct fetch since apiClient doesn't have this endpoint
+      // But we need to manually add credential headers
+      const credentials = sessionStorage.getItem('botCredentials');
+      const credentialHeaders: Record<string, string> = {};
+      
+      if (credentials) {
+        try {
+          const parsed = JSON.parse(credentials);
+          credentialHeaders['x-bot-id'] = parsed.botId;
+          credentialHeaders['x-client-id'] = parsed.clientId;
+          credentialHeaders['x-client-secret'] = parsed.clientSecret;
+        } catch (error) {
+          console.warn('Failed to parse stored credentials:', error);
+        }
+      }
+
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const response = await fetch(`${API_BASE_URL}/api/analysis/auto-analyze/export/${analysisId}`, {
         headers: {
-          'x-bot-id': localStorage.getItem('bot-id') || 'default-bot',
-          'x-jwt-token': localStorage.getItem('jwt-token') || 'default-token'
+          'x-jwt-token': localStorage.getItem('jwt-token') || 'default-token',
+          ...credentialHeaders
         }
       });
       
