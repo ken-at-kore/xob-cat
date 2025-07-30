@@ -170,65 +170,138 @@ describe('AnalysisReportView - Enhanced Filtering', () => {
   });
 
   describe('Filter UI Components', () => {
-    it('renders all four filter dropdowns', () => {
+    it('renders collapsed state by default with show filters button', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
-      expect(screen.getByLabelText('Filter by Intent')).toBeInTheDocument();
-      expect(screen.getByLabelText('Filter by Outcome')).toBeInTheDocument();
-      expect(screen.getByLabelText('Filter by Transfer Reason')).toBeInTheDocument();
-      expect(screen.getByLabelText('Filter by Drop-off Location')).toBeInTheDocument();
+      // Should show the expand button by default
+      expect(screen.getByRole('button', { name: /show filters/i })).toBeInTheDocument();
+      
+      // Filters should not be visible initially
+      expect(screen.queryByLabelText('Intent')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Outcome')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Transfer Reason')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('Drop-off Location')).not.toBeInTheDocument();
     });
 
-    it('renders filters in 2x2 grid layout', () => {
+    it('shows all four filter dropdowns when expanded', async () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
+
+      // Click to expand filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
+      // Now all filters should be visible
+      expect(screen.getByLabelText('Intent')).toBeInTheDocument();
+      expect(screen.getByLabelText('Outcome')).toBeInTheDocument();
+      expect(screen.getByLabelText('Transfer Reason')).toBeInTheDocument();
+      expect(screen.getByLabelText('Drop-off Location')).toBeInTheDocument();
+    });
+
+    it('renders filters in responsive grid layout when expanded', () => {
+      render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
+
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
 
       const filtersContainer = screen.getByTestId('filters-grid');
-      expect(filtersContainer).toHaveClass('grid-cols-2');
+      expect(filtersContainer).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
     });
 
-    it('renders intent dropdown with proper labeling', () => {
+    it('renders intent dropdown with proper labeling when expanded', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
-      const intentTrigger = screen.getByLabelText('Filter by Intent');
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
+      const intentTrigger = screen.getByLabelText('Intent');
       expect(intentTrigger).toBeInTheDocument();
       expect(intentTrigger).toHaveAttribute('role', 'combobox');
     });
 
-    it('populates transfer reason dropdown with values from Transfer sessions only', () => {
+    it('populates transfer reason dropdown with values from Transfer sessions only when expanded', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
-      const transferReasonTrigger = screen.getByLabelText('Filter by Transfer Reason');
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
+      const transferReasonTrigger = screen.getByLabelText('Transfer Reason');
       expect(transferReasonTrigger).toBeInTheDocument();
       // Since this is a shadcn Select component, we can't easily test the options without opening it
       // The functionality is tested in the integration tests
     });
 
-    it('populates drop-off location dropdown with values from Transfer sessions only', () => {
+    it('populates drop-off location dropdown with values from Transfer sessions only when expanded', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
-      const dropOffTrigger = screen.getByLabelText('Filter by Drop-off Location');
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
+      const dropOffTrigger = screen.getByLabelText('Drop-off Location');
       expect(dropOffTrigger).toBeInTheDocument();
       // Since this is a shadcn Select component, we can't easily test the options without opening it
       // The functionality is tested in the integration tests
     });
+
+    it('shows hide filters button when expanded', () => {
+      render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
+
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
+      // Should now show hide button
+      expect(screen.getByRole('button', { name: /hide filters/i })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /show filters/i })).not.toBeInTheDocument();
+    });
+
+    it('collapses filters when hide button is clicked', () => {
+      render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
+
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
+      // Verify expanded state
+      expect(screen.getByLabelText('Intent')).toBeInTheDocument();
+
+      // Click hide button
+      const hideFiltersButton = screen.getByRole('button', { name: /hide filters/i });
+      fireEvent.click(hideFiltersButton);
+
+      // Should be back to collapsed state
+      expect(screen.getByRole('button', { name: /show filters/i })).toBeInTheDocument();
+      expect(screen.queryByLabelText('Intent')).not.toBeInTheDocument();
+    });
   });
 
   describe('Context-Aware Filtering', () => {
-    it('renders transfer-specific filters that can be disabled', () => {
+    it('renders transfer-specific filters that can be disabled when expanded', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
       // Check that transfer-specific filters exist and are accessible
-      expect(screen.getByLabelText('Filter by Transfer Reason')).toBeInTheDocument();
-      expect(screen.getByLabelText('Filter by Drop-off Location')).toBeInTheDocument();
+      expect(screen.getByLabelText('Transfer Reason')).toBeInTheDocument();
+      expect(screen.getByLabelText('Drop-off Location')).toBeInTheDocument();
       
       // The disabled state logic is tested through visual tests as Radix UI 
       // Select components have complex interaction patterns that are difficult to test in JSDOM
     });
 
-    it('renders outcome filter with proper accessibility', () => {
+    it('renders outcome filter with proper accessibility when expanded', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
-      const outcomeSelect = screen.getByLabelText('Filter by Outcome');
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
+      const outcomeSelect = screen.getByLabelText('Outcome');
       expect(outcomeSelect).toBeInTheDocument();
       expect(outcomeSelect).toHaveAttribute('role', 'combobox');
     });
@@ -236,9 +309,13 @@ describe('AnalysisReportView - Enhanced Filtering', () => {
     it('clears transfer-specific filters when outcome changes to Contained', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
       // Verify the transfer-specific filters exist and are initially enabled
-      expect(screen.getByLabelText('Filter by Transfer Reason')).toBeInTheDocument();
-      expect(screen.getByLabelText('Filter by Drop-off Location')).toBeInTheDocument();
+      expect(screen.getByLabelText('Transfer Reason')).toBeInTheDocument();
+      expect(screen.getByLabelText('Drop-off Location')).toBeInTheDocument();
       
       // The clearing functionality logic is tested through the visual tests and integration tests
       // since Radix UI Select components require complex interaction patterns
@@ -275,8 +352,15 @@ describe('AnalysisReportView - Enhanced Filtering', () => {
       const emptyResults = { ...mockResults, sessions: [] };
       render(<AnalysisReportView results={emptyResults} onStartNew={mockOnStartNew} />);
 
+      // Should show the expand button even with empty sessions
+      expect(screen.getByRole('button', { name: /show filters/i })).toBeInTheDocument();
+      
+      // Expand to see filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
       // With empty sessions, filters should still be rendered but have no options to select
-      expect(screen.getByLabelText('Filter by Intent')).toBeInTheDocument();
+      expect(screen.getByLabelText('Intent')).toBeInTheDocument();
     });
 
     it('handles sessions with empty transfer reasons/drop-off locations', () => {
@@ -295,31 +379,51 @@ describe('AnalysisReportView - Enhanced Filtering', () => {
       const resultsWithEmptyValues = { ...mockResults, sessions: sessionsWithEmptyValues };
       render(<AnalysisReportView results={resultsWithEmptyValues} onStartNew={mockOnStartNew} />);
 
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
       // Filters should still be rendered even with empty values
-      expect(screen.getByLabelText('Filter by Transfer Reason')).toBeInTheDocument();
-      expect(screen.getByLabelText('Filter by Drop-off Location')).toBeInTheDocument();
+      expect(screen.getByLabelText('Transfer Reason')).toBeInTheDocument();
+      expect(screen.getByLabelText('Drop-off Location')).toBeInTheDocument();
     });
 
     it('sorts dropdown options alphabetically', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
+      // Expand filters first
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      fireEvent.click(showFiltersButton);
+
       // The sorting logic is tested in the component implementation through useMemo
       // We can verify the filter components render correctly
-      expect(screen.getByLabelText('Filter by Intent')).toBeInTheDocument();
+      expect(screen.getByLabelText('Intent')).toBeInTheDocument();
     });
   });
 
   describe('Filter Reset Functionality', () => {
-    it('renders clear filters button', () => {
+    it('renders clear all button when filters are active', () => {
       render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
 
-      // Check that the clear filters button is present
-      const resetButton = screen.getByText('Clear Filters');
-      expect(resetButton).toBeInTheDocument();
+      // Initially no clear button should be visible since no filters are active
+      expect(screen.queryByRole('button', { name: /clear all/i })).not.toBeInTheDocument();
 
+      // The clear button only appears when there are active filters
+      // This behavior is tested through the activeFilterCount logic
+      
       // Check that all sessions are displayed initially
       const tableRows = screen.getAllByRole('row');
       expect(tableRows).toHaveLength(5); // Header + 4 data rows
+    });
+
+    it('shows filter card header with title and active count', () => {
+      render(<AnalysisReportView results={mockResults} onStartNew={mockOnStartNew} />);
+
+      // Should show the filter card header
+      expect(screen.getByText('Filter Sessions')).toBeInTheDocument();
+      
+      // Initially no active filter badge since no filters are applied
+      expect(screen.queryByText(/active/)).not.toBeInTheDocument();
     });
   });
 });
