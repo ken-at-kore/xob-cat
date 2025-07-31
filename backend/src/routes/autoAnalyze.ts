@@ -91,10 +91,13 @@ autoAnalyzeRouter.post('/start', async (req: Request, res: Response): Promise<vo
     // Get bot credentials from session/middleware (simplified for now)
     // In a real app, this would come from authenticated session
     const botId = req.headers['x-bot-id'] as string || 'default-bot';
+    const clientId = req.headers['x-client-id'] as string;
+    const clientSecret = req.headers['x-client-secret'] as string;
     const jwtToken = req.headers['x-jwt-token'] as string || 'default-token';
 
-    // Create service and start analysis
-    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken);
+    // Pass full credentials to service
+    const credentials = clientId && clientSecret ? { clientId, clientSecret } : undefined;
+    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken, credentials);
     const analysisId = await autoAnalyzeService.startAnalysis(config);
 
     const response: ApiResponse<{ analysisId: string }> = {
@@ -132,9 +135,12 @@ autoAnalyzeRouter.get('/progress/:analysisId', async (req: Request, res: Respons
 
     // Get bot credentials (simplified)
     const botId = req.headers['x-bot-id'] as string || 'default-bot';
+    const clientId = req.headers['x-client-id'] as string;
+    const clientSecret = req.headers['x-client-secret'] as string;
     const jwtToken = req.headers['x-jwt-token'] as string || 'default-token';
 
-    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken);
+    const credentials = clientId && clientSecret ? { clientId, clientSecret } : undefined;
+    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken, credentials);
     const progress = await autoAnalyzeService.getProgress(analysisId);
 
     const response: ApiResponse<typeof progress> = {
@@ -173,9 +179,12 @@ autoAnalyzeRouter.get('/results/:analysisId', async (req: Request, res: Response
 
     // Get bot credentials (simplified)
     const botId = req.headers['x-bot-id'] as string || 'default-bot';
+    const clientId = req.headers['x-client-id'] as string;
+    const clientSecret = req.headers['x-client-secret'] as string;
     const jwtToken = req.headers['x-jwt-token'] as string || 'default-token';
 
-    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken);
+    const credentials = clientId && clientSecret ? { clientId, clientSecret } : undefined;
+    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken, credentials);
     const results = await autoAnalyzeService.getResults(analysisId);
 
     const response: ApiResponse<typeof results> = {
@@ -220,9 +229,12 @@ autoAnalyzeRouter.delete('/:analysisId', async (req: Request, res: Response): Pr
 
     // Get bot credentials (simplified)
     const botId = req.headers['x-bot-id'] as string || 'default-bot';
+    const clientId = req.headers['x-client-id'] as string;
+    const clientSecret = req.headers['x-client-secret'] as string;
     const jwtToken = req.headers['x-jwt-token'] as string || 'default-token';
 
-    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken);
+    const credentials = clientId && clientSecret ? { clientId, clientSecret } : undefined;
+    const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken, credentials);
     const cancelled = await autoAnalyzeService.cancelAnalysis(analysisId);
 
     const response: ApiResponse<{ cancelled: boolean }> = {

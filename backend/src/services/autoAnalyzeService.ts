@@ -27,7 +27,6 @@ export class AutoAnalyzeService {
   private readonly BATCH_SIZE = 5;
   private readonly POLLING_INTERVAL = 2000; // 2 seconds between batches
   
-  private static instance: AutoAnalyzeService | null = null;
   private activeSessions = new Map<string, AnalysisSession>();
 
   constructor(
@@ -329,29 +328,47 @@ export class AutoAnalyzeService {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  // Singleton pattern to maintain state across requests
-  static create(botId: string, jwtToken: string): AutoAnalyzeService {
-    if (!AutoAnalyzeService.instance) {
+  // Singleton pattern modified to handle multiple bot IDs correctly
+  private static instances = new Map<string, AutoAnalyzeService>();
+  
+  static create(
+    botId: string, 
+    jwtToken: string, 
+    credentials?: { clientId: string; clientSecret: string }
+  ): AutoAnalyzeService {
+    // Use botId as the key to support multiple bots
+    if (!AutoAnalyzeService.instances.has(botId)) {
       const koreApiConfig = {
         botId,
-        clientId: 'mock-client-id', // This would come from environment/config in real implementation
-        clientSecret: 'mock-client-secret', // This would come from environment/config in real implementation
+        clientId: credentials?.clientId || 'mock-client-id',
+        clientSecret: credentials?.clientSecret || 'mock-client-secret',
         baseUrl: 'https://bots.kore.ai'
       };
+      
       const koreApiService = new KoreApiService(koreApiConfig);
-      const sessionSamplingService = new SessionSamplingService(koreApiService);
+      
+      // Pass credentials to SessionSamplingService for proper data fetching
+      const sessionCredentials = credentials ? {
+        botId,
+        clientId: credentials.clientId,
+        clientSecret: credentials.clientSecret
+      } : undefined;
+      
+      const sessionSamplingService = new SessionSamplingService(koreApiService, sessionCredentials);
       const openaiAnalysisService = new OpenAIAnalysisService();
       const batchAnalysisService = new BatchAnalysisService(openaiAnalysisService);
 
-      AutoAnalyzeService.instance = new AutoAnalyzeService(
+      const serviceInstance = new AutoAnalyzeService(
         koreApiService,
         sessionSamplingService,
         batchAnalysisService,
         openaiAnalysisService,
         botId
       );
+      
+      AutoAnalyzeService.instances.set(botId, serviceInstance);
     }
     
-    return AutoAnalyzeService.instance;
+    return AutoAnalyzeService.instances.get(botId)!;
   }
 }

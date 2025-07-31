@@ -48,10 +48,22 @@ const conversationTemplates = [
 // Kore.ai API service instance
 let koreApiService: any = null;
 
-// Initialize Kore.ai API service if credentials are available
-function initializeKoreApiService(): any {
+// Initialize Kore.ai API service with specific credentials
+function initializeKoreApiService(credentials?: { botId: string; clientId: string; clientSecret: string }): any {
   try {
-    // First try to load from config file
+    // If specific credentials are provided (from HTTP headers), use them first
+    if (credentials) {
+      console.log(`🔗 Using provided credentials for bot: ${credentials.botId}`);
+      const config: KoreApiConfig = {
+        botId: credentials.botId,
+        clientId: credentials.clientId,
+        clientSecret: credentials.clientSecret,
+        baseUrl: 'https://bots.kore.ai'
+      };
+      return createKoreApiService(config);
+    }
+
+    // Fall back to config file only if no credentials provided
     const koreConfig = configManager.getKoreConfig();
     const config: KoreApiConfig = {
       botId: koreConfig.bot_id,
@@ -59,7 +71,7 @@ function initializeKoreApiService(): any {
       clientSecret: koreConfig.client_secret,
       baseUrl: koreConfig.base_url
     };
-    console.log(`🔗 Using Kore.ai API with bot: ${koreConfig.name}`);
+    console.log(`🔗 Using config file for bot: ${koreConfig.name}`);
     return createKoreApiService(config);
   } catch (error) {
     console.log('📁 No config file found, checking environment variables...');
@@ -86,11 +98,13 @@ function initializeKoreApiService(): any {
   }
 }
 
-export async function getSessions(filters: SessionFilters): Promise<SessionWithTranscript[]> {
-  // Try to use real Kore.ai API first
-  if (!koreApiService) {
-    koreApiService = initializeKoreApiService();
-  }
+export async function getSessions(
+  filters: SessionFilters, 
+  credentials?: { botId: string; clientId: string; clientSecret: string }
+): Promise<SessionWithTranscript[]> {
+  // Try to use real Kore.ai API first - always create fresh service with specific credentials
+  // This ensures we don't use cached service with wrong credentials
+  koreApiService = initializeKoreApiService(credentials);
 
   if (koreApiService) {
     try {
