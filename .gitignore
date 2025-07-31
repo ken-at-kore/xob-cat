@@ -120,7 +120,11 @@ temp/
 reference_source_code/
 
 # Configuration files with sensitive data
-backend/config/
+# IMPORTANT: Never commit bot credentials to version control
+backend/config/bots.yaml
+backend/config/optum-bot.yaml
+backend/config/*.yaml
+!backend/config/*.example.yaml
 
 # TypeScript cache
 *.tsbuildinfo
