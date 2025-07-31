@@ -14,7 +14,7 @@ The Auto-Analyze feature implements a comprehensive AI-powered session analysis 
 **Key Features**:
 - Form with date/time pickers, session count input, and OpenAI API key field
 - Default values: start date (7 days ago), start time (9:00 AM ET), session count (100)
-- Client-side validation: session count (10-1000), required API key, past date validation
+- Client-side validation: session count (5-1000), required API key, past date validation
 - Timezone handling for ET conversion
 - Submit triggers analysis initiation
 
@@ -284,7 +284,7 @@ Response: { cancelled: boolean }
 interface AnalysisConfig {
   startDate: string; // ISO date string
   startTime: string; // HH:MM format in ET
-  sessionCount: number; // 10-1000
+  sessionCount: number; // 5-1000
   openaiApiKey: string;
 }
 

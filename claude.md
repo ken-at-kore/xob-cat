@@ -178,7 +178,7 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 
 #### Analysis Configuration
 - **Date Range**: Must be in the past (validated)
-- **Session Count**: 10-1000 sessions (configurable range)
+- **Session Count**: 5-1000 sessions (configurable range)
 - **Time Format**: HH:MM (24-hour format, Eastern Time)
 - **API Key**: OpenAI API key validation (sk- prefix required)
 
@@ -275,7 +275,7 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 **Configuration Options**:
 - Start Date: Date picker (default: 7 days ago)
 - Start Time: Time input in ET (default: 9:00 AM)
-- Session Count: 10-1000 sessions (default: 100)
+- Session Count: 5-1000 sessions (default: 100)
 - OpenAI API Key: Secure input for API authentication
 
 **Session Details UX**: Click any row in results table to open detailed dialog showing:

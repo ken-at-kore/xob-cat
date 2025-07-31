@@ -104,8 +104,8 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
     const newErrors: ValidationErrors = {};
 
     // Validate session count
-    if (formData.sessionCount < 10 || formData.sessionCount > 1000) {
-      newErrors.sessionCount = 'Session count must be between 10 and 1000';
+    if (formData.sessionCount < 5 || formData.sessionCount > 1000) {
+      newErrors.sessionCount = 'Session count must be between 5 and 1000';
     }
 
     // Validate OpenAI API key
@@ -245,7 +245,7 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
                 id="sessionCount"
                 name="sessionCount"
                 type="number"
-                min="10"
+                min="5"
                 max="1000"
                 value={formData.sessionCount}
                 onChange={(e) => handleInputChange('sessionCount', parseInt(e.target.value) || 0)}
@@ -255,8 +255,8 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
                 <p className="text-sm text-red-600">{errors.sessionCount}</p>
               )}
               <p className="text-xs text-gray-500">
-                Number of sessions to analyze (10-1000). Analyzing more than 1000 sessions isn't allowed. 
-                If fewer than 10 sessions are found, the analysis won't proceed.
+                Number of sessions to analyze (5-1000). Analyzing more than 1000 sessions isn't allowed. 
+                If fewer than 5 sessions are found, the analysis won't proceed.
               </p>
             </div>
 

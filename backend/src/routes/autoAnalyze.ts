@@ -19,8 +19,8 @@ function validateAnalysisConfig(config: any): { isValid: boolean; errors: string
 
   // Validate session count
   if (typeof config.sessionCount === 'number') {
-    if (config.sessionCount < 10 || config.sessionCount > 1000) {
-      errors.push('sessionCount must be between 10 and 1000');
+    if (config.sessionCount < 5 || config.sessionCount > 1000) {
+      errors.push('sessionCount must be between 5 and 1000');
     }
   } else if (config.sessionCount !== undefined) {
     errors.push('sessionCount must be a number');

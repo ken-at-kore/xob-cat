@@ -73,11 +73,11 @@ describe('AutoAnalyzeConfig Component', () => {
 
     // Test too low
     await user.clear(sessionCountInput);
-    await user.type(sessionCountInput, '5');
+    await user.type(sessionCountInput, '3');
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/must be between 10 and 1000/i)).toBeInTheDocument();
+      expect(screen.getByText(/must be between 5 and 1000/i)).toBeInTheDocument();
     });
 
     // Test too high
@@ -86,7 +86,7 @@ describe('AutoAnalyzeConfig Component', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/must be between 10 and 1000/i)).toBeInTheDocument();
+      expect(screen.getByText(/must be between 5 and 1000/i)).toBeInTheDocument();
     });
 
     // Test valid value
@@ -94,7 +94,7 @@ describe('AutoAnalyzeConfig Component', () => {
     await user.type(sessionCountInput, '100');
 
     await waitFor(() => {
-      expect(screen.queryByText(/must be between 10 and 1000/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/must be between 5 and 1000/i)).not.toBeInTheDocument();
     });
   });
 

@@ -60,8 +60,8 @@ describe('Auto-Analyze API Routes', () => {
       expect(mockAutoAnalyzeService.startAnalysis).toHaveBeenCalledWith(validConfig);
     });
 
-    it('should validate session count range (10-1000)', async () => {
-      const invalidConfig = { ...validConfig, sessionCount: 5 };
+    it('should validate session count range (5-1000)', async () => {
+      const invalidConfig = { ...validConfig, sessionCount: 3 };
 
       const response = await request(app)
         .post('/api/analysis/auto-analyze/start')
@@ -69,7 +69,7 @@ describe('Auto-Analyze API Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('sessionCount must be between 10 and 1000');
+      expect(response.body.error).toContain('sessionCount must be between 5 and 1000');
     });
 
     it('should validate OpenAI API key format', async () => {

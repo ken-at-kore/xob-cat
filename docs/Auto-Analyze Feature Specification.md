@@ -126,7 +126,7 @@ interface SessionWithFacts extends SessionWithTranscript {
 interface AnalysisConfig {
   startDate: string; // ISO date
   startTime: string; // HH:MM format in ET
-  sessionCount: number; // 10-1000
+  sessionCount: number; // 5-1000
   openaiApiKey: string;
 }
 ```

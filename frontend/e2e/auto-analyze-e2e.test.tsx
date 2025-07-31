@@ -65,13 +65,13 @@ test.describe('Auto-Analyze E2E Tests', () => {
 
     // Test session count validation
     const sessionCountInput = page.locator('input[type="number"]');
-    await sessionCountInput.fill('5');
+    await sessionCountInput.fill('3');
     await page.click('button:has-text("Start Analysis")');
-    await expect(page.locator('text=must be between 10 and 1000')).toBeVisible();
+    await expect(page.locator('text=must be between 5 and 1000')).toBeVisible();
 
     await sessionCountInput.fill('1500');
     await page.click('button:has-text("Start Analysis")');
-    await expect(page.locator('text=must be between 10 and 1000')).toBeVisible();
+    await expect(page.locator('text=must be between 5 and 1000')).toBeVisible();
 
     // Test OpenAI API key validation
     const apiKeyInput = page.locator('input[type="password"]');
