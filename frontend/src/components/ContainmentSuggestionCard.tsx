@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Card, CardContent } from './ui/card';
 import { Lightbulb } from 'lucide-react';
 
@@ -20,9 +22,11 @@ export function ContainmentSuggestionCard({ suggestion }: ContainmentSuggestionC
             <h3 className="text-lg font-semibold text-gray-900 mb-2 leading-tight">
               Containment Improvement
             </h3>
-            <p className="text-base leading-6 text-gray-700">
-              {suggestion}
-            </p>
+            <div className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:text-gray-700 prose-li:text-gray-700 prose-em:text-gray-600 prose-em:font-medium text-base leading-6 text-gray-700">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {suggestion}
+              </ReactMarkdown>
+            </div>
           </div>
         </div>
       </CardContent>
