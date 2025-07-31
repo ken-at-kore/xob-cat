@@ -19,7 +19,10 @@ export class SessionSamplingService {
   private readonly MIN_SESSION_COUNT = 10;
   private readonly MIN_MESSAGES_PER_SESSION = 2;
 
-  constructor(private koreApiService: KoreApiService) {}
+  constructor(
+    private koreApiService: KoreApiService,
+    private credentials?: { botId: string; clientId: string; clientSecret: string }
+  ) {}
 
   async sampleSessions(
     config: AnalysisConfig, 
@@ -131,7 +134,7 @@ export class SessionSamplingService {
       console.log(`Fetching sessions for ${window.label} with filters:`, filters);
       
       // Use the working mockDataService.getSessions() that handles timezone properly
-      const sessions = await getSessions(filters);
+      const sessions = await getSessions(filters, this.credentials);
       
       console.log(`Found ${sessions.length} sessions in window ${window.label}`);
       

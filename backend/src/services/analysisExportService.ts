@@ -49,7 +49,7 @@ export class AnalysisExportService {
         sessionCount: config.sessionCount,
         requestedAt,
         completedAt,
-        botId: results.botId
+        ...(results.botId && { botId: results.botId })
       },
       sessions,
       summary: {
