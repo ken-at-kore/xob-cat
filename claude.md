@@ -190,6 +190,7 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 - ✅ OpenAI integration with function calling
 - ✅ API endpoint validation and error handling
 - ✅ Frontend component behavior and form validation
+- ✅ Bot ID tracking through analysis workflow and display in reports
 
 #### Integration & E2E Tests
 - ✅ Complete workflow from configuration to results
@@ -289,6 +290,7 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 **Mock Reports Feature**: For development and testing purposes, the Auto-Analyze page includes a "See Mock Reports" button that bypasses the analysis step and displays comprehensive sample results using mock data generated from real session transcripts. This allows developers to test the complete reporting interface with all visualizations without needing to perform actual AI analysis or use OpenAI API keys.
 
 **Analysis Report Visualizations**: The results page displays a comprehensive analytics dashboard featuring:
+- **Bot ID Display**: Shows the actual bot ID that was analyzed (not just the connected bot) in the report header with monospace styling for easy identification - helps users spot bugs where a different bot was analyzed than expected
 - **Analysis Overview & Summary**: AI-generated markdown insights with performance metrics and actionable recommendations (properly styled with @tailwindcss/typography)
 - **Session Outcomes Pie Chart**: Interactive Nivo pie chart showing contained vs transferred sessions with percentages and hover effects
 - **Transfer Reasons Pareto Chart**: Horizontal Nivo bar chart with Pareto analysis ranking transfer reasons by frequency with cumulative impact tooltips
@@ -459,7 +461,9 @@ npm run collect-data    # Collect production data for testing
 ### Shared Types (`shared/types/index.ts`)
 All data models are defined here and imported by both frontend and backend:
 - `SessionWithTranscript` - Core session data structure
-- `AnalysisResult` - OpenAI analysis output schema
+- `AnalysisResults` - Analysis workflow results including sessions and optional botId for debugging
+- `AnalysisProgress` - Real-time analysis progress tracking with botId for verification
+- `AnalysisExportFile` - Export file format including botId in metadata
 - `Message` - Individual conversation messages
 - `ANALYSIS_FUNCTION_SCHEMA` - OpenAI function calling schema
 

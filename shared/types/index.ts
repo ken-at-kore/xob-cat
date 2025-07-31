@@ -207,6 +207,7 @@ export interface AnalysisProgress {
   tokensUsed: number;
   estimatedCost: number;
   modelId?: string; // Selected GPT model for analysis
+  botId?: string; // Bot ID used for analysis
   eta?: number; // seconds
   error?: string;
   startTime: string;
@@ -238,6 +239,7 @@ export interface AnalysisSummary {
 export interface AnalysisResults {
   sessions: SessionWithFacts[];
   analysisSummary?: AnalysisSummary | undefined;
+  botId?: string; // Bot ID used for analysis
 }
 
 export interface BatchTokenUsage {
@@ -364,6 +366,7 @@ export interface AnalysisExportFile {
     sessionCount: number;
     requestedAt: string;
     completedAt: string;
+    botId?: string; // Bot ID used for analysis
   };
   sessions: SessionWithFacts[];
   summary: AnalysisExportSummary;
