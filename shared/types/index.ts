@@ -314,7 +314,7 @@ export const AUTO_ANALYZE_FUNCTION_SCHEMA = {
               description: "One sentence summary of what happened in the session"
             }
           },
-          required: ["user_id", "general_intent", "session_outcome", "transfer_reason", "drop_off_location", "notes"]
+          required: ["user_id", "general_intent", "session_outcome", "notes"]
         }
       }
     },
