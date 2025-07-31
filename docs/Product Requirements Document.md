@@ -65,7 +65,7 @@ As more clients deploy XO IVAs into production, the need has grown for a flexibl
 ### 3. Analysis Tools
 
 #### Auto-Analyze Feature
-- **Automated Session Analysis:** Comprehensive bot performance analysis that randomly samples sessions from specified time periods (10-1000 sessions) and applies AI analysis to extract structured insights.
+- **Automated Session Analysis:** Comprehensive bot performance analysis that randomly samples sessions from specified time periods (5-1000 sessions) and applies AI analysis to extract structured insights.
 - **Smart Session Sampling:** Intelligent time window expansion algorithm that searches 3-hour initial windows, expanding to 6-hour, 12-hour, and 6-day windows as needed to find sufficient sessions.
 - **AI-Powered Fact Extraction:** Uses OpenAI GPT-4o-mini with function calling to extract key facts from session transcripts:
   - General Intent (what user is trying to accomplish)
