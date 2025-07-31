@@ -140,4 +140,9 @@ backend/config/*.yaml
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
-.pnp.* 
+.pnp.*
+
+# Analysis report exports (exclude test files and exported reports)
+data/**/Acme*.json
+data/**/*FIXED*.json
+**/test-report.json 
