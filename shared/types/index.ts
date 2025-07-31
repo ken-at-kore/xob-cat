@@ -335,6 +335,7 @@ export interface AnalysisExportMetadata {
 export interface AnalysisExportSummary {
   overview: string;                               // AI-generated overview
   detailedAnalysis: string;                      // AI-generated detailed analysis
+  containmentSuggestion?: string;                 // One-sentence containment improvement suggestion
   totalSessions: number;
   containmentRate: number;
   topTransferReasons: Record<string, number>;

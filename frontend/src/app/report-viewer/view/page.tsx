@@ -70,7 +70,7 @@ export default function ReportViewerViewPage() {
     analysisSummary: reportData.summary ? {
       overview: reportData.summary.overview,
       summary: reportData.summary.detailedAnalysis,
-      containmentSuggestion: (reportData.summary as any).containmentImprovementText || '', // Use containmentImprovementText if available
+      containmentSuggestion: reportData.summary.containmentSuggestion || '', // Use containmentSuggestion from export
       generatedAt: reportData.metadata.exportedAt,
       sessionsAnalyzed: reportData.sessions.length,
       statistics: {
