@@ -24,6 +24,7 @@ app.use(cors({
     'x-bot-id',
     'x-client-id', 
     'x-client-secret',
+    'x-jwt-token',
     'x-base-url'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']

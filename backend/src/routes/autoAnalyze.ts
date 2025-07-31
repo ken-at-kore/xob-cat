@@ -273,6 +273,14 @@ autoAnalyzeRouter.get('/export/:analysisId', async (req: Request, res: Response)
       
       // Load mock sessions (data files are in the root project directory)
       const mockSessionsPath = path.join(process.cwd(), '..', 'data', 'mock-analysis-results.json');
+      
+      // Check if file exists first
+      try {
+        await fs.access(mockSessionsPath);
+      } catch (error) {
+        throw new Error(`Mock data file not found: ${mockSessionsPath}`);
+      }
+      
       const sessionsData = await fs.readFile(mockSessionsPath, 'utf-8');
       const sessions = JSON.parse(sessionsData);
       
