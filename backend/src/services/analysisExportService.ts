@@ -54,6 +54,7 @@ export class AnalysisExportService {
       summary: {
         overview: summary?.overview || '',
         detailedAnalysis: summary?.summary || '',
+        ...(summary?.containmentSuggestion && { containmentSuggestion: summary.containmentSuggestion }),
         totalSessions,
         containmentRate,
         topTransferReasons,
