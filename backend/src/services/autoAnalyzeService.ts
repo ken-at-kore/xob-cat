@@ -34,7 +34,8 @@ export class AutoAnalyzeService {
     private koreApiService: KoreApiService,
     private sessionSamplingService: SessionSamplingService,
     private batchAnalysisService: BatchAnalysisService,
-    private openaiAnalysisService: OpenAIAnalysisService
+    private openaiAnalysisService: OpenAIAnalysisService,
+    private botId: string
   ) {}
 
   async startAnalysis(config: AnalysisConfig): Promise<string> {
@@ -55,6 +56,7 @@ export class AutoAnalyzeService {
         tokensUsed: 0,
         estimatedCost: 0,
         modelId: config.modelId,
+        botId: this.botId,
         startTime: new Date().toISOString()
       },
       cancelled: false
@@ -100,7 +102,8 @@ export class AutoAnalyzeService {
 
     return {
       sessions: session.results,
-      analysisSummary: session.analysisSummary
+      analysisSummary: session.analysisSummary,
+      botId: this.botId
     };
   }
 
@@ -344,7 +347,8 @@ export class AutoAnalyzeService {
         koreApiService,
         sessionSamplingService,
         batchAnalysisService,
-        openaiAnalysisService
+        openaiAnalysisService,
+        botId
       );
     }
     

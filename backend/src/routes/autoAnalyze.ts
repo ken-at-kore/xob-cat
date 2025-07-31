@@ -294,17 +294,18 @@ autoAnalyzeRouter.get('/export/:analysisId', async (req: Request, res: Response)
         console.warn('Failed to load mock analysis summary:', error);
       }
       
-      const mockResults = {
-        sessions,
-        analysisSummary
-      };
-      
       const mockConfig: AnalysisConfig = {
         startDate: '2025-07-07',
         startTime: '09:00',
         sessionCount: sessions.length,
         openaiApiKey: '', // Already excluded
         modelId: 'gpt-4o-mini'
+      };
+      
+      const mockResults = {
+        sessions,
+        analysisSummary,
+        botId // Include the actual botId from request headers
       };
       
       const now = new Date().toISOString();

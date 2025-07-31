@@ -80,7 +80,8 @@ export default function ReportViewerViewPage() {
         averageSessionLength: 0, // Not included in export
         averageMessagesPerSession: 0 // Not included in export
       }
-    } : undefined
+    } : undefined,
+    botId: reportData.analysisConfig.botId
   };
 
   return (

@@ -48,7 +48,8 @@ export class AnalysisExportService {
         startTime: config.startTime,
         sessionCount: config.sessionCount,
         requestedAt,
-        completedAt
+        completedAt,
+        botId: results.botId
       },
       sessions,
       summary: {

@@ -217,6 +217,14 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Analysis Report</h1>
+          {results.botId && (
+            <div className="mt-1 flex items-center space-x-2">
+              <span className="text-sm text-gray-500">Bot ID</span>
+              <span className="text-sm font-mono text-gray-700 bg-gray-100 px-2 py-1 rounded">
+                {results.botId}
+              </span>
+            </div>
+          )}
           <p className="mt-2 text-gray-600">
             Comprehensive analysis of {results.sessions.length} sessions with AI-powered insights and visualizations.
           </p>

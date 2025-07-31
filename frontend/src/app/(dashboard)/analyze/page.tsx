@@ -48,9 +48,22 @@ async function loadMockResults(): Promise<AnalysisResults> {
       console.warn('Failed to load mock analysis summary:', error);
     }
     
+    // Get botId from session storage to include in mock results
+    let botId: string | undefined;
+    try {
+      const credentials = sessionStorage.getItem('botCredentials');
+      if (credentials) {
+        const parsed = JSON.parse(credentials);
+        botId = parsed.botId;
+      }
+    } catch (error) {
+      console.warn('Failed to get botId from sessionStorage:', error);
+    }
+
     return {
       sessions,
-      analysisSummary
+      analysisSummary,
+      botId
     };
   } catch (error) {
     console.error('Error loading mock results:', error);
