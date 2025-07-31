@@ -175,11 +175,11 @@ export class BatchAnalysisService {
         sessionResults.push({
           ...originalSession,
           facts: {
-            generalIntent: result.general_intent,
-            sessionOutcome: result.session_outcome,
+            generalIntent: result.general_intent || 'Unknown',
+            sessionOutcome: result.session_outcome || 'Contained',
             transferReason: result.transfer_reason || '',
             dropOffLocation: result.drop_off_location || '',
-            notes: result.notes
+            notes: result.notes || 'Analysis completed successfully'
           },
           analysisMetadata: {
             tokensUsed: analysisResult.totalTokens,
