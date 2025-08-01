@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import axios, { AxiosResponse } from 'axios';
+import { TranscriptSanitizationService } from './transcriptSanitizationService';
 
 // Types for Kore.ai API responses
 export interface KoreMessage {
@@ -179,11 +180,21 @@ export class KoreApiService {
     const messageText = this.extractMessageText(koreMessage);
     if (!messageText) return null;
 
+    const messageType = koreMessage.type === 'incoming' ? 'user' : 'bot';
+    
+    // Apply sanitization
+    const sanitizationResult = TranscriptSanitizationService.sanitizeMessage(messageText, messageType);
+    
+    // If sanitization filtered out the message, return null
+    if (sanitizationResult.text === null) {
+      return null;
+    }
+
     return {
       sessionId: koreMessage.sessionId,
       timestamp: koreMessage.createdOn,
-      message_type: koreMessage.type === 'incoming' ? 'user' : 'bot',
-      message: messageText
+      message_type: messageType,
+      message: sanitizationResult.text
     };
   }
 
