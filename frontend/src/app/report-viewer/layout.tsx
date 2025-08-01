@@ -18,11 +18,11 @@ export default function ReportViewerLayout({ children }: ReportViewerLayoutProps
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <img 
-                src="/assets/Kore.ai_Emblem_Black.svg" 
+                src="/assets/Kore.ai_Emblem_Grey.svg" 
                 alt="Kore.ai" 
                 className="h-8 w-8 mr-3"
               />
-              <h1 className="text-xl font-semibold text-gray-900">XOBCAT Report Viewer</h1>
+              <h1 className="text-xl font-semibold" style={{ color: '#667085' }}>XOBCAT Report Viewer</h1>
               <span className="ml-3 text-sm text-gray-500">View and analyze exported reports</span>
             </div>
           </div>
