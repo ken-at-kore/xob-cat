@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import { ChevronDown, ChevronUp, Filter, Share, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
@@ -17,6 +17,7 @@ import {
 } from './AnalysisCharts';
 import { AnalyzedSessionDetailsDialog } from './AnalyzedSessionDetailsDialog';
 import { ContainmentSuggestionCard } from './ContainmentSuggestionCard';
+import { ShareReportModal } from './ShareReportModal';
 
 // Centralized prose styling for consistent markdown rendering
 const PROSE_CLASSES = "prose prose-sm max-w-none prose-headings:text-gray-900 prose-strong:text-gray-900 prose-strong:font-semibold prose-ul:text-gray-700 prose-li:text-gray-700 prose-em:text-gray-600 prose-em:font-medium";
@@ -37,6 +38,7 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const handleSort = (field: keyof SessionWithFacts | keyof SessionWithFacts['facts']) => {
     if (sortField === field) {
@@ -231,9 +233,24 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
         </div>
         <div className="flex gap-2">
           {analysisId && (
-            <Button onClick={handleDownload} variant="outline">
-              Download Report Data
-            </Button>
+            <>
+              <Button 
+                onClick={handleDownload} 
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Download Report Data
+              </Button>
+              <Button 
+                onClick={() => setIsShareModalOpen(true)} 
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Share className="h-4 w-4" />
+                Share Report
+              </Button>
+            </>
           )}
           <Button onClick={onStartNew}>Start New Analysis</Button>
         </div>
@@ -577,6 +594,13 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
           onNavigate={handleNavigateSession}
         />
       )}
+
+      {/* Share Report Modal */}
+      <ShareReportModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        analysisId={analysisId}
+      />
     </div>
   );
 }
