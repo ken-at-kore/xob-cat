@@ -41,11 +41,11 @@ export default function TopNav({ botId }: TopNavProps) {
         {/* Left side: Kore logo + app name + subtitle */}
         <div className="flex items-center space-x-3">
           <img 
-            src="/assets/Kore.ai_Emblem_Black.svg" 
+            src="/assets/Kore.ai_Emblem_Grey.svg" 
             alt="Kore.ai" 
             className="h-8 w-8"
           />
-          <h1 className="text-xl font-bold text-gray-900">XOBCAT</h1>
+          <h1 className="text-xl font-bold" style={{ color: '#667085' }}>XOBCAT</h1>
           <span className="text-sm text-gray-500">
             XO Bot Conversation Analysis Tools
           </span>
