@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,13 @@ export default function Home({ onNavigate }: HomeProps = {}) {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const botIdRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (botIdRef.current) {
+      botIdRef.current.focus();
+    }
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
@@ -102,59 +110,91 @@ export default function Home({ onNavigate }: HomeProps = {}) {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen flex items-start justify-center bg-background p-4 pt-16">
+        <div className="flex flex-col items-center space-y-6 w-full max-w-md">
+          <Image 
+            src="/kore-emblem-grey.svg" 
+            alt="Kore.ai" 
+            width={80}
+            height={80}
+            className="w-20 h-20"
+          />
+          <Card className="w-full">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Welcome to XOB CAT</CardTitle>
           <CardDescription>
-            XO Bot Conversation Analysis Tools - Empowering Kore.ai Expert Services teams 
-            to investigate and analyze chatbot and IVA session data.
+            XO Bot Conversation Analysis Tools - Empowering Kore.ai platform users 
+            to investigate and analyze IVA and chatbot session data.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="botId">Bot ID</Label>
-            <Input
-              id="botId"
-              type="text"
-              placeholder="Enter your Bot ID"
-              value={credentials.botId}
-              onChange={(e) => handleInputChange('botId', e.target.value)}
-              className={errors.botId ? 'border-destructive' : ''}
-            />
-            {errors.botId && (
-              <p className="text-sm text-destructive">{errors.botId}</p>
-            )}
+          {/* Hidden decoy fields to confuse password managers */}
+          <div style={{ display: 'none' }}>
+            <input type="text" name="fakeusername" autoComplete="username" />
+            <input type="password" name="fakepassword" autoComplete="current-password" />
           </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="clientId">Client ID</Label>
-            <Input
-              id="clientId"
-              type="text"
-              placeholder="Enter your Client ID"
-              value={credentials.clientId}
-              onChange={(e) => handleInputChange('clientId', e.target.value)}
-              className={errors.clientId ? 'border-destructive' : ''}
-            />
-            {errors.clientId && (
-              <p className="text-sm text-destructive">{errors.clientId}</p>
-            )}
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="clientSecret">Client Secret</Label>
-            <Input
-              id="clientSecret"
-              type="password"
-              placeholder="Enter your Client Secret"
-              value={credentials.clientSecret}
-              onChange={(e) => handleInputChange('clientSecret', e.target.value)}
-              className={errors.clientSecret ? 'border-destructive' : ''}
-            />
-            {errors.clientSecret && (
-              <p className="text-sm text-destructive">{errors.clientSecret}</p>
-            )}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="botId">Bot ID</Label>
+              <Input
+                id="botId"
+                ref={botIdRef}
+                type="text"
+                autoComplete="off"
+                placeholder="Enter your Bot ID"
+                value={credentials.botId}
+                onChange={(e) => handleInputChange('botId', e.target.value)}
+                className={errors.botId ? 'border-destructive' : ''}
+              />
+              {errors.botId && (
+                <p className="text-sm text-destructive">{errors.botId}</p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="clientId">Client ID</Label>
+              <Input
+                id="clientId"
+                type="text"
+                autoComplete="off"
+                placeholder="Enter your Client ID"
+                value={credentials.clientId}
+                onChange={(e) => handleInputChange('clientId', e.target.value)}
+                className={errors.clientId ? 'border-destructive' : ''}
+              />
+              {errors.clientId && (
+                <p className="text-sm text-destructive">{errors.clientId}</p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="clientSecret">Client Secret</Label>
+              <Input
+                id="clientSecret"
+                type="text"
+                autoComplete="off"
+                autoSave="off"
+                data-lpignore="true"
+                data-form-type="config"
+                data-1p-ignore="true"
+                name="api-token"
+                role="textbox"
+                aria-label="API Token Configuration Field"
+                placeholder="Enter your Client Secret"
+                value={credentials.clientSecret}
+                onChange={(e) => handleInputChange('clientSecret', e.target.value)}
+                className={`${errors.clientSecret ? 'border-destructive' : ''} [text-security:disc] [-webkit-text-security:disc] [-moz-text-security:disc]`}
+                style={{
+                  textSecurity: 'disc',
+                  WebkitTextSecurity: 'disc',
+                  MozTextSecurity: 'disc',
+                  fontFamily: 'text-security-disc, -apple-system, BlinkMacSystemFont, sans-serif'
+                }}
+              />
+              {errors.clientSecret && (
+                <p className="text-sm text-destructive">{errors.clientSecret}</p>
+              )}
+            </div>
           </div>
           
           {connectionError && (
@@ -166,12 +206,13 @@ export default function Home({ onNavigate }: HomeProps = {}) {
           <Button 
             onClick={handleConnect} 
             disabled={isConnecting}
-            className="w-full"
+            className="w-full mt-6"
           >
             {isConnecting ? 'Connecting...' : 'Connect'}
           </Button>
         </CardContent>
       </Card>
+        </div>
       </div>
     </ErrorBoundary>
   );

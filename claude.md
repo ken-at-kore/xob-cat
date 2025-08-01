@@ -111,6 +111,31 @@ data/                      # Sanitized production test data (JSON)
 docs/                      # Product requirements and architecture docs
 ```
 
+## Credentials Page Enhancements
+
+The credentials page (`app/page.tsx`) has been enhanced to improve visual appeal, accessibility, and user experience:
+
+### Visual Branding
+- **Kore.ai Emblem**: Official Kore.ai emblem displayed above the welcome card for professional brand identity
+- **Asset Location**: `/frontend/public/assets/Kore.ai_Emblem_Black.svg`
+- **Implementation**: Uses Next.js `Image` component with 80x80px dimensions for optimal performance
+
+### Accessibility Improvements
+- **Focus Management**: Bot ID field automatically receives focus when the page loads for improved keyboard navigation
+- **Implementation**: Uses `useRef` and `useEffect` hooks for programmatic focus control
+- **Tab Order**: Maintains logical tab sequence through all form elements
+
+### Form Security
+- **Client Secret Field**: Enhanced to prevent browser password manager prompts while maintaining security
+- **Attributes**: Uses `autocomplete="new-password"`, `data-lpignore="true"`, and `data-form-type="other"`
+- **Rationale**: Client secrets are API credentials, not user passwords, and shouldn't be saved by browsers
+
+### Technical Implementation
+- **Component Updates**: Input component (`components/ui/input.tsx`) updated to use `React.forwardRef` for proper ref handling
+- **Testing**: Comprehensive test coverage for emblem display, focus management, and form attributes
+- **Performance**: Uses Next.js Image component for optimized asset loading
+- **Specifications**: Full specification documented in `/docs/Credentials Page Enhancement Specification.md`
+
 ## Auto-Analyze Feature
 
 ### Overview
