@@ -63,7 +63,7 @@ export default function ReportViewerPage() {
 
     } catch (err) {
       console.error('Failed to process file:', err);
-      setError('Failed to process the file. Please ensure it is a valid XOB CAT analysis export.');
+      setError('Failed to process the file. Please ensure it is a valid XOBCAT analysis export.');
     } finally {
       setIsValidating(false);
     }
@@ -134,7 +134,7 @@ export default function ReportViewerPage() {
         <CardHeader>
           <CardTitle>Upload Analysis Report</CardTitle>
           <CardDescription>
-            Upload an XOB CAT analysis export file to view the report
+            Upload an XOBCAT analysis export file to view the report
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -183,7 +183,7 @@ export default function ReportViewerPage() {
               onChange={handleFileInputChange}
             />
             <p className="mt-2 text-xs text-gray-500">
-              Only JSON files exported from XOB CAT are supported
+              Only JSON files exported from XOBCAT are supported
             </p>
           </div>
 
@@ -226,7 +226,7 @@ export default function ReportViewerPage() {
                 className="p-0 h-auto font-normal"
                 onClick={handleNavigateToApp}
               >
-                Go to XOB CAT
+                Go to XOBCAT
               </Button>
             </p>
           </div>

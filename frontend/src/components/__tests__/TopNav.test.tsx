@@ -26,7 +26,7 @@ describe('TopNav', () => {
   it('renders app name and subtitle on the left side', () => {
     render(<TopNav botId="test-bot-123" />);
     
-    const appName = screen.getByText('XOB CAT');
+    const appName = screen.getByText('XOBCAT');
     expect(appName).toBeInTheDocument();
     
     const subtitle = screen.getByText('XO Bot Conversation Analysis Tools');

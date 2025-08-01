@@ -21,7 +21,7 @@ describe('Home Page - Credential Input', () => {
 
   it('renders the welcome message and credential form', () => {
     render(<Home onNavigate={jest.fn()} />)
-    expect(screen.getByText('Welcome to XOB CAT')).toBeInTheDocument()
+    expect(screen.getByText('Welcome to XOBCAT')).toBeInTheDocument()
     expect(screen.getByText(/XO Bot Conversation Analysis Tools - Empowering Kore.ai platform users/)).toBeInTheDocument()
   })
 

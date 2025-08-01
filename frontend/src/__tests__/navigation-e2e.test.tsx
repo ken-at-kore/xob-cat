@@ -128,7 +128,7 @@ describe('Navigation End-to-End Test', () => {
     );
 
     // Should have new TopNav components
-    expect(screen.getByText('XOB CAT')).toBeInTheDocument();
+    expect(screen.getByText('XOBCAT')).toBeInTheDocument();
     expect(screen.getByText('test-bot-id')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /disconnect/i })).toBeInTheDocument();
 

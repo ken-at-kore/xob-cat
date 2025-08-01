@@ -148,7 +148,7 @@ describe('Navigation Edge Cases', () => {
       
       // Should still render with available botId
       await waitFor(() => {
-        expect(screen.getByText('XOB CAT')).toBeInTheDocument();
+        expect(screen.getByText('XOBCAT')).toBeInTheDocument();
         expect(screen.getByText('test-bot-id')).toBeInTheDocument();
       });
     });
