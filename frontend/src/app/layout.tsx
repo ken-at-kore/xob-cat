@@ -6,7 +6,12 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "XOB CAT - XO Bot Conversation Analysis Tools",
-  description: "Analytics platform for Kore.ai Expert Services teams to investigate and analyze chatbot and IVA session data"
+  description: "Analytics platform for Kore.ai Expert Services teams to investigate and analyze chatbot and IVA session data",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png"
+  }
 };
 
 export default function RootLayout({
