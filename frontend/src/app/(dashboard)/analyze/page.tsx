@@ -92,9 +92,10 @@ interface AutoAnalyzeConfigProps {
   onAnalysisStart: (analysisId: string) => void;
   onShowMockReports: () => void;
   isLoadingMock?: boolean;
+  showDevFeatures?: boolean;
 }
 
-export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadingMock = false }: AutoAnalyzeConfigProps) {
+export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadingMock = false, showDevFeatures = false }: AutoAnalyzeConfigProps) {
   const [formData, setFormData] = useState<ConfigFormData>(() => {
     // Set default values
     const defaultDate = new Date();
@@ -355,29 +356,31 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
         </CardContent>
       </Card>
 
-      {/* Mock Reports Option */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Development & Testing</CardTitle>
-          <CardDescription>
-            Skip the analysis step and view sample reports with mock data for development and testing purposes.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button 
-            variant="outline" 
-            onClick={onShowMockReports}
-            className="w-full"
-            disabled={isLoadingMock}
-          >
-            {isLoadingMock ? 'Loading Mock Data...' : 'See Mock Reports'}
-          </Button>
-          <p className="text-xs text-gray-500 mt-2">
-            This will display sample analysis results using mock data from real session transcripts, 
-            allowing you to test the reporting interface without performing actual AI analysis.
-          </p>
-        </CardContent>
-      </Card>
+      {/* Mock Reports Option - Only show when dev features are enabled */}
+      {showDevFeatures && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Development & Testing</CardTitle>
+            <CardDescription>
+              Skip the analysis step and view sample reports with mock data for development and testing purposes.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              variant="outline" 
+              onClick={onShowMockReports}
+              className="w-full"
+              disabled={isLoadingMock}
+            >
+              {isLoadingMock ? 'Loading Mock Data...' : 'See Mock Report'}
+            </Button>
+            <p className="text-xs text-gray-500 mt-2">
+              This will display sample analysis results using mock data from real session transcripts, 
+              allowing you to test the reporting interface without performing actual AI analysis.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
@@ -601,6 +604,9 @@ export default function AutoAnalyzePage() {
   const [analysisId, setAnalysisId] = useState<string>('');
   const [results, setResults] = useState<AnalysisResults>({ sessions: [] });
   const [isLoadingMock, setIsLoadingMock] = useState(false);
+  
+  // Check if development features should be enabled
+  const showDevFeatures = process.env.NEXT_PUBLIC_ENABLE_DEV_FEATURES === 'true';
 
   const handleAnalysisStart = (newAnalysisId: string) => {
     setAnalysisId(newAnalysisId);
@@ -642,6 +648,7 @@ export default function AutoAnalyzePage() {
             onAnalysisStart={handleAnalysisStart}
             onShowMockReports={handleShowMockReports}
             isLoadingMock={isLoadingMock}
+            showDevFeatures={showDevFeatures}
           />
         </div>
       )}

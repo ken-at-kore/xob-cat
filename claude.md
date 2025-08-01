@@ -574,7 +574,26 @@ FRONTEND_URL=http://localhost:3000  # CORS origin
 ### Frontend (`.env.local` in `frontend/`)
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_ENABLE_DEV_FEATURES=true    # Enable development features (mock reports, testing tools)
 ```
+
+### Development Features Configuration
+
+The application supports conditional development features that can be enabled/disabled based on environment configuration:
+
+**Environment Variable**: `NEXT_PUBLIC_ENABLE_DEV_FEATURES`
+- **Values**: `true` | `false` | `undefined`
+- **Default**: `false` (production mode)
+- **Purpose**: Controls visibility of development and testing features
+
+**Features Controlled**:
+- **Mock Report Button**: Development & Testing section in Auto-Analyze page
+- **Testing Tools**: Future development utilities and debugging features
+
+**Usage**:
+- **Development**: Set `NEXT_PUBLIC_ENABLE_DEV_FEATURES=true` in `.env.local`
+- **Production**: Omit variable or set to `false` to hide development features
+- **CI/Testing**: Set to `true` for automated testing environments
 
 ## Visual Actions: `snapshot` and `visually test`
 

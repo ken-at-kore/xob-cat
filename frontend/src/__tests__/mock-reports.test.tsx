@@ -14,15 +14,15 @@ describe('Mock Reports Feature', () => {
     jest.clearAllMocks();
   });
 
-  it('should display "See Mock Reports" button on config page', () => {
+  it('should display "See Mock Report" button on config page', () => {
     render(<AutoAnalyzePage />);
     
-    const mockReportsButton = screen.getByText('See Mock Reports');
-    expect(mockReportsButton).toBeInTheDocument();
-    expect(mockReportsButton.tagName).toBe('BUTTON');
+    const mockReportButton = screen.getByText('See Mock Report');
+    expect(mockReportButton).toBeInTheDocument();
+    expect(mockReportButton.tagName).toBe('BUTTON');
   });
 
-  it('should load and display mock data when "See Mock Reports" is clicked', async () => {
+  it('should load and display mock data when "See Mock Report" is clicked', async () => {
     // Mock the API response
     const mockData = [
       {
@@ -57,8 +57,8 @@ describe('Mock Reports Feature', () => {
 
     render(<AutoAnalyzePage />);
     
-    const mockReportsButton = screen.getByText('See Mock Reports');
-    fireEvent.click(mockReportsButton);
+    const mockReportButton = screen.getByText('See Mock Report');
+    fireEvent.click(mockReportButton);
 
     // Wait for the results to load and appear
     await waitFor(() => {
@@ -85,8 +85,8 @@ describe('Mock Reports Feature', () => {
 
     render(<AutoAnalyzePage />);
     
-    const mockReportsButton = screen.getByText('See Mock Reports');
-    fireEvent.click(mockReportsButton);
+    const mockReportButton = screen.getByText('See Mock Report');
+    fireEvent.click(mockReportButton);
 
     // Should show loading state
     expect(screen.getByText('Loading Mock Data...')).toBeInTheDocument();
@@ -106,8 +106,8 @@ describe('Mock Reports Feature', () => {
 
     render(<AutoAnalyzePage />);
     
-    const mockReportsButton = screen.getByText('See Mock Reports');
-    fireEvent.click(mockReportsButton);
+    const mockReportButton = screen.getByText('See Mock Report');
+    fireEvent.click(mockReportButton);
 
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith('Error loading mock results:', expect.any(Error));
@@ -140,9 +140,9 @@ describe('Mock Reports Feature', () => {
 
     render(<AutoAnalyzePage />);
     
-    // Click mock reports button
-    const mockReportsButton = screen.getByText('See Mock Reports');
-    fireEvent.click(mockReportsButton);
+    // Click mock report button
+    const mockReportButton = screen.getByText('See Mock Report');
+    fireEvent.click(mockReportButton);
 
     // Wait for results to load
     await waitFor(() => {
@@ -155,6 +155,6 @@ describe('Mock Reports Feature', () => {
 
     // Should return to config page
     expect(screen.getByText('Auto-Analyze')).toBeInTheDocument();
-    expect(screen.getByText('See Mock Reports')).toBeInTheDocument();
+    expect(screen.getByText('See Mock Report')).toBeInTheDocument();
   });
 });
