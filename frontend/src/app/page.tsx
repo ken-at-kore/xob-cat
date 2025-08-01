@@ -113,7 +113,7 @@ export default function Home({ onNavigate }: HomeProps = {}) {
       <div className="min-h-screen flex items-start justify-center bg-background p-4 pt-16">
         <div className="flex flex-col items-center space-y-6 w-full max-w-md">
           <Image 
-            src="/kore-emblem-grey.svg" 
+            src="/assets/Kore.ai_Emblem_Grey.svg" 
             alt="Kore.ai" 
             width={80}
             height={80}
