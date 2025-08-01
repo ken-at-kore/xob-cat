@@ -8,12 +8,9 @@ export const metadata: Metadata = {
   title: "XOB CAT - XO Bot Conversation Analysis Tools",
   description: "Analytics platform for Kore.ai Expert Services teams to investigate and analyze chatbot and IVA session data",
   icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/kore-emblem-grey.svg", type: "image/svg+xml" }
-    ],
+    icon: "/favicon.ico",
     shortcut: "/favicon.ico",
-    apple: "/kore-emblem-grey.svg"
+    apple: "/favicon.ico"
   }
 };
 
