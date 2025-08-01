@@ -4,16 +4,16 @@
 
 bots:
   # Default bot (used when no specific bot is requested)
-  default: "optum"
+  default: "acme"
   
   # Bot configurations
   configs:
-    optum:
-      name: "Optum Bot"
+    acme:
+      name: "Acme Bot"
       kore:
-        bot_id: "your-optum-bot-id"
-        client_id: "your-optum-client-id"
-        client_secret: "your-optum-client-secret"
+        bot_id: "your-acme-bot-id"
+        client_id: "your-acme-client-id"
+        client_secret: "your-acme-client-secret"
       
     # Add additional bots here
     # example:

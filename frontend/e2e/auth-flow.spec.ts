@@ -27,10 +27,10 @@ test.describe('Authentication Flow', () => {
     await expect(clientIdInput).toBeVisible();
     await expect(clientSecretInput).toBeVisible();
 
-    // Check that fields have default values
-    await expect(botIdInput).toHaveValue('***REMOVED***');
-    await expect(clientIdInput).toHaveValue('***REMOVED***');
-    await expect(clientSecretInput).toHaveValue('***REMOVED***');
+    // Check that fields have default values (using mock credentials)
+    await expect(botIdInput).toHaveValue('st-mock-bot-id-12345');
+    await expect(clientIdInput).toHaveValue('cs-mock-client-id-12345');
+    await expect(clientSecretInput).toHaveValue('mock-client-secret-12345');
 
     // Check that connect button is present
     await expect(page.getByRole('button', { name: 'Connect' })).toBeVisible();

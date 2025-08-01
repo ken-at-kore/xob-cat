@@ -27,9 +27,9 @@ interface HomeProps {
 
 export default function Home({ onNavigate }: HomeProps = {}) {
   const [credentials, setCredentials] = useState<Credentials>({
-    botId: process.env.NEXT_PUBLIC_DEFAULT_BOT_ID || '',
-    clientId: process.env.NEXT_PUBLIC_DEFAULT_CLIENT_ID || '',
-    clientSecret: process.env.NEXT_PUBLIC_DEFAULT_CLIENT_SECRET || ''
+    botId: '',
+    clientId: '',
+    clientSecret: ''
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isConnecting, setIsConnecting] = useState(false);

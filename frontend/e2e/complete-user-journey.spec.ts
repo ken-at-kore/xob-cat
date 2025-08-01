@@ -184,9 +184,9 @@ test.describe('Complete User Journey', () => {
     await page.goto('/');
     await page.evaluate(() => {
       sessionStorage.setItem('botCredentials', JSON.stringify({
-        botId: '***REMOVED***',
-        clientId: '***REMOVED***',
-        clientSecret: '***REMOVED***'
+        botId: 'st-mock-bot-id-12345',
+        clientId: 'cs-mock-client-id-12345',
+        clientSecret: 'mock-client-secret-12345'
       }));
     });
 

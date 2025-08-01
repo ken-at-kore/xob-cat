@@ -7,26 +7,26 @@ describe('AutoAnalyzeService Bot ID Fix', () => {
   });
 
   test('should create separate instances for different bot IDs', () => {
-    const optumBotId = '***REMOVED***';
-    const compsychBotId = '***REMOVED***';
+    const mockBotId1 = 'st-mock-bot-id-1';
+    const mockBotId2 = 'st-mock-bot-id-2';
     const jwtToken = 'mock-jwt-token';
 
     // Create service instance for Optum bot
-    const optumService = AutoAnalyzeService.create(optumBotId, jwtToken);
+    const optumService = AutoAnalyzeService.create(mockBotId1, jwtToken);
     
     // Create service instance for ComPsych bot
-    const compsychService = AutoAnalyzeService.create(compsychBotId, jwtToken);
+    const compsychService = AutoAnalyzeService.create(mockBotId2, jwtToken);
 
     // They should be different instances
     expect(optumService).not.toBe(compsychService);
 
     // Each instance should have the correct bot ID
-    expect((optumService as any).botId).toBe(optumBotId);
-    expect((compsychService as any).botId).toBe(compsychBotId);
+    expect((optumService as any).botId).toBe(mockBotId1);
+    expect((compsychService as any).botId).toBe(mockBotId2);
   });
 
   test('should reuse same instance for same bot ID', () => {
-    const botId = '***REMOVED***';
+    const botId = 'st-mock-bot-id-1';
     const jwtToken = 'mock-jwt-token';
 
     // Create service instance twice with same bot ID
@@ -39,15 +39,15 @@ describe('AutoAnalyzeService Bot ID Fix', () => {
   });
 
   test('should maintain separate instance maps per bot ID', () => {
-    const optumBotId = '***REMOVED***';
-    const compsychBotId = '***REMOVED***';
+    const mockBotId1 = 'st-mock-bot-id-1';
+    const mockBotId2 = 'st-mock-bot-id-2';
     const jwtToken = 'mock-jwt-token';
 
     // Create multiple instances
-    const optumService1 = AutoAnalyzeService.create(optumBotId, jwtToken);
-    const compsychService1 = AutoAnalyzeService.create(compsychBotId, jwtToken);
-    const optumService2 = AutoAnalyzeService.create(optumBotId, jwtToken);
-    const compsychService2 = AutoAnalyzeService.create(compsychBotId, jwtToken);
+    const optumService1 = AutoAnalyzeService.create(mockBotId1, jwtToken);
+    const compsychService1 = AutoAnalyzeService.create(mockBotId2, jwtToken);
+    const optumService2 = AutoAnalyzeService.create(mockBotId1, jwtToken);
+    const compsychService2 = AutoAnalyzeService.create(mockBotId2, jwtToken);
 
     // Same bot ID should return same instance
     expect(optumService1).toBe(optumService2);
@@ -58,13 +58,13 @@ describe('AutoAnalyzeService Bot ID Fix', () => {
     expect(optumService2).not.toBe(compsychService2);
 
     // Verify bot IDs are correct
-    expect((optumService1 as any).botId).toBe(optumBotId);
-    expect((compsychService1 as any).botId).toBe(compsychBotId);
+    expect((optumService1 as any).botId).toBe(mockBotId1);
+    expect((compsychService1 as any).botId).toBe(mockBotId2);
   });
 
   test('should handle clearing instances correctly', () => {
-    const botId1 = '***REMOVED***';
-    const botId2 = '***REMOVED***';
+    const botId1 = 'st-mock-bot-id-1';
+    const botId2 = 'st-mock-bot-id-2';
     const jwtToken = 'mock-jwt-token';
 
     // Create instances
