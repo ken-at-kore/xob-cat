@@ -6,9 +6,9 @@ test.describe('Sessions Filtering - Fixed Implementation', () => {
     await page.goto('http://localhost:3000/');
     await page.evaluate(() => {
       sessionStorage.setItem('botCredentials', JSON.stringify({
-        botId: 'st-17220bac-4b2e-5e1f-ab83-f8708ce87a8f',
-        clientId: 'cs-2e34c0be-d913-53c8-b55e-39ebd6def4c8',
-        clientSecret: '6Sl5v0dgVPIRWjF/cazzU/7Tfchydrlce2CwLyJ2Jys='
+        botId: 'st-mock-bot-id-12345',
+        clientId: 'cs-mock-client-id-12345',
+        clientSecret: 'mock-client-secret-12345'
       }));
     });
   });

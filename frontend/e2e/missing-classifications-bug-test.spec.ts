@@ -5,10 +5,10 @@ test.describe('Missing Classifications Bug Reproduction', () => {
     // Start from home page
     await page.goto('http://localhost:3000');
     
-    // Use real ComPsych bot credentials
-    await page.fill('input[placeholder*="Bot ID"]', 'st-17220bac-4b2e-5e1f-ab83-f8708ce87a8f');
-    await page.fill('input[placeholder*="Client ID"]', 'cs-2e34c0be-d913-53c8-b55e-39ebd6def4c8');
-    await page.fill('input[placeholder*="Client Secret"]', '6Sl5v0dgVPIRWjF/cazzU/7Tfchydrlce2CwLyJ2Jys=');
+    // Use mock bot credentials
+    await page.fill('input[placeholder*="Bot ID"]', 'st-mock-bot-id-12345');
+    await page.fill('input[placeholder*="Client ID"]', 'cs-mock-client-id-12345');
+    await page.fill('input[placeholder*="Client Secret"]', 'mock-client-secret-12345');
     
     // Connect and wait for redirect
     await page.click('button:has-text("Connect")');
