@@ -10,6 +10,10 @@ build/
 .next/
 out/
 
+# Lambda deployment artifacts
+backend/lambda-focused.zip
+backend/lambda-package/
+
 # Environment variables (contains sensitive credentials)
 .env
 .env.local
