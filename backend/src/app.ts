@@ -16,7 +16,10 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'https://www.koreai-xobcat.com'
+  ],
   credentials: true,
   allowedHeaders: [
     'Content-Type',

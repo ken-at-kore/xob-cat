@@ -4,8 +4,12 @@ Complete deployment setup and reference for XOB CAT production infrastructure.
 
 ## 🌐 Live Production URLs
 
-- **Frontend**: https://main.d72hemfmh671a.amplifyapp.com
-- **Backend API**: https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
+### Frontend
+- **Primary (Custom Domain)**: https://www.koreai-xobcat.com
+- **Amplify URL**: https://main.d72hemfmh671a.amplifyapp.com
+
+### Backend API
+- **REST API**: https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
 
 ## 🔧 AWS Configuration
 
@@ -264,8 +268,11 @@ curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
 - **OpenAI API Keys**: User-provided at runtime (not stored in infrastructure)
 
 ### CORS Configuration
-- **Allowed Origin**: `https://main.d72hemfmh671a.amplifyapp.com`
+- **Allowed Origins**: 
+  - `https://main.d72hemfmh671a.amplifyapp.com` (original Amplify URL)
+  - `https://www.koreai-xobcat.com` (custom domain)
 - **Configured in**: `backend/src/app.ts`
+- **Note**: When adding custom domains, must update CORS origins array and redeploy backend
 
 ### IAM Roles
 - **Amplify Service Role**: `AmplifySSRLoggingRole-d3c7wqin054t4y`
@@ -308,6 +315,21 @@ curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
    - **Solution**: Use focused Lambda packaging with `./package-lambda.sh`
    - **Creates**: `lambda-package/` with only required production dependencies
 
+7. **Custom Domain CORS Issues**
+   - **Root Cause**: Backend CORS only allows original Amplify URL, blocks custom domains
+   - **Symptoms**: "Load failed" errors when using custom domain, works fine on Amplify URL
+   - **Solution**: Update CORS configuration in `backend/src/app.ts`:
+     ```javascript
+     app.use(cors({
+       origin: [
+         process.env.FRONTEND_URL || 'http://localhost:3000',
+         'https://www.koreai-xobcat.com'  // Add custom domain
+       ],
+       // ... rest of CORS config
+     }));
+     ```
+   - **Deployment**: Run `./package-lambda.sh` and update Lambda function
+
 ### Recovery Commands
 ```bash
 # Redeploy frontend
@@ -345,7 +367,20 @@ curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod/health
   - Updated Amplify environment variable to new REST API URL
 - **Result**: ✅ Full-stack application now working properly
 
+### August 1, 2025 - Custom Domain CORS Configuration Fix
+- **Issue**: Custom domain (https://www.koreai-xobcat.com) showing "Load failed" errors during bot connection
+- **Root Cause**: Backend CORS configuration only allowed original Amplify URL, blocked custom domain requests
+- **Symptoms**: 
+  - ✅ Works perfectly on https://main.d72hemfmh671a.amplifyapp.com
+  - ❌ "Load failed" on https://www.koreai-xobcat.com
+  - Network requests from custom domain rejected by CORS policy
+- **Solution Applied**:
+  - Updated CORS origins in `backend/src/app.ts` from single string to array
+  - Added `https://www.koreai-xobcat.com` to allowed origins
+  - Rebuilt and redeployed Lambda function with `./package-lambda.sh`
+- **Result**: ✅ Both original Amplify URL and custom domain now work perfectly
+
 ---
 
-*Last updated: July 30, 2025*
+*Last updated: August 1, 2025*
 *Deployment architecture: Amplify (SSR) + Lambda + REST API Gateway*
