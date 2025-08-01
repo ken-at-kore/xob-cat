@@ -68,7 +68,7 @@ app/
 │       └── page.tsx        # AI-powered session analysis with batch consistency
 
 components/
-├── TopNav.tsx              # Top navigation: "XOB CAT" + subtitle | "Bot ID" + id + • + "Disconnect"
+├── TopNav.tsx              # Top navigation: "XOBCAT" + subtitle | "Bot ID" + id + • + "Disconnect"
 ├── Sidebar.tsx             # Left sidebar navigation with "Pages" section
 ├── SessionTable.tsx        # Main sessions data table (cleaned up, no Card wrappers)
 ├── SessionDetailsDialog.tsx # Session detail modal for View Sessions
@@ -262,7 +262,7 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 ### Navigation Architecture
 - **Route Structure**: Uses Next.js 15 App Router with `(dashboard)` route group
 - **TopNav Component**: Fixed header with app branding and bot connection info
-  - Left: "XOB CAT" title + "XO Bot Conversation Analysis Tools" subtitle
+  - Left: "XOBCAT" title + "XO Bot Conversation Analysis Tools" subtitle
   - Right: "Bot ID" label + bot ID value + bullet separator + "Disconnect" link
 - **Sidebar Component**: Fixed left navigation with "Pages" section
   - "View Sessions" (default active, routes to `/sessions`)
@@ -328,7 +328,7 @@ The Auto-Analyze page provides comprehensive AI-powered bot performance analysis
 
 ### Report Viewer Feature
 
-The Report Viewer feature enables sharing of analysis reports without requiring access to the full XOB CAT application. Power users can export analysis results as versioned JSON files and stakeholders can view them through a standalone report viewer interface.
+The Report Viewer feature enables sharing of analysis reports without requiring access to the full XOBCAT application. Power users can export analysis results as versioned JSON files and stakeholders can view them through a standalone report viewer interface.
 
 **Export Functionality**:
 - **Download Report Data**: Button available on analysis results page (only visible when `analysisId` is available)
@@ -342,7 +342,7 @@ The Report Viewer feature enables sharing of analysis reports without requiring 
 - **File Upload**: Drag-and-drop interface with "Choose File" button
 - **File Validation**: Client-side validation with comprehensive error handling
 - **Version Compatibility**: Automatic version checking with clear error messages for unsupported files
-- **Navigation Integration**: "Go to XOB CAT" link to main application
+- **Navigation Integration**: "Go to XOBCAT" link to main application
 
 **Report Display** (`/report-viewer/view`):
 - **Complete Report Rendering**: Reuses `AnalysisReportView` component with custom navigation behavior
@@ -389,7 +389,7 @@ The Report Viewer feature enables sharing of analysis reports without requiring 
 
 ### Share Report Feature
 
-The Share Report feature enables users to share analysis results with stakeholders who don't have direct access to the XOB CAT application. This feature provides a streamlined two-step workflow for easy report distribution and viewing.
+The Share Report feature enables users to share analysis results with stakeholders who don't have direct access to the XOBCAT application. This feature provides a streamlined two-step workflow for easy report distribution and viewing.
 
 **Access & Integration**:
 - **Share Report Button**: Available on analysis report pages when `analysisId` is present
@@ -471,7 +471,7 @@ The analysis overview and detailed analysis cards have been significantly enhanc
 
 ## 🏗️ Project Architecture
 
-**XOB CAT** is a monorepo full-stack analytics platform for Kore.ai Expert Services teams to analyze chatbot conversations using OpenAI GPT-4o-mini.
+**XOBCAT** is a monorepo full-stack analytics platform for Kore.ai Expert Services teams to analyze chatbot conversations using OpenAI GPT-4o-mini.
 
 ### Tech Stack
 - **Frontend**: Next.js 15 (App Router) + TypeScript + Tailwind CSS v4 + @tailwindcss/typography + shadcn/ui
@@ -484,7 +484,7 @@ The analysis overview and detailed analysis cards have been significantly enhanc
 
 ### Workspace Structure
 ```
-XOB CAT/
+XOBCAT/
 ├── frontend/          # Next.js application (port 3000)
 ├── backend/           # Express API server (port 3001)  
 ├── shared/            # Shared TypeScript types

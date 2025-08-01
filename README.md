@@ -1,8 +1,8 @@
-# XOB CAT (XO Bot Conversation Analysis Tools)
+# XOBCAT (XO Bot Conversation Analysis Tools)
 
 ## Overview / Purpose
 
-XOB CAT is a full-stack web analytics platform designed for Kore.ai Expert Services teams to investigate and analyze production chatbot and IVA sessions built using the Kore.ai XO Platform. The platform provides structured conversation analysis, AI-powered insights, and actionable intelligence for bot optimization.
+XOBCAT is a full-stack web analytics platform designed for Kore.ai Expert Services teams to investigate and analyze production chatbot and IVA sessions built using the Kore.ai XO Platform. The platform provides structured conversation analysis, AI-powered insights, and actionable intelligence for bot optimization.
 
 **Product Vision**: To become the definitive analytics platform for Kore.ai Expert Services teams, enabling data-driven bot optimization and improved client satisfaction through comprehensive conversation analysis and AI-enhanced insight generation.
 
@@ -69,7 +69,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 ## Core Concepts
 
 ### Architecture Overview
-XOB CAT is a TypeScript monorepo with three main components:
+XOBCAT is a TypeScript monorepo with three main components:
 
 - **Frontend**: Next.js 15 with App Router, Tailwind CSS, and shadcn/ui components
 - **Backend**: Express.js API server with OpenAI integration and Kore.ai connectivity  

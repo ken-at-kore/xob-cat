@@ -121,7 +121,7 @@ export default function Home({ onNavigate }: HomeProps = {}) {
           />
           <Card className="w-full">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome to XOB CAT</CardTitle>
+          <CardTitle className="text-2xl">Welcome to XOBCAT</CardTitle>
           <CardDescription>
             XO Bot Conversation Analysis Tools - Empowering Kore.ai platform users 
             to investigate and analyze IVA and chatbot session data.
@@ -185,11 +185,12 @@ export default function Home({ onNavigate }: HomeProps = {}) {
                 onChange={(e) => handleInputChange('clientSecret', e.target.value)}
                 className={`${errors.clientSecret ? 'border-destructive' : ''} [text-security:disc] [-webkit-text-security:disc] [-moz-text-security:disc]`}
                 style={{
+                  // @ts-ignore - CSS security properties not in React types
                   textSecurity: 'disc',
                   WebkitTextSecurity: 'disc',
                   MozTextSecurity: 'disc',
                   fontFamily: 'text-security-disc, -apple-system, BlinkMacSystemFont, sans-serif'
-                }}
+                } as React.CSSProperties}
               />
               {errors.clientSecret && (
                 <p className="text-sm text-destructive">{errors.clientSecret}</p>

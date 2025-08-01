@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
 export const metadata = {
-  title: 'XOB CAT Report Viewer',
-  description: 'View exported XOB CAT analysis reports',
+  title: 'XOBCAT Report Viewer',
+  description: 'View exported XOBCAT analysis reports',
 };
 
 interface ReportViewerLayoutProps {
@@ -22,7 +22,7 @@ export default function ReportViewerLayout({ children }: ReportViewerLayoutProps
                 alt="Kore.ai" 
                 className="h-8 w-8 mr-3"
               />
-              <h1 className="text-xl font-semibold text-gray-900">XOB CAT Report Viewer</h1>
+              <h1 className="text-xl font-semibold text-gray-900">XOBCAT Report Viewer</h1>
               <span className="ml-3 text-sm text-gray-500">View and analyze exported reports</span>
             </div>
           </div>

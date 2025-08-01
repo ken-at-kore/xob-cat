@@ -60,7 +60,7 @@ describe('Navigation Integration Test', () => {
     );
 
     // Should have new TopNav with app name and bot ID
-    expect(screen.getByText('XOB CAT')).toBeInTheDocument();
+    expect(screen.getByText('XOBCAT')).toBeInTheDocument();
     expect(screen.getByText('test-bot-id')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /disconnect/i })).toBeInTheDocument();
 
