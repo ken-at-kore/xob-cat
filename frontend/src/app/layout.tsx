@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Analytics platform for Kore.ai Expert Services teams to investigate and analyze chatbot and IVA session data",
   icons: {
     icon: "/icon.png",
-    shortcut: "/favicon.ico",
+    shortcut: "/icon.png",
     apple: "/icon.png"
   }
 };
