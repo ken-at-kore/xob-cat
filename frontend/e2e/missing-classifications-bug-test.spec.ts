@@ -90,8 +90,8 @@ test.describe('Missing Classifications Bug Reproduction', () => {
     await page.click('text=Auto-Analyze');
     await page.waitForURL('**/analyze');
 
-    // Click "See Mock Reports" button to use test data
-    await page.click('button:has-text("See Mock Reports")');
+    // Click "See Mock Report" button to use test data
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for results to load
     await page.waitForSelector('text=Analysis Results');

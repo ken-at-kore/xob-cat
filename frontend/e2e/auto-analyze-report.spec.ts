@@ -19,8 +19,8 @@ test.describe('Auto-Analyze Report Page', () => {
   });
 
   test('displays mock report with comprehensive visualizations', async ({ page }) => {
-    // Click "See Mock Reports" button
-    await page.click('button:has-text("See Mock Reports")');
+    // Click "See Mock Report" button
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for mock data to load and report to display
     await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible();
@@ -63,8 +63,8 @@ test.describe('Auto-Analyze Report Page', () => {
   });
 
   test('displays interactive session details dialog', async ({ page }) => {
-    // Click "See Mock Reports" button
-    await page.click('button:has-text("See Mock Reports")');
+    // Click "See Mock Report" button
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for report to load
     await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible();
@@ -85,8 +85,8 @@ test.describe('Auto-Analyze Report Page', () => {
   });
 
   test('shows start new analysis button and navigation', async ({ page }) => {
-    // Click "See Mock Reports" button
-    await page.click('button:has-text("See Mock Reports")');
+    // Click "See Mock Report" button
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for report to load
     await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible();
@@ -103,8 +103,8 @@ test.describe('Auto-Analyze Report Page', () => {
   });
 
   test('handles filters in sessions table', async ({ page }) => {
-    // Click "See Mock Reports" button
-    await page.click('button:has-text("See Mock Reports")');
+    // Click "See Mock Report" button
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for report to load
     await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible();
@@ -129,8 +129,8 @@ test.describe('Auto-Analyze Report Page', () => {
   });
 
   test('displays responsive layout on different screen sizes', async ({ page }) => {
-    // Click "See Mock Reports" button
-    await page.click('button:has-text("See Mock Reports")');
+    // Click "See Mock Report" button
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for report to load
     await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible();
@@ -152,8 +152,8 @@ test.describe('Auto-Analyze Report Page', () => {
   });
 
   test('validates all chart components render without errors', async ({ page }) => {
-    // Click "See Mock Reports" button
-    await page.click('button:has-text("See Mock Reports")');
+    // Click "See Mock Report" button
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for report to load
     await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible();

@@ -306,4 +306,96 @@ describe('AutoAnalyzeConfig Component', () => {
     await user.tab();
     expect(submitButton).toHaveFocus();
   });
+
+  describe('Development Section Visibility', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules(); // Clear module cache
+      process.env = { ...originalEnv }; // Reset to original env
+    });
+
+    afterAll(() => {
+      process.env = originalEnv; // Restore original env
+    });
+
+    it('shows development section when NEXT_PUBLIC_ENABLE_DEV_FEATURES is true', () => {
+      process.env.NEXT_PUBLIC_ENABLE_DEV_FEATURES = 'true';
+      
+      render(<AutoAnalyzeConfig 
+        onAnalysisStart={mockOnAnalysisStart} 
+        onShowMockReports={mockOnShowMockReports} 
+        showDevFeatures={true}
+      />);
+
+      expect(screen.getByText(/development & testing/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /see mock report/i })).toBeInTheDocument();
+      expect(screen.getByText(/skip the analysis step/i)).toBeInTheDocument();
+    });
+
+    it('hides development section when NEXT_PUBLIC_ENABLE_DEV_FEATURES is false', () => {
+      process.env.NEXT_PUBLIC_ENABLE_DEV_FEATURES = 'false';
+      
+      render(<AutoAnalyzeConfig 
+        onAnalysisStart={mockOnAnalysisStart} 
+        onShowMockReports={mockOnShowMockReports} 
+        showDevFeatures={false}
+      />);
+
+      expect(screen.queryByText(/development & testing/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /see mock report/i })).not.toBeInTheDocument();
+    });
+
+    it('hides development section when NEXT_PUBLIC_ENABLE_DEV_FEATURES is undefined', () => {
+      delete process.env.NEXT_PUBLIC_ENABLE_DEV_FEATURES;
+      
+      render(<AutoAnalyzeConfig 
+        onAnalysisStart={mockOnAnalysisStart} 
+        onShowMockReports={mockOnShowMockReports} 
+        showDevFeatures={false}
+      />);
+
+      expect(screen.queryByText(/development & testing/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /see mock report/i })).not.toBeInTheDocument();
+    });
+
+    it('calls onShowMockReports when mock report button is clicked', async () => {
+      const user = userEvent.setup();
+      
+      render(<AutoAnalyzeConfig 
+        onAnalysisStart={mockOnAnalysisStart} 
+        onShowMockReports={mockOnShowMockReports} 
+        showDevFeatures={true}
+      />);
+
+      const mockReportButton = screen.getByRole('button', { name: /see mock report/i });
+      await user.click(mockReportButton);
+
+      expect(mockOnShowMockReports).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows loading state for mock report button', () => {
+      render(<AutoAnalyzeConfig 
+        onAnalysisStart={mockOnAnalysisStart} 
+        onShowMockReports={mockOnShowMockReports} 
+        showDevFeatures={true}
+        isLoadingMock={true}
+      />);
+
+      const mockReportButton = screen.getByRole('button', { name: /loading mock data/i });
+      expect(mockReportButton).toBeDisabled();
+    });
+
+    it('shows correct button text - singular "Report" not "Reports"', () => {
+      render(<AutoAnalyzeConfig 
+        onAnalysisStart={mockOnAnalysisStart} 
+        onShowMockReports={mockOnShowMockReports} 
+        showDevFeatures={true}
+      />);
+
+      // Should be "See Mock Report" (singular), not "See Mock Reports" (plural)
+      expect(screen.getByRole('button', { name: /see mock report$/i })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /see mock reports/i })).not.toBeInTheDocument();
+    });
+  });
 });

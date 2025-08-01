@@ -45,7 +45,7 @@ test.describe('Report Export and Import E2E', () => {
     await page.waitForURL('**/analyze');
     
     // Step 3: Load mock results (bypass actual analysis for E2E test)
-    await page.click('button:has-text("See Mock Reports")');
+    await page.click('button:has-text("See Mock Report")');
     
     // Wait for results to load
     await page.waitForSelector('h1:has-text("Analysis Report")');
