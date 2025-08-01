@@ -362,6 +362,67 @@ The Report Viewer feature enables sharing of analysis reports without requiring 
 - **Content Sanitization**: All rendered content properly escaped
 - **No Server Upload**: Files processed entirely in browser for security
 
+### Share Report Feature
+
+The Share Report feature enables users to share analysis results with stakeholders who don't have direct access to the XOB CAT application. This feature provides a streamlined two-step workflow for easy report distribution and viewing.
+
+**Access & Integration**:
+- **Share Report Button**: Available on analysis report pages when `analysisId` is present
+- **Button Location**: Appears alongside other action buttons (Download Report Data, Start New Analysis) in the report header
+- **Visual Design**: Secondary button with Share icon from Lucide React library
+
+**Two-Step Sharing Workflow**:
+
+**Step 1 - Download Report Data**:
+- Users first download the analysis report as a versioned JSON file using the existing export API
+- The download includes all session data, AI analysis results, chart data, and metadata
+- Files use auto-generated names: `xob-cat-analysis-YYYY-MM-DDTHH-MM-SS.json`
+- Visual download progress indicator with loading animation
+- Success confirmation with green checkmark and status message
+- The "Next" button remains disabled until download completes successfully
+- Error handling for failed downloads with user-friendly error messages
+
+**Step 2 - Share Report Viewer Link**:
+- After successful download, users can share the report viewer URL
+- Default URL: `https://www.koreai-xobcat.com/report-viewer` (configurable via `NEXT_PUBLIC_REPORT_VIEWER_URL`)
+- Copy to clipboard functionality with visual success feedback (changes to green checkmark for 2 seconds)
+- "Open Report Viewer" button opens the viewer in a new tab for immediate testing
+- Users can navigate back to Step 1 if needed using the "Back" button
+
+**Technical Implementation**:
+- **ShareReportModal Component**: Complete two-step modal built with shadcn/ui Dialog components
+- **State Management**: Uses React hooks (useState, useEffect) for step progression, download status, and clipboard operations
+- **Environment Configuration**: Report viewer URL configurable via `NEXT_PUBLIC_REPORT_VIEWER_URL` environment variable
+- **API Integration**: Reuses existing download logic from AnalysisReportView component and `/api/analysis/auto-analyze/export/{analysisId}` endpoint
+- **Error Handling**: Graceful handling of download failures, missing analysis IDs, clipboard API errors, and network issues
+- **State Reset**: Modal automatically resets to Step 1 when reopened with clean state for all UI elements
+
+**User Experience Features**:
+- **Progressive UI**: Step counter shows "Step 1 of 2" and "Step 2 of 2"
+- **Context-Aware Buttons**: Button states change based on completion status (disabled/enabled, loading states)
+- **Visual Feedback**: Loading spinners, success checkmarks, and status messages provide clear user feedback
+- **Accessibility**: Full ARIA support, keyboard navigation, focus management, and screen reader compatibility
+- **Responsive Design**: Modal adapts to different screen sizes with proper spacing and layout
+
+**Usage Flow**:
+1. User completes an analysis and views the report page
+2. Clicks "Share Report" button in the report header actions area
+3. Modal opens to Step 1 with download instructions and button
+4. User clicks "Download Report Data" and waits for completion
+5. Upon successful download, "Next" button becomes enabled
+6. User clicks "Next" to proceed to Step 2
+7. User copies the report viewer URL or opens it in a new tab
+8. User shares the URL with stakeholders who can then upload the downloaded file
+
+**Testing Coverage**:
+- **Comprehensive Test Suite**: Full test coverage for modal visibility, two-step workflow, and state management
+- **Download Functionality**: Tests for successful downloads, error handling, and progress tracking
+- **Clipboard Operations**: Tests for copy functionality, success feedback, and error handling
+- **Navigation Flow**: Tests for step progression, back navigation, and modal state reset
+- **Accessibility Testing**: ARIA labels, focus management, and keyboard navigation
+- **Edge Cases**: Missing analysis IDs, network failures, and malformed credentials
+- **Visual Testing**: Playwright-based visual testing confirms complete workflow functionality
+
 ### Recent Analysis Report Improvements (July 2025)
 
 The analysis overview and detailed analysis cards have been significantly enhanced with the following improvements:
