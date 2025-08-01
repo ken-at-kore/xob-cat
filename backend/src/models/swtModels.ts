@@ -9,6 +9,8 @@
  *   SessionWithTranscript: Combined session metadata and conversation transcript
  */
 
+import { TranscriptSanitizationService } from '../services/transcriptSanitizationService';
+
 export interface Message {
   timestamp: string;
   message_type: 'user' | 'bot';
@@ -42,10 +44,20 @@ export class SWTBuilder {
   static createMessage(rawMessage: any): Message | null {
     // Handle already converted messages (from KoreApiService)
     if (rawMessage.message && rawMessage.timestamp && rawMessage.message_type) {
+      // Even already converted messages might need sanitization
+      const sanitizationResult = TranscriptSanitizationService.sanitizeMessage(
+        rawMessage.message,
+        rawMessage.message_type
+      );
+      
+      if (sanitizationResult.text === null) {
+        return null;
+      }
+      
       return {
         timestamp: rawMessage.timestamp,
         message_type: rawMessage.message_type,
-        message: rawMessage.message
+        message: sanitizationResult.text
       };
     }
 
@@ -53,10 +65,17 @@ export class SWTBuilder {
     const messageText = this.extractMessageText(rawMessage);
     if (!messageText) return null;
 
+    const messageType = rawMessage.type === 'incoming' ? 'user' : 'bot';
+    const sanitizationResult = TranscriptSanitizationService.sanitizeMessage(messageText, messageType);
+    
+    if (sanitizationResult.text === null) {
+      return null;
+    }
+
     return {
       timestamp: rawMessage.createdOn || '',
-      message_type: rawMessage.type === 'incoming' ? 'user' : 'bot',
-      message: messageText
+      message_type: messageType,
+      message: sanitizationResult.text
     };
   }
 
