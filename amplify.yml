@@ -11,11 +11,6 @@ applications:
         build:
           commands:
             - npm run build
-        postBuild:
-          commands:
-            - echo "Copying public files to root of build output"
-            - cp -r public/* .next/
-            - ls -la .next/favicon*
       artifacts:
         baseDirectory: .next
         files:
