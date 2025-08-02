@@ -149,4 +149,4 @@ backend/config/*.yaml
 # Analysis report exports (exclude test files and exported reports)
 data/**/Acme*.json
 data/**/*FIXED*.json
-**/test-report.json 
+**/test-report.json *.zip
