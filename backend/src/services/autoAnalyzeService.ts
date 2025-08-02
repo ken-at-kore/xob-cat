@@ -3,6 +3,7 @@ import { SessionSamplingService } from './sessionSamplingService';
 import { BatchAnalysisService } from './batchAnalysisService';
 import { OpenAIAnalysisService } from './openaiAnalysisService';
 import { KoreApiService } from './koreApiService';
+import { SWTService } from './swtService';
 import { AnalysisSummaryService } from './analysisSummaryService';
 import { 
   AnalysisConfig, 
@@ -346,8 +347,9 @@ export class AutoAnalyzeService {
       };
       
       const koreApiService = new KoreApiService(koreApiConfig);
+      const swtService = new SWTService(koreApiConfig);
       
-      const sessionSamplingService = new SessionSamplingService(koreApiService);
+      const sessionSamplingService = new SessionSamplingService(swtService);
       const openaiAnalysisService = new OpenAIAnalysisService();
       const batchAnalysisService = new BatchAnalysisService(openaiAnalysisService);
 
