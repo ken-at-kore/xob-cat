@@ -1,5 +1,6 @@
-import { KoreApiService, createKoreApiService } from './koreApiService';
-import type { SessionWithTranscript, TimeWindow, AnalysisConfig, SessionFilters } from '../../../shared/types';
+import { SWTService } from './swtService';
+import { SessionWithTranscript } from '../models/swtModels';
+import type { TimeWindow, AnalysisConfig, SessionFilters } from '../../../shared/types';
 
 export interface SamplingResult {
   sessions: SessionWithTranscript[];
@@ -19,7 +20,7 @@ export class SessionSamplingService {
   private readonly MIN_MESSAGES_PER_SESSION = 2;
 
   constructor(
-    private koreApiService: KoreApiService
+    private swtService: SWTService
   ) {}
 
   async sampleSessions(
@@ -118,20 +119,19 @@ export class SessionSamplingService {
 
   private async getSessionsInTimeWindow(window: TimeWindow): Promise<SessionWithTranscript[]> {
     try {
-      // Use the real Kore API service to fetch sessions
+      // Use SWTService to fetch sessions with transcripts
       console.log(`Fetching sessions for ${window.label} from ${window.start.toISOString()} to ${window.end.toISOString()}`);
       
-      // Use the real Kore API service with proper date formatting
-      const sessions = await this.koreApiService.getSessions(
-        window.start.toISOString(),
-        window.end.toISOString(),
-        0, // skip
-        10000 // limit - fetch up to 10k sessions
-      );
+      // Use SWTService to get sessions with transcripts
+      const result = await this.swtService.generateSWTs({
+        dateFrom: window.start.toISOString(),
+        dateTo: window.end.toISOString(),
+        limit: 10000 // fetch up to 10k sessions
+      });
       
-      console.log(`Found ${sessions.length} sessions in window ${window.label}`);
+      console.log(`Found ${result.swts.length} sessions in window ${window.label}`);
       
-      return sessions;
+      return result.swts;
     } catch (error) {
       console.error(`Error fetching sessions for window ${window.label}:`, error);
       return [];

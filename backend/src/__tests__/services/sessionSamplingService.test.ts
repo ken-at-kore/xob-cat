@@ -1,21 +1,14 @@
 import { SessionSamplingService } from '../../services/sessionSamplingService';
-import { KoreApiService } from '../../services/koreApiService';
-import { SessionWithTranscript, TimeWindow } from '../../../../shared/types';
+import { SWTService } from '../../services/swtService';
+import { SessionWithTranscript } from '../../models/swtModels';
+import { TimeWindow } from '../../../../shared/types';
 
-// Mock the KoreApiService
-jest.mock('../../services/koreApiService');
-
-// Mock the mockDataService that SessionSamplingService actually uses
-jest.mock('../../services/mockDataService', () => ({
-  getSessions: jest.fn()
-}));
-
-import { getSessions } from '../../services/mockDataService';
+// Mock the SWTService
+jest.mock('../../services/swtService');
 
 describe('SessionSamplingService', () => {
   let sessionSamplingService: SessionSamplingService;
-  let mockKoreApiService: jest.Mocked<KoreApiService>;
-  let mockGetSessions: jest.MockedFunction<typeof getSessions>;
+  let mockSWTService: jest.Mocked<SWTService>;
 
   beforeEach(() => {
     const mockConfig = {
@@ -24,16 +17,18 @@ describe('SessionSamplingService', () => {
       clientSecret: 'mock-client-secret',
       baseUrl: 'https://bots.kore.ai'
     };
-    mockKoreApiService = new KoreApiService(mockConfig) as jest.Mocked<KoreApiService>;
+    mockSWTService = new SWTService(mockConfig) as jest.Mocked<SWTService>;
     
-    // Set default mock to return empty array for all calls
-    mockKoreApiService.getSessions = jest.fn().mockResolvedValue([]);
+    // Set default mock to return empty SWT result for all calls
+    mockSWTService.generateSWTs = jest.fn().mockResolvedValue({
+      swts: [],
+      totalSessions: 0,
+      totalMessages: 0,
+      sessionsWithMessages: 0,
+      generationTime: 0
+    });
     
-    // Set up the mockDataService getSessions mock
-    mockGetSessions = getSessions as jest.MockedFunction<typeof getSessions>;
-    mockGetSessions.mockResolvedValue([]);
-    
-    sessionSamplingService = new SessionSamplingService(mockKoreApiService);
+    sessionSamplingService = new SessionSamplingService(mockSWTService);
   });
 
   afterEach(() => {
@@ -62,20 +57,27 @@ describe('SessionSamplingService', () => {
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' },
           { timestamp: '2024-01-15T14:01:00Z', message_type: 'bot', message: 'Hi there!' }
         ],
+        duration_seconds: 1800,
         message_count: 2,
         user_message_count: 1,
         bot_message_count: 1
       }));
 
       // Override the default empty mock for this test
-      mockGetSessions.mockResolvedValue(mockSessions);
+      mockSWTService.generateSWTs.mockResolvedValue({
+        swts: mockSessions,
+        totalSessions: mockSessions.length,
+        totalMessages: mockSessions.length * 2,
+        sessionsWithMessages: mockSessions.length,
+        generationTime: 100
+      });
 
       const result = await sessionSamplingService.sampleSessions(mockConfig);
 
       expect(result.sessions).toHaveLength(50);
       expect(result.timeWindows).toHaveLength(1);
       expect(result.timeWindows[0]?.label).toBe('Initial 3-hour window');
-      expect(mockGetSessions).toHaveBeenCalledTimes(1);
+      expect(mockSWTService.generateSWTs).toHaveBeenCalledTimes(1);
     });
 
     it('should expand time window when insufficient sessions found', async () => {
@@ -92,6 +94,7 @@ describe('SessionSamplingService', () => {
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' },
           { timestamp: '2024-01-15T14:01:00Z', message_type: 'bot', message: 'Hi there!' }
         ],
+        duration_seconds: 1800,
         message_count: 2,
         user_message_count: 1,
         bot_message_count: 1
@@ -110,14 +113,27 @@ describe('SessionSamplingService', () => {
           { timestamp: '2024-01-15T16:00:00Z', message_type: 'user', message: 'Hello' },
           { timestamp: '2024-01-15T16:01:00Z', message_type: 'bot', message: 'Hi there!' }
         ],
+        duration_seconds: 1800,
         message_count: 2,
         user_message_count: 1,
         bot_message_count: 1
       }));
 
-      mockGetSessions
-        .mockResolvedValueOnce(mockSessions1)
-        .mockResolvedValueOnce(mockSessions2);
+      mockSWTService.generateSWTs
+        .mockResolvedValueOnce({
+          swts: mockSessions1,
+          totalSessions: mockSessions1.length,
+          totalMessages: mockSessions1.length * 2,
+          sessionsWithMessages: mockSessions1.length,
+          generationTime: 100
+        })
+        .mockResolvedValueOnce({
+          swts: mockSessions2,
+          totalSessions: mockSessions2.length,
+          totalMessages: mockSessions2.length * 2,
+          sessionsWithMessages: mockSessions2.length,
+          generationTime: 100
+        });
 
       const result = await sessionSamplingService.sampleSessions(mockConfig);
 
@@ -125,7 +141,7 @@ describe('SessionSamplingService', () => {
       expect(result.timeWindows).toHaveLength(2);
       expect(result.timeWindows[0]?.label).toBe('Initial 3-hour window');
       expect(result.timeWindows[1]?.label).toBe('Extended to 6 hours');
-      expect(mockGetSessions).toHaveBeenCalledTimes(2);
+      expect(mockSWTService.generateSWTs).toHaveBeenCalledTimes(2);
     });
 
     it('should throw error when fewer than 10 sessions found after all expansions', async () => {
@@ -140,13 +156,20 @@ describe('SessionSamplingService', () => {
         messages: [
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' }
         ],
+        duration_seconds: 900,
         message_count: 1,
         user_message_count: 1,
         bot_message_count: 0
       }));
 
       // Mock all calls to return insufficient sessions
-      mockGetSessions.mockResolvedValue(mockSessions);
+      mockSWTService.generateSWTs.mockResolvedValue({
+        swts: mockSessions,
+        totalSessions: mockSessions.length,
+        totalMessages: mockSessions.length,
+        sessionsWithMessages: mockSessions.length,
+        generationTime: 100
+      });
 
       await expect(sessionSamplingService.sampleSessions(mockConfig))
         .rejects.toThrow('Insufficient sessions found');
@@ -167,6 +190,7 @@ describe('SessionSamplingService', () => {
             { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' },
             { timestamp: '2024-01-15T09:01:00Z', message_type: 'bot', message: 'Hi there!' }
           ],
+          duration_seconds: 1800,
           message_count: 2,
           user_message_count: 1,
           bot_message_count: 1
@@ -183,6 +207,7 @@ describe('SessionSamplingService', () => {
           messages: [
             { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' }
           ],
+          duration_seconds: 900,
           message_count: 1,
           user_message_count: 1,
           bot_message_count: 0
@@ -202,6 +227,7 @@ describe('SessionSamplingService', () => {
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' },
           { timestamp: '2024-01-15T14:01:00Z', message_type: 'bot', message: 'Hi there!' }
         ],
+        duration_seconds: 1800,
         message_count: 2,
         user_message_count: 1,
         bot_message_count: 1
@@ -218,13 +244,20 @@ describe('SessionSamplingService', () => {
         messages: [
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' }
         ],
+        duration_seconds: 900,
         message_count: 1,
         user_message_count: 1,
         bot_message_count: 0
       };
 
       // Return both sessions - the service should filter out the invalid one
-      mockGetSessions.mockResolvedValue([validSession, invalidSession]);
+      mockSWTService.generateSWTs.mockResolvedValue({
+        swts: [validSession, invalidSession],
+        totalSessions: 2,
+        totalMessages: 3,
+        sessionsWithMessages: 2,
+        generationTime: 100
+      });
 
       // Should try all time windows but ultimately fail with insufficient sessions
       await expect(sessionSamplingService.sampleSessions({
@@ -233,7 +266,7 @@ describe('SessionSamplingService', () => {
       })).rejects.toThrow('Insufficient sessions found');
 
       // Should have called API multiple times (all time windows) due to insufficient sessions after filtering
-      expect(mockGetSessions).toHaveBeenCalledTimes(4); // All time windows
+      expect(mockSWTService.generateSWTs).toHaveBeenCalledTimes(4); // All time windows
     });
 
     it('should deduplicate sessions across time windows', async () => {
@@ -249,13 +282,20 @@ describe('SessionSamplingService', () => {
           { timestamp: '2024-01-15T14:00:00Z', message_type: 'user', message: 'Hello' },
           { timestamp: '2024-01-15T14:01:00Z', message_type: 'bot', message: 'Hi there!' }
         ],
+        duration_seconds: 1800,
         message_count: 2,
         user_message_count: 1,
         bot_message_count: 1
       };
 
       // Both calls return the same session (simulating overlap)
-      mockGetSessions.mockResolvedValue([duplicateSession]);
+      mockSWTService.generateSWTs.mockResolvedValue({
+        swts: [duplicateSession],
+        totalSessions: 1,
+        totalMessages: 2,
+        sessionsWithMessages: 1,
+        generationTime: 100
+      });
 
       // Should try all time windows but ultimately fail with insufficient sessions (only 1 unique session)
       await expect(sessionSamplingService.sampleSessions({
@@ -264,7 +304,7 @@ describe('SessionSamplingService', () => {
       })).rejects.toThrow('Insufficient sessions found');
 
       // Should have called API multiple times (all time windows) due to insufficient unique sessions
-      expect(mockGetSessions).toHaveBeenCalledTimes(4); // All time windows
+      expect(mockSWTService.generateSWTs).toHaveBeenCalledTimes(4); // All time windows
     });
   });
 
@@ -309,6 +349,7 @@ describe('SessionSamplingService', () => {
         tags: [],
         metrics: {},
         messages: [],
+        duration_seconds: 0,
         message_count: 0,
         user_message_count: 0,
         bot_message_count: 0
@@ -328,6 +369,7 @@ describe('SessionSamplingService', () => {
         tags: [],
         metrics: {},
         messages: [],
+        duration_seconds: 0,
         message_count: 0,
         user_message_count: 0,
         bot_message_count: 0
@@ -352,6 +394,7 @@ describe('SessionSamplingService', () => {
         tags: [],
         metrics: {},
         messages: [],
+        duration_seconds: 0,
         message_count: 0,
         user_message_count: 0,
         bot_message_count: 0
