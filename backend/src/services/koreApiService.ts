@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import axios, { AxiosResponse } from 'axios';
 import { TranscriptSanitizationService } from './transcriptSanitizationService';
+import { generateMockSessions } from './mockDataService';
+import { SessionFilters } from '../../../shared/types';
 
 // Types for Kore.ai API responses
 export interface KoreMessage {
@@ -65,9 +67,25 @@ export class KoreApiService {
   private minuteStartTime: number = Date.now();
   private hourStartTime: number = Date.now();
 
+  // Mock credential constants for production testing
+  private static readonly MOCK_CREDENTIALS = {
+    BOT_ID: 'st-mock-bot-id-12345',
+    CLIENT_ID: 'cs-mock-client-id-12345',
+    CLIENT_SECRET: 'mock-client-secret-12345'
+  };
+
   constructor(config: KoreApiConfig) {
     this.config = config;
     this.baseUrl = config.baseUrl || 'https://bots.kore.ai';
+  }
+
+  /**
+   * Check if the current configuration uses mock credentials
+   */
+  private isMockCredentials(): boolean {
+    return this.config.botId === KoreApiService.MOCK_CREDENTIALS.BOT_ID &&
+           this.config.clientId === KoreApiService.MOCK_CREDENTIALS.CLIENT_ID &&
+           this.config.clientSecret === KoreApiService.MOCK_CREDENTIALS.CLIENT_SECRET;
   }
 
   /**
@@ -226,6 +244,22 @@ export class KoreApiService {
    * Retrieve session history from Kore.ai API
    */
   async getSessions(dateFrom: string, dateTo: string, skip: number = 0, limit: number = 1000): Promise<any[]> {
+    // Check if using mock credentials and return mock data
+    if (this.isMockCredentials()) {
+      console.log('🧪 Mock credentials detected - returning mock session data');
+      
+      const filters: SessionFilters = { skip, limit };
+      const startDateOnly = dateFrom?.split('T')[0];
+      const endDateOnly = dateTo?.split('T')[0];
+      
+      if (startDateOnly) filters.start_date = startDateOnly;
+      if (endDateOnly) filters.end_date = endDateOnly;
+      
+      const mockSessions = generateMockSessions(filters);
+      console.log(`Generated ${mockSessions.length} mock sessions`);
+      return mockSessions;
+    }
+
     const containmentTypes = ['agent', 'selfService', 'dropOff'];
     const allSessions: KoreSession[] = [];
 
@@ -269,6 +303,12 @@ export class KoreApiService {
    * Retrieve conversation messages from Kore.ai API
    */
   async getMessages(dateFrom: string, dateTo: string, sessionIds?: string[]): Promise<any[]> {
+    // Check if using mock credentials and return empty array (messages included in sessions)
+    if (this.isMockCredentials()) {
+      console.log('🧪 Mock credentials detected - messages already included in session data');
+      return [];
+    }
+
     const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getMessagesV2`;
     const allMessages: KoreMessage[] = [];
     let skip = 0;
