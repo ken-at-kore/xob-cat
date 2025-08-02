@@ -37,7 +37,7 @@ describe('Kore Routes', () => {
       expect(response.body).toEqual({
         success: false,
         error: 'Missing Kore.ai credentials',
-        message: expect.stringContaining('Please set up credentials')
+        message: expect.stringContaining('Please provide credentials via headers')
       });
     });
 
@@ -104,7 +104,7 @@ describe('Kore Routes', () => {
       expect(response.body).toEqual({
         success: false,
         error: 'Missing Kore.ai credentials',
-        message: expect.stringContaining('Please set up credentials')
+        message: expect.stringContaining('Please provide credentials via headers')
       });
     });
 
