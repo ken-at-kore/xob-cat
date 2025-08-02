@@ -193,6 +193,28 @@ DELETE /api/analysis/auto-analyze/:id           # Cancel analysis
 - **Cost Optimization**: ~$0.019 average cost per session analysis
 - **Quality**: 100% facts consistency verified with real conversation data
 
+### Architectural Improvements (August 2025)
+
+#### SessionSamplingService Refactor
+The SessionSamplingService has been refactored to use SWTService instead of directly calling KoreApiService, providing significant improvements:
+
+**Previous Architecture (Issues):**
+- SessionSamplingService → KoreApiService → Kore.ai API
+- Duplicated session retrieval logic between view sessions and auto-analysis
+- Potential for inconsistent behavior between features
+
+**New Architecture (Reliable):**
+- SessionSamplingService → SWTService → KoreApiService → Kore.ai API
+- Shared session retrieval logic ensures consistency between all features
+- Improved error handling and reliability through proven SWTService code path
+
+**Benefits:**
+- **Code Reuse**: Both view sessions and auto-analysis use the same proven SWTService
+- **Consistency**: Eliminates discrepancies between session retrieval implementations  
+- **Reliability**: SWTService has comprehensive error handling and rate limiting
+- **Maintainability**: Single source of truth for session data retrieval logic
+- **Test Coverage**: Leverages existing SWTService test coverage and reliability
+
 ### Configuration & Usage
 
 #### Environment Variables
