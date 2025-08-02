@@ -234,18 +234,83 @@ AWS Lambda + API Gateway (Express.js)
 - **Real-time**: Build progress during deployment
 
 ### Backend Logs
+
+#### Find Lambda Function Name
 ```bash
-# Lambda function logs
+# List Lambda functions to find exact function name
+aws lambda list-functions \
+  --region us-east-2 \
+  --profile ken-at-kore \
+  --query 'Functions[?starts_with(FunctionName, `xobcat-backend`)].FunctionName' \
+  --output table
+```
+
+#### Access Lambda Logs via CloudWatch
+```bash
+# 1. Find the log group (exact name needed)
 aws logs describe-log-groups \
   --log-group-name-prefix "/aws/lambda/xobcat-backend" \
   --region us-east-2 \
-  --profile ken-at-kore
+  --profile ken-at-kore \
+  --query 'logGroups[*].logGroupName' \
+  --output table
 
-# Tail recent logs
-aws logs tail /aws/lambda/xobcat-backend-ApiFunction-* \
+# 2. Get recent logs (last 10 minutes) - replace LOG_GROUP_NAME with actual name
+aws logs filter-log-events \
+  --log-group-name "/aws/lambda/xobcat-backend-ApiFunction-7yG0yqId5Qg2" \
+  --start-time $(date -j -v-10M +%s)000 \
+  --region us-east-2 \
+  --profile ken-at-kore \
+  --query 'events[*].[timestamp,message]' \
+  --output table
+
+# 3. Tail real-time logs (follow mode)
+aws logs tail /aws/lambda/xobcat-backend-ApiFunction-7yG0yqId5Qg2 \
   --follow \
   --region us-east-2 \
   --profile ken-at-kore
+
+# 4. Get logs for specific time range (useful for debugging specific issues)
+aws logs filter-log-events \
+  --log-group-name "/aws/lambda/xobcat-backend-ApiFunction-7yG0yqId5Qg2" \
+  --start-time $(date -j -v-1H +%s)000 \
+  --end-time $(date +%s)000 \
+  --region us-east-2 \
+  --profile ken-at-kore \
+  --filter-pattern "ERROR" \
+  --query 'events[*].[timestamp,message]' \
+  --output table
+
+# 5. Search for specific analysis ID in logs
+aws logs filter-log-events \
+  --log-group-name "/aws/lambda/xobcat-backend-ApiFunction-7yG0yqId5Qg2" \
+  --start-time $(date -j -v-2H +%s)000 \
+  --region us-east-2 \
+  --profile ken-at-kore \
+  --filter-pattern "a3d49a88-247c-4cf3-b2d5-edf0e7b51e15" \
+  --query 'events[*].[timestamp,message]' \
+  --output table
+```
+
+#### Common Log Analysis Patterns
+```bash
+# Find all auto-analysis related errors
+aws logs filter-log-events \
+  --log-group-name "/aws/lambda/xobcat-backend-ApiFunction-7yG0yqId5Qg2" \
+  --start-time $(date -j -v-2H +%s)000 \
+  --region us-east-2 \
+  --profile ken-at-kore \
+  --filter-pattern "auto-analyze ERROR" \
+  --output table
+
+# Monitor session sampling issues
+aws logs filter-log-events \
+  --log-group-name "/aws/lambda/xobcat-backend-ApiFunction-7yG0yqId5Qg2" \
+  --start-time $(date -j -v-1H +%s)000 \
+  --region us-east-2 \
+  --profile ken-at-kore \
+  --filter-pattern "sessionSamplingService" \
+  --output table
 ```
 
 ### Health Checks
