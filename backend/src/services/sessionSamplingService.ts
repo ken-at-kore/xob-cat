@@ -1,6 +1,5 @@
-import { KoreApiService } from './koreApiService';
-import { getSessions } from './mockDataService';
-import { SessionWithTranscript, TimeWindow, AnalysisConfig, SessionFilters } from '../../../shared/types';
+import { KoreApiService, createKoreApiService } from './koreApiService';
+import type { SessionWithTranscript, TimeWindow, AnalysisConfig, SessionFilters } from '../../../shared/types';
 
 export interface SamplingResult {
   sessions: SessionWithTranscript[];
@@ -20,8 +19,7 @@ export class SessionSamplingService {
   private readonly MIN_MESSAGES_PER_SESSION = 2;
 
   constructor(
-    private koreApiService: KoreApiService,
-    private credentials?: { botId: string; clientId: string; clientSecret: string }
+    private koreApiService: KoreApiService
   ) {}
 
   async sampleSessions(
@@ -120,21 +118,16 @@ export class SessionSamplingService {
 
   private async getSessionsInTimeWindow(window: TimeWindow): Promise<SessionWithTranscript[]> {
     try {
-      // Use the same session retrieval logic as the main application
-      // Convert time window to session filters
-      const filters: SessionFilters = {
-        start_date: window.start.toISOString().split('T')[0]!,
-        end_date: window.end.toISOString().split('T')[0]!,
-        start_time: this.formatTimeForAPI(window.start),
-        end_time: this.formatTimeForAPI(window.end),
-        limit: 10000,
-        skip: 0
-      };
+      // Use the real Kore API service to fetch sessions
+      console.log(`Fetching sessions for ${window.label} from ${window.start.toISOString()} to ${window.end.toISOString()}`);
       
-      console.log(`Fetching sessions for ${window.label} with filters:`, filters);
-      
-      // Use the working mockDataService.getSessions() that handles timezone properly
-      const sessions = await getSessions(filters, this.credentials);
+      // Use the real Kore API service with proper date formatting
+      const sessions = await this.koreApiService.getSessions(
+        window.start.toISOString(),
+        window.end.toISOString(),
+        0, // skip
+        10000 // limit - fetch up to 10k sessions
+      );
       
       console.log(`Found ${sessions.length} sessions in window ${window.label}`);
       
