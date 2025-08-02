@@ -41,6 +41,7 @@ const mockSession: SessionWithFacts = {
   tags: [],
   metrics: {},
   messages: [],
+  duration_seconds: 600,
   message_count: 5,
   user_message_count: 3,
   bot_message_count: 2,
