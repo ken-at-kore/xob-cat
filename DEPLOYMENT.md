@@ -358,8 +358,6 @@ Client Secret: mock-client-secret-12345
 1. **Navigate to**: https://www.koreai-xobcat.com
 2. **Use Mock Credentials**: Enter the mock credentials above to test bot connection
 3. **Test Sessions View**: Verify mock session data loads in the sessions table
-4. **Test Auto-Analyze**: Use OpenAI API key `sk-test` for frontend validation (backend will use mock data)
-5. **Test Mock Reports**: Click "See Mock Reports" button (if dev features enabled) to preview analysis UI
 
 ### Health Check Commands
 ```bash
