@@ -32,6 +32,20 @@ describe('MockDataService', () => {
     getSessionById: jest.fn(),
   };
 
+  // Silence console logs during tests
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+  beforeAll(() => {
+    console.log = jest.fn();
+    console.error = jest.fn();
+  });
+
+  afterAll(() => {
+    console.log = originalConsoleLog;
+    console.error = originalConsoleError;
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     const { configManager } = require('../../utils/configManager');

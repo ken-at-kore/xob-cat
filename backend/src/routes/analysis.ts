@@ -66,8 +66,8 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
     const startDateTime = parseETDateTime(startDate, startTime);
     dateFrom = startDateTime.toISOString();
   } else if (startDate) {
-    // Use start of day if only date provided
-    dateFrom = new Date(startDate + 'T00:00:00').toISOString();
+    // Handle both ISO string and date-only formats
+    dateFrom = startDate.includes('T') ? startDate : new Date(startDate + 'T00:00:00').toISOString();
   } else {
     // Use default (last 7 days) if no start date provided  
     dateFrom = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
@@ -78,8 +78,8 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
     const endDateTime = parseETDateTime(endDate, endTime);
     dateTo = endDateTime.toISOString();
   } else if (endDate) {
-    // Use end of day if only date provided
-    dateTo = new Date(endDate + 'T23:59:59').toISOString();
+    // Handle both ISO string and date-only formats
+    dateTo = endDate.includes('T') ? endDate : new Date(endDate + 'T23:59:59').toISOString();
   } else {
     // Use default (current time) if no end date provided
     dateTo = new Date().toISOString();

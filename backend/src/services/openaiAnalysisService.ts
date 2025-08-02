@@ -159,8 +159,6 @@ export class OpenAIAnalysisService {
           error: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined
         });
-      } else {
-        console.error('OpenAI API error:', error);
       }
       throw error;
     }
