@@ -44,8 +44,13 @@ describe('Auto-Analyze API Routes', () => {
     };
 
     it('should start analysis with valid configuration', async () => {
-      const mockAnalysisId = 'analysis-123';
-      mockAutoAnalyzeService.startAnalysis.mockResolvedValue(mockAnalysisId);
+      const mockResult = {
+        analysisId: 'analysis-123',
+        backgroundJobId: 'job-123',
+        status: 'started' as const,
+        message: 'Analysis started in background'
+      };
+      mockAutoAnalyzeService.startAnalysis.mockResolvedValue(mockResult);
 
       const response = await request(app)
         .post('/api/analysis/auto-analyze/start')
@@ -54,7 +59,7 @@ describe('Auto-Analyze API Routes', () => {
 
       expect(response.body).toEqual({
         success: true,
-        data: { analysisId: mockAnalysisId }
+        data: mockResult
       });
 
       expect(mockAutoAnalyzeService.startAnalysis).toHaveBeenCalledWith(validConfig);

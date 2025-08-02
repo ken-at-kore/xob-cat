@@ -5,6 +5,7 @@ import { OpenAIAnalysisService } from './openaiAnalysisService';
 import { KoreApiService } from './koreApiService';
 import { SWTService } from './swtService';
 import { AnalysisSummaryService } from './analysisSummaryService';
+import { getBackgroundJobQueue } from './backgroundJobQueue';
 import { 
   AnalysisConfig, 
   AnalysisProgress, 
@@ -12,7 +13,9 @@ import {
   ExistingClassifications,
   BatchTokenUsage,
   AnalysisSummary,
-  AnalysisResults
+  AnalysisResults,
+  BackgroundJob,
+  AutoAnalysisStartResponse
 } from '../../../shared/types';
 
 interface AnalysisSession {
@@ -35,11 +38,13 @@ export class AutoAnalyzeService {
     private sessionSamplingService: SessionSamplingService,
     private batchAnalysisService: BatchAnalysisService,
     private openaiAnalysisService: OpenAIAnalysisService,
-    private botId: string
+    private botId: string,
+    private credentials?: { clientId: string; clientSecret: string }
   ) {}
 
-  async startAnalysis(config: AnalysisConfig): Promise<string> {
+  async startAnalysis(config: AnalysisConfig): Promise<AutoAnalysisStartResponse> {
     const analysisId = uuidv4();
+    const backgroundJobId = `${analysisId}-sampling`;
     
     const analysisSession: AnalysisSession = {
       id: analysisId,
@@ -57,25 +62,43 @@ export class AutoAnalyzeService {
         estimatedCost: 0,
         modelId: config.modelId,
         botId: this.botId,
-        startTime: new Date().toISOString()
+        startTime: new Date().toISOString(),
+        backgroundJobId,
+        backgroundJobStatus: 'queued'
       },
       cancelled: false
     };
 
     this.activeSessions.set(analysisId, analysisSession);
 
-    // Start analysis in background
-    this.runAnalysis(analysisId).catch(error => {
-      console.error(`Analysis ${analysisId} failed:`, error);
-      this.updateProgress(analysisId, {
-        phase: 'error',
-        currentStep: 'Analysis failed',
-        error: error instanceof Error ? error.message : 'Unknown error',
-        endTime: new Date().toISOString()
-      });
-    });
+    // Create background job for session sampling
+    const backgroundJob: BackgroundJob = {
+      id: backgroundJobId,
+      analysisId,
+      status: 'queued',
+      phase: 'sampling',
+      createdAt: new Date(),
+      progress: analysisSession.progress,
+      config,
+      ...(this.credentials ? {
+        credentials: {
+          botId: this.botId,
+          clientId: this.credentials.clientId,
+          clientSecret: this.credentials.clientSecret
+        }
+      } : {})
+    };
 
-    return analysisId;
+    // Enqueue the background job for async processing
+    const jobQueue = getBackgroundJobQueue();
+    await jobQueue.enqueue(backgroundJob);
+
+    return {
+      analysisId,
+      backgroundJobId,
+      status: 'started',
+      message: 'Analysis started in background'
+    };
   }
 
   async getProgress(analysisId: string): Promise<AnalysisProgress> {
@@ -83,6 +106,58 @@ export class AutoAnalyzeService {
     if (!session) {
       throw new Error('Analysis not found');
     }
+    
+    // Update progress from background job if available
+    const jobQueue = getBackgroundJobQueue();
+    if (session.progress.backgroundJobId) {
+      const backgroundJob = await jobQueue.getJob(session.progress.backgroundJobId);
+      if (backgroundJob) {
+        // Merge background job progress with session progress
+        session.progress = {
+          ...session.progress,
+          ...backgroundJob.progress,
+          backgroundJobStatus: backgroundJob.status
+        };
+        
+        // If the background job failed, update the session progress accordingly
+        if (backgroundJob.status === 'failed') {
+          session.progress.phase = 'error';
+          session.progress.error = backgroundJob.error || 'Background job failed';
+          session.progress.endTime = new Date().toISOString();
+        }
+        
+        // Check for analysis job as well
+        const analysisJobId = `${session.progress.backgroundJobId}-analysis`;
+        const analysisJob = await jobQueue.getJob(analysisJobId);
+        if (analysisJob) {
+          session.progress = {
+            ...session.progress,
+            ...analysisJob.progress,
+            backgroundJobStatus: analysisJob.status
+          };
+          
+          // If the analysis job failed, update the session progress accordingly
+          if (analysisJob.status === 'failed') {
+            session.progress.phase = 'error';
+            session.progress.error = analysisJob.error || 'Analysis job failed';
+            session.progress.endTime = new Date().toISOString();
+          }
+        }
+      } else {
+        // Background job not found - it might have been cleaned up or never started
+        // Check if enough time has passed to consider it orphaned
+        const startTime = new Date(session.progress.startTime).getTime();
+        const now = new Date().getTime();
+        const elapsedMinutes = (now - startTime) / (1000 * 60);
+        
+        if (elapsedMinutes > 15) { // Consider orphaned after 15 minutes
+          session.progress.phase = 'error';
+          session.progress.error = 'Analysis appears to have been orphaned or timed out';
+          session.progress.endTime = new Date().toISOString();
+        }
+      }
+    }
+    
     return session.progress;
   }
 
@@ -134,6 +209,26 @@ export class AutoAnalyzeService {
     });
 
     return true;
+  }
+
+  async storeResults(analysisId: string, results: AnalysisResults): Promise<void> {
+    const session = this.activeSessions.get(analysisId);
+    if (!session) {
+      console.error(`Cannot store results: Analysis ${analysisId} not found`);
+      return;
+    }
+    
+    session.results = results.sessions;
+    if (results.analysisSummary) {
+      session.analysisSummary = results.analysisSummary;
+    }
+    
+    // Update progress to complete
+    this.updateProgress(analysisId, {
+      phase: 'complete',
+      currentStep: 'Analysis complete',
+      endTime: new Date().toISOString()
+    });
   }
 
   private async runAnalysis(analysisId: string): Promise<void> {
@@ -332,6 +427,10 @@ export class AutoAnalyzeService {
   // Singleton pattern modified to handle multiple bot IDs correctly
   private static instances = new Map<string, AutoAnalyzeService>();
   
+  static getInstance(botId: string): AutoAnalyzeService | undefined {
+    return AutoAnalyzeService.instances.get(botId);
+  }
+  
   static create(
     botId: string, 
     jwtToken: string, 
@@ -358,7 +457,8 @@ export class AutoAnalyzeService {
         sessionSamplingService,
         batchAnalysisService,
         openaiAnalysisService,
-        botId
+        botId,
+        credentials
       );
       
       AutoAnalyzeService.instances.set(botId, serviceInstance);

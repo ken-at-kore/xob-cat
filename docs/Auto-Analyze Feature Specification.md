@@ -100,6 +100,22 @@ The Auto-Analyze page is a comprehensive bot performance analysis feature that a
 
 ## Technical Architecture
 
+### Async Processing Architecture
+
+The auto-analysis system uses an **asynchronous background processing architecture** to handle long-running operations that exceed Lambda/API Gateway timeout limits. This ensures reliability in both local development and AWS Lambda production environments.
+
+#### Processing Phases
+1. **Synchronous Start**: HTTP request initiates analysis and returns immediately with `analysisId`
+2. **Background Session Sampling**: Async task fetches sessions with time window expansion
+3. **Background AI Analysis**: Async batch processing with OpenAI GPT-4o-mini
+4. **Progress Polling**: Frontend polls for real-time status updates
+5. **Results Retrieval**: Completed analysis results available via API
+
+#### Local vs. Production Implementation
+- **Local Development**: Uses in-memory job queue with `setTimeout` for background processing
+- **AWS Lambda**: Uses event-driven architecture with separate Lambda invocations
+- **Shared Interface**: Both implementations use identical API contracts and data models
+
 ### Data Models
 
 #### Session With Facts (SWF)
@@ -128,6 +144,7 @@ interface AnalysisConfig {
   startTime: string; // HH:MM format in ET
   sessionCount: number; // 5-1000
   openaiApiKey: string;
+  model?: string; // GPT model selection (default: gpt-4o-mini)
 }
 ```
 
@@ -145,29 +162,154 @@ interface AnalysisProgress {
   estimatedCost: number;
   eta?: number; // seconds
   error?: string;
+  backgroundJobId?: string; // For background process tracking
+}
+```
+
+#### Background Job State
+```typescript
+interface BackgroundJob {
+  id: string;
+  analysisId: string;
+  status: 'queued' | 'running' | 'completed' | 'failed';
+  phase: 'sampling' | 'analyzing';
+  createdAt: Date;
+  startedAt?: Date;
+  completedAt?: Date;
+  error?: string;
+  progress: AnalysisProgress;
 }
 ```
 
 ### API Endpoints
 
-#### Start Analysis
+#### Start Analysis (Async)
 ```
 POST /api/analysis/auto-analyze/start
 Body: AnalysisConfig
-Response: { analysisId: string }
+Response: { 
+  analysisId: string;
+  backgroundJobId: string;
+  status: 'started';
+  message: 'Analysis started, use progress endpoint to track status'
+}
 ```
 
 #### Get Progress
 ```
 GET /api/analysis/auto-analyze/progress/:analysisId
-Response: AnalysisProgress
+Response: AnalysisProgress & {
+  backgroundJobStatus: 'queued' | 'running' | 'completed' | 'failed';
+  lastUpdated: string; // ISO timestamp
+}
 ```
 
 #### Get Results
 ```
 GET /api/analysis/auto-analyze/results/:analysisId
-Response: SessionWithFacts[]
+Response: {
+  sessions: SessionWithFacts[];
+  summary: {
+    totalSessions: number;
+    totalTokens: number;
+    totalCost: number;
+    processingTime: number;
+    completedAt: string;
+  };
+  error?: string;
+}
 ```
+
+#### Cancel Analysis
+```
+DELETE /api/analysis/auto-analyze/:analysisId
+Response: { 
+  cancelled: boolean; 
+  message: string;
+}
+```
+
+#### Background Job Management (Internal)
+```typescript
+// These endpoints are used internally by the background job system
+// Not exposed to frontend directly
+
+POST /api/internal/jobs/session-sampling
+Body: { analysisId: string; config: AnalysisConfig }
+
+POST /api/internal/jobs/ai-analysis  
+Body: { analysisId: string; sessions: SessionWithTranscript[] }
+
+GET /api/internal/jobs/:jobId/status
+Response: BackgroundJob
+```
+
+### Background Job Processing System
+
+#### Architecture Overview
+The background job system enables long-running operations to execute asynchronously, preventing Lambda timeout issues while maintaining a responsive user experience.
+
+#### Local Development Implementation
+```typescript
+// In-memory job queue with setTimeout-based processing
+class LocalJobQueue {
+  private jobs: Map<string, BackgroundJob> = new Map();
+  private processors: Map<string, NodeJS.Timeout> = new Map();
+  
+  enqueue(job: BackgroundJob): void {
+    this.jobs.set(job.id, job);
+    this.scheduleProcessing(job);
+  }
+  
+  private scheduleProcessing(job: BackgroundJob): void {
+    // Use setTimeout to simulate async processing
+    const timeout = setTimeout(() => {
+      this.processJob(job);
+    }, 100); // Small delay to simulate async behavior
+    
+    this.processors.set(job.id, timeout);
+  }
+}
+```
+
+#### AWS Lambda Implementation
+```typescript
+// Event-driven processing with Lambda invocations
+class LambdaJobQueue {
+  async enqueue(job: BackgroundJob): Promise<void> {
+    if (process.env.NODE_ENV === 'production') {
+      // Invoke separate Lambda function for background processing
+      await lambda.invoke({
+        FunctionName: 'xobcat-background-processor',
+        InvocationType: 'Event', // Async invocation
+        Payload: JSON.stringify(job)
+      }).promise();
+    } else {
+      // Fall back to local processing in development
+      this.processJobLocally(job);
+    }
+  }
+}
+```
+
+#### Job Lifecycle Management
+1. **Job Creation**: Analysis start creates job record with 'queued' status
+2. **Job Scheduling**: Job queue schedules processing (immediate in local, Lambda invoke in production)
+3. **Job Execution**: Background processor runs session sampling and AI analysis
+4. **Progress Updates**: Job updates progress state throughout execution
+5. **Job Completion**: Final results stored, job marked as 'completed' or 'failed'
+6. **Cleanup**: Completed jobs auto-expire after 1 hour
+
+#### Error Handling & Recovery
+- **Timeout Protection**: Each job phase has timeout limits (10 minutes max)
+- **Retry Logic**: Failed jobs can be retried up to 3 times with exponential backoff
+- **Graceful Degradation**: Partial results saved on failure for user review
+- **Dead Letter Queue**: Failed jobs moved to error state with detailed error messages
+
+#### State Persistence
+- **Local Development**: In-memory maps with cleanup on process restart
+- **Production**: Database or persistent storage for job state (future enhancement)
+- **Current MVP**: In-memory with 1-hour expiration for simplicity
 
 ### Session Sampling Algorithm
 

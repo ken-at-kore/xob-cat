@@ -142,12 +142,13 @@ describe('AutoAnalyzeService - Bot ID Integration', () => {
   });
 
   it('includes botId in analysis progress when starting analysis', async () => {
-    const analysisId = await autoAnalyzeService.startAnalysis(mockConfig);
+    const startResponse = await autoAnalyzeService.startAnalysis(mockConfig);
     
-    expect(analysisId).toBeDefined();
-    expect(typeof analysisId).toBe('string');
+    expect(startResponse).toBeDefined();
+    expect(startResponse.analysisId).toBeDefined();
+    expect(typeof startResponse.analysisId).toBe('string');
 
-    const progress = await autoAnalyzeService.getProgress(analysisId);
+    const progress = await autoAnalyzeService.getProgress(startResponse.analysisId);
     
     expect(progress.botId).toBe(testBotId);
     expect(progress.modelId).toBe(mockConfig.modelId);
@@ -155,14 +156,14 @@ describe('AutoAnalyzeService - Bot ID Integration', () => {
   });
 
   it('includes botId in analysis results when analysis completes', async () => {
-    const analysisId = await autoAnalyzeService.startAnalysis(mockConfig);
+    const startResponse = await autoAnalyzeService.startAnalysis(mockConfig);
     
     // Wait a bit for the background analysis to complete
     await new Promise(resolve => setTimeout(resolve, 100));
     
     // Mock the results to simulate completed analysis
     const mockSession = autoAnalyzeService as any;
-    const session = mockSession.activeSessions.get(analysisId);
+    const session = mockSession.activeSessions.get(startResponse.analysisId);
     if (session) {
       session.progress.phase = 'complete';
       session.results = [
@@ -196,7 +197,7 @@ describe('AutoAnalyzeService - Bot ID Integration', () => {
       ];
     }
 
-    const results = await autoAnalyzeService.getResults(analysisId);
+    const results = await autoAnalyzeService.getResults(startResponse.analysisId);
     
     expect(results.botId).toBe(testBotId);
     expect(results.sessions).toHaveLength(1);
@@ -204,11 +205,11 @@ describe('AutoAnalyzeService - Bot ID Integration', () => {
   });
 
   it('maintains botId consistency across multiple method calls', async () => {
-    const analysisId = await autoAnalyzeService.startAnalysis(mockConfig);
+    const startResponse = await autoAnalyzeService.startAnalysis(mockConfig);
     
     // Check progress multiple times
-    const progress1 = await autoAnalyzeService.getProgress(analysisId);
-    const progress2 = await autoAnalyzeService.getProgress(analysisId);
+    const progress1 = await autoAnalyzeService.getProgress(startResponse.analysisId);
+    const progress2 = await autoAnalyzeService.getProgress(startResponse.analysisId);
     
     expect(progress1.botId).toBe(testBotId);
     expect(progress2.botId).toBe(testBotId);
@@ -249,8 +250,8 @@ describe('AutoAnalyzeService - Bot ID Integration', () => {
       (AutoAnalyzeService as any).instance = null;
       
       const service = AutoAnalyzeService.create(testBotId, testJwtToken);
-      const analysisId = await service.startAnalysis(mockConfig);
-      const progress = await service.getProgress(analysisId);
+      const startResponse = await service.startAnalysis(mockConfig);
+      const progress = await service.getProgress(startResponse.analysisId);
       
       expect(progress.botId).toBe(testBotId);
     }
