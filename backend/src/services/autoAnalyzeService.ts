@@ -347,14 +347,7 @@ export class AutoAnalyzeService {
       
       const koreApiService = new KoreApiService(koreApiConfig);
       
-      // Pass credentials to SessionSamplingService for proper data fetching
-      const sessionCredentials = credentials ? {
-        botId,
-        clientId: credentials.clientId,
-        clientSecret: credentials.clientSecret
-      } : undefined;
-      
-      const sessionSamplingService = new SessionSamplingService(koreApiService, sessionCredentials);
+      const sessionSamplingService = new SessionSamplingService(koreApiService);
       const openaiAnalysisService = new OpenAIAnalysisService();
       const batchAnalysisService = new BatchAnalysisService(openaiAnalysisService);
 
