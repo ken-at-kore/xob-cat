@@ -12,14 +12,53 @@ const staticMessageData = require('../../../../data/api-kore-messages-2025-07-23
 jest.mock('../../services/mockDataService');
 const mockGetSessions = mockDataService.getSessions as jest.MockedFunction<typeof mockDataService.getSessions>;
 
+// Mock the swtService
+jest.mock('../../services/swtService', () => ({
+  createSWTService: jest.fn()
+}));
+const { createSWTService } = require('../../services/swtService');
+
+// Mock the credentials middleware
+jest.mock('../../middleware/credentials', () => ({
+  loadKoreCredentials: (req: any, res: any, next: any) => {
+    req.koreCredentials = {
+      config: {
+        botId: 'test-bot-id',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
+        baseUrl: 'https://bots.kore.ai'
+      },
+      botName: 'Test Bot'
+    };
+    next();
+  },
+  getKoreCredentials: (req: any) => req.koreCredentials
+}));
+
 describe('Analysis Routes - Session History Integration Tests', () => {
   let app: express.Application;
+  let mockGenerateSWTs: jest.Mock;
+
+  // Silence console logs during tests
+  const originalConsoleLog = console.log;
+  beforeAll(() => {
+    console.log = jest.fn();
+  });
+  afterAll(() => {
+    console.log = originalConsoleLog;
+  });
 
   beforeEach(() => {
     app = express();
     app.use(express.json());
     app.use('/api/analysis', analysisRouter);
     jest.clearAllMocks();
+
+    // Mock the SWT service
+    mockGenerateSWTs = jest.fn();
+    createSWTService.mockReturnValue({
+      generateSWTs: mockGenerateSWTs
+    });
   });
 
   describe('GET /api/analysis/sessions', () => {
@@ -47,7 +86,13 @@ describe('Analysis Routes - Session History Integration Tests', () => {
     });
 
     it('should return sessions with conversation history', async () => {
-      mockGetSessions.mockResolvedValue(mockSessionsWithMessages);
+      mockGenerateSWTs.mockResolvedValue({
+        swts: mockSessionsWithMessages,
+        totalSessions: 2,
+        totalMessages: 10,
+        sessionsWithMessages: 2,
+        generationTime: 100
+      });
 
       const response = await request(app)
         .get('/api/analysis/sessions')
@@ -86,7 +131,13 @@ describe('Analysis Routes - Session History Integration Tests', () => {
     it('should handle date range filtering', async () => {
       const firstSession = mockSessionsWithMessages[0];
       if (!firstSession) throw new Error('Test data missing');
-      mockGetSessions.mockResolvedValue([firstSession]); // Only first session
+      mockGenerateSWTs.mockResolvedValue({
+        swts: [firstSession],
+        totalSessions: 1,
+        totalMessages: 5,
+        sessionsWithMessages: 1,
+        generationTime: 50
+      });
 
       const response = await request(app)
         .get('/api/analysis/sessions')
@@ -97,11 +148,10 @@ describe('Analysis Routes - Session History Integration Tests', () => {
         })
         .expect(200);
 
-      expect(mockGetSessions).toHaveBeenCalledWith({
-        start_date: '2025-07-07T10:00:00Z',
-        end_date: '2025-07-07T10:30:00Z',
-        limit: 10,
-        skip: 0
+      expect(mockGenerateSWTs).toHaveBeenCalledWith({
+        dateFrom: expect.any(String),
+        dateTo: expect.any(String),
+        limit: 10
       });
 
       expect(response.body.data).toHaveLength(1);
@@ -112,7 +162,13 @@ describe('Analysis Routes - Session History Integration Tests', () => {
       const secondSession = mockSessionsWithMessages[1];
       if (!secondSession) throw new Error('Test data missing');
       const dropOffSessions = [secondSession];
-      mockGetSessions.mockResolvedValue(dropOffSessions);
+      mockGenerateSWTs.mockResolvedValue({
+        swts: dropOffSessions,
+        totalSessions: 1,
+        totalMessages: 5,
+        sessionsWithMessages: 1,
+        generationTime: 50
+      });
 
       const response = await request(app)
         .get('/api/analysis/sessions')
@@ -124,12 +180,10 @@ describe('Analysis Routes - Session History Integration Tests', () => {
         })
         .expect(200);
 
-      expect(mockGetSessions).toHaveBeenCalledWith({
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
-        containment_type: 'dropOff',
-        limit: 10,
-        skip: 0
+      expect(mockGenerateSWTs).toHaveBeenCalledWith({
+        dateFrom: expect.any(String),
+        dateTo: expect.any(String),
+        limit: 10
       });
 
       expect(response.body.data).toHaveLength(1);
@@ -139,7 +193,13 @@ describe('Analysis Routes - Session History Integration Tests', () => {
     it('should handle pagination parameters', async () => {
       const secondSession = mockSessionsWithMessages[1];
       if (!secondSession) throw new Error('Test data missing');
-      mockGetSessions.mockResolvedValue([secondSession]);
+      mockGenerateSWTs.mockResolvedValue({
+        swts: [secondSession],
+        totalSessions: 1,
+        totalMessages: 5,
+        sessionsWithMessages: 1,
+        generationTime: 50
+      });
 
       const response = await request(app)
         .get('/api/analysis/sessions')
@@ -151,11 +211,10 @@ describe('Analysis Routes - Session History Integration Tests', () => {
         })
         .expect(200);
 
-      expect(mockGetSessions).toHaveBeenCalledWith({
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
-        limit: 5,
-        skip: 10
+      expect(mockGenerateSWTs).toHaveBeenCalledWith({
+        dateFrom: expect.any(String),
+        dateTo: expect.any(String),
+        limit: 5
       });
 
       expect(response.body.meta.total_count).toBe(1);
@@ -171,7 +230,13 @@ describe('Analysis Routes - Session History Integration Tests', () => {
         }
       ];
 
-      mockGetSessions.mockResolvedValue(sessionsWithoutMessages);
+      mockGenerateSWTs.mockResolvedValue({
+        swts: sessionsWithoutMessages,
+        totalSessions: 1,
+        totalMessages: 0,
+        sessionsWithMessages: 0,
+        generationTime: 50
+      });
 
       const response = await request(app)
         .get('/api/analysis/sessions')
@@ -182,6 +247,14 @@ describe('Analysis Routes - Session History Integration Tests', () => {
     });
 
     it('should handle optional date parameters', async () => {
+      mockGenerateSWTs.mockResolvedValue({
+        swts: mockSessionsWithMessages,
+        totalSessions: 2,
+        totalMessages: 10,
+        sessionsWithMessages: 2,
+        generationTime: 100
+      });
+
       // The API currently doesn't validate required parameters
       // It returns sessions even without date filters
       const response1 = await request(app)
@@ -200,7 +273,7 @@ describe('Analysis Routes - Session History Integration Tests', () => {
     });
 
     it('should handle service errors gracefully', async () => {
-      mockGetSessions.mockRejectedValue(new Error('Kore.ai API unavailable'));
+      mockGenerateSWTs.mockRejectedValue(new Error('Kore.ai API unavailable'));
 
       const response = await request(app)
         .get('/api/analysis/sessions')
@@ -215,7 +288,13 @@ describe('Analysis Routes - Session History Integration Tests', () => {
     });
 
     it('should apply default pagination if not provided', async () => {
-      mockGetSessions.mockResolvedValue(mockSessionsWithMessages);
+      mockGenerateSWTs.mockResolvedValue({
+        swts: mockSessionsWithMessages,
+        totalSessions: 2,
+        totalMessages: 10,
+        sessionsWithMessages: 2,
+        generationTime: 100
+      });
 
       await request(app)
         .get('/api/analysis/sessions')
@@ -225,11 +304,10 @@ describe('Analysis Routes - Session History Integration Tests', () => {
         })
         .expect(200);
 
-      expect(mockGetSessions).toHaveBeenCalledWith({
-        start_date: '2025-07-07T00:00:00Z',
-        end_date: '2025-07-07T23:59:59Z',
-        limit: 100, // Default limit
-        skip: 0     // Default skip
+      expect(mockGenerateSWTs).toHaveBeenCalledWith({
+        dateFrom: expect.any(String),
+        dateTo: expect.any(String),
+        limit: 100
       });
     });
 
@@ -260,7 +338,13 @@ describe('Analysis Routes - Session History Integration Tests', () => {
         bot_message_count: 1
       };
 
-      mockGetSessions.mockResolvedValue([sessionWithOrderedMessages]);
+      mockGenerateSWTs.mockResolvedValue({
+        swts: [sessionWithOrderedMessages],
+        totalSessions: 1,
+        totalMessages: 3,
+        sessionsWithMessages: 1,
+        generationTime: 50
+      });
 
       const response = await request(app)
         .get('/api/analysis/sessions')

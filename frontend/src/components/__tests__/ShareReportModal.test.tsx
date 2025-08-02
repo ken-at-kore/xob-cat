@@ -94,7 +94,8 @@ describe('ShareReportModal', () => {
       const mockOnClose = jest.fn();
       render(<ShareReportModal {...defaultProps} isOpen={true} onClose={mockOnClose} />);
       
-      const closeButton = screen.getByLabelText('Close');
+      // The close button has sr-only text "Close" but we need to find it by its data-slot attribute
+      const closeButton = screen.getByRole('button', { name: 'Close' });
       fireEvent.click(closeButton);
       
       expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -370,14 +371,14 @@ describe('ShareReportModal', () => {
       render(<ShareReportModal {...defaultProps} isOpen={true} />);
       
       expect(screen.getByRole('dialog')).toBeInTheDocument();
-      expect(screen.getByLabelText('Close')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Download Report Data' })).toBeInTheDocument();
     });
 
     it('focuses close button when modal opens', () => {
       render(<ShareReportModal {...defaultProps} isOpen={true} />);
       
-      const closeButton = screen.getByLabelText('Close');
+      const closeButton = screen.getByRole('button', { name: 'Close' });
       expect(closeButton).toHaveFocus();
     });
 
