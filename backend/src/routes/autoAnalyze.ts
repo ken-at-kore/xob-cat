@@ -98,11 +98,11 @@ autoAnalyzeRouter.post('/start', async (req: Request, res: Response): Promise<vo
     // Pass full credentials to service
     const credentials = clientId && clientSecret ? { clientId, clientSecret } : undefined;
     const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken, credentials);
-    const analysisId = await autoAnalyzeService.startAnalysis(config);
+    const result = await autoAnalyzeService.startAnalysis(config);
 
-    const response: ApiResponse<{ analysisId: string }> = {
+    const response: ApiResponse<typeof result> = {
       success: true,
-      data: { analysisId }
+      data: result
     };
 
     res.json(response);

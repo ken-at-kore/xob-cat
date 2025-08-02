@@ -212,6 +212,10 @@ export interface AnalysisProgress {
   error?: string;
   startTime: string;
   endTime?: string;
+  // Background job tracking
+  backgroundJobId?: string; // For background process tracking
+  backgroundJobStatus?: 'queued' | 'running' | 'completed' | 'failed';
+  lastUpdated?: string; // ISO timestamp
   // Sampling phase specific progress
   samplingProgress?: {
     currentWindowIndex: number;
@@ -395,4 +399,42 @@ export const VERSION_COMPATIBILITY_MATRIX: Record<string, VersionCompatibility> 
     requiredFeatures: ["basic-charts", "session-analysis"],
     optionalFeatures: ["advanced-charts", "ai-summary"]
   }
-}; 
+};
+
+// Background Job Processing Types for Async Auto-Analysis
+export interface BackgroundJob {
+  id: string;
+  analysisId: string;
+  status: 'queued' | 'running' | 'completed' | 'failed';
+  phase: 'sampling' | 'analyzing';
+  createdAt: Date;
+  startedAt?: Date;
+  completedAt?: Date;
+  error?: string;
+  progress: AnalysisProgress;
+  config?: AnalysisConfig; // Configuration used for this job
+  sessionData?: SessionWithTranscript[]; // Session data between phases
+  credentials?: {
+    botId: string;
+    clientId: string;
+    clientSecret: string;
+  }; // Credentials for Kore.ai API access
+}
+
+// Background Job Processing Results
+export interface BackgroundJobResult {
+  jobId: string;
+  analysisId: string;
+  success: boolean;
+  data?: any;
+  error?: string;
+  duration?: number; // milliseconds
+}
+
+// Auto-Analysis Start Response (Async)
+export interface AutoAnalysisStartResponse {
+  analysisId: string;
+  backgroundJobId: string;
+  status: 'started';
+  message: string;
+} 
