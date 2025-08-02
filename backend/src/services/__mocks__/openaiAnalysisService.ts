@@ -107,3 +107,6 @@ export const mockOpenAIAnalysisService = new MockOpenAIAnalysisService();
 
 // Export the mock as default for Jest __mocks__
 export default MockOpenAIAnalysisService;
+
+// Also export as OpenAIAnalysisService for direct imports
+export class OpenAIAnalysisService extends MockOpenAIAnalysisService {}

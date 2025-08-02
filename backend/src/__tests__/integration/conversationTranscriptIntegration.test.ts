@@ -155,7 +155,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
         // Should potentially have different containment types
         const containmentTypes = sessions
           .map(s => s?.containment_type)
-          .filter(Boolean)
+          .filter((type): type is 'agent' | 'selfService' | 'dropOff' => Boolean(type))
           .reduce((acc, type) => {
             acc.add(type);
             return acc;
