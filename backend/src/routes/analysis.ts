@@ -9,6 +9,38 @@ import { autoAnalyzeRouter } from './autoAnalyze';
 
 const router = Router();
 
+// Helper function to parse ET date/time to UTC
+function parseETDateTime(dateString: string, timeString: string): Date {
+  // Parse date and time in ET timezone
+  const [year, month, day] = dateString.split('-').map(Number);
+  const [hours, minutes] = timeString.split(':').map(Number);
+
+  // Create date assuming it's already in ET, then convert to UTC
+  const etOffset = getETOffset(new Date(year!, (month! - 1), day!));
+  
+  // Create date in UTC by directly adjusting for ET offset
+  // ET time + offset = UTC time
+  const utcHours = (hours! + etOffset) % 24;
+  const date = new Date(Date.UTC(year!, (month! - 1), day!, utcHours, minutes!));
+  
+  // Handle day rollover if needed
+  if (hours! + etOffset >= 24) {
+    date.setUTCDate(date.getUTCDate() + 1);
+  }
+
+  return date;
+}
+
+function getETOffset(date: Date): number {
+  // Simplified ET offset calculation
+  const month = date.getMonth();
+  
+  // Rough DST calculation (March through October)
+  const isDST = month > 2 && month < 10;
+  
+  return isDST ? 4 : 5; // EDT is UTC-4, EST is UTC-5
+}
+
 // Apply credential loading middleware to all routes that need Kore.ai access
 router.use('/sessions', loadKoreCredentials);
 
@@ -25,9 +57,33 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
   const containmentType = req.query.containment_type as string;
   const limit = parseInt(req.query.limit as string) || 100;
   
-  // Use default date range (last 7 days) if no dates provided
-  const dateFrom = startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const dateTo = endDate || new Date().toISOString();
+  // Combine date and time parameters properly
+  let dateFrom: string;
+  let dateTo: string;
+  
+  if (startDate && startTime) {
+    // Convert ET time to UTC for Kore API
+    const startDateTime = parseETDateTime(startDate, startTime);
+    dateFrom = startDateTime.toISOString();
+  } else if (startDate) {
+    // Use start of day if only date provided
+    dateFrom = new Date(startDate + 'T00:00:00').toISOString();
+  } else {
+    // Use default (last 7 days) if no start date provided  
+    dateFrom = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  }
+  
+  if (endDate && endTime) {
+    // Convert ET time to UTC for Kore API
+    const endDateTime = parseETDateTime(endDate, endTime);
+    dateTo = endDateTime.toISOString();
+  } else if (endDate) {
+    // Use end of day if only date provided
+    dateTo = new Date(endDate + 'T23:59:59').toISOString();
+  } else {
+    // Use default (current time) if no end date provided
+    dateTo = new Date().toISOString();
+  }
   
   console.log(`Fetching real Kore.ai sessions from ${dateFrom} to ${dateTo} for ${botName} (limit=${limit})`);
   
