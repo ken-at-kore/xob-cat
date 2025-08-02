@@ -343,6 +343,41 @@ curl https://main.d72hemfmh671a.amplifyapp.com
 curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod/health
 ```
 
+## 🧪 Production Testing & Smoke Tests
+
+### Mock Bot Credentials (Production Safe)
+The application includes built-in mock credentials that connect to test data without affecting real systems:
+
+```
+Bot ID: st-mock-bot-id-12345
+Client ID: cs-mock-client-id-12345  
+Client Secret: mock-client-secret-12345
+```
+
+### Smoke Test Workflow
+1. **Navigate to**: https://www.koreai-xobcat.com
+2. **Use Mock Credentials**: Enter the mock credentials above to test bot connection
+3. **Test Sessions View**: Verify mock session data loads in the sessions table
+4. **Test Auto-Analyze**: Use OpenAI API key `sk-test` for frontend validation (backend will use mock data)
+5. **Test Mock Reports**: Click "See Mock Reports" button (if dev features enabled) to preview analysis UI
+
+### Health Check Commands
+```bash
+# Frontend health
+curl https://www.koreai-xobcat.com
+
+# Backend health  
+curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod/health
+
+# Backend root endpoint
+curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
+```
+
+### OpenAI Testing
+- **Test API Keys**: Use `sk-test-*` format for form validation testing
+- **Real Analysis**: Requires valid OpenAI API key for actual session analysis
+- **Mock Analysis**: Backend automatically uses mock data when no real Kore.ai connection
+
 ## 📝 Notes
 
 - **Profile Requirement**: Always use `--profile ken-at-kore` for AWS CLI commands
