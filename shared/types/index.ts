@@ -12,7 +12,7 @@ export interface SessionWithTranscript {
   user_id: string;
   start_time: string;
   end_time: string;
-  containment_type: 'agent' | 'selfService' | 'dropOff';
+  containment_type: 'agent' | 'selfService' | 'dropOff' | null;
   tags: string[];
   metrics: Record<string, any>;
   
@@ -20,7 +20,7 @@ export interface SessionWithTranscript {
   messages: Message[];
   
   // Computed properties
-  duration_seconds?: number;
+  duration_seconds?: number | null;
   message_count: number;
   user_message_count: number;
   bot_message_count: number;

@@ -5,7 +5,7 @@
 import { Badge } from './ui/badge';
 
 interface ContainmentBadgeProps {
-  type: string;
+  type: string | null;
 }
 
 export const ContainmentBadge = ({ type }: ContainmentBadgeProps) => {
@@ -20,6 +20,15 @@ export const ContainmentBadge = ({ type }: ContainmentBadgeProps) => {
     'agent': 'Agent',
     'dropOff': 'Drop Off'
   };
+  
+  // Handle null values
+  if (!type) {
+    return (
+      <Badge variant="secondary">
+        Unknown
+      </Badge>
+    );
+  }
   
   return (
     <Badge variant={variants[type] || 'secondary'}>

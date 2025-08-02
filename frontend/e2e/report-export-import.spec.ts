@@ -225,6 +225,7 @@ test.describe('Report Export and Import E2E', () => {
         tags: [],
         metrics: {},
         messages: [],
+        duration_seconds: 1800,
         message_count: 0,
         user_message_count: 0,
         bot_message_count: 0,
