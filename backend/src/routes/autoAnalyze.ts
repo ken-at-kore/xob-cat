@@ -95,10 +95,12 @@ autoAnalyzeRouter.post('/start', async (req: Request, res: Response): Promise<vo
     const clientSecret = req.headers['x-client-secret'] as string;
     const jwtToken = req.headers['x-jwt-token'] as string || 'default-token';
 
-    // Pass full credentials to service
+    // Pass full credentials to service  
     const credentials = clientId && clientSecret ? { clientId, clientSecret } : undefined;
+    console.log(`🚀 [AutoAnalyzeRoute] Starting analysis for bot ${botId} with ${credentials ? 'real' : 'mock'} credentials`);
     const autoAnalyzeService = AutoAnalyzeService.create(botId, jwtToken, credentials);
     const result = await autoAnalyzeService.startAnalysis(config);
+    console.log(`🚀 [AutoAnalyzeRoute] Analysis started: ${result.analysisId}`);
 
     const response: ApiResponse<typeof result> = {
       success: true,

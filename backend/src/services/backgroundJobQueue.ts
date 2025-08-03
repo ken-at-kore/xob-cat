@@ -111,12 +111,13 @@ export class BackgroundJobQueue {
   private async scheduleLocalProcessing(job: BackgroundJob): Promise<void> {
     const timer = setTimeout(async () => {
       try {
+        console.log(`[BackgroundJobQueue] Starting job processing after delay for job ${job.id}`);
         await this.processJob(job.id);
       } catch (error) {
         console.error(`[BackgroundJobQueue] Error processing job ${job.id}:`, error);
         await this.markJobAsFailed(job.id, error instanceof Error ? error.message : 'Unknown error');
       }
-    }, 100); // Small delay to simulate async behavior
+    }, 1000); // Increased delay to ensure services are ready
 
     this.timers.set(job.id, timer);
   }
@@ -127,10 +128,12 @@ export class BackgroundJobQueue {
   private async processJob(jobId: string): Promise<void> {
     const job = this.jobs.get(jobId);
     if (!job || job.status !== 'queued') {
+      console.log(`[BackgroundJobQueue] Job ${jobId} not found or not queued (status: ${job?.status})`);
       return;
     }
 
     console.log(`[BackgroundJobQueue] Starting processing for job ${jobId}, phase: ${job.phase}`);
+    console.log(`[BackgroundJobQueue] Job credentials available: ${!!job.credentials}`);
 
     // Mark job as running
     job.status = 'running';
@@ -160,22 +163,27 @@ export class BackgroundJobQueue {
 
     console.log(`[BackgroundJobQueue] Processing sampling phase for job ${job.id}`);
 
-    // Create services for sampling - use real credentials if available, otherwise mock
-    const koreApiConfig = job.credentials ? {
-      botId: job.credentials.botId,
-      clientId: job.credentials.clientId,
-      clientSecret: job.credentials.clientSecret,
-      baseUrl: 'https://bots.kore.ai'
-    } : {
-      botId: 'mock-bot-id',
-      clientId: 'mock-client-id',
-      clientSecret: 'mock-client-secret',
-      baseUrl: 'https://bots.kore.ai'
-    };
+    console.log(`[BackgroundJobQueue] Processing sampling phase for bot: ${job.credentials?.botId || 'mock-bot'}`);
     
-    console.log(`[BackgroundJobQueue] Using ${job.credentials ? 'real' : 'mock'} credentials for bot: ${koreApiConfig.botId}`);
-    
-    const koreApiService = ServiceFactory.createKoreApiService(koreApiConfig);
+    // Create service using EXACT same pattern as working direct API routes
+    let koreApiService;
+    if (job.credentials) {
+      // CRITICAL: Use the same configuration format as the middleware/direct API
+      const config = {
+        botId: job.credentials.botId,
+        clientId: job.credentials.clientId,
+        clientSecret: job.credentials.clientSecret,
+        baseUrl: 'https://bots.kore.ai'
+      };
+      
+      console.log(`[BackgroundJobQueue] Creating real service for bot: ${config.botId}`);
+      console.log(`[BackgroundJobQueue] Full config:`, JSON.stringify(config, null, 2));
+      koreApiService = ServiceFactory.createKoreApiService(config);
+      console.log(`[BackgroundJobQueue] Created service type: ${koreApiService.constructor.name}`);
+    } else {
+      console.log(`[BackgroundJobQueue] Using mock service (no credentials)`);
+      koreApiService = ServiceFactory.createKoreApiService();
+    }
     const swtService = new SWTService(koreApiService);
     const sessionSamplingService = new SessionSamplingService(swtService, koreApiService);
 
