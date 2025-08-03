@@ -25,6 +25,11 @@ export class ServiceFactory {
       return ServiceType.MOCK;
     }
 
+    // Check environment variable for forcing mock services (useful for E2E tests)
+    if (process.env.USE_MOCK_SERVICES === 'mock') {
+      return ServiceType.MOCK;
+    }
+
     // Use configured type for other environments
     return ServiceFactory.config.type;
   }

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { createKoreApiService } from '../services/koreApiService';
 import { createSWTService } from '../services/swtService';
+import { ServiceFactory } from '../factories/serviceFactory';
 import { loadKoreCredentials, getKoreCredentials } from '../middleware/credentials';
 import { successResponse, errorResponse, notFoundResponse, validationErrorResponse } from '../utils/apiResponse';
 import { asyncHandler } from '../middleware/errorHandler';
@@ -190,7 +191,8 @@ router.get('/transcript', asyncHandler(async (req: Request, res: Response) => {
 // GET /api/kore/swts - Generate Sessions With Transcripts (SWTs)
 router.get('/swts', asyncHandler(async (req: Request, res: Response) => {
   const { config, botName } = getKoreCredentials(req);
-  const swtService = createSWTService(config);
+  const koreApiService = ServiceFactory.createKoreApiService(config);
+  const swtService = createSWTService(koreApiService);
   
   const dateFrom = req.query.dateFrom as string || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const dateTo = req.query.dateTo as string || new Date().toISOString();
@@ -242,7 +244,8 @@ router.get('/swts/:sessionId', asyncHandler(async (req: Request, res: Response):
   }
   
   const { config, botName } = getKoreCredentials(req);
-  const swtService = createSWTService(config);
+  const koreApiService = ServiceFactory.createKoreApiService(config);
+  const swtService = createSWTService(koreApiService);
   
   console.log(`Generating SWT for session: ${sessionId} in ${botName}`);
   const swt = await swtService.generateSWTForSession(sessionId);

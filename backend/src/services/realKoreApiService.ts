@@ -1,6 +1,6 @@
 import { IKoreApiService } from '../interfaces';
 import { SessionWithTranscript } from '../../../shared/types';
-import { KoreApiService, KoreApiConfig } from './koreApiService';
+import { KoreApiService, KoreApiConfig, SessionMetadata, KoreMessage } from './koreApiService';
 
 export class RealKoreApiService implements IKoreApiService {
   private koreApiService: KoreApiService;
@@ -22,6 +22,18 @@ export class RealKoreApiService implements IKoreApiService {
     // For now, return null - this can be implemented later if needed
     console.warn(`getSessionById not implemented in KoreApiService for session: ${sessionId}`);
     return null;
+  }
+
+  async getSessionsMetadata(options: { dateFrom: string; dateTo: string; limit?: number }): Promise<SessionMetadata[]> {
+    return this.koreApiService.getSessionsMetadata(options);
+  }
+
+  async getMessagesForSessions(sessionIds: string[], dateRange?: { dateFrom: string; dateTo: string }): Promise<KoreMessage[]> {
+    return this.koreApiService.getMessagesForSessions(sessionIds, dateRange);
+  }
+
+  async getSessionMessages(sessionId: string): Promise<KoreMessage[]> {
+    return this.koreApiService.getSessionMessages(sessionId);
   }
 }
 

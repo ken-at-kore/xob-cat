@@ -53,6 +53,29 @@ export interface KoreSessionsResponse {
   sessions: KoreSession[];
 }
 
+// New interfaces for granular data access
+export interface SessionMetadata {
+  sessionId: string;
+  userId: string;
+  start_time: string;
+  end_time: string;
+  containment_type: 'agent' | 'selfService' | 'dropOff';
+  tags: string[];
+  metrics: {
+    total_messages: number;
+    user_messages: number;
+    bot_messages: number;
+  };
+  duration_seconds: number;
+}
+
+export interface KoreSessionComplete extends SessionMetadata {
+  messages: KoreMessage[];
+  message_count: number;
+  user_message_count: number;
+  bot_message_count: number;
+}
+
 export interface KoreApiConfig {
   botId: string;
   clientId: string;
@@ -141,6 +164,17 @@ export class KoreApiService {
     }
 
     this.requestCount++;
+  }
+
+  /**
+   * Get headers for API requests
+   */
+  private getHeaders(): Record<string, string> {
+    const token = this.generateJwtToken();
+    return {
+      'Content-Type': 'application/json',
+      'auth': token
+    };
   }
 
   /**
@@ -241,7 +275,221 @@ export class KoreApiService {
   }
 
   /**
-   * Retrieve session history from Kore.ai API
+   * GRANULAR METHOD: Get session metadata only (no messages) for performance
+   * Part of the new layered architecture for lazy loading
+   */
+  async getSessionsMetadata(options: {
+    dateFrom: string;
+    dateTo: string;
+    skip?: number;
+    limit?: number;
+  }): Promise<SessionMetadata[]> {
+    const { dateFrom, dateTo, skip = 0, limit = 1000 } = options;
+
+    // Check if using mock credentials and return mock data
+    if (this.isMockCredentials()) {
+      console.log('🧪 Mock credentials detected - returning mock session metadata');
+      
+      const filters: SessionFilters = { skip, limit };
+      const startDateOnly = dateFrom?.split('T')[0];
+      const endDateOnly = dateTo?.split('T')[0];
+      
+      if (startDateOnly) filters.start_date = startDateOnly;
+      if (endDateOnly) filters.end_date = endDateOnly;
+      
+      const mockService = new MockSessionDataService();
+      const mockSessions = mockService.generateMockSessions(filters);
+      
+      // Convert to metadata format (remove messages)
+      const metadata: SessionMetadata[] = mockSessions.map(session => ({
+        sessionId: session.session_id,
+        userId: session.user_id,
+        start_time: session.start_time,
+        end_time: session.end_time,
+        containment_type: session.containment_type || 'agent', // Default to 'agent' if null/undefined
+        tags: session.tags || [],
+        metrics: {
+          total_messages: session.message_count || 0,
+          user_messages: session.user_message_count || 0,
+          bot_messages: session.bot_message_count || 0
+        },
+        duration_seconds: session.duration_seconds || 0
+      }));
+      
+      console.log(`Generated ${metadata.length} mock session metadata objects`);
+      return metadata;
+    }
+
+    const containmentTypes: Array<'agent' | 'selfService' | 'dropOff'> = ['agent', 'selfService', 'dropOff'];
+    const allSessionsMetadata: SessionMetadata[] = [];
+
+    for (const containmentType of containmentTypes) {
+      const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getSessions?containmentType=${containmentType}`;
+      console.log(`Requesting ${containmentType} session metadata from URL: ${url}`);
+
+      const payload = {
+        dateFrom,
+        dateTo,
+        skip,
+        limit
+      };
+
+      try {
+        const response: AxiosResponse<any> = await axios.post(url, payload, {
+          headers: this.getHeaders()
+        });
+
+        if (response.data?.data) {
+          const sessions = response.data.data;
+          console.log(`Retrieved ${sessions.length} ${containmentType} session metadata`);
+
+          // Convert to metadata format (extract only metadata, no messages)
+          const sessionMetadata: SessionMetadata[] = sessions.map((session: any) => ({
+            sessionId: session.sessionId,
+            userId: session.userId,
+            start_time: session.start_time,
+            end_time: session.end_time,
+            containment_type: containmentType,
+            tags: session.tags || [],
+            metrics: {
+              total_messages: session.metrics?.total_messages || 0,
+              user_messages: session.metrics?.user_messages || 0,
+              bot_messages: session.metrics?.bot_messages || 0
+            },
+            duration_seconds: session.duration_seconds || 0
+          }));
+
+          allSessionsMetadata.push(...sessionMetadata);
+        }
+      } catch (error) {
+        console.error(`Error fetching ${containmentType} session metadata:`, error);
+        // Continue with other containment types
+      }
+    }
+
+    console.log(`Total session metadata retrieved: ${allSessionsMetadata.length}`);
+    return allSessionsMetadata;
+  }
+
+  /**
+   * GRANULAR METHOD: Get messages for specific session IDs only
+   * Part of the new layered architecture for selective message loading
+   */
+  async getMessagesForSessions(
+    sessionIds: string[], 
+    dateRange?: { dateFrom: string; dateTo: string }
+  ): Promise<KoreMessage[]> {
+    if (sessionIds.length === 0) {
+      return [];
+    }
+
+    // Use provided date range or create intelligent default
+    const { dateFrom, dateTo } = dateRange || this.createIntelligentDateRange();
+
+    console.log(`Fetching messages for ${sessionIds.length} sessions from ${dateFrom} to ${dateTo}`);
+
+    try {
+      const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getMessages`;
+
+      const payload = {
+        dateFrom,
+        dateTo,
+        sessionIds, // Filter by specific session IDs
+        skip: 0,
+        limit: 10000 // Reasonable limit for messages
+      };
+
+      const response: AxiosResponse<any> = await axios.post(url, payload, {
+        headers: this.getHeaders()
+      });
+
+      if (response.data?.data?.messages) {
+        const messages = response.data.data.messages;
+        console.log(`Retrieved ${messages.length} messages for specified sessions`);
+        return messages;
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Error fetching messages for sessions:', error);
+      return [];
+    }
+  }
+
+  /**
+   * CONVENIENCE METHOD: Get complete sessions with messages (composition of above methods)
+   * Uses the granular methods internally
+   */
+  async getSessionsWithMessages(options: {
+    dateFrom: string;
+    dateTo: string;
+    skip?: number;
+    limit?: number;
+  }): Promise<KoreSessionComplete[]> {
+    console.log('Using convenience method: getSessionsWithMessages');
+
+    // Step 1: Get session metadata
+    const sessionMetadata = await this.getSessionsMetadata(options);
+    
+    if (sessionMetadata.length === 0) {
+      return [];
+    }
+
+    // Step 2: Get messages for all sessions
+    const sessionIds = sessionMetadata.map(session => session.sessionId);
+    const messages = await this.getMessagesForSessions(sessionIds, {
+      dateFrom: options.dateFrom,
+      dateTo: options.dateTo
+    });
+
+    // Step 3: Combine metadata and messages
+    const messagesBySession = this.groupMessagesBySession(messages);
+    
+    const completeSessions: KoreSessionComplete[] = sessionMetadata.map(session => ({
+      ...session,
+      messages: messagesBySession[session.sessionId] || [],
+      message_count: session.metrics.total_messages,
+      user_message_count: session.metrics.user_messages,
+      bot_message_count: session.metrics.bot_messages
+    }));
+
+    console.log(`Created ${completeSessions.length} complete sessions with messages`);
+    return completeSessions;
+  }
+
+  /**
+   * Helper method to create intelligent date range when not provided
+   */
+  private createIntelligentDateRange(): { dateFrom: string; dateTo: string } {
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    return {
+      dateFrom: oneWeekAgo.toISOString(),
+      dateTo: now.toISOString()
+    };
+  }
+
+  /**
+   * Helper method to group messages by session ID
+   */
+  private groupMessagesBySession(messages: KoreMessage[]): Record<string, KoreMessage[]> {
+    const grouped: Record<string, KoreMessage[]> = {};
+    
+    messages.forEach(message => {
+      const sessionId = message.sessionId;
+      if (!grouped[sessionId]) {
+        grouped[sessionId] = [];
+      }
+      grouped[sessionId].push(message);
+    });
+
+    return grouped;
+  }
+
+  /**
+   * LEGACY METHOD: Retrieve session history from Kore.ai API (with messages)
+   * Now implemented using the new granular methods for consistency
    */
   async getSessions(dateFrom: string, dateTo: string, skip: number = 0, limit: number = 1000): Promise<SessionWithTranscript[]> {
     // Check if using mock credentials and return mock data
