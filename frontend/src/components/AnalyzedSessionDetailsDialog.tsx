@@ -222,12 +222,16 @@ export function AnalyzedSessionDetailsDialog({
             <div className="border rounded-lg h-96 overflow-y-auto">
               {(() => {
                 // Filter out invalid messages - must have required fields
+                // Handle both legacy format (timestamp, message_type) and new format (createdOn, type)
                 const validMessages = (currentSession.messages || []).filter(message => 
                   message && 
                   typeof message === 'object' &&
-                  message.timestamp && 
-                  message.message_type && 
-                  (message.message_type === 'user' || message.message_type === 'bot') &&
+                  (message.timestamp || message.createdOn) && 
+                  (message.message_type || message.type) && 
+                  (
+                    (message.message_type === 'user' || message.message_type === 'bot') ||
+                    (message.type === 'incoming' || message.type === 'outgoing')
+                  ) &&
                   message.message &&
                   typeof message.message === 'string' &&
                   message.message.trim().length > 0
@@ -235,23 +239,29 @@ export function AnalyzedSessionDetailsDialog({
 
                 return validMessages.length > 0 ? (
                   <div className="p-4 space-y-4">
-                    {validMessages.map((message, index) => (
-                      <div key={index} className="flex gap-3">
-                        <div className="flex-shrink-0">
-                          <Badge variant={message.message_type === 'user' ? 'outline' : 'secondary'}>
-                            {message.message_type === 'user' ? 'User' : 'Bot'}
-                          </Badge>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs text-muted-foreground mb-1">
-                            {formatTime(message.timestamp)}
+                    {validMessages.map((message, index) => {
+                      // Handle both legacy format (timestamp, message_type) and new format (createdOn, type)
+                      const isUser = message.message_type === 'user' || message.type === 'incoming';
+                      const timestamp = message.timestamp || message.createdOn;
+                      
+                      return (
+                        <div key={index} className="flex gap-3">
+                          <div className="flex-shrink-0">
+                            <Badge variant={isUser ? 'outline' : 'secondary'}>
+                              {isUser ? 'User' : 'Bot'}
+                            </Badge>
                           </div>
-                          <div className="text-sm break-words">
-                            {message.message}
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs text-muted-foreground mb-1">
+                              {formatTime(timestamp)}
+                            </div>
+                            <div className="text-sm break-words">
+                              {message.message}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="flex items-center justify-center h-full">
