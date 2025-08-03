@@ -286,6 +286,11 @@ export class KoreApiService {
   }): Promise<SessionMetadata[]> {
     const { dateFrom, dateTo, skip = 0, limit = 1000 } = options;
 
+    console.log(`[getSessionsMetadata] Called with options:`, JSON.stringify(options, null, 2));
+    console.log(`[getSessionsMetadata] Bot ID: ${this.config.botId}`);
+    console.log(`[getSessionsMetadata] Client ID: ${this.config.clientId?.substring(0, 8)}...`);
+    console.log(`[getSessionsMetadata] isMockCredentials: ${this.isMockCredentials()}`);
+
     // Check if using mock credentials and return mock data
     if (this.isMockCredentials()) {
       console.log('🧪 Mock credentials detected - returning mock session metadata');
@@ -334,33 +339,43 @@ export class KoreApiService {
         limit
       };
 
+      console.log(`[getSessionsMetadata] Making API call for ${containmentType}:`);
+      console.log(`[getSessionsMetadata] URL: ${url}`);
+      console.log(`[getSessionsMetadata] Payload:`, JSON.stringify(payload, null, 2));
+      console.log(`[getSessionsMetadata] Bot ID: ${this.config.botId}`);
+      console.log(`[getSessionsMetadata] Using credentials: clientId=${this.config.clientId?.substring(0, 8)}..., clientSecret=${this.config.clientSecret?.substring(0, 8)}...`);
+
       try {
-        const response: AxiosResponse<any> = await axios.post(url, payload, {
-          headers: this.getHeaders()
-        });
-
-        if (response.data?.data) {
-          const sessions = response.data.data;
-          console.log(`Retrieved ${sessions.length} ${containmentType} session metadata`);
-
-          // Convert to metadata format (extract only metadata, no messages)
-          const sessionMetadata: SessionMetadata[] = sessions.map((session: any) => ({
-            sessionId: session.sessionId,
-            userId: session.userId,
-            start_time: session.start_time,
-            end_time: session.end_time,
-            containment_type: containmentType,
-            tags: session.tags || [],
-            metrics: {
-              total_messages: session.metrics?.total_messages || 0,
-              user_messages: session.metrics?.user_messages || 0,
-              bot_messages: session.metrics?.bot_messages || 0
-            },
-            duration_seconds: session.duration_seconds || 0
-          }));
-
-          allSessionsMetadata.push(...sessionMetadata);
+        const response = await this.makeRequest<KoreSessionsResponse>(url, payload);
+        const sessions = response.sessions || [];
+        console.log(`[getSessionsMetadata] API Response: ${sessions.length} ${containmentType} sessions received`);
+        if (sessions.length > 0) {
+          console.log(`[getSessionsMetadata] Sample session IDs:`, sessions.slice(0, 3).map(s => s.sessionId));
         }
+        
+        // Tag each session with its containment type (same as getSessions method)
+        const taggedSessions = sessions.map(session => ({
+          ...session,
+          containment_type: containmentType as 'agent' | 'selfService' | 'dropOff'
+        }));
+
+        // Convert to metadata format (extract only metadata, no messages)
+        const sessionMetadata: SessionMetadata[] = taggedSessions.map((session: any) => ({
+          sessionId: session.sessionId,
+          userId: session.userId,
+          start_time: session.start_time,
+          end_time: session.end_time,
+          containment_type: session.containment_type,
+          tags: session.tags || [],
+          metrics: {
+            total_messages: session.metrics?.total_messages || 0,
+            user_messages: session.metrics?.user_messages || 0,
+            bot_messages: session.metrics?.bot_messages || 0
+          },
+          duration_seconds: session.duration_seconds || 0
+        }));
+
+        allSessionsMetadata.push(...sessionMetadata);
       } catch (error) {
         console.error(`Error fetching ${containmentType} session metadata:`, error);
         // Continue with other containment types
@@ -389,24 +404,25 @@ export class KoreApiService {
     console.log(`Fetching messages for ${sessionIds.length} sessions from ${dateFrom} to ${dateTo}`);
 
     try {
-      const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getMessages`;
+      // Use the correct API endpoint and method (same as working getMessages)
+      const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getMessagesV2`;
 
       const payload = {
         dateFrom,
         dateTo,
-        sessionIds, // Filter by specific session IDs
+        sessionId: sessionIds, // Use sessionId (not sessionIds) to match working method
         skip: 0,
-        limit: 10000 // Reasonable limit for messages
+        limit: 10000
       };
 
-      const response: AxiosResponse<any> = await axios.post(url, payload, {
-        headers: this.getHeaders()
-      });
-
-      if (response.data?.data?.messages) {
-        const messages = response.data.data.messages;
-        console.log(`Retrieved ${messages.length} messages for specified sessions`);
-        return messages;
+      console.log(`Making request for messages with ${sessionIds.length} session IDs`);
+      
+      // Use makeRequest method (same as working getMessages)
+      const response = await this.makeRequest<KoreMessagesResponse>(url, payload);
+      
+      if (response.messages) {
+        console.log(`Retrieved ${response.messages.length} messages for specified sessions`);
+        return response.messages;
       }
 
       return [];
