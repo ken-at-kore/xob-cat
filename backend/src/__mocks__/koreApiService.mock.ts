@@ -1,5 +1,6 @@
 import { SessionWithTranscript } from '../../../shared/types';
 import { IKoreApiService } from '../interfaces';
+import { SessionMetadata, KoreMessage } from '../services/koreApiService';
 
 export class MockKoreApiService implements IKoreApiService {
   private mockSessions: SessionWithTranscript[] = [
@@ -233,5 +234,97 @@ export class MockKoreApiService implements IKoreApiService {
   // Helper method for testing - get all mock sessions
   getAllMockSessions(): SessionWithTranscript[] {
     return [...this.mockSessions];
+  }
+
+  async getSessionsMetadata(options: { dateFrom: string; dateTo: string; limit?: number }): Promise<SessionMetadata[]> {
+    console.log(`🧪 MockKoreApiService: Getting session metadata from ${options.dateFrom} to ${options.dateTo}, limit=${options.limit || 1000}`);
+    
+    // Filter sessions by date range
+    const startDate = new Date(options.dateFrom);
+    const endDate = new Date(options.dateTo);
+    
+    const filteredSessions = this.mockSessions.filter(session => {
+      const sessionDate = new Date(session.start_time);
+      return sessionDate >= startDate && sessionDate <= endDate;
+    });
+
+    // Apply limit
+    const limitedSessions = filteredSessions.slice(0, options.limit || 1000);
+    
+    // Convert to SessionMetadata format
+    const metadata: SessionMetadata[] = limitedSessions.map(session => ({
+      sessionId: session.session_id,
+      userId: session.user_id,
+      start_time: session.start_time,
+      end_time: session.end_time,
+      containment_type: session.containment_type || 'selfService', // Ensure non-null
+      tags: session.tags || [],
+      metrics: { 
+        total_messages: session.metrics?.total_messages || session.message_count, 
+        user_messages: session.metrics?.user_messages || session.user_message_count, 
+        bot_messages: session.metrics?.bot_messages || session.bot_message_count 
+      },
+      duration_seconds: session.duration_seconds || 0
+    }));
+    
+    console.log(`🧪 MockKoreApiService: Returning ${metadata.length} session metadata objects`);
+    return metadata;
+  }
+
+  async getMessagesForSessions(sessionIds: string[], dateRange?: { dateFrom: string; dateTo: string }): Promise<KoreMessage[]> {
+    console.log(`🧪 MockKoreApiService: Getting messages for ${sessionIds.length} sessions`);
+    
+    const messages: KoreMessage[] = [];
+    
+    for (const sessionId of sessionIds) {
+      const session = this.mockSessions.find(s => s.session_id === sessionId);
+      if (session) {
+        for (const message of session.messages) {
+          messages.push({
+            sessionId: session.session_id,
+            createdBy: message.message_type === 'user' ? 'user' : 'bot',
+            createdOn: message.timestamp,
+            type: message.message_type === 'user' ? 'incoming' : 'outgoing',
+            timestampValue: new Date(message.timestamp).getTime(),
+            components: [{
+              cT: 'text',
+              data: {
+                text: message.message
+              }
+            }]
+          });
+        }
+      }
+    }
+
+    console.log(`🧪 MockKoreApiService: Returning ${messages.length} KoreMessages`);
+    return messages;
+  }
+
+  async getSessionMessages(sessionId: string): Promise<KoreMessage[]> {
+    console.log(`🧪 MockKoreApiService: Getting messages for session: ${sessionId}`);
+    
+    const session = this.mockSessions.find(s => s.session_id === sessionId);
+    if (!session) {
+      console.log(`🧪 MockKoreApiService: Session ${sessionId} not found`);
+      return [];
+    }
+
+    const messages: KoreMessage[] = session.messages.map(message => ({
+      sessionId: session.session_id,
+      createdBy: message.message_type === 'user' ? 'user' : 'bot',
+      createdOn: message.timestamp,
+      type: message.message_type === 'user' ? 'incoming' : 'outgoing',
+      timestampValue: new Date(message.timestamp).getTime(),
+      components: [{
+        cT: 'text',
+        data: {
+          text: message.message
+        }
+      }]
+    }));
+
+    console.log(`🧪 MockKoreApiService: Returning ${messages.length} messages for session ${sessionId}`);
+    return messages;
   }
 }

@@ -1,8 +1,10 @@
 import { IOpenAIService } from '../interfaces';
-import { AnalysisResult, Message } from '../../../shared/types';
+import { AnalysisResult, Message, SessionWithTranscript, ExistingClassifications } from '../../../shared/types';
 import { analyzeSessionWithOpenAI } from './openaiService';
+import { OpenAIAnalysisService } from './openaiAnalysisService';
 
 export class RealOpenAIService implements IOpenAIService {
+  private openAIAnalysisService = new OpenAIAnalysisService();
   async analyzeSession(messages: Message[], apiKey?: string): Promise<{
     analysis: AnalysisResult;
     cost: number;
@@ -70,6 +72,22 @@ export class RealOpenAIService implements IOpenAIService {
         }
       };
     }
+  }
+
+  async analyzeBatch(
+    sessions: SessionWithTranscript[],
+    existingClassifications: ExistingClassifications,
+    openaiApiKey: string,
+    modelId: string = 'gpt-4o-mini'
+  ): Promise<{
+    sessions: any[];
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+    cost: number;
+    model: string;
+  }> {
+    return this.openAIAnalysisService.analyzeBatch(sessions, existingClassifications, openaiApiKey, modelId);
   }
 }
 

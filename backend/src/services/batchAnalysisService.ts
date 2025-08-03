@@ -1,4 +1,5 @@
 import { OpenAIAnalysisService } from './openaiAnalysisService';
+import { IOpenAIService } from '../interfaces';
 import { 
   SessionWithTranscript, 
   SessionWithFacts, 
@@ -23,7 +24,7 @@ export class BatchAnalysisService {
   private readonly MAX_BATCH_CHARS = 50000; // total characters per batch
   private batchCounter = 0;
 
-  constructor(private openaiService: OpenAIAnalysisService) {}
+  constructor(private openaiService: IOpenAIService) {}
 
   async processSessionsBatch(
     sessions: SessionWithTranscript[],

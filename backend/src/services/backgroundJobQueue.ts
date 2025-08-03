@@ -5,6 +5,7 @@ import { OpenAIAnalysisService } from './openaiAnalysisService';
 import { AutoAnalyzeService } from './autoAnalyzeService';
 import { KoreApiService } from './koreApiService';
 import { SWTService } from './swtService';
+import { ServiceFactory } from '../factories/serviceFactory';
 
 /**
  * Background Job Queue for handling async auto-analysis processing
@@ -174,8 +175,8 @@ export class BackgroundJobQueue {
     
     console.log(`[BackgroundJobQueue] Using ${job.credentials ? 'real' : 'mock'} credentials for bot: ${koreApiConfig.botId}`);
     
-    const koreApiService = new KoreApiService(koreApiConfig);
-    const swtService = new SWTService(koreApiConfig);
+    const koreApiService = ServiceFactory.createKoreApiService(koreApiConfig);
+    const swtService = new SWTService(koreApiService);
     const sessionSamplingService = new SessionSamplingService(swtService, koreApiService);
 
     // Update progress
@@ -256,7 +257,7 @@ export class BackgroundJobQueue {
     console.log(`[BackgroundJobQueue] Processing analysis phase for job ${job.id} with ${job.sessionData.length} sessions`);
 
     // Create batch analysis service
-    const openaiAnalysisService = new OpenAIAnalysisService();
+    const openaiAnalysisService = ServiceFactory.createOpenAIService();
     const batchAnalysisService = new BatchAnalysisService(openaiAnalysisService);
 
     // Update progress

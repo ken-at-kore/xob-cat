@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { AnalysisResult, AnalysisResponse, ANALYSIS_FUNCTION_SCHEMA } from '../../../shared/types';
 import { analyzeSessionWithOpenAI } from '../services/openaiService';
 import { createSWTService } from '../services/swtService'; 
+import { ServiceFactory } from '../factories/serviceFactory';
 import { loadKoreCredentials, getKoreCredentials } from '../middleware/credentials';
 import { successResponse, validationErrorResponse, internalServerErrorResponse } from '../utils/apiResponse';
 import { asyncHandler } from '../middleware/errorHandler';
@@ -47,7 +48,8 @@ router.use('/sessions', loadKoreCredentials);
 // GET /api/analysis/sessions - Get sessions from real Kore.ai API
 router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
   const { config, botName } = getKoreCredentials(req);
-  const swtService = createSWTService(config);
+  const koreApiService = ServiceFactory.createKoreApiService(config);
+  const swtService = createSWTService(koreApiService);
   
   // Fix parameter mapping - use the correct query parameter names that frontend sends
   const startDate = req.query.start_date as string;

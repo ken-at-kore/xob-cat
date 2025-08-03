@@ -6,6 +6,8 @@ import { KoreApiService } from './koreApiService';
 import { SWTService } from './swtService';
 import { AnalysisSummaryService } from './analysisSummaryService';
 import { getBackgroundJobQueue } from './backgroundJobQueue';
+import { ServiceFactory } from '../factories/serviceFactory';
+import { IKoreApiService, IOpenAIService } from '../interfaces';
 import { 
   AnalysisConfig, 
   AnalysisProgress, 
@@ -34,10 +36,10 @@ export class AutoAnalyzeService {
   private activeSessions = new Map<string, AnalysisSession>();
 
   constructor(
-    private koreApiService: KoreApiService,
+    private koreApiService: IKoreApiService,
     private sessionSamplingService: SessionSamplingService,
     private batchAnalysisService: BatchAnalysisService,
-    private openaiAnalysisService: OpenAIAnalysisService,
+    private openaiAnalysisService: IOpenAIService,
     private botId: string,
     private credentials?: { clientId: string; clientSecret: string }
   ) {}
@@ -438,6 +440,8 @@ export class AutoAnalyzeService {
   ): AutoAnalyzeService {
     // Use botId as the key to support multiple bots
     if (!AutoAnalyzeService.instances.has(botId)) {
+      console.log(`🚀 AutoAnalyzeService: Creating services for bot ${botId}`);
+      
       const koreApiConfig = {
         botId,
         clientId: credentials?.clientId || 'mock-client-id',
@@ -445,11 +449,13 @@ export class AutoAnalyzeService {
         baseUrl: 'https://bots.kore.ai'
       };
       
-      const koreApiService = new KoreApiService(koreApiConfig);
-      const swtService = new SWTService(koreApiConfig);
+      // Use ServiceFactory to create services (respects mock/real configuration)
+      const koreApiService = ServiceFactory.createKoreApiService(koreApiConfig);
+      const openaiAnalysisService = ServiceFactory.createOpenAIService();
       
+      // These services depend on the Kore API service
+      const swtService = new SWTService(koreApiService);
       const sessionSamplingService = new SessionSamplingService(swtService, koreApiService);
-      const openaiAnalysisService = new OpenAIAnalysisService();
       const batchAnalysisService = new BatchAnalysisService(openaiAnalysisService);
 
       const serviceInstance = new AutoAnalyzeService(

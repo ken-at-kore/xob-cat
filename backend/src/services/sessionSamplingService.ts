@@ -1,5 +1,5 @@
 import { SWTService } from './swtService';
-import { KoreApiService } from './koreApiService';
+import { IKoreApiService } from '../interfaces';
 import { SessionWithTranscript } from '../models/swtModels';
 import type { TimeWindow, AnalysisConfig, SessionFilters } from '../../../shared/types';
 
@@ -22,7 +22,7 @@ export class SessionSamplingService {
 
   constructor(
     private swtService: SWTService,
-    private koreApiService: KoreApiService
+    private koreApiService: IKoreApiService
   ) {}
 
   async sampleSessions(
@@ -135,44 +135,14 @@ export class SessionSamplingService {
         return sessions;
       }
 
-      // Find date range from sessions
-      const startTimes = sessions.map(s => new Date(s.start_time).getTime());
-      const endTimes = sessions.map(s => new Date(s.end_time).getTime());
-      const minTime = new Date(Math.min(...startTimes));
-      const maxTime = new Date(Math.max(...endTimes));
+      console.log(`Using new lazy loading approach to populate messages for ${sessionIds.length} sampled sessions`);
       
-      // Add buffer to ensure we get all messages
-      minTime.setHours(minTime.getHours() - 1);
-      maxTime.setHours(maxTime.getHours() + 1);
+      // NEW OPTIMIZED APPROACH: Use SWTService lazy loading to populate messages
+      const sessionsWithMessages = await this.swtService.populateMessages(sessions, sessionIds);
 
-      console.log(`Fetching messages for ${sessionIds.length} sessions from ${minTime.toISOString()} to ${maxTime.toISOString()}`);
-      
-      // Use the kore service to fetch messages
-      const messages = await this.koreApiService.getMessages(
-        minTime.toISOString(),
-        maxTime.toISOString(),
-        sessionIds
-      );
+      console.log(`Successfully populated messages for ${sessionIds.length} sessions using lazy loading`);
 
-      console.log(`Retrieved ${messages.length} messages for sampled sessions`);
-
-      // Group messages by session
-      const messagesBySession: Record<string, any[]> = {};
-      messages.forEach((message: any) => {
-        const sessionId = message.sessionId || message.session_id;
-        if (sessionId) {
-          if (!messagesBySession[sessionId]) {
-            messagesBySession[sessionId] = [];
-          }
-          messagesBySession[sessionId].push(message);
-        }
-      });
-
-      // Add messages to sessions
-      return sessions.map(session => ({
-        ...session,
-        messages: messagesBySession[session.session_id] || []
-      }));
+      return sessionsWithMessages;
     } catch (error) {
       console.error('Error fetching messages for sampled sessions:', error);
       // Return sessions without messages on error
@@ -182,32 +152,25 @@ export class SessionSamplingService {
 
   private async getSessionsInTimeWindow(window: TimeWindow): Promise<SessionWithTranscript[]> {
     try {
-      console.log(`Fetching sessions for ${window.label} from ${window.start.toISOString()} to ${window.end.toISOString()}`);
+      console.log(`Fetching session metadata for ${window.label} from ${window.start.toISOString()} to ${window.end.toISOString()}`);
       
-      // Get ONLY session metadata first (without messages) to avoid timeout
-      // We'll fetch messages later only for the sampled sessions
-      const sessions = await this.koreApiService.getSessions(
-        window.start.toISOString(),
-        window.end.toISOString(),
-        0,
-        10000 // fetch up to 10k sessions
-      );
+      // NEW OPTIMIZED APPROACH: Get ONLY session metadata (no messages) using granular method
+      const sessionMetadata = await this.koreApiService.getSessionsMetadata({
+        dateFrom: window.start.toISOString(),
+        dateTo: window.end.toISOString(),
+        limit: 10000 // fetch up to 10k session metadata objects
+      });
       
-      console.log(`Found ${sessions.length} sessions in window ${window.label}`);
+      console.log(`Found ${sessionMetadata.length} session metadata objects in window ${window.label}`);
       
-      // Convert to SessionWithTranscript format but with empty messages for now
-      // We'll populate messages later only for sampled sessions
-      const swts: SessionWithTranscript[] = sessions.map(session => ({
-        ...session,
-        messages: [], // Empty for now, will populate later for sampled sessions only
-        user_message_count: session.user_message_count || 0,
-        bot_message_count: session.bot_message_count || 0,
-        duration_seconds: session.duration_seconds || 0 // Ensure duration_seconds is always present
-      }));
+      // Convert metadata to SWT format (no messages yet - will be populated later for sampled sessions only)
+      const swts = await this.swtService.createSWTsFromMetadata(sessionMetadata);
+      
+      console.log(`Created ${swts.length} SWT objects from metadata (no messages) in ${window.label}`);
       
       return swts;
     } catch (error) {
-      console.error(`Error fetching sessions for window ${window.label}:`, error);
+      console.error(`Error fetching session metadata for window ${window.label}:`, error);
       return [];
     }
   }
