@@ -48,6 +48,9 @@ export class AutoAnalyzeService {
     const analysisId = uuidv4();
     const backgroundJobId = `${analysisId}-sampling`;
     
+    console.log(`🚀 [AutoAnalyzeService] Starting analysis ${analysisId} with bot ${this.botId}`);
+    console.log(`🚀 [AutoAnalyzeService] Using credentials: ${this.credentials ? 'real' : 'mock'}`);
+    
     const analysisSession: AnalysisSession = {
       id: analysisId,
       config,

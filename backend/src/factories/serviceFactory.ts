@@ -38,6 +38,9 @@ export class ServiceFactory {
     const serviceType = ServiceFactory.getServiceType();
     
     console.log(`🏭 ServiceFactory: Creating Kore API service (type: ${serviceType})`);
+    console.log(`🏭 ServiceFactory: NODE_ENV=${process.env.NODE_ENV}, USE_MOCK_SERVICES=${process.env.USE_MOCK_SERVICES}`);
+    console.log(`🏭 ServiceFactory: Config:`, ServiceFactory.config);
+    console.log(`🏭 ServiceFactory: Has koreConfig:`, !!koreConfig, koreConfig ? `bot: ${koreConfig.botId}` : 'none');
 
     switch (serviceType) {
       case ServiceType.MOCK:
