@@ -1,3 +1,58 @@
+# Backend Services
+
+This directory contains the core business logic services for XOBCAT's backend functionality.
+
+## Service Architecture
+
+### Real Services (`services/`)
+Production implementations that make actual API calls:
+- **openaiService.ts**: GPT-4o-mini integration with function calling
+- **koreApiService.ts**: Kore.ai API client with JWT authentication
+- **swtService.ts**: Session analysis business logic
+- **realSessionDataService.ts**: Session data retrieval with SWT integration
+
+### Mock Services (`__mocks__/`)
+Pure mock implementations that never attempt real API calls:
+- **koreApiService.mock.ts**: Mock Kore.ai API with deterministic data
+- **openaiService.mock.ts**: Mock OpenAI service with predefined responses
+- **sessionDataService.mock.ts**: Mock session data without network calls
+
+### Service Interfaces (`interfaces/`)
+TypeScript interfaces for dependency injection:
+- **IKoreApiService**: Kore.ai operations contract
+- **IOpenAIService**: OpenAI analysis operations contract
+- **ISessionDataService**: Session data retrieval contract
+
+### Service Factory (`factories/`)
+Environment-based service selection:
+- **serviceFactory.ts**: Automatically selects real or mock services based on environment
+
+## Mock Service Strategy
+
+### Pure Mock Approach
+- Never attempt real API calls
+- Instant execution without HTTP overhead
+- Deterministic test data for consistent results
+- No environment variables or credentials required
+
+### Benefits
+- **Reliability**: Tests never fail due to network issues
+- **Speed**: No HTTP request latency in test environments
+- **Determinism**: Consistent behavior across test runs
+- **Isolation**: Services can be tested independently
+
+### Usage
+```typescript
+// Automatic selection based on NODE_ENV
+import { createKoreApiService } from '../factories/serviceFactory';
+
+// Manual selection for testing
+import { MockKoreApiService } from '../__mocks__/koreApiService.mock';
+const koreService = new MockKoreApiService();
+```
+
+---
+
 # Transcript Sanitization Service
 
 The `TranscriptSanitizationService` centralizes all message sanitization logic for cleaning up bot and user messages from the Kore.ai API. This service automatically handles various patterns to ensure clean, readable transcripts for analysis.

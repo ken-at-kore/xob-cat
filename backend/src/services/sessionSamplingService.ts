@@ -1,4 +1,5 @@
 import { SWTService } from './swtService';
+import { KoreApiService } from './koreApiService';
 import { SessionWithTranscript } from '../models/swtModels';
 import type { TimeWindow, AnalysisConfig, SessionFilters } from '../../../shared/types';
 
@@ -20,7 +21,8 @@ export class SessionSamplingService {
   private readonly MIN_MESSAGES_PER_SESSION = 2;
 
   constructor(
-    private swtService: SWTService
+    private swtService: SWTService,
+    private koreApiService: KoreApiService
   ) {}
 
   async sampleSessions(
@@ -74,8 +76,12 @@ export class SessionSamplingService {
     // Random sample to target count
     const sampledSessions = this.randomSample(sessionArray, config.sessionCount);
 
+    // Now fetch messages ONLY for the sampled sessions to avoid timeout
+    console.log(`Fetching messages for ${sampledSessions.length} sampled sessions...`);
+    const sessionsWithMessages = await this.fetchMessagesForSessions(sampledSessions);
+
     return {
-      sessions: sampledSessions,
+      sessions: sessionsWithMessages,
       timeWindows: usedWindows,
       totalFound: sessionArray.length
     };
@@ -117,21 +123,89 @@ export class SessionSamplingService {
     return shuffled.slice(0, count);
   }
 
+  private async fetchMessagesForSessions(sessions: SessionWithTranscript[]): Promise<SessionWithTranscript[]> {
+    try {
+      // Get the session IDs
+      const sessionIds = sessions
+        .map(s => s.session_id)
+        .filter(id => id && id.trim() !== '');
+      
+      if (sessionIds.length === 0) {
+        console.log('No valid session IDs to fetch messages for');
+        return sessions;
+      }
+
+      // Find date range from sessions
+      const startTimes = sessions.map(s => new Date(s.start_time).getTime());
+      const endTimes = sessions.map(s => new Date(s.end_time).getTime());
+      const minTime = new Date(Math.min(...startTimes));
+      const maxTime = new Date(Math.max(...endTimes));
+      
+      // Add buffer to ensure we get all messages
+      minTime.setHours(minTime.getHours() - 1);
+      maxTime.setHours(maxTime.getHours() + 1);
+
+      console.log(`Fetching messages for ${sessionIds.length} sessions from ${minTime.toISOString()} to ${maxTime.toISOString()}`);
+      
+      // Use the kore service to fetch messages
+      const messages = await this.koreApiService.getMessages(
+        minTime.toISOString(),
+        maxTime.toISOString(),
+        sessionIds
+      );
+
+      console.log(`Retrieved ${messages.length} messages for sampled sessions`);
+
+      // Group messages by session
+      const messagesBySession: Record<string, any[]> = {};
+      messages.forEach((message: any) => {
+        const sessionId = message.sessionId || message.session_id;
+        if (sessionId) {
+          if (!messagesBySession[sessionId]) {
+            messagesBySession[sessionId] = [];
+          }
+          messagesBySession[sessionId].push(message);
+        }
+      });
+
+      // Add messages to sessions
+      return sessions.map(session => ({
+        ...session,
+        messages: messagesBySession[session.session_id] || []
+      }));
+    } catch (error) {
+      console.error('Error fetching messages for sampled sessions:', error);
+      // Return sessions without messages on error
+      return sessions;
+    }
+  }
+
   private async getSessionsInTimeWindow(window: TimeWindow): Promise<SessionWithTranscript[]> {
     try {
-      // Use SWTService to fetch sessions with transcripts
       console.log(`Fetching sessions for ${window.label} from ${window.start.toISOString()} to ${window.end.toISOString()}`);
       
-      // Use SWTService to get sessions with transcripts
-      const result = await this.swtService.generateSWTs({
-        dateFrom: window.start.toISOString(),
-        dateTo: window.end.toISOString(),
-        limit: 10000 // fetch up to 10k sessions
-      });
+      // Get ONLY session metadata first (without messages) to avoid timeout
+      // We'll fetch messages later only for the sampled sessions
+      const sessions = await this.koreApiService.getSessions(
+        window.start.toISOString(),
+        window.end.toISOString(),
+        0,
+        10000 // fetch up to 10k sessions
+      );
       
-      console.log(`Found ${result.swts.length} sessions in window ${window.label}`);
+      console.log(`Found ${sessions.length} sessions in window ${window.label}`);
       
-      return result.swts;
+      // Convert to SessionWithTranscript format but with empty messages for now
+      // We'll populate messages later only for sampled sessions
+      const swts: SessionWithTranscript[] = sessions.map(session => ({
+        ...session,
+        messages: [], // Empty for now, will populate later for sampled sessions only
+        user_message_count: session.user_message_count || 0,
+        bot_message_count: session.bot_message_count || 0,
+        duration_seconds: session.duration_seconds || 0 // Ensure duration_seconds is always present
+      }));
+      
+      return swts;
     } catch (error) {
       console.error(`Error fetching sessions for window ${window.label}:`, error);
       return [];

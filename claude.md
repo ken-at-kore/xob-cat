@@ -88,10 +88,21 @@ routes/
 └── kore.ts                 # GET /api/kore/* - Kore.ai API integration
 
 services/
-├── openaiService.ts        # GPT-4o-mini function calling integration
-├── koreApiService.ts       # Kore.ai JWT auth + rate limiting
-├── mockDataService.ts      # Test data generation
-└── swtService.ts           # Session analysis business logic
+├── openaiService.ts          # GPT-4o-mini function calling integration
+├── koreApiService.ts         # Kore.ai JWT auth + rate limiting
+├── realSessionDataService.ts # Session data retrieval with SWT integration
+└── swtService.ts             # Session analysis business logic
+
+__mocks__/                  # Pure mock services (no real API calls)
+├── koreApiService.mock.ts  # Pure mock Kore.ai API service
+├── openaiService.mock.ts   # Pure mock OpenAI service
+└── sessionDataService.mock.ts # Pure mock session data service
+
+interfaces/
+└── index.ts                # Service interfaces for dependency injection
+
+factories/
+└── serviceFactory.ts       # Environment-based service selection
 
 models/
 └── swtModels.ts           # Domain models for session analysis
@@ -238,6 +249,84 @@ Solved 40-50 second synchronous processing timeout issues in AWS Lambda with asy
 - **Mock Data**: Kore.ai integration uses mock credentials for MVP
 - **Session Cleanup**: Analysis results expire after 1 hour
 - **Job Queue**: In-memory job storage (not suitable for multi-instance deployments)
+
+## 🧪 Mock Service Architecture (August 2025)
+
+### Overview
+Centralized mock services architecture providing pure mocks without any real API attempts for reliable testing.
+
+### Service Types
+1. **Pure Mock Services** (`__mocks__/`): Never attempt real API calls
+2. **Real Services** (`services/`): Production implementations with real API calls  
+3. **Service Factory** (`factories/`): Environment-based service selection
+
+### Architecture Components
+
+#### Service Interfaces (`backend/src/interfaces/`)
+- `IKoreApiService`: Kore.ai API operations interface
+- `IOpenAIService`: OpenAI analysis operations interface  
+- `ISessionDataService`: Session data retrieval interface
+- `ServiceType`: REAL | MOCK | HYBRID configuration enum
+
+#### Service Factory (`backend/src/factories/serviceFactory.ts`)
+Environment-based service selection:
+- **Test Environment**: Pure mock services only
+- **Development**: Configurable (real or mock based on credentials)
+- **Production**: Real services with credential validation
+
+#### Pure Mock Services (`backend/src/__mocks__/`)
+- **koreApiService.mock.ts**: Mock Kore.ai API with deterministic data
+- **openaiService.mock.ts**: Mock OpenAI service with predefined analysis results
+- **sessionDataService.mock.ts**: Mock session data generation without network calls
+
+### Testing Strategy
+
+#### Unit Tests
+- Use pure mock services via service factory
+- No real API calls in test environment
+- Deterministic test data for consistent results
+
+#### Integration Tests  
+- Test service factory environment selection
+- Verify service interface compliance
+- Test error handling and fallback behavior
+
+#### E2E Tests
+- Use mock services for consistent browser testing
+- Test complete workflows without external dependencies
+
+### Environment Configuration
+
+#### Test Environment (`NODE_ENV=test`)
+```bash
+# Automatically uses pure mock services
+# No API keys required
+# No network calls attempted
+```
+
+#### Development Environment  
+```bash
+# Service selection based on credential availability
+# Falls back to mocks when credentials missing
+# Supports both real and mock workflows
+```
+
+### Migration Complete ✅
+
+All phases completed successfully:
+
+1. **✅ Phase 1**: Created pure mock services in `__mocks__/` directory
+2. **✅ Phase 2**: Implemented service interfaces for dependency injection
+3. **✅ Phase 3**: Updated all services to use ServiceFactory pattern
+4. **✅ Phase 4**: Removed legacy hybrid approach completely
+
+### Benefits
+
+- **Reliability**: Tests never fail due to network issues
+- **Speed**: Pure mocks execute instantly without HTTP overhead
+- **Determinism**: Consistent test data and behavior
+- **Isolation**: Services can be tested independently
+- **Flexibility**: Easy switching between real and mock implementations
 
 ## Development Guidelines
 

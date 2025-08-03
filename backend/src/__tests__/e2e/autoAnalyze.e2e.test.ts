@@ -33,10 +33,13 @@ import { OpenAIAnalysisService } from '../../services/openaiAnalysisService';
  * are implemented. The Jest mocking approach here is a temporary solution but
  * demonstrates the complete E2E workflow testing.
  * 
- * Related files to review:
- * - backend/src/services/mockDataService.ts (hybrid real/mock approach)
+ * Related files:
+ * - backend/src/__mocks__/ directory with pure mock implementations (NOW AVAILABLE)
+ * - backend/src/factories/serviceFactory.ts (service selection pattern)
  * - frontend/e2e/utils/mockOpenAIService.ts (pure mock for Playwright)
- * - Need: backend/src/__mocks__/ directory with pure mock implementations
+ * 
+ * NOTE: This test can now be enabled by using ServiceFactory.useMockServices()
+ * to force use of pure mock services instead of hybrid approach.
  */
 describe.skip('Auto-Analyze E2E Test', () => {
   let app: express.Application;

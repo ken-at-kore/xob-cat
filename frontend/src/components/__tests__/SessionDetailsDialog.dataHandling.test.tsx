@@ -193,7 +193,7 @@ describe('SessionDetailsDialog - Data Handling', () => {
 
   describe('Real backend data issue reproduction', () => {
     it('reproduces the "No messages in this session" issue with real backend data structure', () => {
-      // This test uses the exact data structure from mockDataService.ts to reproduce the issue
+      // This test uses realistic data structure to reproduce the issue
       const realBackendSession: SessionWithTranscript[] = [{
         session_id: 'session_1737661200000_0',
         user_id: 'user_123',
@@ -314,7 +314,7 @@ describe('SessionDetailsDialog - Data Handling', () => {
 
   describe('Duration formatting edge cases', () => {
     it('reproduces the duration showing N/A issue with real backend data', () => {
-      // Test with the exact data structure from mockDataService.ts
+      // Test with realistic data structure from mock services
       const sessionWithDuration: SessionWithTranscript[] = [{
         session_id: 'session_duration_test',
         user_id: 'user_456',

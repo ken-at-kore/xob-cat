@@ -1,14 +1,17 @@
 import { SessionSamplingService } from '../../services/sessionSamplingService';
 import { SWTService } from '../../services/swtService';
+import { KoreApiService, KoreSession, KoreMessage } from '../../services/koreApiService';
 import { SessionWithTranscript } from '../../models/swtModels';
 import { TimeWindow } from '../../../../shared/types';
 
-// Mock the SWTService
+// Mock the services
 jest.mock('../../services/swtService');
+jest.mock('../../services/koreApiService');
 
 describe('SessionSamplingService', () => {
   let sessionSamplingService: SessionSamplingService;
   let mockSWTService: jest.Mocked<SWTService>;
+  let mockKoreApiService: jest.Mocked<KoreApiService>;
 
   beforeEach(() => {
     const mockConfig = {
@@ -18,6 +21,7 @@ describe('SessionSamplingService', () => {
       baseUrl: 'https://bots.kore.ai'
     };
     mockSWTService = new SWTService(mockConfig) as jest.Mocked<SWTService>;
+    mockKoreApiService = new KoreApiService(mockConfig) as jest.Mocked<KoreApiService>;
     
     // Set default mock to return empty SWT result for all calls
     mockSWTService.generateSWTs = jest.fn().mockResolvedValue({
@@ -28,11 +32,117 @@ describe('SessionSamplingService', () => {
       generationTime: 0
     });
     
-    sessionSamplingService = new SessionSamplingService(mockSWTService);
+    // Mock KoreApiService methods
+    mockKoreApiService.getSessions = jest.fn().mockResolvedValue([]);
+    mockKoreApiService.getMessages = jest.fn().mockResolvedValue([]);
+    
+    sessionSamplingService = new SessionSamplingService(mockSWTService, mockKoreApiService);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('optimized session sampling', () => {
+    it('should fetch sessions without messages first, then fetch messages only for sampled sessions', async () => {
+      // Mock session data as returned by KoreApiService.getSessions (KoreSession format)
+      const mockSessions: KoreSession[] = [
+        {
+          sessionId: 'session_1',
+          userId: 'user_1',
+          start_time: '2025-08-01T15:00:00Z',
+          end_time: '2025-08-01T15:10:00Z',
+          containment_type: 'agent',
+          tags: [],
+          metrics: {
+            total_messages: 5,
+            user_messages: 3,
+            bot_messages: 2
+          }
+        },
+        {
+          sessionId: 'session_2',
+          userId: 'user_2',
+          start_time: '2025-08-01T15:05:00Z',
+          end_time: '2025-08-01T15:15:00Z',
+          containment_type: 'selfService',
+          tags: [],
+          metrics: {
+            total_messages: 8,
+            user_messages: 4,
+            bot_messages: 4
+          }
+        }
+      ];
+
+      // Mock messages for sampled sessions (KoreMessage format)
+      const mockMessages: KoreMessage[] = [
+        {
+          sessionId: 'session_1',
+          createdBy: 'user',
+          createdOn: '2025-08-01T15:00:00Z',
+          type: 'incoming',
+          timestampValue: 1725193200000,
+          components: [{
+            cT: 'text',
+            data: { text: 'Hello' }
+          }]
+        },
+        {
+          sessionId: 'session_2',
+          createdBy: 'user',
+          createdOn: '2025-08-01T15:05:00Z',
+          type: 'incoming',
+          timestampValue: 1725193500000,
+          components: [{
+            cT: 'text',
+            data: { text: 'Hi there' }
+          }]
+        }
+      ];
+
+      // Mock KoreApiService to return sessions without messages
+      mockKoreApiService.getSessions.mockResolvedValue(mockSessions);
+      mockKoreApiService.getMessages.mockResolvedValue(mockMessages);
+
+      const config = {
+        startDate: '2025-08-01',
+        startTime: '15:00',
+        sessionCount: 2,
+        openaiApiKey: 'test-key',
+        modelId: 'gpt-4o-mini'
+      };
+
+      const result = await sessionSamplingService.sampleSessions(config);
+
+      // Verify that getSessions was called (to get session metadata without messages)
+      expect(mockKoreApiService.getSessions).toHaveBeenCalled();
+      
+      // Verify that getMessages was called (to get messages for sampled sessions only)
+      expect(mockKoreApiService.getMessages).toHaveBeenCalled();
+      
+      // Verify that we got sessions with messages in the result
+      expect(result.sessions).toHaveLength(2);
+      expect(result.sessions[0]?.messages).toBeDefined();
+      expect(result.totalFound).toBe(2);
+    });
+
+    it('should handle insufficient sessions error', async () => {
+      // Mock empty sessions to trigger insufficient sessions error
+      mockKoreApiService.getSessions.mockResolvedValue([]);
+
+      const config = {
+        startDate: '2025-08-01',
+        startTime: '15:00',
+        sessionCount: 100, // Request more than available
+        openaiApiKey: 'test-key',
+        modelId: 'gpt-4o-mini'
+      };
+
+      await expect(sessionSamplingService.sampleSessions(config))
+        .rejects
+        .toThrow('Insufficient sessions found');
+    });
   });
 
   describe('sampleSessions', () => {

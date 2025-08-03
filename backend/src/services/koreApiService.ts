@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import axios, { AxiosResponse } from 'axios';
 import { TranscriptSanitizationService } from './transcriptSanitizationService';
-import { generateMockSessions } from './mockDataService';
+import { MockSessionDataService } from '../__mocks__/sessionDataService.mock';
 import { SessionFilters, SessionWithTranscript } from '../../../shared/types';
 
 // Types for Kore.ai API responses
@@ -255,7 +255,8 @@ export class KoreApiService {
       if (startDateOnly) filters.start_date = startDateOnly;
       if (endDateOnly) filters.end_date = endDateOnly;
       
-      const mockSessions = generateMockSessions(filters);
+      const mockService = new MockSessionDataService();
+      const mockSessions = mockService.generateMockSessions(filters);
       console.log(`Generated ${mockSessions.length} mock sessions`);
       return mockSessions;
     }

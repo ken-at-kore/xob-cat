@@ -163,8 +163,22 @@ curl http://localhost:3001/health
 
 - **openaiService.ts**: GPT-4o-mini integration with function calling and cost tracking
 - **koreApiService.ts**: Kore.ai API client with JWT auth and rate limiting
-- **mockDataService.ts**: Test data generation for development
+- **realSessionDataService.ts**: Session data retrieval with SWT integration
 - **swtService.ts**: Session analysis business logic
+
+### Mock Service Architecture
+
+XOBCAT uses a centralized mock service architecture for reliable testing:
+
+- **Pure Mock Services** (`backend/src/__mocks__/`): Never attempt real API calls
+- **Service Factory** (`backend/src/factories/`): Environment-based service selection
+- **Service Interfaces** (`backend/src/interfaces/`): Dependency injection contracts
+
+**Benefits**:
+- Tests never fail due to network issues
+- Instant execution without HTTP overhead
+- Deterministic test data and behavior
+- Clean separation between real and mock implementations
 
 ### Frontend Components
 
@@ -183,7 +197,7 @@ curl http://localhost:3001/health
 
 ### Testing Integration
 - **Unit Tests**: Jest for both frontend (React Testing Library) and backend
-- **Integration Tests**: Real API workflow testing with hybrid mock/live data
+- **Integration Tests**: Real API workflow testing with pure mock services for reliability
 - **E2E Tests**: Playwright for full user journey testing
 - **Test Data**: Sanitized production data in `data/` folder for realistic testing
 
@@ -215,6 +229,7 @@ curl http://localhost:3001/health
 - Run `npm run test:coverage` to identify uncovered code
 - Check test data in `data/` folder is properly formatted
 - Verify mock services are properly configured
+- Use pure mock services in test environment to avoid network dependencies
 
 ### Development Guidelines
 

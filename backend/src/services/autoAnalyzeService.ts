@@ -448,7 +448,7 @@ export class AutoAnalyzeService {
       const koreApiService = new KoreApiService(koreApiConfig);
       const swtService = new SWTService(koreApiConfig);
       
-      const sessionSamplingService = new SessionSamplingService(swtService);
+      const sessionSamplingService = new SessionSamplingService(swtService, koreApiService);
       const openaiAnalysisService = new OpenAIAnalysisService();
       const batchAnalysisService = new BatchAnalysisService(openaiAnalysisService);
 

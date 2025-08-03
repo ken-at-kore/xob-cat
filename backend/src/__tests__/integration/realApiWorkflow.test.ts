@@ -5,12 +5,13 @@
  * using real Kore.ai API calls from start to finish.
  */
 
-import { getSessions } from '../../services/mockDataService';
+import { createSessionDataService } from '../../factories/serviceFactory';
 import { createKoreApiService } from '../../services/koreApiService';
 import { configManager } from '../../utils/configManager';
 import { SessionWithTranscript } from '../../../../shared/types';
 
 describe('Real API End-to-End Workflow Tests', () => {
+  const sessionDataService = createSessionDataService();
   let hasRealCredentials: boolean = false;
   let testBotName: string = '';
 
@@ -51,7 +52,7 @@ describe('Real API End-to-End Workflow Tests', () => {
 
       console.log('📊 Fetching sessions with real API integration...');
       const startTime = Date.now();
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
       const endTime = Date.now();
       
       const retrievalTime = endTime - startTime;
@@ -141,7 +142,7 @@ describe('Real API End-to-End Workflow Tests', () => {
         console.log(`📊 Testing ${containmentType} filtering...`);
         
         const filters = { ...baseFilters, containment_type: containmentType };
-        const sessions = await getSessions(filters);
+        const sessions = await sessionDataService.getSessions(filters);
         results[containmentType] = sessions;
         
         console.log(`   ${containmentType}: ${sessions.length} sessions`);
@@ -154,7 +155,7 @@ describe('Real API End-to-End Workflow Tests', () => {
       
       // Get unfiltered results for comparison
       console.log('📊 Testing unfiltered results...');
-      const allSessions = await getSessions(baseFilters);
+      const allSessions = await sessionDataService.getSessions(baseFilters);
       console.log(`   total: ${allSessions.length} sessions`);
       
       // Validate filtering logic
@@ -191,7 +192,7 @@ describe('Real API End-to-End Workflow Tests', () => {
         const pageFilters = { ...filters, skip: page * filters.limit };
         console.log(`📄 Fetching page ${page + 1} (skip: ${pageFilters.skip})...`);
         
-        const pageSessions = await getSessions(pageFilters);
+        const pageSessions = await sessionDataService.getSessions(pageFilters);
         pages.push(pageSessions);
         
         console.log(`   Page ${page + 1}: ${pageSessions.length} sessions`);
@@ -271,7 +272,7 @@ describe('Real API End-to-End Workflow Tests', () => {
         let errorThrown = false;
         
         try {
-          result = await getSessions(testCase.filters);
+          result = await sessionDataService.getSessions(testCase.filters);
         } catch (error) {
           errorThrown = true;
           console.log(`   Error caught: ${(error as Error).message}`);
@@ -307,7 +308,7 @@ describe('Real API End-to-End Workflow Tests', () => {
       // Make the same request multiple times to check consistency
       const requests = [];
       for (let i = 0; i < 3; i++) {
-        requests.push(getSessions({ ...filters }));
+        requests.push(sessionDataService.getSessions({ ...filters }));
       }
       
       const results = await Promise.allSettled(requests);
@@ -366,7 +367,7 @@ describe('Real API End-to-End Workflow Tests', () => {
 
       // Warm-up request
       console.log('🔥 Warm-up request...');
-      await getSessions({ ...benchmarkFilters, limit: 1 });
+      await sessionDataService.getSessions({ ...benchmarkFilters, limit: 1 });
       
       // Benchmark multiple requests
       const benchmarkRuns = 3;
@@ -376,7 +377,7 @@ describe('Real API End-to-End Workflow Tests', () => {
         console.log(`🏃 Benchmark run ${run}/${benchmarkRuns}...`);
         
         const startTime = Date.now();
-        const sessions = await getSessions(benchmarkFilters);
+        const sessions = await sessionDataService.getSessions(benchmarkFilters);
         const endTime = Date.now();
         
         const runTime = endTime - startTime;

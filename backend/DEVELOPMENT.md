@@ -56,10 +56,18 @@ npm run format
 backend/
 ├── src/
 │   ├── services/          # Core business logic
-│   │   ├── koreApiService.ts    # Kore.ai API integration
-│   │   ├── swtService.ts        # SWT generation logic
-│   │   ├── openaiService.ts     # OpenAI integration
-│   │   └── mockDataService.ts   # Mock data for testing
+│   │   ├── koreApiService.ts      # Kore.ai API integration
+│   │   ├── swtService.ts          # SWT generation logic
+│   │   ├── openaiService.ts       # OpenAI integration
+│   │   └── realSessionDataService.ts  # Session data retrieval
+│   ├── __mocks__/         # Pure mock services (no network calls)
+│   │   ├── koreApiService.mock.ts     # Mock Kore.ai API
+│   │   ├── sessionDataService.mock.ts # Mock session data
+│   │   └── openaiService.mock.ts      # Mock OpenAI service
+│   ├── factories/         # Service factory pattern
+│   │   └── serviceFactory.ts          # Environment-based service selection
+│   ├── interfaces/        # Service interfaces
+│   │   └── index.ts               # Service contracts for DI
 │   ├── models/            # Data models and builders
 │   │   └── swtModels.ts         # SWT data structures
 │   ├── routes/            # API route handlers
