@@ -34,6 +34,8 @@ export class SessionSamplingService {
       windowLabel: string
     ) => void
   ): Promise<SamplingResult> {
+    console.log(`[SessionSamplingService] Starting session sampling for ${config.startDate} ${config.startTime} (target: ${config.sessionCount})`);
+    console.log(`[SessionSamplingService] Using service: ${this.koreApiService.constructor.name}`);
     const timeWindows = this.generateTimeWindows(config.startDate, config.startTime);
     const allSessions = new Map<string, SessionWithTranscript>(); // Use Map for deduplication
     const usedWindows: TimeWindow[] = [];
@@ -142,7 +144,13 @@ export class SessionSamplingService {
 
       console.log(`Successfully populated messages for ${sessionIds.length} sessions using lazy loading`);
 
-      return sessionsWithMessages;
+      // IMPORTANT: Apply filtering again now that messages are populated
+      // This ensures sessions with insufficient messages are excluded from the final result
+      console.log(`Applying final filtering to ${sessionsWithMessages.length} sessions with populated messages`);
+      const finalFilteredSessions = this.filterValidSessions(sessionsWithMessages);
+      console.log(`Final result: ${finalFilteredSessions.length} sessions passed filtering with populated messages`);
+
+      return finalFilteredSessions;
     } catch (error) {
       console.error('Error fetching messages for sampled sessions:', error);
       // Return sessions without messages on error
@@ -152,7 +160,9 @@ export class SessionSamplingService {
 
   private async getSessionsInTimeWindow(window: TimeWindow): Promise<SessionWithTranscript[]> {
     try {
-      console.log(`Fetching session metadata for ${window.label} from ${window.start.toISOString()} to ${window.end.toISOString()}`);
+      console.log(`[SessionSamplingService] Fetching session metadata for ${window.label}: ${window.start.toISOString()} to ${window.end.toISOString()}`);
+      console.log(`[SessionSamplingService] Using koreApiService type: ${this.koreApiService.constructor.name}`);
+      console.log(`[SessionSamplingService] Service config botId: ${(this.koreApiService as any).config?.botId}`);
       
       // NEW OPTIMIZED APPROACH: Get ONLY session metadata (no messages) using granular method
       const sessionMetadata = await this.koreApiService.getSessionsMetadata({
@@ -161,7 +171,7 @@ export class SessionSamplingService {
         limit: 10000 // fetch up to 10k session metadata objects
       });
       
-      console.log(`Found ${sessionMetadata.length} session metadata objects in window ${window.label}`);
+      console.log(`[SessionSamplingService] Found ${sessionMetadata.length} session metadata objects in window ${window.label}`);
       
       // Convert metadata to SWT format (no messages yet - will be populated later for sampled sessions only)
       const swts = await this.swtService.createSWTsFromMetadata(sessionMetadata);
@@ -177,12 +187,35 @@ export class SessionSamplingService {
 
   private filterValidSessions(sessions: SessionWithTranscript[]): SessionWithTranscript[] {
     return sessions.filter(session => {
-      // If messages are not populated (empty array), use message count as proxy
+      // If messages are not populated (empty array), we're in metadata-only mode
       if (session.messages.length === 0) {
-        // Use message_count metadata instead
-        return session.message_count >= this.MIN_MESSAGES_PER_SESSION;
+        // In metadata-only mode, check if we have basic session info
+        // The Kore.ai API returns metrics.total_messages as 0 even for sessions with messages,
+        // so we can't rely on message_count for filtering at this stage.
+        // Instead, allow all sessions through if they have basic required fields.
+        
+        // Must have session ID (essential for later message fetching)
+        if (!session.session_id || session.session_id.trim() === '') {
+          return false;
+        }
+        
+        // Must have user ID (indicates real user interaction)
+        if (!session.user_id || session.user_id.trim() === '') {
+          return false;
+        }
+        
+        // Must have start time (essential for time-based queries)
+        if (!session.start_time) {
+          return false;
+        }
+        
+        // Allow all sessions with basic metadata through
+        // They will be properly filtered after messages are populated
+        return true;
       }
 
+      // Messages are populated - apply full filtering logic
+      
       // Must have minimum number of messages
       if (session.messages.length < this.MIN_MESSAGES_PER_SESSION) {
         return false;

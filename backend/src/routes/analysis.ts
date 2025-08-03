@@ -87,7 +87,9 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
     dateTo = new Date().toISOString();
   }
   
-  console.log(`Fetching real Kore.ai sessions from ${dateFrom} to ${dateTo} for ${botName} (limit=${limit})`);
+  console.log(`[Direct API] Fetching real Kore.ai sessions from ${dateFrom} to ${dateTo} for ${botName} (limit=${limit})`);
+  console.log(`[Direct API] Using bot ID: ${config.botId}`);
+  console.log(`[Direct API] Using credentials: clientId=${config.clientId?.substring(0, 8)}..., clientSecret=${config.clientSecret?.substring(0, 8)}...`);
   
   const result = await swtService.generateSWTs({
     dateFrom,
@@ -179,6 +181,78 @@ router.post('/batch', asyncHandler(async (req: Request, res: Response): Promise<
   };
   
   successResponse(res, responseData, `Analyzed ${analyses.length} sessions`);
+}));
+
+
+// Debug endpoint to test service creation differences
+router.get('/debug/service-comparison', loadKoreCredentials, asyncHandler(async (req: Request, res: Response) => {
+  const { config, botName } = getKoreCredentials(req);
+  
+  console.log('\n=== DEBUG: Service Comparison ===');
+  console.log('Session Viewer Service Creation:');
+  console.log(`  Config: ${JSON.stringify(config, null, 2)}`);
+  console.log(`  Bot Name: ${botName}`);
+  
+  // Create session viewer service (same as used by /sessions endpoint)
+  const sessionViewerKoreService = ServiceFactory.createKoreApiService(config);
+  console.log(`  Created service: ${sessionViewerKoreService.constructor.name}`);
+  console.log(`  isMockCredentials: ${(sessionViewerKoreService as any).isMockCredentials?.()}`);
+  
+  // Simulate auto-analyze service creation
+  console.log('\nAuto-Analyze Service Creation:');
+  const credentials = config.clientId && config.clientSecret ? { 
+    clientId: config.clientId, 
+    clientSecret: config.clientSecret 
+  } : undefined;
+  
+  const autoAnalyzeKoreConfig = {
+    botId: config.botId,
+    clientId: credentials?.clientId || 'mock-client-id',
+    clientSecret: credentials?.clientSecret || 'mock-client-secret',
+    baseUrl: 'https://bots.kore.ai'
+  };
+  
+  console.log(`  AutoAnalyze Config: ${JSON.stringify(autoAnalyzeKoreConfig, null, 2)}`);
+  console.log(`  Has credentials: ${!!credentials}`);
+  
+  const autoAnalyzeService = ServiceFactory.createKoreApiService(autoAnalyzeKoreConfig);
+  console.log(`  Created service: ${autoAnalyzeService.constructor.name}`);
+  console.log(`  isMockCredentials: ${(autoAnalyzeService as any).isMockCredentials?.()}`);
+  
+  // Test getSessionsMetadata with both services
+  const testOptions = {
+    dateFrom: '2025-08-01T13:00:00.000Z',  
+    dateTo: '2025-08-01T16:00:00.000Z',
+    limit: 10
+  };
+  
+  console.log('\nTesting getSessionsMetadata with both services:');
+  
+  try {
+    console.log('Session Viewer Service:');
+    const sessionViewerResult = await sessionViewerKoreService.getSessionsMetadata(testOptions);
+    console.log(`  Found ${sessionViewerResult.length} sessions`);
+    
+    console.log('Auto-Analyze Service:');
+    const autoAnalyzeResult = await autoAnalyzeService.getSessionsMetadata(testOptions);
+    console.log(`  Found ${autoAnalyzeResult.length} sessions`);
+    
+    res.json({
+      success: true,
+      data: {
+        sessionViewerSessions: sessionViewerResult.length,
+        autoAnalyzeSessions: autoAnalyzeResult.length,
+        serviceTypes: {
+          sessionViewer: sessionViewerKoreService.constructor.name,
+          autoAnalyze: autoAnalyzeService.constructor.name
+        }
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error in service comparison:', error);
+    res.status(500).json({ success: false, error: (error as Error).message });
+  }
 }));
 
 // Mount auto-analyze routes
