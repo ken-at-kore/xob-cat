@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import axios, { AxiosResponse } from 'axios';
 import { TranscriptSanitizationService } from './transcriptSanitizationService';
 import { generateMockSessions } from './mockDataService';
-import { SessionFilters } from '../../../shared/types';
+import { SessionFilters, SessionWithTranscript } from '../../../shared/types';
 
 // Types for Kore.ai API responses
 export interface KoreMessage {
@@ -146,7 +146,7 @@ export class KoreApiService {
   /**
    * Make authenticated API request with rate limiting
    */
-  private async makeRequest<T>(url: string, payload: any): Promise<T> {
+  private async makeRequest<T>(url: string, payload: Record<string, unknown>): Promise<T> {
     await this.checkRateLimit();
     
     const token = this.generateJwtToken();
@@ -243,7 +243,7 @@ export class KoreApiService {
   /**
    * Retrieve session history from Kore.ai API
    */
-  async getSessions(dateFrom: string, dateTo: string, skip: number = 0, limit: number = 1000): Promise<any[]> {
+  async getSessions(dateFrom: string, dateTo: string, skip: number = 0, limit: number = 1000): Promise<SessionWithTranscript[]> {
     // Check if using mock credentials and return mock data
     if (this.isMockCredentials()) {
       console.log('🧪 Mock credentials detected - returning mock session data');
@@ -302,7 +302,7 @@ export class KoreApiService {
   /**
    * Retrieve conversation messages from Kore.ai API
    */
-  async getMessages(dateFrom: string, dateTo: string, sessionIds?: string[]): Promise<any[]> {
+  async getMessages(dateFrom: string, dateTo: string, sessionIds?: string[]): Promise<KoreMessage[]> {
     // Check if using mock credentials and return empty array (messages included in sessions)
     if (this.isMockCredentials()) {
       console.log('🧪 Mock credentials detected - messages already included in session data');
@@ -361,7 +361,7 @@ export class KoreApiService {
   /**
    * Get a single session by ID
    */
-  async getSessionById(sessionId: string): Promise<any | null> {
+  async getSessionById(sessionId: string): Promise<SessionWithTranscript | null> {
     // First get all sessions and find the one we want
     const sessions = await this.getSessions(
       new Date(0).toISOString(), // From beginning of time
@@ -376,7 +376,7 @@ export class KoreApiService {
   /**
    * Get messages for a specific session
    */
-  async getSessionMessages(sessionId: string): Promise<any[]> {
+  async getSessionMessages(sessionId: string): Promise<KoreMessage[]> {
     return this.getMessages(
       new Date(0).toISOString(), // From beginning of time
       new Date().toISOString(),  // To now
