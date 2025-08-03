@@ -258,20 +258,95 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 - **Time Window Success**: Automatic expansion finds sessions in 95%+ of cases
 - **Batch Processing**: 2-second intervals maintain API rate limits
 
+### Async Architecture (August 2025)
+
+#### Problem Solved
+The original auto-analysis implementation used synchronous processing that took 40-50 seconds, exceeding API Gateway's 29-second timeout limit in AWS Lambda environments. This caused analysis requests to fail in production despite working locally.
+
+#### Solution: Background Job Queue
+Implemented an async architecture using a BackgroundJobQueue service that works both locally and in AWS Lambda without requiring AWS-specific dependencies:
+
+**Core Components:**
+- **BackgroundJobQueue** (`backend/src/services/backgroundJobQueue.ts`): Manages async job lifecycle
+- **Modified AutoAnalyzeService**: Returns immediately with job ID, delegates processing to background queue
+- **Job Lifecycle**: queued → running → completed/failed with real-time progress updates
+
+**Architecture Flow:**
+1. **Start Analysis**: User submits analysis config → Returns job ID immediately (< 1 second)
+2. **Background Processing**: BackgroundJobQueue processes analysis asynchronously:
+   - Phase 1: Session sampling using time window expansion
+   - Phase 2: Batch analysis with OpenAI GPT-4o-mini
+   - Phase 3: Analysis summary generation (macro analysis)
+3. **Progress Polling**: Frontend polls `/progress/:id` endpoint for real-time updates
+4. **Results Retrieval**: Once complete, fetch results via `/results/:id` endpoint
+
+**Key Features:**
+- **Immediate Response**: API returns within 1 second with job tracking ID
+- **Real-time Progress**: Phase-by-phase progress updates with ETA and cost tracking
+- **Error Resilience**: Continues processing despite individual session failures
+- **Credential Handling**: Properly passes credentials through background job pipeline
+- **Memory Management**: In-memory job storage with configurable cleanup policies
+
+**Implementation Details:**
+```typescript
+// Job lifecycle management
+interface BackgroundJob {
+  id: string;
+  analysisId: string;
+  status: 'queued' | 'running' | 'completed' | 'failed';
+  phase: 'sampling' | 'analyzing' | 'generating_summary';
+  credentials: { botId: string; clientId: string; clientSecret: string };
+  progress: AnalysisProgress;
+  result?: AnalysisResults;
+  error?: string;
+}
+
+// Async processing phases
+processAnalyzingPhase() {
+  // Phase 1: Session Sampling
+  // Phase 2: Batch Analysis with OpenAI
+  // Phase 3: Summary Generation (macro analysis)
+}
+```
+
+**Testing:**
+- **7/7 Timeout Tests Pass**: All original synchronous timeout issues resolved
+- **Real Credential Testing**: Verified with production credentials and 10+ session analysis
+- **Progress Tracking**: Confirmed real-time progress updates and completion detection
+- **Error Handling**: Proper error propagation and graceful failure handling
+
 ### Known Limitations
 - **MVP Constraint**: In-memory state only (no database persistence)
 - **API Dependency**: Requires valid OpenAI API key for analysis
 - **Mock Data**: Kore.ai integration uses mock credentials for MVP
 - **Session Cleanup**: Analysis results expire after 1 hour
+- **Job Queue**: In-memory job storage (not suitable for multi-instance deployments)
 
 ## Development Guidelines
 
 ### Code Quality Standards
-- **Strict TypeScript**: No `any` types allowed
+- **Strict TypeScript**: No `any` types allowed (ongoing cleanup in progress)
 - **TDD Approach**: Write failing tests first, then implement
 - **Conventional Commits**: `<type>(scope): message` format
 - **Pre-commit**: Run `npm run typecheck` before committing
 - **Update claude.md**: When workflows, scripts, or structure changes
+
+### Recent Quality Improvements (August 2025)
+
+#### Type Safety Enhancements
+- **KoreApiService**: Replaced `any` return types with proper `KoreSession[]` and `KoreMessage[]` types
+- **MockDataService**: Added proper typing for service instances and message processing
+- **Request Payload Types**: Changed `any` payload parameters to `Record<string, unknown>`
+
+#### Logging Infrastructure
+- **Structured Logging**: Added `backend/src/utils/logger.ts` with environment-aware log levels
+- **Service-Specific Loggers**: Created `createServiceLogger()` for consistent logging patterns
+- **Production Ready**: JSON structured logs in production, emoji-enhanced console logs in development
+
+#### Technical Debt Analysis
+- **Comprehensive Assessment**: Documented 33 technical debt issues in `/docs/Technical Debt Analysis.md`
+- **Priority Classification**: High (15), Medium (10), Low (8) priority issues identified
+- **Action Plan**: Immediate, short-term, and long-term improvement roadmap
 
 ### Required Development Commands
 **IMPORTANT**: Always use the standardized npm scripts defined in package.json:

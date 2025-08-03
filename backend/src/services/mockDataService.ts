@@ -45,11 +45,13 @@ const conversationTemplates = [
   }
 ];
 
+import { KoreApiService } from './koreApiService';
+
 // Kore.ai API service instance
-let koreApiService: any = null;
+let koreApiService: KoreApiService | null = null;
 
 // Initialize Kore.ai API service with specific credentials
-function initializeKoreApiService(credentials?: { botId: string; clientId: string; clientSecret: string }): any {
+function initializeKoreApiService(credentials?: { botId: string; clientId: string; clientSecret: string }): KoreApiService | null {
   try {
     // If specific credentials are provided (from HTTP headers), use them first
     if (credentials) {
@@ -148,13 +150,13 @@ export async function getSessions(
         
         // Extract session IDs for message retrieval
         const sessionIds = sessions
-          .map((session: any) => session.session_id)
-          .filter((id: any) => id && id.trim() !== '');
+          .map((session) => session.session_id)
+          .filter((id) => id && id.trim() !== '');
         
         console.log(`Fetching messages for ${sessionIds.length} sessions...`);
         
         // Fetch messages for all sessions
-        let messages: any[] = [];
+        let messages: unknown[] = [];
         try {
           messages = await koreApiService.getMessages(dateFrom, dateTo, sessionIds);
           console.log(`Retrieved ${messages.length} messages from Kore.ai API`);
@@ -164,9 +166,9 @@ export async function getSessions(
         }
         
         // Group messages by session ID
-        const messagesBySession: Record<string, any[]> = {};
-        messages.forEach((message: any) => {
-          const sessionId = message.sessionId || message.session_id;
+        const messagesBySession: Record<string, unknown[]> = {};
+        messages.forEach((message) => {
+          const sessionId = (message as Record<string, unknown>).sessionId || (message as Record<string, unknown>).session_id;
           if (sessionId) {
             if (!messagesBySession[sessionId]) {
               messagesBySession[sessionId] = [];
@@ -176,7 +178,7 @@ export async function getSessions(
         });
         
         // Add messages to sessions
-        const sessionsWithMessages = sessions.map((session: any) => {
+        const sessionsWithMessages = sessions.map((session) => {
           const sessionMessages = messagesBySession[session.session_id] || [];
           return {
             ...session,
