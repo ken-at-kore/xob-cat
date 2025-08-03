@@ -1,7 +1,9 @@
 import { SessionWithTranscript, SessionFilters, Message } from '../../../shared/types';
 import { ISessionDataService } from '../interfaces';
+import { ProductionDataLoader } from './productionDataLoader';
 
 export class MockSessionDataService implements ISessionDataService {
+  private productionDataLoader = ProductionDataLoader.getInstance();
   private conversationTemplates = [
     {
       intent: 'Claim Status',
@@ -75,7 +77,71 @@ export class MockSessionDataService implements ISessionDataService {
     console.log(`🧪 MockSessionDataService: Credentials provided: ${credentials ? 'Yes' : 'No'}`);
     
     // Pure mock - never attempt real API calls
-    return this.generateMockSessions(filters);
+    // Try to use production data first, fall back to generated mock data
+    if (this.productionDataLoader.isDataAvailable()) {
+      return this.getProductionBasedSessions(filters);
+    } else {
+      return this.generateMockSessions(filters);
+    }
+  }
+
+  private getProductionBasedSessions(filters: SessionFilters): SessionWithTranscript[] {
+    console.log(`🧪 MockSessionDataService: Using production data with filters:`, filters);
+    
+    // Convert SessionFilters to ProductionDataLoader filters
+    const dateFrom = filters.start_date ? new Date(filters.start_date) : undefined;
+    const dateTo = filters.end_date ? new Date(filters.end_date) : undefined;
+    
+    // If specific date range is requested and it doesn't match production data timeframe,
+    // generate mock sessions based on production patterns
+    const productionTimeframe = new Date('2025-07-07T17:00:00Z');
+    const isProductionTimeframe = dateFrom && 
+      Math.abs(dateFrom.getTime() - productionTimeframe.getTime()) < 24 * 60 * 60 * 1000; // Within 24 hours
+
+    if (isProductionTimeframe) {
+      // Use actual production data
+      const productionFilters: {
+        dateFrom?: string;
+        dateTo?: string;
+        containment_type?: 'selfService' | 'agent' | 'dropOff';
+        limit?: number;
+        skip?: number;
+      } = {};
+      
+      if (dateFrom) productionFilters.dateFrom = dateFrom.toISOString();
+      if (dateTo) productionFilters.dateTo = dateTo.toISOString();
+      if (filters.containment_type) productionFilters.containment_type = filters.containment_type as 'selfService' | 'agent' | 'dropOff';
+      if (filters.limit) productionFilters.limit = filters.limit;
+      if (filters.skip) productionFilters.skip = filters.skip;
+      
+      return this.productionDataLoader.getSessionsWithTranscripts(productionFilters);
+    } else {
+      // Generate mock sessions with production data patterns but new timestamps
+      const sessionCount = Math.min(filters.limit || 20, 50);
+      const timeRange = {
+        start: dateFrom || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        end: dateTo || new Date()
+      };
+      
+      const mockSessions = this.productionDataLoader.generateMockSessionsFromPatterns(sessionCount, timeRange);
+      
+      // Apply additional filters
+      let filteredSessions = mockSessions;
+      
+      if (filters.containment_type) {
+        filteredSessions = filteredSessions.filter(s => s.containment_type === filters.containment_type);
+      }
+      
+      if (filters.skip) {
+        filteredSessions = filteredSessions.slice(filters.skip);
+      }
+      
+      if (filters.limit) {
+        filteredSessions = filteredSessions.slice(0, filters.limit);
+      }
+      
+      return filteredSessions;
+    }
   }
 
   generateMockSessions(filters: SessionFilters): SessionWithTranscript[] {
