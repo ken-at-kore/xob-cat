@@ -1,0 +1,152 @@
+import { AnalysisResult, Message } from '../../../shared/types';
+import { IOpenAIService } from '../interfaces';
+
+export class MockOpenAIService implements IOpenAIService {
+  private mockAnalysisResults: Record<string, AnalysisResult> = {
+    'claim_status': {
+      session_id: 'mock_session',
+      user_id: 'mock_user',
+      general_intent: 'Claim Status',
+      call_outcome: 'Contained',
+      notes: 'User successfully retrieved claim status information. Bot provided clear status update and timeline.',
+      analyzed_at: new Date().toISOString()
+    },
+    'billing_transfer': {
+      session_id: 'mock_session',
+      user_id: 'mock_user',
+      general_intent: 'Billing',
+      call_outcome: 'Transfer',
+      transfer_reason: 'Invalid Member ID',
+      notes: 'User provided invalid member ID. Bot unable to locate account and transferred to human agent.',
+      analyzed_at: new Date().toISOString()
+    },
+    'eligibility_contained': {
+      session_id: 'mock_session',
+      user_id: 'mock_user',
+      general_intent: 'Eligibility',
+      call_outcome: 'Contained',
+      notes: 'User inquired about procedure coverage. Bot provided comprehensive coverage information for MRI and physical therapy.',
+      analyzed_at: new Date().toISOString()
+    },
+    'appointment_dropoff': {
+      session_id: 'mock_session',
+      user_id: 'mock_user',
+      general_intent: 'Appointment Scheduling',
+      call_outcome: 'Contained',
+      drop_off_location: 'Date Selection',
+      notes: 'User started appointment scheduling but abandoned during date selection step.',
+      analyzed_at: new Date().toISOString()
+    },
+    'general_inquiry': {
+      session_id: 'mock_session',
+      user_id: 'mock_user',
+      general_intent: 'General Inquiry',
+      call_outcome: 'Contained',
+      notes: 'General inquiry about services. Bot provided helpful information and user was satisfied.',
+      analyzed_at: new Date().toISOString()
+    }
+  };
+
+  private getAnalysisKey(messages: Message[]): string {
+    // Determine analysis type based on message content
+    const conversationText = messages.map(m => m.message.toLowerCase()).join(' ');
+    
+    if (conversationText.includes('claim') && conversationText.includes('status')) {
+      return 'claim_status';
+    }
+    if (conversationText.includes('bill') && conversationText.includes('member id')) {
+      return 'billing_transfer';
+    }
+    if (conversationText.includes('coverage') || conversationText.includes('mri') || conversationText.includes('physical therapy')) {
+      return 'eligibility_contained';
+    }
+    if (conversationText.includes('appointment') && conversationText.includes('date')) {
+      return 'appointment_dropoff';
+    }
+    
+    return 'general_inquiry';
+  }
+
+  async analyzeSession(messages: Message[], apiKey?: string): Promise<{
+    analysis: AnalysisResult;
+    cost: number;
+    tokenUsage: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  }> {
+    console.log(`🧪 MockOpenAIService: Analyzing session with ${messages.length} messages`);
+    
+    // Check for failure mode first
+    if (this.shouldFailAnalysis) {
+      throw new Error(this.failureMessage);
+    }
+    
+    // Simulate API key validation
+    if (apiKey && !apiKey.startsWith('sk-')) {
+      throw new Error('Invalid OpenAI API key format');
+    }
+
+    // Simulate processing delay
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Get appropriate mock analysis based on conversation content
+    const analysisKey = this.getAnalysisKey(messages);
+    const analysis = this.mockAnalysisResults[analysisKey]!;
+
+    // Calculate mock token usage based on message content
+    const messageText = messages.map(m => m.message).join(' ');
+    const promptTokens = Math.max(100, Math.floor(messageText.length / 4)); // ~4 chars per token
+    const completionTokens = 50; // Fixed completion tokens for mock
+    const totalTokens = promptTokens + completionTokens;
+
+    // Calculate mock cost (GPT-4o-mini pricing)
+    const cost = (promptTokens * 0.000015 + completionTokens * 0.000060) / 1_000_000;
+
+    console.log(`🧪 MockOpenAIService: Analysis complete - Intent: ${analysis.general_intent}, Outcome: ${analysis.call_outcome}`);
+
+    return {
+      analysis,
+      cost,
+      tokenUsage: {
+        promptTokens,
+        completionTokens,
+        totalTokens
+      }
+    };
+  }
+
+  // Helper methods for testing
+
+  // Add custom analysis result for specific message patterns
+  addMockAnalysis(key: string, result: AnalysisResult): void {
+    this.mockAnalysisResults[key] = result;
+  }
+
+  // Override analysis result for testing specific scenarios
+  setMockAnalysisForMessages(messages: Message[], result: AnalysisResult): void {
+    const key = this.getAnalysisKey(messages);
+    this.mockAnalysisResults[key] = result;
+  }
+
+  // Simulate API failures for testing error handling
+  shouldFailAnalysis = false;
+  failureMessage = 'Mock OpenAI service failure';
+
+  setFailureMode(shouldFail: boolean, message = 'Mock OpenAI service failure'): void {
+    this.shouldFailAnalysis = shouldFail;
+    this.failureMessage = message;
+  }
+
+  private async simulateFailure(): Promise<void> {
+    if (this.shouldFailAnalysis) {
+      throw new Error(this.failureMessage);
+    }
+  }
+
+  // Get all available mock analysis results
+  getAllMockAnalyses(): Record<string, AnalysisResult> {
+    return { ...this.mockAnalysisResults };
+  }
+}

@@ -1,16 +1,16 @@
 import request from 'supertest';
 import express from 'express';
 import { analysisRouter } from '../../routes/analysis';
-import * as mockDataService from '../../services/mockDataService';
+import { ServiceFactory } from '../../factories/serviceFactory';
+import { MockSessionDataService } from '../../__mocks__/sessionDataService.mock';
 import { SessionWithTranscript, Message } from '../../../../shared/types';
 
 // Import static test data
 const staticSessionData = require('../../../../data/api-kore-sessions-selfservice-2025-07-23T17-05-08.json');
 const staticMessageData = require('../../../../data/api-kore-messages-2025-07-23T17-05-31.json');
 
-// Mock the mockDataService
-jest.mock('../../services/mockDataService');
-const mockGetSessions = mockDataService.getSessions as jest.MockedFunction<typeof mockDataService.getSessions>;
+// Use mock services for testing
+const mockSessionDataService = new MockSessionDataService();
 
 // Mock the swtService
 jest.mock('../../services/swtService', () => ({
@@ -53,6 +53,9 @@ describe('Analysis Routes - Session History Integration Tests', () => {
     app.use(express.json());
     app.use('/api/analysis', analysisRouter);
     jest.clearAllMocks();
+
+    // Ensure we use mock services for testing
+    ServiceFactory.useMockServices();
 
     // Mock the SWT service
     mockGenerateSWTs = jest.fn();

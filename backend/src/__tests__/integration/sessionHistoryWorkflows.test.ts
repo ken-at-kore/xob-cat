@@ -1,4 +1,4 @@
-import { getSessions } from '../../services/mockDataService';
+import { createSessionDataService } from '../../factories/serviceFactory';
 import { SessionWithTranscript, Message } from '../../../../shared/types';
 
 // Import static test data for validation
@@ -16,6 +16,7 @@ jest.mock('../../utils/configManager', () => ({
 }));
 
 describe('Session History + Conversation History Integration Workflows', () => {
+  const sessionDataService = createSessionDataService();
   
   describe('Large Dataset Handling', () => {
     it('should handle large session datasets efficiently with mock data', async () => {
@@ -30,7 +31,7 @@ describe('Session History + Conversation History Integration Workflows', () => {
       };
 
       const startTime = Date.now();
-      const result = await getSessions(filters);
+      const result = await sessionDataService.getSessions(filters);
       const executionTime = Date.now() - startTime;
 
       expect(Array.isArray(result)).toBe(true);
@@ -53,21 +54,21 @@ describe('Session History + Conversation History Integration Workflows', () => {
       const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
       
       // Test multiple pages
-      const page1 = await getSessions({
+      const page1 = await sessionDataService.getSessions({
         start_date: twoDaysAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
         skip: 0
       });
 
-      const page2 = await getSessions({
+      const page2 = await sessionDataService.getSessions({
         start_date: twoDaysAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
         skip: 5
       });
 
-      const page3 = await getSessions({
+      const page3 = await sessionDataService.getSessions({
         start_date: twoDaysAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
@@ -106,7 +107,7 @@ describe('Session History + Conversation History Integration Workflows', () => {
         skip: 0
       };
 
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(sessions)).toBe(true);
       
@@ -144,7 +145,7 @@ describe('Session History + Conversation History Integration Workflows', () => {
         skip: 0
       };
 
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(sessions)).toBe(true);
       
@@ -184,7 +185,7 @@ describe('Session History + Conversation History Integration Workflows', () => {
           skip: 0
         };
 
-        const sessions = await getSessions(filters);
+        const sessions = await sessionDataService.getSessions(filters);
         
         expect(Array.isArray(sessions)).toBe(true);
         
@@ -218,8 +219,8 @@ describe('Session History + Conversation History Integration Workflows', () => {
         skip: 0
       };
 
-      const narrowResults = await getSessions(narrowFilters);
-      const broadResults = await getSessions(broadFilters);
+      const narrowResults = await sessionDataService.getSessions(narrowFilters);
+      const broadResults = await sessionDataService.getSessions(broadFilters);
 
       expect(Array.isArray(narrowResults)).toBe(true);
       expect(Array.isArray(broadResults)).toBe(true);
@@ -242,7 +243,7 @@ describe('Session History + Conversation History Integration Workflows', () => {
       };
 
       // Execute multiple concurrent requests
-      const promises = Array(3).fill(null).map(() => getSessions(filters));
+      const promises = Array(3).fill(null).map(() => sessionDataService.getSessions(filters));
       
       const startTime = Date.now();
       const results = await Promise.all(promises);
@@ -270,9 +271,9 @@ describe('Session History + Conversation History Integration Workflows', () => {
       };
 
       // Make multiple identical requests
-      const result1 = await getSessions(filters);
-      const result2 = await getSessions(filters);
-      const result3 = await getSessions(filters);
+      const result1 = await sessionDataService.getSessions(filters);
+      const result2 = await sessionDataService.getSessions(filters);
+      const result3 = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(result1)).toBe(true);
       expect(Array.isArray(result2)).toBe(true);
@@ -335,7 +336,7 @@ describe('Session History + Conversation History Integration Workflows', () => {
         skip: 0
       };
 
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
 
       // Verify the workflow produces data in the same format as our static examples
       if (sessions.length > 0 && sessions[0]) {

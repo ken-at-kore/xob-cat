@@ -1,4 +1,4 @@
-import { getSessions } from '../../services/mockDataService';
+import { createSessionDataService } from '../../factories/serviceFactory';
 import { Message, SessionWithTranscript } from '../../../../shared/types';
 
 // Import static test data for comprehensive validation
@@ -16,6 +16,7 @@ jest.mock('../../utils/configManager', () => ({
 }));
 
 describe('Conversation Transcript Integration (Static Data)', () => {
+  const sessionDataService = createSessionDataService();
   
   describe('Complex Message Component Handling', () => {
     it('should handle various message types and components using mock data', async () => {
@@ -29,7 +30,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
         skip: 0
       };
 
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(sessions)).toBe(true);
       
@@ -65,7 +66,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
       };
 
       const startTime = Date.now();
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
       const executionTime = Date.now() - startTime;
 
       expect(Array.isArray(sessions)).toBe(true);
@@ -116,7 +117,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
           skip: 0
         };
 
-        const sessions = await getSessions(filters);
+        const sessions = await sessionDataService.getSessions(filters);
         
         expect(Array.isArray(sessions)).toBe(true);
         
@@ -147,7 +148,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
         skip: 0
       };
 
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(sessions)).toBe(true);
       
@@ -181,7 +182,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
         skip: 0
       };
 
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(sessions)).toBe(true);
       
@@ -219,7 +220,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
         skip: 0
       };
 
-      const sessions = await getSessions(filters);
+      const sessions = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(sessions)).toBe(true);
       
@@ -301,7 +302,7 @@ describe('Conversation Transcript Integration (Static Data)', () => {
         skip: 0
       };
 
-      const mockSessions = await getSessions(filters);
+      const mockSessions = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(mockSessions)).toBe(true);
       

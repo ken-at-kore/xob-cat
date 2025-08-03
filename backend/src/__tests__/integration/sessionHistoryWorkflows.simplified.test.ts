@@ -1,4 +1,4 @@
-import { getSessions } from '../../services/mockDataService';
+import { createSessionDataService } from '../../factories/serviceFactory';
 import { SessionWithTranscript, Message } from '../../../../shared/types';
 
 // Import static test data
@@ -16,6 +16,7 @@ jest.mock('../../utils/configManager', () => ({
 }));
 
 describe('Session History + Conversation History Integration (Static Data)', () => {
+  const sessionDataService = createSessionDataService();
   
   describe('Complete Session with Conversation History Retrieval', () => {
     it('should retrieve sessions using static data and validate structure', async () => {
@@ -29,7 +30,7 @@ describe('Session History + Conversation History Integration (Static Data)', () 
         skip: 0
       };
 
-      const result = await getSessions(filters);
+      const result = await sessionDataService.getSessions(filters);
 
       // Verify sessions are returned from mock data (fallback when no real API)
       expect(Array.isArray(result)).toBe(true);
@@ -77,7 +78,7 @@ describe('Session History + Conversation History Integration (Static Data)', () 
         skip: 0
       };
 
-      const result = await getSessions(filters);
+      const result = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(result)).toBe(true);
       
@@ -104,8 +105,8 @@ describe('Session History + Conversation History Integration (Static Data)', () 
         skip: 2
       };
 
-      const page1 = await getSessions(filtersPage1);
-      const page2 = await getSessions(filtersPage2);
+      const page1 = await sessionDataService.getSessions(filtersPage1);
+      const page2 = await sessionDataService.getSessions(filtersPage2);
 
       expect(Array.isArray(page1)).toBe(true);
       expect(Array.isArray(page2)).toBe(true);
@@ -150,7 +151,7 @@ describe('Session History + Conversation History Integration (Static Data)', () 
         skip: 0
       };
 
-      const result = await getSessions(filters);
+      const result = await sessionDataService.getSessions(filters);
       
       const executionTime = Date.now() - startTime;
       
@@ -168,7 +169,7 @@ describe('Session History + Conversation History Integration (Static Data)', () 
         skip: 0
       };
 
-      const result = await getSessions(filters);
+      const result = await sessionDataService.getSessions(filters);
 
       expect(Array.isArray(result)).toBe(true);
       

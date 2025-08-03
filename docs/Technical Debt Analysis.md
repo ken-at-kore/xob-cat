@@ -3,14 +3,14 @@
 ## High Priority Issues
 
 ### 1. Type Safety Issues
-- **mockDataService.ts**: Heavy use of `any` types (lines 49, 52, 151-179)
 - **koreApiService.ts**: Return types use `any` instead of proper interfaces (lines 149, 197, 222, 246, 305, 364, 379)
 - **backgroundJobQueue.ts**: Generic `any[]` for results aggregation (line 267)
+- **Mock Services**: Some mock implementations need better TypeScript coverage
 
 ### 2. Testing Infrastructure
-- **Disabled E2E Test**: `autoAnalyze.e2e.test.ts` is disabled due to hybrid mock service architecture
-- **Mock Service Architecture**: Services attempt real API calls then fallback to mocks (inconsistent behavior)
+- **Disabled E2E Test**: `autoAnalyze.e2e.test.ts` is disabled (can now be enabled with pure mock services)
 - **Test Type Safety**: Extensive use of `as any` in test files for service mocking
+- **TypeScript Compilation**: Some test files have type errors that need fixing
 
 ### 3. Inconsistent Error Handling
 - **Console Logging**: 55+ files with console.log statements (should use proper logging)

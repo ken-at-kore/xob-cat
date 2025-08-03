@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { getSessions } from '../../services/mockDataService';
+import { createSessionDataService } from '../../factories/serviceFactory';
 import { Message } from '../../../../shared/types';
 
 // Import static test data
@@ -17,13 +17,14 @@ jest.mock('../../utils/configManager', () => ({
 }));
 
 describe('Conversation History Retrieval (Static Data)', () => {
+  const sessionDataService = createSessionDataService();
   
   describe('Message Retrieval', () => {
     it('should retrieve conversation messages using mock data service', async () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 10,
@@ -52,14 +53,14 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
       
       // Test pagination by making multiple requests
-      const page1 = await getSessions({
+      const page1 = await sessionDataService.getSessions({
         start_date: twoDaysAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
         skip: 0
       });
 
-      const page2 = await getSessions({
+      const page2 = await sessionDataService.getSessions({
         start_date: twoDaysAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
@@ -76,7 +77,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 3,
@@ -103,7 +104,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
       const requests = Array(3).fill(null).map(() => 
-        getSessions({
+        sessionDataService.getSessions({
           start_date: oneDayAgo.toISOString(),
           end_date: now.toISOString(),
           limit: 2,
@@ -124,7 +125,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
@@ -151,7 +152,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
@@ -179,7 +180,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 1,
@@ -210,7 +211,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
@@ -239,7 +240,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
@@ -274,7 +275,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 1,
@@ -289,7 +290,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       // Test with date range that may have no results
       const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: futureDate.toISOString(),
         end_date: futureDate.toISOString(),
         limit: 10,
@@ -306,7 +307,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 3,
@@ -344,7 +345,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const startTime = Date.now();
       
       const requests = Array(5).fill(null).map(() => 
-        getSessions({
+        sessionDataService.getSessions({
           start_date: oneDayAgo.toISOString(),
           end_date: now.toISOString(),
           limit: 2,
@@ -369,7 +370,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       
       const startTime = Date.now();
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: threeDaysAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 50, // Larger dataset
@@ -389,7 +390,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 5,
@@ -418,7 +419,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const selfServiceSessions = await getSessions({
+      const selfServiceSessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         containment_type: 'selfService',
@@ -439,7 +440,7 @@ describe('Conversation History Retrieval (Static Data)', () => {
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       
-      const sessions = await getSessions({
+      const sessions = await sessionDataService.getSessions({
         start_date: oneDayAgo.toISOString(),
         end_date: now.toISOString(),
         limit: 3,

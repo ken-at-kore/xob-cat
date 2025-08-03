@@ -174,8 +174,9 @@ export class BackgroundJobQueue {
     
     console.log(`[BackgroundJobQueue] Using ${job.credentials ? 'real' : 'mock'} credentials for bot: ${koreApiConfig.botId}`);
     
+    const koreApiService = new KoreApiService(koreApiConfig);
     const swtService = new SWTService(koreApiConfig);
-    const sessionSamplingService = new SessionSamplingService(swtService);
+    const sessionSamplingService = new SessionSamplingService(swtService, koreApiService);
 
     // Update progress
     job.progress.phase = 'sampling';
