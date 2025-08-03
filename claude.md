@@ -218,6 +218,7 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 #### Test Coverage
 - ✅ Unit tests: Session sampling, batch analysis, OpenAI integration
 - ✅ E2E tests: Complete workflow with real-time progress tracking
+- ✅ **Comprehensive E2E Test**: Full auto-analyze workflow using production data (`auto-analyze-complete-workflow.spec.ts`)
 - ✅ Manual testing: 100% accuracy on real session data
 
 #### Performance Metrics
@@ -466,6 +467,14 @@ XOBCAT/
 
 ### Test Data (`data/`)
 - Sanitized production data for realistic testing
+- **Production Data Integration**: Mock services now use real sanitized data from `data/` directory
+
+### Comprehensive E2E Testing (`frontend/e2e/auto-analyze-complete-workflow.spec.ts`)
+- **Complete Workflow Testing**: Tests entire auto-analyze process from credentials to report
+- **Production Data Patterns**: Uses sanitized production data for realistic testing scenarios
+- **Report Validation**: Verifies all report sections, charts, and session details
+- **Error Handling**: Tests edge cases and validation scenarios
+- **Data Integrity**: Validates session data contains expected production patterns
 
 ## 🔑 Environment Configuration
 
