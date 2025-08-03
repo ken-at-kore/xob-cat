@@ -41,8 +41,33 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
   const skip = parseInt(req.query.skip as string) || 0;
   const limit = parseInt(req.query.limit as string) || 50;
 
-  console.log(`Fetching Kore.ai sessions from ${dateFrom} to ${dateTo} for ${botName}`);
-  const sessions = await koreService.getSessions(dateFrom, dateTo, skip, limit);
+  console.log(`Fetching Kore.ai sessions with messages from ${dateFrom} to ${dateTo} for ${botName}`);
+  // Use the optimized layered architecture: fetch metadata first, then messages
+  const sessionData = await koreService.getSessionsWithMessages({
+    dateFrom,
+    dateTo,
+    skip,
+    limit
+  });
+  
+  // Convert KoreSessionComplete[] to the expected format for the route
+  const sessions = sessionData.map(session => ({
+    session_id: session.sessionId,
+    user_id: session.userId,
+    start_time: session.start_time,
+    end_time: session.end_time,
+    containment_type: session.containment_type,
+    tags: session.tags || [],
+    messages: session.messages?.map(msg => ({
+      timestamp: msg.createdOn,
+      message_type: msg.type === 'incoming' ? 'user' : 'bot',
+      message: msg.components?.[0]?.data?.text || ''
+    })) || [],
+    duration_seconds: Math.floor((new Date(session.end_time).getTime() - new Date(session.start_time).getTime()) / 1000),
+    message_count: session.message_count,
+    user_message_count: session.user_message_count,
+    bot_message_count: session.bot_message_count
+  }));
 
   successResponse(
     res,
