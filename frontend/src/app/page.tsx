@@ -70,30 +70,38 @@ export default function Home({ onNavigate }: HomeProps = {}) {
     setIsConnecting(true);
     
     try {
-      // Store credentials temporarily for the test
+      // Store credentials temporarily for the test ONLY
       sessionStorage.setItem('botCredentials', JSON.stringify(credentials));
       
       // Test the connection by calling the Kore.ai test endpoint with credentials
       const response = await apiClient.testKoreConnection();
       
       if (response.bot_name) {
-        // Connection successful, redirect to dashboard
+        // Connection successful - credentials are already stored from the test
+        // Navigate to dashboard
         if (onNavigate) {
           onNavigate(ROUTES.DASHBOARD_SESSIONS);
         } else {
           window.location.href = ROUTES.DASHBOARD_SESSIONS;
         }
       } else {
-        setConnectionError('Connection failed - invalid response');
+        // Clear stored credentials on unexpected response
+        sessionStorage.removeItem('botCredentials');
+        setConnectionError('Connection failed - invalid response from server');
       }
     } catch (error) {
-      // Clear stored credentials on connection failure
+      // IMPORTANT: Clear stored credentials on connection failure
       sessionStorage.removeItem('botCredentials');
       
       if (error instanceof ApiError) {
-        setConnectionError(`${error.message} (${error.status})`);
+        // Handle specific authentication errors
+        if (error.status === 401) {
+          setConnectionError('Invalid credentials. Please check your Bot ID, Client ID, and Client Secret.');
+        } else {
+          setConnectionError(`Connection failed: ${error.message}`);
+        }
       } else {
-        setConnectionError(error instanceof Error ? error.message : 'Connection failed');
+        setConnectionError(error instanceof Error ? error.message : 'Connection failed - unable to reach server');
       }
     } finally {
       setIsConnecting(false);
@@ -199,7 +207,7 @@ export default function Home({ onNavigate }: HomeProps = {}) {
           </div>
           
           {connectionError && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md" data-testid="credential-error">
               <p className="text-sm text-destructive">{connectionError}</p>
             </div>
           )}

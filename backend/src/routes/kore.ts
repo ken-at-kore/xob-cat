@@ -21,14 +21,44 @@ router.get('/test', asyncHandler(async (req: Request, res: Response) => {
   const dateTo = new Date().toISOString();
 
   console.log('Testing Kore.ai API connectivity...');
-  const sessions = await koreService.getSessions(dateFrom, dateTo, 0, 10);
+  
+  try {
+    // Use the more specific getSessionsMetadata to test connection
+    // This will throw an error if authentication fails
+    const sessionMetadata = await koreService.getSessionsMetadata({
+      dateFrom,
+      dateTo,
+      skip: 0,
+      limit: 10
+    });
 
-  successResponse(res, {
-    bot_name: botName,
-    sessions_count: sessions.length,
-    sample_session: sessions.length > 0 ? sessions[0] : null,
-    date_range: { dateFrom, dateTo }
-  }, `Kore.ai API connection successful for ${botName}`);
+    // If we get here, authentication worked
+    successResponse(res, {
+      bot_name: botName,
+      sessions_count: sessionMetadata.length,
+      sample_session: sessionMetadata.length > 0 ? sessionMetadata[0] : null,
+      date_range: { dateFrom, dateTo }
+    }, `Kore.ai API connection successful for ${botName}`);
+  } catch (error) {
+    console.error('Kore.ai API connection test failed:', error);
+    
+    // Check if it's an authentication error (401)
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as any;
+      if (axiosError.response?.status === 401) {
+        return errorResponse(res, 'Invalid Kore.ai credentials', 'The provided Bot ID, Client ID, or Client Secret is invalid.', 401, {
+          details: 'The provided Bot ID, Client ID, or Client Secret is invalid.',
+          code: 'INVALID_CREDENTIALS'
+        });
+      }
+    }
+    
+    // Other errors
+    return errorResponse(res, 'Failed to connect to Kore.ai API', 'Unable to establish connection with Kore.ai API', 500, {
+      details: error instanceof Error ? error.message : 'Unknown error',
+      code: 'CONNECTION_FAILED'
+    });
+  }
 }));
 
 // GET /api/kore/sessions - Get sessions from Kore.ai API directly
