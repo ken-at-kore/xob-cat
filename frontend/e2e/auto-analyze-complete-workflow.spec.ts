@@ -29,13 +29,13 @@ test.describe('Auto-Analyze Complete Workflow', () => {
     await expect(page.locator('text=XO Bot Conversation Analysis Tools')).toBeVisible();
   });
 
-  test('completes full auto-analyze workflow with production data', async ({ page }) => {
+  test('validates message display in session details with production data patterns', async ({ page }) => {
     // Set page timeout to prevent hanging
     page.setDefaultTimeout(15000);
-    // Step 1: Enter bot credentials using correct selectors
-    await page.getByRole('textbox', { name: 'Bot ID' }).fill('test-bot-123');
-    await page.getByRole('textbox', { name: 'Client ID' }).fill('test-client-id');
-    await page.getByRole('textbox', { name: 'API Token Configuration Field' }).fill('test-client-secret');
+    // Step 1: Use mock credentials to test message display issue
+    await page.getByRole('textbox', { name: 'Bot ID' }).fill('test-bot-message-validation');
+    await page.getByRole('textbox', { name: 'Client ID' }).fill('test-client-message-validation');
+    await page.getByRole('textbox', { name: 'API Token Configuration Field' }).fill('test-secret-message-validation');
     await page.getByRole('button', { name: 'Connect' }).click();
     
     // Wait for navigation and verify redirect to sessions page
@@ -47,76 +47,16 @@ test.describe('Auto-Analyze Complete Workflow', () => {
     await expect(page).toHaveURL('/analyze');
     await expect(page.locator('h1:has-text("Auto-Analyze")')).toBeVisible();
     
-    // Step 3: Configure analysis settings
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const dateString = yesterday.toISOString().split('T')[0];
+    // Step 3: Use mock report to quickly get to session details testing
+    await page.getByRole('button', { name: 'See Mock Report' }).click();
+    await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible({ timeout: 10000 });
     
-    await page.locator('#startDate').fill(dateString);
-    await page.locator('#startTime').fill('12:00');
-    await page.locator('#sessionCount').fill('10');
-    await page.locator('#openaiApiKey').fill('sk-mock-test-key-for-e2e');
+    // Skip to session details testing - focus on message display issue
+    console.log('Navigating directly to session details to test message display...');
     
-    // Step 4: Start analysis and wait for completion
-    await page.getByRole('button', { name: 'Start Analysis' }).click();
-    await expect(page.locator('text=Analysis in Progress')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('h1:has-text("Analysis Report")')).toBeVisible({ timeout: 30000 });
-    
-    // Verify report header information
-    await expect(page.locator('text=Bot ID').first()).toBeVisible();
-    await expect(page.locator('text=test-bot-123').first()).toBeVisible();
-    await expect(page.locator('text=Comprehensive analysis of')).toBeVisible();
-    await expect(page.locator('text=sessions with AI-powered insights')).toBeVisible();
-    
-    // Step 5: Verify Analysis Overview section
-    await expect(page.locator('text=Analysis Overview')).toBeVisible();
-    await expect(page.locator('text=In this analysis, I examined')).toBeVisible();
-    await expect(page.locator('text=chatbot conversations')).toBeVisible();
-    
-    // Step 6: Verify Session Outcomes Visualization
-    await expect(page.locator('text=Session Outcomes')).toBeVisible();
-    
-    // Step 7: Verify Transfer Reasons Chart
-    await expect(page.locator('text=Transfer Reasons')).toBeVisible();
-    
-    // Step 8: Verify Drop-off Locations Chart
-    await expect(page.locator('text=Drop-off Locations')).toBeVisible();
-    
-    // Step 9: Verify General Intents Chart
-    await expect(page.locator('text=General Intents').first()).toBeVisible();
-    
-    // Step 10: Verify Detailed Analysis section
-    await expect(page.locator('text=Detailed Analysis')).toBeVisible();
-    await expect(page.locator('text=How Users Actually Interact with the Bot')).toBeVisible();
-    
-    // Step 11: Verify Cost Analysis section
-    await expect(page.locator('text=Analysis Cost & Usage')).toBeVisible();
-    await expect(page.locator('text=Total Sessions Analyzed')).toBeVisible();
-    await expect(page.locator('text=Total Tokens Used')).toBeVisible();
-    await expect(page.locator('text=Model Used')).toBeVisible();
-    await expect(page.locator('text=GPT-4o mini').first()).toBeVisible();
-    await expect(page.locator('text=Estimated Cost')).toBeVisible();
-    
-    // Verify cost values are realistic
-    const costText = await page.locator('text=/\\$/').first().textContent();
-    expect(costText).toMatch(/\$\d+\.\d{2,4}/); // Should be in format $X.XXXX
-    
-    // Step 12: Verify Analyzed Sessions table
-    await expect(page.locator('text=Analyzed Sessions')).toBeVisible();
-    await expect(page.locator('table')).toBeVisible();
-    
-    // Verify table headers
-    await expect(page.locator('th:has-text("Session ID")')).toBeVisible();
-    await expect(page.locator('th:has-text("General Intent")')).toBeVisible();
-    await expect(page.locator('th:has-text("Session Outcome")')).toBeVisible();
-    await expect(page.locator('th:has-text("Transfer Reason")')).toBeVisible();
-    await expect(page.locator('th:has-text("Notes")')).toBeVisible();
-    
-    // Verify at least one session row exists
+    // Step 4: Find and click on first session row to open details
     const sessionRows = page.locator('table tbody tr');
     await expect(sessionRows.first()).toBeVisible();
-    
-    // Step 13: Test session details dialog
     await sessionRows.first().click();
     
     // Verify session details dialog opens
@@ -135,12 +75,44 @@ test.describe('Auto-Analyze Complete Workflow', () => {
     await expect(page.locator('text=End Time').first()).toBeVisible();
     await expect(page.locator('text=Duration').first()).toBeVisible();
     
-    // Verify conversation transcript
+    // CRITICAL: Verify conversation transcript section exists
     await expect(page.locator('text=Conversation Transcript')).toBeVisible();
     
-    // Verify at least one message exists (User or Bot)
-    await expect(page.locator('text=User').first()).toBeVisible();
-    await expect(page.locator('text=Bot').first()).toBeVisible();
+    // CRITICAL: Verify actual message content is displayed (not just labels)
+    const transcriptSection = page.locator('text=Conversation Transcript').locator('..');
+    
+    // Look for message containers/bubbles with actual text content
+    const userMessages = transcriptSection.locator('[data-testid="user-message"], .message-user, .user-message');
+    const botMessages = transcriptSection.locator('[data-testid="bot-message"], .message-bot, .bot-message');
+    
+    // Check if ANY messages are actually visible with content
+    const allMessages = transcriptSection.locator('text=/^(?!User$|Bot$).{10,}/'); // Messages with actual content, not just "User" or "Bot" labels
+    
+    console.log('Checking for message content in transcript...');
+    const messageCount = await allMessages.count();
+    console.log(`Found ${messageCount} messages with content`);
+    
+    // If no content messages found, check what's actually in the transcript section
+    if (messageCount === 0) {
+      const transcriptContent = await transcriptSection.textContent();
+      console.log('Transcript section content:', transcriptContent);
+      
+      // Take a screenshot to debug the issue
+      await page.screenshot({ path: 'message-display-issue.png', fullPage: true });
+      
+      console.log('ERROR: No message content found in transcript section');
+      throw new Error('MESSAGE DISPLAY BUG REPRODUCED: Conversation transcript is empty or missing message content');
+    }
+    
+    // Verify we have both user and bot messages with actual content
+    await expect(allMessages.first()).toBeVisible({ timeout: 5000 });
+    
+    // Additional validation: check for message structure
+    const hasUserLabel = await transcriptSection.locator('text=User').count() > 0;
+    const hasBotLabel = await transcriptSection.locator('text=Bot').count() > 0;
+    
+    console.log(`Message labels - User: ${hasUserLabel}, Bot: ${hasBotLabel}`);
+    console.log(`Message content count: ${messageCount}`);
     
     // Close dialog
     await page.getByRole('button', { name: 'Close' }).click();

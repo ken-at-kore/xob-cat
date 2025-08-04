@@ -21,6 +21,7 @@ export interface SWTGenerationOptions {
   dateTo: string;
   limit?: number;
   sessionIds?: string[];
+  populateMessages?: boolean; // New option to control message population
 }
 
 export interface SWTGenerationResult {
@@ -150,11 +151,17 @@ export class SWTService {
       }
     }
     
+    // Convert Kore message type to UI-compatible format
+    const messageType = koreMessage.type === 'incoming' ? 'user' : 'bot';
+    
     return {
       messageId: `${koreMessage.sessionId}_${koreMessage.timestampValue}`,
       message: messageText,
-      type: koreMessage.type,
-      createdOn: koreMessage.createdOn,
+      // UI compatibility: provide both formats for maximum compatibility
+      message_type: messageType,  // Legacy format expected by UI
+      type: koreMessage.type,     // New format (keep for completeness)
+      timestamp: koreMessage.createdOn,  // Legacy format expected by UI
+      createdOn: koreMessage.createdOn,  // New format (keep for completeness)
       components: koreMessage.components
     };
   }
@@ -166,7 +173,7 @@ export class SWTService {
   async generateSWTs(options: SWTGenerationOptions): Promise<SWTGenerationResult> {
     const startTime = Date.now();
     
-    console.log(`Retrieving sessions from ${options.dateFrom} to ${options.dateTo} (limit=${options.limit || 1000})...`);
+    console.log(`Retrieving sessions from ${options.dateFrom} to ${options.dateTo} (limit=${options.limit || 1000}), populateMessages=${options.populateMessages !== false}...`);
     
     // Step 1: Get session metadata first (fast operation)
     const sessionMetadata = await this.koreService.getSessionsMetadata({
@@ -191,23 +198,33 @@ export class SWTService {
     // Step 2: Create SWTs from metadata (no messages yet)
     const swts = await this.createSWTsFromMetadata(sessionMetadata);
     
-    // Step 3: Populate messages for all sessions
-    const sessionIds = swts.map(swt => swt.session_id);
-    const populatedSWTs = await this.populateMessages(swts, sessionIds);
+    let finalSWTs: SessionWithTranscript[];
+    
+    // Step 3: Conditionally populate messages based on option
+    if (options.populateMessages !== false) {
+      // Default behavior: populate messages for all sessions (for auto-analyze and legacy endpoints)
+      console.log('Populating messages for all sessions (legacy behavior)');
+      const sessionIds = swts.map(swt => swt.session_id);
+      finalSWTs = await this.populateMessages(swts, sessionIds);
+    } else {
+      // Optimized behavior: return metadata-only SWTs (for view sessions performance)
+      console.log('Skipping message population for performance (metadata-only SWTs)');
+      finalSWTs = swts;
+    }
     
     // Sort SWTs by start time
-    populatedSWTs.sort((a, b) => a.start_time.localeCompare(b.start_time));
+    finalSWTs.sort((a, b) => a.start_time.localeCompare(b.start_time));
     
     // Calculate statistics
-    const totalMessages = populatedSWTs.reduce((sum, swt) => sum + swt.message_count, 0);
-    const sessionsWithMessages = populatedSWTs.filter(swt => swt.message_count > 0).length;
+    const totalMessages = finalSWTs.reduce((sum, swt) => sum + swt.message_count, 0);
+    const sessionsWithMessages = finalSWTs.filter(swt => swt.message_count > 0).length;
     
     const generationTime = Date.now() - startTime;
-    console.log(`Generated ${populatedSWTs.length} SWT objects in ${generationTime}ms using layered architecture`);
+    console.log(`Generated ${finalSWTs.length} SWT objects in ${generationTime}ms using layered architecture`);
     
     return {
-      swts: populatedSWTs,
-      totalSessions: populatedSWTs.length,
+      swts: finalSWTs,
+      totalSessions: finalSWTs.length,
       totalMessages,
       sessionsWithMessages,
       generationTime

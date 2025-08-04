@@ -94,7 +94,8 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
   const result = await swtService.generateSWTs({
     dateFrom,
     dateTo, 
-    limit
+    limit,
+    populateMessages: true // FIXED: Enable message population for view sessions to show messages in session details
   });
   
   successResponse(

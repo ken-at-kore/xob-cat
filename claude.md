@@ -27,12 +27,16 @@ npm run test                  # Run all tests
 npm run test:frontend         # Jest + React Testing Library
 npm run test:backend          # Backend Jest unit tests
 npm run test:e2e             # Playwright E2E tests
+npm run test:puppeteer       # Puppeteer E2E tests (Jest-based, currently has issues)
 
 # Backend test variations
 cd backend && npm run test:unit         # Unit tests only
 cd backend && npm run test:integration  # Integration tests
 cd backend && npm run test:real-api     # Real Kore.ai API tests
 cd backend && npm run test:coverage     # With coverage report
+
+# Puppeteer E2E (recommended for reliable E2E testing)
+node frontend/e2e/run-puppeteer-test.js  # Standalone Puppeteer test (no hanging issues)
 ```
 
 ### Building & Quality
@@ -406,6 +410,27 @@ All phases completed successfully:
 - **Individual Servers**: Use `npm run start:frontend/backend` (not cd commands)
 - **Script Location**: All scripts in `scripts/` directory
 
+### E2E Testing Guidelines
+
+#### When to Use Puppeteer vs Playwright
+- **Puppeteer**: Critical session validation, message display testing, complex UI interactions
+- **Playwright**: Basic navigation, form testing, quick UI checks
+- **Rule**: If test involves session dialogs or message validation, prefer Puppeteer
+
+#### Creating New E2E Tests
+1. **Start with Mock APIs**: Use `mock-*` credentials for fast, reliable tests
+2. **Add Real API Tests**: Only after mock tests pass, create real API variants
+3. **Naming Convention**: 
+   - Mock tests: `*-mock.spec.ts` or `*-simple.spec.ts`
+   - Real API tests: `*-real-api.spec.ts`
+   - Puppeteer tests: `*.test.js` (Node.js) or `run-*.js` (standalone)
+
+#### Debugging E2E Test Issues
+1. **Screenshots**: Always capture screenshots on failure
+2. **Console Logs**: Check browser console for JavaScript errors
+3. **Network Tab**: Verify API calls are completing successfully
+4. **Mock Services**: Confirm mock services activate with proper credentials
+
 ### Navigation Architecture
 - **Route Structure**: Next.js 15 App Router with `(dashboard)` route group
 - **TopNav**: "XOBCAT" + subtitle | "Bot ID" + value + "Disconnect"  
@@ -560,12 +585,121 @@ Optimized sampling workflow:
 
 ### Frontend (`frontend/src/__tests__/`)
 - Component tests with React Testing Library
-- E2E tests with Playwright
+- E2E tests with Playwright and Puppeteer
 - 100% coverage on navigation components
 
 ### Test Data (`data/`)
 - Sanitized production data for realistic testing
 - **Production Data Integration**: Mock services now use real sanitized data from `data/` directory
+
+## 🎭 E2E Testing Strategy
+
+### Testing Frameworks
+- **Playwright**: Primary E2E testing framework (25+ test files)
+- **Puppeteer**: Reliable alternative for critical tests (avoids hanging issues)
+
+### Puppeteer E2E Implementation ⭐
+
+**Recommended for Critical Tests** - Puppeteer provides more reliable execution for session validation:
+
+#### Setup & Configuration
+```bash
+# Standalone execution (no Jest conflicts)
+node frontend/e2e/run-puppeteer-test.js
+
+# Key advantages over Playwright:
+# - No hanging/timeout issues (completes in seconds vs 30+ seconds)
+# - Better WebSocket handling in Node.js environment
+# - More reliable for session dialog testing
+```
+
+#### Puppeteer Test Architecture
+```javascript
+// Key configuration for reliability
+browser = await puppeteer.launch({
+  headless: false,      // Visual debugging
+  slowMo: 50,          // Human-like interactions
+  defaultViewport: { width: 1280, height: 720 }
+});
+
+// Short timeouts prevent hanging
+page.setDefaultTimeout(2000);
+page.setDefaultNavigationTimeout(5000);
+```
+
+#### Puppeteer Best Practices
+1. **Mock Credentials**: Use `mock-bot-id`, `mock-client-id`, `mock-client-secret` to trigger mock services
+2. **Short Timeouts**: 2-5 second timeouts prevent infinite hangs
+3. **Human-like Interactions**: Include hover, wait states, and realistic timing
+4. **Rich Content Validation**: Verify dialog contains >50 characters and message-related words
+5. **Screenshot Debugging**: Capture screenshots at key validation points
+
+### E2E Test Inventory
+
+#### 🎭 **Puppeteer Tests (Recommended)**
+| Test File | API Type | Purpose | Status |
+|-----------|----------|---------|---------|
+| `run-puppeteer-test.js` | Mock | Session message validation | ✅ Reliable |
+| `session-message-validation-puppeteer.test.js` | Mock | Jest-based (has WebSocket issues) | ⚠️ Not recommended |
+
+#### 🎪 **Playwright Tests**
+| Test File | API Type | Purpose | Notes |
+|-----------|----------|---------|--------|
+| `session-message-validation-mock.spec.ts` | Mock | Message display validation | ⚠️ Can hang |
+| `session-viewer-real-api.spec.ts` | Real | Production API integration | Uses ENV vars |
+| `session-viewer-real-api-improved.spec.ts` | Real | Enhanced real API testing | Uses ENV vars |
+| `auto-analyze-real-api-debug.spec.ts` | Real | Auto-analyze with real APIs | Debug version |
+| `auto-analyze-complete-workflow.spec.ts` | Mock | Full auto-analyze workflow | Production data patterns |
+| `auto-analyze-mock-report-simple.spec.ts` | Mock | Simple mock report testing | Fast execution |
+| `sessions-page.spec.ts` | Mock | Session listing functionality | Basic UI tests |
+| `auth-flow.spec.ts` | Mock | Credentials flow testing | Login workflow |
+
+#### 📊 **Test Classification**
+
+**Mock API Tests (Fast, Reliable)**:
+- Use `mock-*` credentials to trigger mock services
+- 10 predefined sessions with rich conversation data
+- Ideal for UI/UX validation and regression testing
+- Complete in seconds
+
+**Real API Tests (Integration)**:
+- Require `TEST_BOT_ID`, `TEST_CLIENT_ID`, `TEST_CLIENT_SECRET` environment variables
+- Test actual Kore.ai API integration
+- May be slower due to network calls and rate limiting
+- Used for production validation
+
+### Mock Services Integration
+
+Mock services automatically activate when credentials contain "mock":
+```javascript
+// Triggers mock services
+botId: 'mock-bot-id'
+clientId: 'mock-client-id' 
+clientSecret: 'mock-client-secret'
+
+// Mock data includes rich conversations:
+// - Claim status inquiries
+// - Billing questions  
+// - Coverage verification
+// - Technical support transfers
+```
+
+### Troubleshooting E2E Tests
+
+#### Playwright Hanging Issues
+- **Problem**: Tests timeout after 30+ seconds
+- **Solution**: Use Puppeteer for critical session validation
+- **Root Cause**: Complex selector timeouts and WebSocket handling
+
+#### Session Dialog Not Opening
+- **Check**: Click handlers properly bound after React hydration
+- **Solution**: Add network idle waits and hover before click
+- **Debug**: Take screenshots to verify UI state
+
+#### Mock Services Not Working
+- **Check**: Credentials contain "mock" string
+- **Verify**: Backend logs show "🎭 Detected mock credentials"
+- **Debug**: Check credentials middleware configuration
 
 ### Comprehensive E2E Testing (`frontend/e2e/auto-analyze-complete-workflow.spec.ts`)
 - **Complete Workflow Testing**: Tests entire auto-analyze process from credentials to report

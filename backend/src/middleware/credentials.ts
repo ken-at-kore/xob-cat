@@ -36,15 +36,31 @@ export function loadKoreCredentials(req: Request, res: Response, next: NextFunct
     const headerBaseUrl = req.headers['x-base-url'] as string;
 
     if (headerBotId && headerClientId && headerClientSecret) {
-      // Use credentials from headers (user-provided)
-      config = {
-        botId: headerBotId,
-        clientId: headerClientId,
-        clientSecret: headerClientSecret,
-        baseUrl: headerBaseUrl || 'https://bots.kore.ai'
-      };
-      botName = `User Bot ${headerBotId.substring(0, 8)}...`;
-      console.log(`🔗 Using user-provided Kore.ai credentials: ${botName}`);
+      // Check if these are mock credentials - if so, use mock values to trigger mock services
+      const isMockCredentials = headerBotId.includes('mock') || headerClientId.includes('mock') || headerClientSecret.includes('mock');
+      
+      if (isMockCredentials) {
+        console.log(`🎭 Detected mock credentials - using mock service configuration`);
+        // Set environment variable to ensure mock services are used
+        process.env.USE_MOCK_SERVICES = 'mock';
+        config = {
+          botId: 'mock-bot-id',
+          clientId: 'mock-client-id', 
+          clientSecret: 'mock-client-secret',
+          baseUrl: 'https://mock.kore.ai'
+        };
+        botName = 'Mock Bot';
+      } else {
+        // Use real credentials from headers (user-provided)
+        config = {
+          botId: headerBotId,
+          clientId: headerClientId,
+          clientSecret: headerClientSecret,
+          baseUrl: headerBaseUrl || 'https://bots.kore.ai'
+        };
+        botName = `User Bot ${headerBotId.substring(0, 8)}...`;
+        console.log(`🔗 Using user-provided Kore.ai credentials: ${botName}`);
+      }
     } else {
       // Fall back to config file or environment variables
       try {
