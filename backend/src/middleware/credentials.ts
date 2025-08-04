@@ -37,7 +37,9 @@ export function loadKoreCredentials(req: Request, res: Response, next: NextFunct
 
     if (headerBotId && headerClientId && headerClientSecret) {
       // Check if these are mock credentials - if so, use mock values to trigger mock services
-      const isMockCredentials = headerBotId.includes('mock') || headerClientId.includes('mock') || headerClientSecret.includes('mock');
+      // Be more specific: only detect actual mock credentials, not real IDs that happen to contain "mock"
+      const isMockCredentials = headerBotId.startsWith('mock-') || headerClientId.startsWith('mock-') || headerClientSecret.startsWith('mock-') ||
+                               headerBotId === 'mock-bot-id' || headerClientId === 'mock-client-id' || headerClientSecret === 'mock-client-secret';
       
       if (isMockCredentials) {
         console.log(`🎭 Detected mock credentials - using mock service configuration`);
@@ -51,7 +53,11 @@ export function loadKoreCredentials(req: Request, res: Response, next: NextFunct
         };
         botName = 'Mock Bot';
       } else {
-        // Use real credentials from headers (user-provided)
+        // Use real credentials from headers (user-provided)  
+        console.log(`🔗 Detected real credentials - clearing mock service environment variable`);
+        // Clear environment variable to ensure real services are used
+        delete process.env.USE_MOCK_SERVICES;
+        
         config = {
           botId: headerBotId,
           clientId: headerClientId,
