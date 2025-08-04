@@ -59,34 +59,13 @@ async function runTest() {
   try {
     const page = await browser.newPage();
     
-    // Enable request interception to log API calls
+    // Basic request logging (lightweight)
     await page.setRequestInterception(true);
     page.on('request', (request) => {
-      if (request.url().includes('/api/kore/test')) {
-        console.log(`🔗 API Request Details:`);
-        console.log(`   Method: ${request.method()}`);
-        console.log(`   URL: ${request.url()}`);
-        console.log(`   Headers: ${JSON.stringify(request.headers(), null, 2)}`);
-        if (request.postData()) {
-          console.log(`   Body: ${request.postData()}`);
-        }
+      if (request.url().includes('/api/')) {
+        console.log(`🔗 API Request: ${request.method()} ${request.url()}`);
       }
       request.continue();
-    });
-    
-    // Log API responses
-    page.on('response', async (response) => {
-      if (response.url().includes('/api/kore/test')) {
-        console.log(`📨 API Response Details:`);
-        console.log(`   Status: ${response.status()} ${response.statusText()}`);
-        console.log(`   Headers: ${JSON.stringify(response.headers(), null, 2)}`);
-        try {
-          const responseText = await response.text();
-          console.log(`   Body: ${responseText}`);
-        } catch (error) {
-          console.log(`   Body: [Failed to read response body: ${error.message}]`);
-        }
-      }
     });
     
     // Log console messages from the page
