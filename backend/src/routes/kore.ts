@@ -5,7 +5,6 @@ import { ServiceFactory } from '../factories/serviceFactory';
 import { loadKoreCredentials, getKoreCredentials } from '../middleware/credentials';
 import { successResponse, errorResponse, notFoundResponse, validationErrorResponse } from '../utils/apiResponse';
 import { asyncHandler } from '../middleware/errorHandler';
-import { TranscriptSanitizationService } from '../services/transcriptSanitizationService';
 
 const router = Router();
 
@@ -82,45 +81,23 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
   });
   
   // Convert KoreSessionComplete[] to the expected format for the route
-  const sessions = sessionData.map(session => {
-    // Apply sanitization to messages and filter out null results
-    const sanitizedMessages = session.messages?.map(msg => {
-      const rawMessage = msg.components?.[0]?.data?.text || '';
-      const messageType = msg.type === 'incoming' ? 'user' : 'bot';
-      
-      // Apply sanitization to the message
-      const sanitizationResult = TranscriptSanitizationService.sanitizeMessage(rawMessage, messageType);
-      
-      // If message was filtered out (null), return null to filter it
-      if (sanitizationResult.text === null) {
-        return null;
-      }
-      
-      return {
-        timestamp: msg.createdOn,
-        message_type: messageType,
-        message: sanitizationResult.text
-      };
-    }).filter(msg => msg !== null) || [];
-    
-    // Recalculate message counts after sanitization
-    const userMessageCount = sanitizedMessages.filter(msg => msg.message_type === 'user').length;
-    const botMessageCount = sanitizedMessages.filter(msg => msg.message_type === 'bot').length;
-    
-    return {
-      session_id: session.sessionId,
-      user_id: session.userId,
-      start_time: session.start_time,
-      end_time: session.end_time,
-      containment_type: session.containment_type,
-      tags: session.tags || [],
-      messages: sanitizedMessages,
-      duration_seconds: Math.floor((new Date(session.end_time).getTime() - new Date(session.start_time).getTime()) / 1000),
-      message_count: sanitizedMessages.length,
-      user_message_count: userMessageCount,
-      bot_message_count: botMessageCount
-    };
-  });
+  const sessions = sessionData.map(session => ({
+    session_id: session.sessionId,
+    user_id: session.userId,
+    start_time: session.start_time,
+    end_time: session.end_time,
+    containment_type: session.containment_type,
+    tags: session.tags || [],
+    messages: session.messages?.map(msg => ({
+      timestamp: msg.createdOn,
+      message_type: msg.type === 'incoming' ? 'user' : 'bot',
+      message: msg.components?.[0]?.data?.text || ''
+    })) || [],
+    duration_seconds: Math.floor((new Date(session.end_time).getTime() - new Date(session.start_time).getTime()) / 1000),
+    message_count: session.message_count,
+    user_message_count: session.user_message_count,
+    bot_message_count: session.bot_message_count
+  }));
 
   successResponse(
     res,
