@@ -15,6 +15,7 @@
 import { KoreApiConfig, SessionMetadata, KoreMessage } from './koreApiService';
 import { IKoreApiService } from '../interfaces';
 import { SessionWithTranscript, SWTBuilder } from '../models/swtModels';
+import { TranscriptSanitizationService } from './transcriptSanitizationService';
 
 export interface SWTGenerationOptions {
   dateFrom: string;
@@ -109,9 +110,14 @@ export class SWTService {
     const populatedSWTs = swts.map(swt => {
       if (targetSessionIds.includes(swt.session_id)) {
         const sessionMessages = messagesBySession[swt.session_id] || [];
+        // Apply sanitization and filter out null results
+        const sanitizedMessages = sessionMessages
+          .map(msg => this.convertKoreMessageToSWTMessage(msg))
+          .filter(msg => msg !== null);
+        
         return {
           ...swt,
-          messages: sessionMessages.map(msg => this.convertKoreMessageToSWTMessage(msg))
+          messages: sanitizedMessages
         };
       }
       return swt; // Return unchanged if not in target list
@@ -140,8 +146,9 @@ export class SWTService {
 
   /**
    * Helper method to convert KoreMessage to SWT Message format
+   * Applies sanitization to ensure clean, user-friendly message display
    */
-  private convertKoreMessageToSWTMessage(koreMessage: KoreMessage): any {
+  private convertKoreMessageToSWTMessage(koreMessage: KoreMessage): any | null {
     // Extract text from components
     let messageText = '';
     for (const component of koreMessage.components || []) {
@@ -154,9 +161,18 @@ export class SWTService {
     // Convert Kore message type to UI-compatible format
     const messageType = koreMessage.type === 'incoming' ? 'user' : 'bot';
     
+    // Apply sanitization to the message text
+    const sanitizationResult = TranscriptSanitizationService.sanitizeMessage(messageText, messageType);
+    
+    // If message was filtered out (null), return null to exclude it
+    if (sanitizationResult.text === null) {
+      console.log(`🧼 SWTService: Filtered out message: "${messageText}" (${messageType})`);
+      return null;
+    }
+    
     return {
       messageId: `${koreMessage.sessionId}_${koreMessage.timestampValue}`,
-      message: messageText,
+      message: sanitizationResult.text, // Use sanitized text
       // UI compatibility: provide both formats for maximum compatibility
       message_type: messageType,  // Legacy format expected by UI
       type: koreMessage.type,     // New format (keep for completeness)
