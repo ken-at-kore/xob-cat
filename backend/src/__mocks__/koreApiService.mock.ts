@@ -1,6 +1,7 @@
 import { SessionWithTranscript } from '../../../shared/types';
 import { IKoreApiService } from '../interfaces';
 import { SessionMetadata, KoreMessage } from '../services/koreApiService';
+import { TranscriptSanitizationService } from '../services/transcriptSanitizationService';
 
 export class MockKoreApiService implements IKoreApiService {
   private mockSessions: SessionWithTranscript[] = [
@@ -10,7 +11,7 @@ export class MockKoreApiService implements IKoreApiService {
       start_time: '2025-08-02T16:15:00.000Z',
       end_time: '2025-08-02T16:30:00.000Z',
       containment_type: 'selfService',
-      tags: ['Claim Status', 'Contained'],
+      tags: ['Claim Status', 'Contained', 'Sanitization Test'],
       metrics: {
         total_messages: 6,
         user_messages: 3,
@@ -20,32 +21,32 @@ export class MockKoreApiService implements IKoreApiService {
         {
           timestamp: '2025-08-02T16:00:00.000Z',
           message_type: 'user',
-          message: 'I need to check the status of my claim'
+          message: 'Welcome Task'  // Should be filtered out by sanitization
         },
         {
           timestamp: '2025-08-02T16:00:30.000Z',
           message_type: 'bot',
-          message: 'I can help you check your claim status. Please provide your claim number.'
+          message: '{"type":"command","command":"redirect","queueCommand":false,"data":[{"verb":"config","synthesizer":{"vendor":"microsoft","voice":"en-US-AvaMultilingualNeural","language":"en-US"},"recognizer":{"vendor":"microsoft","language":"en-US","punctuation":false,"azureOptions":{"speechSegmentationSilenceTimeoutMs":2000}},"record":{"recordingID":"688fcb1b41b2bcbda1c50d05","siprecServerURL":["3.217.118.136:5068","3.216.241.238:5068"],"headers":{"x-audc-call-id":"688fcb1b41b2bcbda1c50d05"},"action":"startCallRecording"}},{"verb":"gather","actionHook":"/actions/hooks","input":["digits","speech"],"interDigitTimeout":2,"minDigits":1,"finishOnKey":"#","numDigits":8,"say":{"text":["Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?"]},"bargein":false,"listenDuringPrompt":false,"timeout":10,"dtmfBargein":false}]}'  // Should extract the say.text content
         },
         {
           timestamp: '2025-08-02T16:01:00.000Z',
           message_type: 'user',
-          message: 'My claim number is 123456789'
+          message: 'I need to check the status of my claim'
         },
         {
           timestamp: '2025-08-02T16:01:30.000Z',
           message_type: 'bot',
-          message: 'Thank you. Let me look up your claim. I found claim 123456789. The status is currently "Under Review" and was submitted on 2025-01-15.'
+          message: '<speak>I can help you check your claim status. Please provide your claim number.</speak>'  // Should remove SSML tags
         },
         {
           timestamp: '2025-08-02T16:02:00.000Z',
           message_type: 'user',
-          message: 'How long does the review process take?'
+          message: 'My claim number is 123456789'
         },
         {
           timestamp: '2025-08-02T16:02:30.000Z',
           message_type: 'bot',
-          message: 'The typical review process takes 5-7 business days. Your claim is currently on day 3 of the review process.'
+          message: 'Thank you. Let me look up your claim. I found claim 123456789. The status is currently &quot;Under Review&quot; and was submitted on 2025-01-15.'  // Should decode HTML entities
         }
       ],
       duration_seconds: 900,
@@ -452,7 +453,7 @@ export class MockKoreApiService implements IKoreApiService {
         {
           timestamp: '2025-08-02T19:00:30.000Z',
           message_type: 'bot',
-          message: 'Yes, we accept all major credit cards including Visa, MasterCard, American Express, and Discover.'
+          message: '<speak>Yes, we accept all major credit cards including Visa, MasterCard, American Express, and Discover.</speak>'  // Should remove SSML tags
         },
         {
           timestamp: '2025-08-02T19:01:00.000Z',
@@ -462,7 +463,7 @@ export class MockKoreApiService implements IKoreApiService {
         {
           timestamp: '2025-08-02T19:01:30.000Z',
           message_type: 'bot',
-          message: 'You\'re welcome! Let me know if you need anything else.'
+          message: 'You\'re welcome! We&apos;re here to help with all your &quot;banking&quot; needs.'  // Should decode HTML entities
         }
       ],
       duration_seconds: 300,
@@ -496,8 +497,11 @@ export class MockKoreApiService implements IKoreApiService {
     // Apply pagination
     const paginatedSessions = filteredSessions.slice(skip, skip + limit);
     
-    console.log(`🧪 MockKoreApiService: After filtering and pagination - returning ${paginatedSessions.length} sessions`);
-    return paginatedSessions;
+    // Apply sanitization to all sessions (similar to real KoreApiService)
+    const sanitizedSessions = paginatedSessions.map(session => this.applySanitizationToSession(session));
+    
+    console.log(`🧪 MockKoreApiService: After filtering, pagination, and sanitization - returning ${sanitizedSessions.length} sessions`);
+    return sanitizedSessions;
   }
 
   async getMessages(dateFrom: string, dateTo: string, sessionIds: string[]): Promise<unknown[]> {
@@ -607,9 +611,12 @@ export class MockKoreApiService implements IKoreApiService {
     for (const sessionId of sessionIds) {
       const session = this.mockSessions.find(s => s.session_id === sessionId);
       if (session) {
-        for (const message of session.messages) {
+        // Apply sanitization to this session before processing messages
+        const sanitizedSession = this.applySanitizationToSession(session);
+        
+        for (const message of sanitizedSession.messages) {
           messages.push({
-            sessionId: session.session_id,
+            sessionId: sanitizedSession.session_id,
             createdBy: message.message_type === 'user' ? 'user' : 'bot',
             createdOn: message.timestamp,
             type: message.message_type === 'user' ? 'incoming' : 'outgoing',
@@ -617,7 +624,7 @@ export class MockKoreApiService implements IKoreApiService {
             components: [{
               cT: 'text',
               data: {
-                text: message.message
+                text: message.message  // This is now the sanitized message text
               }
             }]
           });
@@ -625,7 +632,7 @@ export class MockKoreApiService implements IKoreApiService {
       }
     }
 
-    console.log(`🧪 MockKoreApiService: Returning ${messages.length} KoreMessages`);
+    console.log(`🧪 MockKoreApiService: Returning ${messages.length} sanitized KoreMessages`);
     return messages;
   }
 
@@ -638,8 +645,11 @@ export class MockKoreApiService implements IKoreApiService {
       return [];
     }
 
-    const messages: KoreMessage[] = session.messages.map(message => ({
-      sessionId: session.session_id,
+    // Apply sanitization to this session before processing messages
+    const sanitizedSession = this.applySanitizationToSession(session);
+
+    const messages: KoreMessage[] = sanitizedSession.messages.map(message => ({
+      sessionId: sanitizedSession.session_id,
       createdBy: message.message_type === 'user' ? 'user' : 'bot',
       createdOn: message.timestamp,
       type: message.message_type === 'user' ? 'incoming' : 'outgoing',
@@ -647,12 +657,49 @@ export class MockKoreApiService implements IKoreApiService {
       components: [{
         cT: 'text',
         data: {
-          text: message.message
+          text: message.message  // This is now the sanitized message text
         }
       }]
     }));
 
-    console.log(`🧪 MockKoreApiService: Returning ${messages.length} messages for session ${sessionId}`);
+    console.log(`🧪 MockKoreApiService: Returning ${messages.length} sanitized messages for session ${sessionId}`);
     return messages;
+  }
+
+  /**
+   * Apply sanitization to a session's messages, similar to how the real KoreApiService does
+   * This ensures mock services behave consistently with real services regarding message cleaning
+   */
+  private applySanitizationToSession(session: SessionWithTranscript): SessionWithTranscript {
+    console.log(`🧼 MockKoreApiService: Applying sanitization to session ${session.session_id}`);
+    
+    const sanitizedMessages = session.messages
+      .map(message => {
+        const messageType = message.message_type;
+        const sanitizationResult = TranscriptSanitizationService.sanitizeMessage(message.message, messageType);
+        
+        // If message is filtered out (null), return null to remove it
+        if (sanitizationResult.text === null) {
+          console.log(`🧼 MockKoreApiService: Filtered out message: "${message.message}" (${messageType})`);
+          return null;
+        }
+        
+        // Return sanitized message
+        return {
+          ...message,
+          message: sanitizationResult.text
+        };
+      })
+      .filter((message): message is NonNullable<typeof message> => message !== null);
+    
+    console.log(`🧼 MockKoreApiService: Session ${session.session_id} - ${session.messages.length} messages → ${sanitizedMessages.length} after sanitization`);
+    
+    return {
+      ...session,
+      messages: sanitizedMessages,
+      message_count: sanitizedMessages.length,
+      user_message_count: sanitizedMessages.filter(m => m.message_type === 'user').length,
+      bot_message_count: sanitizedMessages.filter(m => m.message_type === 'bot').length
+    };
   }
 }

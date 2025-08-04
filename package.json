@@ -28,7 +28,8 @@
     "lint:backend": "cd backend && npm run lint",
     "collect-data": "npx tsx scripts/collect-production-data.ts",
     "generate-mock-analysis": "npx tsx scripts/generate-mock-analysis.ts",
-    "generate-analysis-summary": "npx tsx scripts/generate-analysis-summary.ts"
+    "generate-analysis-summary": "npx tsx scripts/generate-analysis-summary.ts",
+    "test-kore-connection": "npx tsx scripts/test-kore-connection.ts"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.27.1",
@@ -49,6 +50,7 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.11",
     "axios": "^1.10.0",
+    "commander": "^14.0.0",
     "dotenv": "^17.2.1",
     "openai": "^5.10.2",
     "tsx": "^4.20.3"
