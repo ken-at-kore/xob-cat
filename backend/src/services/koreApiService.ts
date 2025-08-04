@@ -118,7 +118,8 @@ export class KoreApiService {
     const now = Math.floor(Date.now() / 1000);
     
     const payload = {
-      clientId: this.config.clientId,
+      iss: this.config.clientId, // Use 'iss' (issuer) claim - standard JWT claim for client identification
+      sub: this.config.botId,     // Use 'sub' (subject) claim for the bot ID
       iat: now,
       exp: now + 3600, // 1 hour expiration
       aud: 'https://bots.kore.ai'
@@ -287,8 +288,6 @@ export class KoreApiService {
     const { dateFrom, dateTo, skip = 0, limit = 1000 } = options;
 
     console.log(`[getSessionsMetadata] Called with options:`, JSON.stringify(options, null, 2));
-    console.log(`[getSessionsMetadata] Bot ID: ${this.config.botId}`);
-    console.log(`[getSessionsMetadata] Client ID: ${this.config.clientId?.substring(0, 8)}...`);
     console.log(`[getSessionsMetadata] isMockCredentials: ${this.isMockCredentials()}`);
 
     // Check if using mock credentials and return mock data
@@ -342,8 +341,6 @@ export class KoreApiService {
       console.log(`[getSessionsMetadata] Making API call for ${containmentType}:`);
       console.log(`[getSessionsMetadata] URL: ${url}`);
       console.log(`[getSessionsMetadata] Payload:`, JSON.stringify(payload, null, 2));
-      console.log(`[getSessionsMetadata] Bot ID: ${this.config.botId}`);
-      console.log(`[getSessionsMetadata] Using credentials: clientId=${this.config.clientId?.substring(0, 8)}..., clientSecret=${this.config.clientSecret?.substring(0, 8)}...`);
 
       try {
         const response = await this.makeRequest<KoreSessionsResponse>(url, payload);
@@ -378,7 +375,17 @@ export class KoreApiService {
         allSessionsMetadata.push(...sessionMetadata);
       } catch (error) {
         console.error(`Error fetching ${containmentType} session metadata:`, error);
-        // Continue with other containment types
+        // Log specific error details if available
+        if (axios.isAxiosError(error) && error.response) {
+          console.error(`HTTP ${error.response.status} Error Details:`, JSON.stringify(error.response.data, null, 2));
+          
+          // If it's an authentication error (401), throw it immediately - don't continue
+          if (error.response.status === 401) {
+            console.error('Authentication failed - throwing error to caller');
+            throw error;
+          }
+        }
+        // Continue with other containment types for non-auth errors
       }
     }
 

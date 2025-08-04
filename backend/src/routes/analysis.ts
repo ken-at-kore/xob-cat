@@ -88,8 +88,6 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
   }
   
   console.log(`[Direct API] Fetching real Kore.ai sessions from ${dateFrom} to ${dateTo} for ${botName} (limit=${limit})`);
-  console.log(`[Direct API] Using bot ID: ${config.botId}`);
-  console.log(`[Direct API] Using credentials: clientId=${config.clientId?.substring(0, 8)}..., clientSecret=${config.clientSecret?.substring(0, 8)}...`);
   
   const result = await swtService.generateSWTs({
     dateFrom,
