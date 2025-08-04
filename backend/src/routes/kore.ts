@@ -33,7 +33,7 @@ router.get('/test', asyncHandler(async (req: Request, res: Response) => {
     });
 
     // If we get here, authentication worked
-    successResponse(res, {
+    return successResponse(res, {
       bot_name: botName,
       sessions_count: sessionMetadata.length,
       sample_session: sessionMetadata.length > 0 ? sessionMetadata[0] : null,
@@ -113,7 +113,7 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
 }));
 
 // GET /api/kore/sessions/:sessionId - Get specific session from Kore.ai API
-router.get('/sessions/:sessionId', asyncHandler(async (req: Request, res: Response): Promise<void> => {
+router.get('/sessions/:sessionId', asyncHandler(async (req: Request, res: Response) => {
   const { sessionId } = req.params;
   if (!sessionId) {
     validationErrorResponse(res, 'Session ID is required');
@@ -165,7 +165,7 @@ router.get('/messages', asyncHandler(async (req: Request, res: Response) => {
 }));
 
 // GET /api/kore/sessions/:sessionId/messages - Get conversation messages for specific session
-router.get('/sessions/:sessionId/messages', asyncHandler(async (req: Request, res: Response): Promise<void> => {
+router.get('/sessions/:sessionId/messages', asyncHandler(async (req: Request, res: Response) => {
   const { sessionId } = req.params;
   if (!sessionId) {
     validationErrorResponse(res, 'Session ID is required');
@@ -291,7 +291,7 @@ router.get('/swts', asyncHandler(async (req: Request, res: Response) => {
 }));
 
 // GET /api/kore/swts/:sessionId - Generate SWT for specific session
-router.get('/swts/:sessionId', asyncHandler(async (req: Request, res: Response): Promise<void> => {
+router.get('/swts/:sessionId', asyncHandler(async (req: Request, res: Response) => {
   const { sessionId } = req.params;
   if (!sessionId) {
     validationErrorResponse(res, 'Session ID is required');
