@@ -328,19 +328,44 @@ export class BackgroundJobQueue {
     await this.updateJob(job.id, job);
 
     let analysisSummary = undefined;
-    try {
-      const { AnalysisSummaryService } = await import('./analysisSummaryService');
-      const analysisSummaryService = new AnalysisSummaryService(job.config.openaiApiKey);
-      analysisSummary = await analysisSummaryService.generateAnalysisSummary(allResults);
+    
+    // Check if we're in mock mode to avoid real API calls
+    const serviceType = ServiceFactory.getServiceType();
+    
+    if (serviceType === 'real') {
+      try {
+        const { AnalysisSummaryService } = await import('./analysisSummaryService');
+        const analysisSummaryService = new AnalysisSummaryService(job.config.openaiApiKey);
+        analysisSummary = await analysisSummaryService.generateAnalysisSummary(allResults);
 
-      // Update token usage to include summary generation
-      totalTokenUsage.totalTokens += 1000; // Approximate tokens for summary generation
-      totalTokenUsage.cost += 0.002; // Approximate cost for summary generation
+        // Update token usage to include summary generation
+        totalTokenUsage.totalTokens += 1000; // Approximate tokens for summary generation
+        totalTokenUsage.cost += 0.002; // Approximate cost for summary generation
+        
+        console.log(`[BackgroundJobQueue] Analysis summary generated for job ${job.id}`);
+      } catch (error) {
+        console.error(`[BackgroundJobQueue] Failed to generate analysis summary for job ${job.id}:`, error);
+        // Continue without summary - non-critical feature
+      }
+    } else {
+      console.log(`🧪 [BackgroundJobQueue] Skipping real analysis summary generation in mock mode for job ${job.id}`);
+      // Create a mock summary matching the AnalysisSummary interface
+      const mockStats = {
+        totalSessions: allResults.length,
+        transferRate: 0.25, // 25% transfer rate for mock
+        containmentRate: 0.75, // 75% containment rate for mock
+        averageSessionLength: 300, // 5 minutes average
+        averageMessagesPerSession: 6
+      };
       
-      console.log(`[BackgroundJobQueue] Analysis summary generated for job ${job.id}`);
-    } catch (error) {
-      console.error(`[BackgroundJobQueue] Failed to generate analysis summary for job ${job.id}:`, error);
-      // Continue without summary - non-critical feature
+      analysisSummary = {
+        overview: "Mock analysis overview: This is a mock analysis summary generated for testing purposes.",
+        summary: "Mock detailed analysis: This would contain detailed insights about session patterns, user behaviors, and bot performance metrics in a production environment.",
+        containmentSuggestion: "Mock containment suggestions: Improve bot responses for claim status inquiries and add more clarification prompts for billing questions.",
+        generatedAt: new Date().toISOString(),
+        sessionsAnalyzed: allResults.length,
+        statistics: mockStats
+      };
     }
 
     const results = { sessions: allResults, analysisSummary };
