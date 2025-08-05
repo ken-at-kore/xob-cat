@@ -14,19 +14,26 @@ export class ServiceFactory {
     type: ServiceType.REAL,
     environment: (process.env.NODE_ENV as 'test' | 'development' | 'production') || 'development'
   };
+  private static explicitlyConfigured = false;
 
   static configure(config: Partial<ServiceConfig>): void {
     ServiceFactory.config = { ...ServiceFactory.config, ...config };
+    ServiceFactory.explicitlyConfigured = true;
   }
 
   static getServiceType(): ServiceType {
-    // Force mock services in test environment
-    if (ServiceFactory.config.environment === 'test') {
+    // Check environment variable for forcing mock services (useful for E2E tests)
+    if (process.env.USE_MOCK_SERVICES === 'mock') {
       return ServiceType.MOCK;
     }
 
-    // Check environment variable for forcing mock services (useful for E2E tests)
-    if (process.env.USE_MOCK_SERVICES === 'mock') {
+    // If explicitly configured, honor that configuration even in test environment
+    if (ServiceFactory.explicitlyConfigured) {
+      return ServiceFactory.config.type;
+    }
+
+    // Force mock services in test environment (only if not explicitly configured)
+    if (ServiceFactory.config.environment === 'test') {
       return ServiceType.MOCK;
     }
 
@@ -112,6 +119,7 @@ export class ServiceFactory {
       type: environment === 'test' ? ServiceType.MOCK : ServiceType.REAL,
       environment
     };
+    ServiceFactory.explicitlyConfigured = false;
   }
 
   // For testing - get current configuration
@@ -122,10 +130,11 @@ export class ServiceFactory {
 
 // Auto-configure based on environment on module load
 if (process.env.NODE_ENV === 'test') {
-  ServiceFactory.configure({ 
+  ServiceFactory['config'] = { 
     type: ServiceType.MOCK, 
     environment: 'test' 
-  });
+  };
+  ServiceFactory['explicitlyConfigured'] = false;
 }
 
 // Convenience exports for common use cases

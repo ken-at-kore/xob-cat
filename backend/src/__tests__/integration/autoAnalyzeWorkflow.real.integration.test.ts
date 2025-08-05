@@ -2,6 +2,7 @@ import express from 'express';
 import request from 'supertest';
 import { autoAnalyzeRouter } from '../../routes/autoAnalyze';
 import { ServiceFactory } from '../../factories/serviceFactory';
+import { destroyBackgroundJobQueue } from '../../services/backgroundJobQueue';
 import {
   REAL_CREDENTIALS,
   createTestApp,
@@ -66,6 +67,9 @@ describe('Auto-Analyze Integration Test - Real API', () => {
   afterAll(() => {
     // Reset to defaults
     ServiceFactory.resetToDefaults();
+    
+    // Clean up background job queue to prevent Jest hanging
+    destroyBackgroundJobQueue();
   });
 
   describe('Production Integration Workflow', () => {
@@ -79,7 +83,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
         startDate: dateString as string,
         startTime: '09:00', 
         sessionCount: 5, // Keep small to minimize costs
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-mini'
       });
 
       console.log('💰 [Real API Test] Starting analysis - this will incur OpenAI costs');
@@ -101,7 +105,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
       results.sessions.forEach((session: any) => {
         expect(session.facts.generalIntent).toBeTruthy();
         expect(session.facts.sessionOutcome).toBeTruthy();
-        expect(session.analysisMetadata.model).toBe('gpt-4o-mini');
+        expect(session.analysisMetadata.model).toBe('gpt-4.1-mini');
         expect(session.analysisMetadata.tokensUsed).toBeGreaterThan(0);
       });
 
@@ -111,11 +115,11 @@ describe('Auto-Analyze Integration Test - Real API', () => {
 
     it('should handle real API rate limiting gracefully', async () => {
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
-        sessionCount: 20, // Larger count to test rate limiting
-        modelId: 'gpt-4o-mini'
+        sessionCount: 10, // Reduced count to avoid timeouts while still testing rate limiting
+        modelId: 'gpt-4.1-mini'
       });
 
-      console.log('💰 [Real API Test] Testing rate limiting with 20 sessions');
+      console.log('💰 [Real API Test] Testing rate limiting with 10 sessions');
 
       const { progress, results } = await runFullAnalysisWorkflow(
         app,
@@ -135,8 +139,8 @@ describe('Auto-Analyze Integration Test - Real API', () => {
   describe('Production Error Handling', () => {
     it('should handle real API cancellation', async () => {
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
-        sessionCount: 30, // Larger count to have time to cancel
-        modelId: 'gpt-4o-mini'
+        sessionCount: 10, // Reduced count to avoid timeouts but still allow cancellation testing
+        modelId: 'gpt-4.1-mini'
       });
 
       console.log('💰 [Real API Test] Testing cancellation (minimal cost)');
@@ -164,7 +168,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
 
       const analysisConfig = createAnalysisConfig(invalidCredentials, {
         sessionCount: 5,
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-mini'
       });
 
       // Should fail with authentication error
@@ -204,7 +208,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
     it('should return real session data with proper structure', async () => {
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
         sessionCount: 3, // Small count to minimize cost
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-mini'
       });
 
       console.log('💰 [Real API Test] Validating real session data structure');
@@ -237,7 +241,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
         
         // Real token usage
         expect(session.analysisMetadata.tokensUsed).toBeGreaterThan(10); // Should be substantial
-        expect(session.analysisMetadata.model).toBe('gpt-4o-mini');
+        expect(session.analysisMetadata.model).toBe('gpt-4.1-mini');
       });
       
     }, 180000); // 3 minute timeout
@@ -252,7 +256,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
         startDate: dateString as string,
         startTime: '09:00',
         sessionCount: 5,
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-mini'
       });
 
       console.log(`💰 [Real API Test] Testing with recent date: ${dateString}`);

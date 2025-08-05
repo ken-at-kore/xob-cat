@@ -298,6 +298,8 @@ Raw Sessions → SessionWithTranscript → AnalysisResult → Charts
 │ • 100%      │    │   Testing   │    │ • Playwright│
 │   Coverage  │    │ • Service   │    │ • Shared    │
 │ • Mocking   │    │   Testing   │    │   Workflows │
+│ • Fast      │    │ • Workflow  │    │ • Real UI   │
+│             │    │   Testing   │    │   Testing   │
 │             │    │             │    │             │
 └─────────────┘    └─────────────┘    └─────────────┘
 ```
@@ -356,6 +358,54 @@ After successful implementation, key architectural insights emerged:
                     │ • No Network    │
                     │ • Fast & Stable │
                     └─────────────────┘
+```
+
+### Backend Integration Testing Architecture (December 2024)
+
+#### Service Factory Pattern for Test Flexibility
+```
+┌──────────────────────────────────────────────────────┐
+│                Integration Test Suite                 │
+├────────────────────┬─────────────────────────────────┤
+│   Mock API Tests   │      Real API Tests             │
+│                    │                                  │
+│ • No external deps │ • Validates production APIs     │
+│ • Deterministic    │ • Requires credentials          │
+│ • Zero cost        │ • Incurs OpenAI costs           │
+│ • Fast execution   │ • Real data validation          │
+└────────────────────┴─────────────────────────────────┘
+                    │
+         ┌──────────▼──────────┐
+         │  ServiceFactory     │
+         │                     │
+         │ • Dynamic switching │
+         │ • Mock detection    │
+         │ • Clean separation │
+         └─────────┬───────────┘
+       ┌───────────┴────────────┐
+       ▼                        ▼
+┌──────────────┐        ┌───────────────┐
+│ Mock Services│        │ Real Services │
+│              │        │               │
+│ • Pure mocks │        │ • Kore.ai API │
+│ • No network │        │ • OpenAI API  │
+│ • Test data  │        │ • Rate limits │
+└──────────────┘        └───────────────┘
+```
+
+#### Integration Test Architecture
+```
+backend/src/__tests__/integration/
+├── autoAnalyzeWorkflow.shared.ts       # Shared utilities
+├── autoAnalyzeWorkflow.mock.integration.test.ts    # Mock tests
+└── autoAnalyzeWorkflow.real.integration.test.ts    # Real API tests
+
+Key Features:
+• Background Job Queue validation
+• Async workflow testing  
+• Progress tracking assertions
+• Cost estimation validation
+• Clean test exit (no Jest hanging)
 ```
 
 ### Test Coverage Goals

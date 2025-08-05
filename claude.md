@@ -41,6 +41,10 @@ cd backend && npm run test:integration  # Integration tests
 cd backend && npm run test:real-api     # Real Kore.ai API tests
 cd backend && npm run test:coverage     # With coverage report
 
+# Backend integration tests (NEW Dec 2024)
+cd backend && npm test -- --testPathPattern="autoAnalyzeWorkflow.mock"  # Mock API (fast, no cost)
+cd backend && npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # Real API (needs credentials)
+
 # Puppeteer E2E (recommended for reliable E2E testing)
 node frontend/e2e/run-puppeteer-test.js  # Standalone Puppeteer test (no hanging issues)
 ```

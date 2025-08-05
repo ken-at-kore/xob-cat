@@ -93,6 +93,26 @@ npm test -- sessionSamplingService.optimized.test.ts  # Business logic layer
 npm test -- --testNamePattern="should handle large datasets"
 ```
 
+### Integration Tests (December 2024)
+```bash
+cd backend
+
+# Run all integration tests
+npm test -- --testPathPattern="integration"
+
+# Run mock API integration tests (fast, no cost)
+npm test -- --testPathPattern="autoAnalyzeWorkflow.mock.integration.test.ts"
+
+# Run real API integration tests (requires credentials, incurs OpenAI costs)
+npm test -- --testPathPattern="autoAnalyzeWorkflow.real.integration.test.ts"
+
+# Run specific test by name
+npm test -- --testPathPattern="integration" --testNamePattern="should complete full auto-analysis workflow"
+
+# Note: Real API tests require these env vars in .env.local:
+# TEST_BOT_ID, TEST_CLIENT_ID, TEST_CLIENT_SECRET, TEST_OPENAI_API_KEY
+```
+
 ### Frontend Tests
 ```bash
 cd frontend
@@ -162,6 +182,35 @@ node e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobca
 - External API mocking
 
 **Location**: `backend/src/__tests__/routes/`
+
+### Backend Integration Tests (NEW - December 2024)
+**Purpose**: Test complete backend workflows without UI, validating service integration and data flow.
+
+**Auto-Analyze Workflow Integration Tests**:
+- **Mock API Version**: `autoAnalyzeWorkflow.mock.integration.test.ts`
+  - Uses pure mock services (no external API calls)
+  - Validates complete auto-analysis workflow
+  - Zero cost, deterministic results
+  - 8 comprehensive test cases
+  
+- **Real API Version**: `autoAnalyzeWorkflow.real.integration.test.ts`  
+  - Uses real Kore.ai and OpenAI APIs
+  - Requires credentials in `.env.local`
+  - Tests production integration
+  - Validates actual API responses
+
+**Shared Test Utilities**: `autoAnalyzeWorkflow.shared.ts`
+- Common test workflows and assertions
+- Reusable configuration builders
+- Progress tracking validators
+
+**Architecture Features**:
+- **Service Factory Pattern**: Dynamic switching between mock/real services
+- **Background Job Queue Testing**: Async processing validation
+- **Clean Exit**: Proper cleanup prevents Jest hanging
+- **Model Configuration**: Supports multiple OpenAI models (gpt-4o-mini, gpt-4.1-mini)
+
+**Location**: `backend/src/__tests__/integration/`
 
 ### E2E Tests
 **Purpose**: Test complete user workflows from frontend to backend.
