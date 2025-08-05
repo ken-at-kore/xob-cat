@@ -196,23 +196,13 @@ DELETE /api/analysis/auto-analyze/:id           # Cancel analysis
 - **Cost Optimization**: ~$0.019 average cost per session analysis
 - **Quality**: 100% facts consistency verified with real conversation data
 
-### Architectural Improvements (August 2025)
+### Performance Optimization (August 2025)
 
-#### SessionSamplingService Optimization (August 2025)
-Completely refactored with new layered architecture to eliminate production timeouts:
+**Layered Architecture:** SessionSamplingService → SWTService → KoreApiService → Kore.ai API
 
-**New Architecture:** SessionSamplingService → SWTService (lazy loading) → KoreApiService (granular) → Kore.ai API
-
-**Performance Breakthrough:**
-- **Previous**: Fetched messages for ALL sessions before sampling → 60+ second timeout
-- **Optimized**: Fetch metadata first, sample, then fetch messages only for sampled sessions → **sub-second performance**
-
-**Benefits:**
-- **10x Performance**: Metadata-first approach eliminates timeout bottlenecks
-- **Production Ready**: Handles 1000+ sessions without Lambda timeouts
-- **Code Reuse**: Shared logic between view sessions and auto-analysis
-- **Scalability**: Architecture scales with dataset size
-- **Testability**: Comprehensive test coverage at each layer
+**Key Improvement:** Metadata-first approach eliminates timeouts:
+- Fetch session metadata only (fast), sample, then fetch messages for selected sessions
+- **Result**: 10x performance improvement, handles 1000+ sessions
 
 ### Configuration & Usage
 
@@ -229,86 +219,16 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 - **API Key**: OpenAI API key validation (sk- prefix required)
 
 ### Testing & Performance
-
-#### Test Coverage
-- ✅ Unit tests: Session sampling, batch analysis, OpenAI integration
-- ✅ E2E tests: Complete workflow with real-time progress tracking
-- ✅ **Comprehensive E2E Test**: Full auto-analyze workflow using production data (`auto-analyze-complete-workflow.spec.ts`)
-- ✅ Manual testing: 100% accuracy on real session data
-
-#### Performance Metrics
-- **Processing**: ~636 tokens per session, $0.019 cost
-- **Success Rate**: 100% on valid conversation data
-- **Time Window**: 95%+ session discovery rate with expansion
+- **Coverage**: Unit, E2E, and real API tests with 100% accuracy
+- **Metrics**: ~$0.019 per session, 95%+ session discovery rate
 
 ### Async Architecture (August 2025)
 
-Solved 40-50 second synchronous processing timeout issues in AWS Lambda with async BackgroundJobQueue service.
+**Solution**: BackgroundJobQueue service for Lambda timeout issues
+- Immediate job ID response, background processing, real-time progress polling
+- Three phases: sampling, analysis, summary generation
 
-**Architecture Flow:**
-1. **Start Analysis**: Returns job ID immediately (< 1 second)
-2. **Background Processing**: Three phases - sampling, analysis, summary generation
-3. **Progress Polling**: Real-time updates via `/progress/:id` endpoint
-4. **Results**: Fetch completed results via `/results/:id`
-
-**Key Features:**
-- Immediate API response with job tracking
-- Real-time progress with ETA and cost tracking
-- Error resilience and credential handling
-- In-memory job storage with cleanup
-
-**Testing:** 7/7 timeout tests pass, verified with production credentials
-
-### Optimized Data Access Architecture (August 2025)
-
-**Problem Solved**: Auto-analysis was hanging and timing out in production because it fetched messages for ALL sessions (1000+) before sampling, causing AWS Lambda to exceed 60-second timeout.
-
-**Solution**: Implemented layered architecture with lazy loading pattern, similar to GraphQL or JPA/Hibernate approaches.
-
-#### New Layered Architecture
-
-**Data Access Layer** (`KoreApiService`) - Three granular methods:
-- `getSessionsMetadata()` - Fetch session metadata only (no messages) → **10x faster**
-- `getMessagesForSessions()` - Fetch messages for specific session IDs only
-- `getSessionsWithMessages()` - Convenience method composing both operations
-
-**Transformation Layer** (`SWTService`) - Lazy loading capabilities:
-- `createSWTsFromMetadata()` - Convert metadata to SWT format without messages
-- `populateMessages()` - Selectively populate messages for specific sessions only
-
-**Business Logic Layer** (`SessionSamplingService`) - Optimized workflow:
-1. Fetch metadata for 1000+ sessions quickly (metadata-only API calls)
-2. Sample desired count from metadata using business rules
-3. Fetch messages only for sampled sessions (selective data loading)
-
-#### Performance Transformation
-- **Before**: Fetch messages for ALL 1319 sessions → 60+ second timeout
-- **After**: Fetch metadata for 1319 + messages for 10 sampled → **sub-second performance**
-
-#### Architecture Benefits
-- **10x Performance**: Metadata-first approach eliminates timeout issues
-- **Scalability**: Handles 1000+ sessions without performance degradation
-- **Composability**: Methods can be used independently for different use cases
-- **Testability**: Each layer can be unit tested in isolation
-- **Maintainability**: Clear separation of concerns with well-defined interfaces
-
-#### Implementation Pattern
-```typescript
-// OLD: Fetch everything, then sample (timeout risk)
-const allSessions = await getSessions(); // ❌ Fetches ALL messages
-const sampled = sample(allSessions, count);
-
-// NEW: Sample metadata, then fetch selectively (optimized)
-const metadata = await getSessionsMetadata(); // ✅ Metadata only, fast
-const sampledMetadata = sample(metadata, count);
-const withMessages = await populateMessages(sampledMetadata); // ✅ Selective
-```
-
-#### Test Coverage
-- ✅ **Granular Tests**: `koreApiService.granular.test.ts` - Data access layer validation
-- ✅ **Lazy Loading Tests**: `swtService.lazy.test.ts` - Transformation layer verification  
-- ✅ **Optimized Workflow Tests**: `sessionSamplingService.optimized.test.ts` - Business logic validation
-- ✅ **Performance Tests**: Large dataset handling without timeouts
+**Note**: See "Data Access Architecture" section below for detailed layered architecture implementation.
 
 ### Known Limitations
 - **MVP Constraint**: In-memory state only (no database persistence)
@@ -378,22 +298,7 @@ Environment-based service selection:
 # Supports both real and mock workflows
 ```
 
-### Migration Complete ✅
-
-All phases completed successfully:
-
-1. **✅ Phase 1**: Created pure mock services in `__mocks__/` directory
-2. **✅ Phase 2**: Implemented service interfaces for dependency injection
-3. **✅ Phase 3**: Updated all services to use ServiceFactory pattern
-4. **✅ Phase 4**: Removed legacy hybrid approach completely
-
-### Benefits
-
-- **Reliability**: Tests never fail due to network issues
-- **Speed**: Pure mocks execute instantly without HTTP overhead
-- **Determinism**: Consistent test data and behavior
-- **Isolation**: Services can be tested independently
-- **Flexibility**: Easy switching between real and mock implementations
+**Benefits:** Reliable tests, instant execution, deterministic behavior, service isolation
 
 ## Development Guidelines
 
@@ -405,10 +310,7 @@ All phases completed successfully:
 - **Update claude.md**: When workflows, scripts, or structure changes
 
 ### Recent Quality Improvements (August 2025)
-
-- **Type Safety**: Replaced `any` types with proper TypeScript interfaces
-- **Logging**: Added structured logging with environment-aware log levels  
-- **Technical Debt**: Documented 33 issues with priority classification and action plan
+- **Type Safety**: Replaced `any` types, added structured logging, documented technical debt
 
 ### Required Development Commands
 **IMPORTANT**: Always use standardized npm scripts:
@@ -469,73 +371,17 @@ All phases completed successfully:
 - **Technical Design**: `docs/Auto-Analyze Technical Design.md`
 
 ### Auto-Analyze Feature
-AI-powered bot performance analysis with comprehensive reporting:
+AI-powered bot performance analysis using GPT-4o-mini with time window expansion, batch processing, and interactive visualizations. Supports 5-1000 sessions with real-time progress tracking and cost estimation.
 
-**Core Features:**
-- **Session Sampling**: Time window expansion (3hr → 6hr → 12hr → 6day) to find 5-1000 sessions
-- **AI Analysis**: GPT-4o-mini extracts intent, outcome, transfer reasons, drop-off locations
-- **Batch Processing**: Processes in batches with classification consistency
-- **Progress Tracking**: Real-time updates with token usage and cost estimation
-- **Visualizations**: Interactive Nivo charts (pie, Pareto, bar) with hover effects
-- **Session Details**: Click rows for detailed dialogs with AI facts and transcripts
-- **Mock Reports**: Development feature for testing without OpenAI API
-
-**Configuration:** Date/time picker, session count (5-1000), OpenAI API key input
-
-### Report Viewer Feature
-
-Enables sharing analysis reports without requiring XOBCAT access:
-
-**Export Functionality:**
-- Download versioned JSON files with all session data, charts, and metadata
-- Secure export excludes API keys and sensitive data
-- Auto-generated filenames: `xob-cat-analysis-YYYY-MM-DDTHH-MM-SS.json`
-
-**Report Viewer Interface** (`/report-viewer`):
-- Standalone layout with drag-and-drop file upload
-- Client-side validation with version compatibility checking
-- Complete report rendering with interactive features
-
-**API:** `GET /api/analysis/auto-analyze/export/{analysisId}` for JSON download
-
-### Share Report Feature
-
-Two-step workflow for sharing analysis results with stakeholders:
-
-**Step 1:** Download report data as versioned JSON with progress tracking
-**Step 2:** Share report viewer URL with copy-to-clipboard functionality
-
-**Implementation:** ShareReportModal component with React hooks for state management, comprehensive error handling, and accessibility support
-
-### Recent Analysis Report Improvements (July 2025)
-
-Enhanced analysis reports with improved formatting and architecture:
-
-- **UX Improvements**: Rich markdown formatting, improved readability, consistent terminology
-- **Architecture**: Centralized prompt engineering and shared LLM service
-- **Quality**: Comprehensive test coverage and visual testing verification
+### Report Sharing
+- **Export**: Download versioned JSON files with all session data
+- **Viewer**: Standalone `/report-viewer` interface with drag-and-drop upload
+- **Share**: Two-step workflow for stakeholder distribution
 
 ## 🏗️ Project Architecture
 
-Monorepo full-stack analytics platform for Kore.ai Expert Services teams.
-
-### Tech Stack
-- **Frontend**: Next.js 15 + TypeScript + Tailwind CSS v4 + shadcn/ui
-- **Backend**: Node.js + Express + TypeScript (port 3001)
-- **LLM**: OpenAI GPT-4o-mini with function calling
-- **Charts**: Nivo library for interactive visualizations
-- **Testing**: Jest (unit), Playwright (E2E)
-- **Data**: In-memory only (MVP constraint)
-
-### Structure
-```
-XOBCAT/
-├── frontend/    # Next.js app (port 3000)
-├── backend/     # Express API (port 3001)  
-├── shared/      # TypeScript types
-├── data/        # Test data
-└── scripts/     # Utilities
-```
+**Stack**: Next.js 15 + Express + TypeScript + OpenAI GPT-4o-mini + Nivo charts  
+**Structure**: Monorepo with frontend (3000), backend (3001), shared types, test data
 
 
 ## 🏛️ Core Architecture
@@ -598,18 +444,9 @@ Optimized sampling workflow:
 
 ## 🧪 Testing
 
-### Backend (`backend/src/__tests__/`)
-- Unit, integration, and real API tests
-- Comprehensive coverage with lcov reporting
-
-### Frontend (`frontend/src/__tests__/`)
-- Component tests with React Testing Library
-- E2E tests with Playwright and Puppeteer
-- 100% coverage on navigation components
-
-### Test Data (`data/`)
-- Sanitized production data for realistic testing
-- **Production Data Integration**: Mock services now use real sanitized data from `data/` directory
+**Backend**: Unit, integration, and real API tests with lcov coverage  
+**Frontend**: Component tests (React Testing Library) + E2E (Playwright/Puppeteer)  
+**Data**: Sanitized production data for realistic mock services
 
 ## 🎭 E2E Testing Strategy
 
@@ -686,103 +523,21 @@ page.setDefaultNavigationTimeout(5000);
 | `auto-analyze-real-api-puppeteer.test.js` | Real | Auto-analyze workflow with real APIs | Uses ENV vars, incurs OpenAI costs |
 | `run-puppeteer-bogus-credentials-test.js` | Invalid | Error handling validation | Tests auth failures |
 
-**Shared Workflow Architecture:**
-Both view sessions and auto-analyze tests use a shared workflow pattern:
-- `shared/view-sessions-workflow.js` - Common view sessions steps and validation
-- `shared/auto-analyze-workflow.js` - Common auto-analyze steps and validation
-- Separate test files for mock vs real API configurations
-- Promotes code reuse and consistency
+**Features:**
+- Shared workflow pattern for code reuse
+- Complete auto-analyze testing (credentials → analysis → report)
+- Mock and real API variants with production testing support
 
-**Auto-Analyze Test Coverage:**
-- ✅ Credentials entry and authentication
-- ✅ Navigation to Auto-Analyze page
-- ✅ Analysis configuration form (date, time, session count, OpenAI API key)
-- ✅ **GPT Model Selection**: Tests correctly select GPT-4.1 nano from dropdown
-- ✅ Analysis execution and progress tracking
-- ✅ Report generation and content validation
-- ✅ Session details dialog functionality
-- ✅ Mock/Real API service integration (Kore.ai + OpenAI)
-- ✅ **Date Input Automation**: Fixed HTML date input handling using JavaScript evaluation
-- ✅ **Real API Timeout Handling**: Graceful handling of longer analysis times in production
 
-**Implementation Example:**
-```javascript
-// view-sessions-mock-api-puppeteer.test.js
-const { enterCredentials, waitForSessions, validateSanitization } = require('./shared/view-sessions-workflow');
-
-const MOCK_CREDENTIALS = {
-  botId: 'mock-bot-id',
-  clientId: 'mock-client-id',
-  clientSecret: 'mock-client-secret'
-};
-
-// Use shared workflow steps
-await enterCredentials(page, MOCK_CREDENTIALS);
-await waitForSessionsPage(page);
-const { sessionRows } = await waitForSessions(page);
-const { sanitizationTests } = validateSanitization(dialogContent, false);
-```
-
-**Implementation Insights (August 2025):**
-After successful implementation of both tests, key learnings emerged:
-
-1. **Simplicity Over Complexity**: The shared workflow initially used complex selector fallback logic, but the simple, direct approach from working tests proved more reliable:
-   ```javascript
-   // ✅ Reliable: Direct pattern from working test
-   await page.waitForSelector('table', { timeout: 3000 });
-   const sessionRows = await page.$$('table tbody tr');
-   
-   // ❌ Over-engineered: Complex fallback logic
-   const possibleSelectors = [...]; // Multiple selectors cause edge cases
-   ```
-
-2. **Error Handling Strategy**: Return state information instead of throwing errors to enable graceful handling of no-data scenarios:
-   ```javascript
-   return { sessionRows: [], hasNoSessions: true, noTable: true };
-   ```
-
-3. **Real API Challenges**: Production APIs may have no data in default date ranges, requiring automatic date range expansion (7 days → 365 days)
-
-4. **Production Validation**: Both tests successfully validated against real production data, confirming message sanitization works correctly with actual Kore.ai API responses
-
-**Auto-Analyze Implementation Learnings (August 2025):**
-
-5. **HTML Date Input Challenges**: Standard Puppeteer `type()` method failed with date inputs, causing malformed dates like "50701-02-02". Solution: Use JavaScript evaluation to set values directly:
-   ```javascript
-   await page.evaluate((date) => {
-     const dateInput = document.querySelector('#startDate');
-     dateInput.value = date;
-     dateInput.dispatchEvent(new Event('change', { bubbles: true }));
-   }, startDate);
-   ```
-
-6. **GPT Model Selection**: Dropdown automation requires finding options by text content and handling model ID variations:
-   ```javascript
-   const options = await page.$$('[role="option"]');
-   for (const option of options) {
-     const optionText = await page.evaluate(el => el.textContent, option);
-     if (optionText.includes('GPT-4.1 nano')) {
-       await option.click();
-       break;
-     }
-   }
-   ```
-
-7. **Real API Test Timeouts**: Production analysis takes 60-120 seconds but tests timeout at 30 seconds. This is expected behavior - real API tests validate workflow initiation, while full completion requires manual verification or extended timeouts.
-
-8. **Form Validation Integration**: Auto-analyze tests successfully validate client-side form validation, ensuring date restrictions and API key format requirements work correctly in automated testing.
-
-**Testing Against Production:**
+**Usage:**
 ```bash
-# View Sessions Tests
-node frontend/e2e/view-sessions-mock-api-puppeteer.test.js                    # Mock API test
-node frontend/e2e/view-sessions-real-api-puppeteer.test.js                   # Real API test (local)
-node frontend/e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com  # Production test
+# Mock tests (fast, no costs)
+node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
+node frontend/e2e/auto-analyze-mock-api-puppeteer.test.js
 
-# Auto-Analyze Tests
-node frontend/e2e/auto-analyze-mock-api-puppeteer.test.js                    # Mock API test (fast, no costs)
-node frontend/e2e/auto-analyze-real-api-puppeteer.test.js                   # Real API test (incurs OpenAI costs)
-node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com  # Production test
+# Real API tests (requires credentials)
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js
+node frontend/e2e/auto-analyze-real-api-puppeteer.test.js
 ```
 
 #### 🎪 **Playwright Tests**
@@ -881,20 +636,12 @@ Real API E2E tests require actual Kore.ai credentials to be configured in `.env.
 
 #### Required Environment Variables
 ```bash
-# Add to frontend/.env.local (or root .env.local)
+# Add to .env.local (git ignored)
 TEST_BOT_ID=st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 TEST_CLIENT_ID=cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 TEST_CLIENT_SECRET=your-client-secret-here
-
-# Required for Auto-Analyze real API tests
-TEST_OPENAI_API_KEY=sk-your-real-openai-key-here
+TEST_OPENAI_API_KEY=sk-your-real-openai-key-here  # For auto-analyze tests
 ```
-
-#### Security Notes
-- **File Location**: `.env.local` in project root (same level as package.json)
-- **Git Ignored**: `.env.local` is automatically ignored by git
-- **Never Commit**: Real credentials should never be committed to the repository
-- **Access Control**: Only developers who need to run real API tests need these credentials
 
 #### Testing Commands
 ```bash
@@ -919,10 +666,7 @@ node frontend/e2e/auto-analyze-real-api-puppeteer.test.js
 node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
 ```
 
-#### Credential Sources
-- **Development**: Use test bot credentials from Kore.ai platform
-- **CI/CD**: Not recommended - use mock tests in automated pipelines
-- **Production Testing**: Use dedicated test bot credentials, never production bot credentials
+**Note**: Use test bot credentials only, never production credentials
 
 ## Visual Actions & Playwright
 
