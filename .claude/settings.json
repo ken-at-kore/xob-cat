@@ -21,10 +21,7 @@
       "Read(frontend/**/*)",
       "Read(backend/**/*)"
     ],
-    "deny": [
-      "WebFetch",
-      "Bash(curl:*)"
-    ],
+    "deny": [],
     "defaultMode": "acceptEdits"
   }
 }
