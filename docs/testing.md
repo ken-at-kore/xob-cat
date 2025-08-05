@@ -32,11 +32,13 @@ XOB CAT implements a comprehensive testing strategy with multiple layers to ensu
 - **Mocking**: Jest mocks for external dependencies
 - **HTTP Testing**: Supertest for API endpoints
 
-### Frontend Testing (Planned)
+### Frontend Testing
 - **Framework**: Jest + React Testing Library
 - **Language**: TypeScript
 - **Component Testing**: React Testing Library
-- **E2E Testing**: Playwright
+- **E2E Testing**: Dual framework approach
+  - **Puppeteer**: Critical session validation (recommended)
+  - **Playwright**: General UI testing
 
 ## 🚀 Running Tests
 
@@ -91,7 +93,7 @@ npm test -- sessionSamplingService.optimized.test.ts  # Business logic layer
 npm test -- --testNamePattern="should handle large datasets"
 ```
 
-### Frontend Tests (Planned)
+### Frontend Tests
 ```bash
 cd frontend
 
@@ -101,8 +103,15 @@ npm test
 # Run component tests
 npm run test:components
 
-# Run E2E tests
+# Run E2E tests (Playwright)
 npm run test:e2e
+
+# Run Puppeteer tests (recommended for critical paths)
+node e2e/view-sessions-mock-api-puppeteer.test.js
+node e2e/view-sessions-real-api-puppeteer.test.js
+
+# Test against production
+node e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
 ```
 
 ## 📈 Current Test Coverage
@@ -154,16 +163,36 @@ npm run test:e2e
 
 **Location**: `backend/src/__tests__/routes/`
 
-### E2E Tests (Planned)
+### E2E Tests
 **Purpose**: Test complete user workflows from frontend to backend.
 
-**Examples**:
+**Frameworks**:
+- **Puppeteer**: Critical path validation with shared workflows
+- **Playwright**: General UI testing and parallel execution
+
+**Shared Workflow Architecture**:
+```javascript
+// frontend/e2e/shared/view-sessions-workflow.js
+module.exports = {
+  BROWSER_CONFIG,      // Common browser configuration
+  TIMEOUTS,           // Consistent timeout values
+  enterCredentials,   // Reusable workflow steps
+  waitForSessionsPage,
+  validateSanitization
+};
+```
+
+**Test Categories**:
 - Session browsing workflow
 - Analysis request flow
 - Error handling scenarios
-- Cross-browser compatibility
+- Message sanitization validation
+- Mock vs Real API testing
 
-**Location**: `tests/e2e/`
+**Locations**: 
+- Puppeteer: `frontend/e2e/*.test.js`
+- Shared workflows: `frontend/e2e/shared/`
+- Playwright: `frontend/e2e/*.spec.ts`
 
 ### Performance Tests (August 2025)
 **Purpose**: Validate architectural performance improvements and ensure production scalability.

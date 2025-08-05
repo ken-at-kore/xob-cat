@@ -294,22 +294,80 @@ Raw Sessions → SessionWithTranscript → AnalysisResult → Charts
 │   Unit      │    │ Integration │    │   E2E       │
 │   Tests     │    │   Tests     │    │   Tests     │
 │             │    │             │    │             │
-│ • Jest      │    │ • API       │    │ • Playwright│
-│ • 100%      │    │   Testing   │    │ • User      │
-│   Coverage  │    │ • Service   │    │   Flows     │
-│ • Mocking   │    │   Testing   │    │ • Cross-    │
-│             │    │   Browser   │    │             │
+│ • Jest      │    │ • API       │    │ • Puppeteer │
+│ • 100%      │    │   Testing   │    │ • Playwright│
+│   Coverage  │    │ • Service   │    │ • Shared    │
+│ • Mocking   │    │   Testing   │    │   Workflows │
+│             │    │             │    │             │
 └─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### E2E Testing Architecture
+
+#### Dual Framework Approach
+```
+┌─────────────────────────────────────┐
+│        E2E Testing Framework        │
+├─────────────────┬───────────────────┤
+│    Puppeteer    │    Playwright     │
+│  (Recommended)  │    (General)      │
+├─────────────────┼───────────────────┤
+│ • Session       │ • Navigation      │
+│   Validation    │ • Form Testing    │
+│ • Dialog Tests  │ • Quick UI Tests  │
+│ • No Timeouts   │ • Parallel Exec   │
+└─────────────────┴───────────────────┘
+```
+
+#### Shared Workflow Pattern
+```
+frontend/e2e/
+├── shared/
+│   └── view-sessions-workflow.js    # Reusable workflow steps
+├── view-sessions-mock-api-puppeteer.test.js
+├── view-sessions-real-api-puppeteer.test.js
+└── *.spec.ts                        # Playwright tests
+```
+
+**Benefits**:
+- **Code Reuse**: Write workflow once, use in multiple tests
+- **Consistency**: Same validation logic across test variants
+- **Maintainability**: Single source of truth for workflows
+- **Separation**: Mock vs Real API testing in separate files
+
+**Implementation Learnings (August 2025)**:
+After successful implementation, key architectural insights emerged:
+
+1. **Pattern Fidelity**: Shared workflows must replicate exact DOM query patterns from proven working tests rather than introducing complex fallback logic
+2. **State-Based Error Handling**: Return state objects instead of throwing errors to enable graceful handling of edge cases
+3. **Real-World Data Considerations**: Production APIs require progressive date range expansion and no-data scenario handling
+4. **Validation Success**: Both mock and real API tests validate message sanitization works correctly with production data
+
+### Mock Service Architecture
+```
+┌─────────────────┐    ┌─────────────────┐
+│  Test Request   │    │ Service Factory │
+│  (mock creds)   │───►│ (Detects Mock)  │
+└─────────────────┘    └────────┬────────┘
+                               ▼
+                    ┌─────────────────┐
+                    │  Mock Services  │
+                    │ • Deterministic │
+                    │ • No Network    │
+                    │ • Fast & Stable │
+                    └─────────────────┘
 ```
 
 ### Test Coverage Goals
 - **ConfigManager**: 100% (✅ Achieved)
 - **Navigation Components**: 100% (✅ TopNav, Sidebar)
+- **Optimized Architecture**: 95%+ (✅ All layers tested)
 - **KoreApiService**: 90%+
 - **MockDataService**: 85%+
 - **API Routes**: 80%+
 - **Frontend Components**: 70%+
-- **E2E Navigation**: Comprehensive Playwright coverage
+- **E2E Critical Paths**: 100% (Puppeteer shared workflows)
+- **E2E General UI**: Comprehensive Playwright coverage
 
 ## 🚀 Deployment Architecture
 
