@@ -91,6 +91,12 @@ FRONTEND_URL=http://localhost:3000       # CORS origin
 **Frontend (.env.local)**:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
+
+# Optional: Real API Testing Credentials
+# Only required for running E2E tests with real Kore.ai API
+TEST_BOT_ID=st-your-bot-id-here
+TEST_CLIENT_ID=cs-your-client-id-here
+TEST_CLIENT_SECRET=your-client-secret-here
 ```
 
 ## Core Concepts
@@ -236,8 +242,121 @@ XOBCAT uses a centralized mock service architecture for reliable testing:
 ### Testing Integration
 - **Unit Tests**: Jest for both frontend (React Testing Library) and backend
 - **Integration Tests**: Real API workflow testing with pure mock services for reliability
-- **E2E Tests**: Playwright for full user journey testing
+- **E2E Tests**: Dual framework approach with Puppeteer (recommended) and Playwright
 - **Test Data**: Sanitized production data in `data/` folder for realistic testing
+
+## 🧪 Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+npm run test
+
+# Frontend tests
+npm run test:frontend
+
+# Backend tests  
+npm run test:backend
+
+# E2E tests
+npm run test:e2e
+```
+
+### E2E Testing Strategy
+
+XOBCAT uses a hybrid E2E testing approach optimized for reliability and maintainability:
+
+#### 🎭 Puppeteer (Recommended for Critical Workflows)
+Best for session validation, dialog testing, and complex UI interactions.
+
+**Shared Workflow Architecture**:
+```javascript
+// frontend/e2e/shared/view-sessions-workflow.js
+module.exports = {
+  BROWSER_CONFIG,      // Common browser configuration
+  TIMEOUTS,           // Consistent timeout values
+  enterCredentials,   // Navigate and enter credentials
+  waitForSessionsPage,// Handle navigation
+  waitForSessions,    // Load session data
+  clickSessionAndWaitForDialog, // Open dialog
+  validateSanitization,// Validate message sanitization
+  setupRequestLogging // Request/console logging
+};
+```
+
+**Running Puppeteer Tests**:
+```bash
+# Mock API test (fast, reliable)
+node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
+
+# Real API test (requires credentials)
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js
+
+# Test against production
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
+```
+
+**Benefits**:
+- No hanging/timeout issues (completes in seconds)
+- Better WebSocket handling
+- Shared workflow promotes consistency
+- Separate files for mock vs real API testing
+
+**Implementation Status**: Both tests successfully implemented and verified working with production data ✅
+
+#### 🎪 Playwright (General UI Testing)
+Used for basic navigation, form testing, and parallel test execution.
+
+```bash
+# Run all Playwright tests
+npm run test:e2e
+
+# Run specific test
+npx playwright test auth-flow.spec.ts
+```
+
+### Mock Services
+
+Mock services automatically activate when credentials contain "mock":
+
+```javascript
+// Triggers mock services (10 predefined sessions)
+const mockCredentials = {
+  botId: 'mock-bot-id',
+  clientId: 'mock-client-id',
+  clientSecret: 'mock-client-secret'
+};
+```
+
+### Real API Testing
+
+For integration testing with actual Kore.ai APIs, configure real credentials in `.env.local`:
+
+```bash
+# Required for real API E2E tests
+TEST_BOT_ID=st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+TEST_CLIENT_ID=cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx  
+TEST_CLIENT_SECRET=your-actual-client-secret
+```
+
+**Security Notes:**
+- `.env.local` is git-ignored and never committed
+- Use test bot credentials, not production credentials
+- Only needed for developers running real API tests
+
+### Test Organization
+
+**Recommended Pattern**: Shared workflow with separate test files
+- Create shared modules in `frontend/e2e/shared/`
+- Separate test files for different configurations
+- Example: `view-sessions-mock-api-puppeteer.test.js` and `view-sessions-real-api-puppeteer.test.js`
+
+**When to Use Each Framework**:
+- **Puppeteer**: Session dialogs, message validation, critical workflows
+- **Playwright**: Basic navigation, form submission, quick UI checks
+
+📚 **[Complete E2E Testing Guide](./docs/E2E-Testing-Guide.md)** - Detailed patterns and troubleshooting
 
 ### Deployment Considerations
 - **Environment Variables**: Ensure OpenAI API key is configured in production
@@ -245,9 +364,16 @@ XOBCAT uses a centralized mock service architecture for reliable testing:
 - **Build Process**: Both frontend and backend require separate build steps
 - **Dependencies**: Node.js 18+ required for both services
 
-**Production Deployment Options**:
+**Production Deployment**:
+- **Production URL**: https://www.koreai-xobcat.com
 - Frontend: Vercel, Netlify, or static hosting
 - Backend: AWS Lambda, Fargate, or containerized deployment
+
+**Testing Against Production**:
+```bash
+# Run E2E tests against production
+node frontend/e2e/run-puppeteer-real-api-test.js --url=https://www.koreai-xobcat.com
+```
 
 ## Troubleshooting & Contributing
 

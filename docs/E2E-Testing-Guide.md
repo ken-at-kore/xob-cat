@@ -21,7 +21,7 @@ XOBCAT uses a hybrid E2E testing approach with **Puppeteer** for critical sessio
 
 **Example:**
 ```bash
-node frontend/e2e/run-puppeteer-test.js
+node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
 ```
 
 ### Playwright (General UI Testing)
@@ -38,7 +38,175 @@ node frontend/e2e/run-puppeteer-test.js
 
 ## 🎪 Test Implementation Patterns
 
-### Puppeteer Test Template
+### Shared Workflow Architecture (Recommended)
+
+XOBCAT uses a shared workflow pattern for Puppeteer tests to promote code reuse and consistency:
+
+#### Directory Structure
+```
+frontend/e2e/
+├── shared/
+│   └── view-sessions-workflow.js    # Shared workflow steps
+├── view-sessions-mock-api-puppeteer.test.js  # Mock API test
+├── view-sessions-real-api-puppeteer.test.js  # Real API test
+└── run-puppeteer-bogus-credentials-test.js   # Error handling test
+```
+
+#### Shared Workflow Module
+```javascript
+// frontend/e2e/shared/view-sessions-workflow.js
+const puppeteer = require('puppeteer');
+
+// Common browser configuration
+const BROWSER_CONFIG = {
+  headless: false,
+  slowMo: 50,
+  defaultViewport: { width: 1280, height: 800 },
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
+};
+
+// Consistent timeouts
+const TIMEOUTS = {
+  default: 2000,
+  navigation: 5000,
+  sessionLoad: 30000,
+  shortWait: 3000
+};
+
+// Reusable workflow steps
+async function enterCredentials(page, credentials, baseUrl = 'http://localhost:3000') {
+  console.log('📝 Navigating to credentials page');
+  await page.goto(baseUrl, { waitUntil: 'networkidle0' });
+  await page.type('#botId', credentials.botId);
+  await page.type('#clientId', credentials.clientId);
+  await page.type('#clientSecret', credentials.clientSecret);
+  await page.click('button');
+}
+
+async function waitForSessionsPage(page) {
+  await page.waitForFunction(
+    () => window.location.pathname.includes('/sessions'),
+    { timeout: 15000 }
+  );
+}
+
+async function validateSanitization(dialogContent, isRealApi = false) {
+  const sanitizationTests = {
+    ssmlTagsRemoved: !dialogContent.includes('<speak>'),
+    htmlEntitiesDecoded: !dialogContent.includes('&quot;'),
+    noRawJsonCommands: !dialogContent.includes('{"type":"command"'),
+    systemMessagesFiltered: !dialogContent.includes('Welcome Task'),
+    hasReadableMessages: /[a-zA-Z]{3,}/.test(dialogContent)
+  };
+  
+  return { sanitizationTests };
+}
+
+module.exports = {
+  BROWSER_CONFIG,
+  TIMEOUTS,
+  enterCredentials,
+  waitForSessionsPage,
+  validateSanitization
+  // ... other shared functions
+};
+```
+
+#### Using Shared Workflows in Tests
+```javascript
+// view-sessions-mock-api-puppeteer.test.js
+const puppeteer = require('puppeteer');
+const {
+  BROWSER_CONFIG,
+  enterCredentials,
+  waitForSessionsPage,
+  validateSanitization
+} = require('./shared/view-sessions-workflow');
+
+async function runTest() {
+  const browser = await puppeteer.launch(BROWSER_CONFIG);
+  
+  try {
+    const page = await browser.newPage();
+    
+    // Use shared workflow steps
+    await enterCredentials(page, {
+      botId: 'mock-bot-id',
+      clientId: 'mock-client-id',
+      clientSecret: 'mock-client-secret'
+    });
+    
+    await waitForSessionsPage(page);
+    
+    // Test-specific logic here...
+    
+    const { sanitizationTests } = validateSanitization(dialogContent);
+    // Validate results...
+    
+  } finally {
+    await browser.close();
+  }
+}
+```
+
+### Benefits of Shared Workflows
+
+1. **DRY Principle**: Write workflow logic once, use across multiple tests
+2. **Consistency**: Same validation logic for mock and real API tests
+3. **Maintainability**: Update workflow in one place affects all tests
+4. **Separation of Concerns**: Test configuration vs implementation logic
+5. **Easier Debugging**: Modular functions are easier to troubleshoot
+
+### Implementation Learnings (August 2025)
+
+**Critical Pattern: Exact Replication of Working Logic**
+When creating shared workflows, replicate the exact patterns from proven working tests:
+
+```javascript
+// ✅ CORRECT: Match working test pattern exactly
+await page.waitForSelector('table', { timeout: 3000 });
+const sessionRows = await page.$$('table tbody tr');
+
+// ❌ INCORRECT: Complex selector logic that can fail
+const possibleSelectors = ['table tbody tr', 'tbody tr', ...];
+for (const selector of possibleSelectors) { ... }
+```
+
+**Key Insight**: The working Puppeteer tests use simple, direct DOM queries. Complex fallback logic often introduces edge cases.
+
+**Error Handling Strategy**
+```javascript
+// ✅ CORRECT: Return state instead of throwing errors
+if (noTable) {
+  return { sessionRows: [], hasNoSessions: true, noTable: true };
+}
+
+// ❌ INCORRECT: Throwing errors prevents graceful handling
+throw new Error('Sessions table did not load');
+```
+
+**Real API Data Considerations**
+- **Date Range Issues**: Real APIs may have no data in default date ranges
+- **Automatic Expansion**: Implement progressive date range expansion (last 7 days → 365 days)
+- **No-Data Scenarios**: Always handle cases where API returns 0 results successfully
+- **Production Validation**: Real API tests confirmed message sanitization works with actual production data
+
+### When to Use Shared Workflows
+
+**Use shared workflows when:**
+- Testing the same user journey with different data sources
+- Multiple tests share common setup/teardown logic
+- Need consistency in validation across test variants
+- Want to reduce code duplication
+
+**Use standalone tests when:**
+- Test is unique and doesn't share workflow with others
+- Quick proof-of-concept or debugging specific issues
+- Legacy tests that work well and don't need refactoring
+
+### Legacy Puppeteer Test Template
+
+For reference, here's the standalone pattern still used in some tests:
 
 ```javascript
 const puppeteer = require('puppeteer');
@@ -47,34 +215,17 @@ async function runTest() {
   let browser;
   
   try {
-    // Launch with optimal settings
     browser = await puppeteer.launch({
-      headless: false,      // Visual debugging
-      slowMo: 50,          // Human-like timing
+      headless: false,
+      slowMo: 50,
       defaultViewport: { width: 1280, height: 720 }
     });
     
     const page = await browser.newPage();
-    
-    // Critical: Short timeouts prevent hanging
     page.setDefaultTimeout(2000);
     page.setDefaultNavigationTimeout(5000);
     
-    // Navigate and test
-    await page.goto('http://localhost:3000/');
-    
-    // Mock credentials trigger mock services
-    await page.type('#botId', 'mock-bot-id');
-    await page.type('#clientId', 'mock-client-id');
-    await page.type('#clientSecret', 'mock-client-secret');
-    
-    // Human-like interactions
-    await page.click('button:has-text("Connect")');
-    await page.waitForNavigation();
-    
-    // Validate results
-    const content = await page.content();
-    console.log('✅ Test passed');
+    // Test implementation...
     
   } catch (error) {
     console.error('❌ Test failed:', error.message);
@@ -220,6 +371,29 @@ await page.screenshot({ path: 'debug-click.png' });
 - Backend logs show "🎭 Detected mock credentials"
 - Environment variable `USE_MOCK_SERVICES=mock` is set
 
+#### 4. Shared Workflow Implementation Issues
+**Symptoms:**
+- Tests fail with "Sessions table did not load"
+- Working standalone tests but failing shared workflow tests
+- Complex selector logic not finding elements
+
+**Solutions:**
+```javascript
+// Problem: Over-engineered selector fallback logic
+const possibleSelectors = [...many selectors...];
+for (const selector of possibleSelectors) { ... }
+
+// Solution: Use exact pattern from working tests
+await page.waitForSelector('table', { timeout: 3000 });
+const sessionRows = await page.$$('table tbody tr');
+```
+
+**Debug Steps:**
+1. Compare shared workflow with working standalone test
+2. Ensure exact DOM query patterns are replicated
+3. Use return values instead of throwing errors for graceful handling
+4. Test with both mock and real API scenarios
+
 #### 4. WebSocket Connection Errors
 **Symptoms:**
 ```
@@ -230,17 +404,27 @@ ws does not work in the browser. Browser clients must use the native WebSocket o
 Use standalone Node.js execution instead of Jest:
 ```bash
 # ✅ Good: Direct Node.js execution
-node frontend/e2e/run-puppeteer-test.js
+node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
 
-# ❌ Bad: Jest environment
-npx jest e2e/session-message-validation-puppeteer.test.js
+# ❌ Bad: Jest environment conflicts with WebSocket handling
 ```
 
 ## 📋 Test Inventory
 
 ### Active Puppeteer Tests
-- `run-puppeteer-test.js` ✅ - Session message validation (recommended)
-- `session-message-validation-puppeteer.test.js` ⚠️ - Jest-based (WebSocket issues)
+
+#### Shared Workflow Pattern (Recommended)
+- `view-sessions-mock-api-puppeteer.test.js` ✅ - View sessions with mock API (10 sessions, full validation)
+- `view-sessions-real-api-puppeteer.test.js` ✅ - View sessions with real API (supports --url param, date expansion)
+- `shared/view-sessions-workflow.js` - Shared workflow steps and validation
+
+**Implementation Status**: Both tests successfully implemented and verified working
+- **Mock Test**: Validates 10 mock sessions, message sanitization, dialog functionality
+- **Real Test**: Connects to production API, handles no-data scenarios, validates real session content
+- **Key Learning**: Simple DOM queries from working tests are more reliable than complex fallback logic
+
+#### Standalone Pattern (Legacy)
+- `run-puppeteer-bogus-credentials-test.js` ✅ - Error handling validation
 
 ### Key Playwright Tests
 - `session-message-validation-mock.spec.ts` - Message display validation
@@ -259,12 +443,49 @@ await page.fill('#clientSecret', 'mock-client-secret');
 ```
 
 #### 2. Add Real API Variant (Optional)
-```javascript
-// Require environment variables for real API tests
-const shouldRunTest = process.env.TEST_BOT_ID && 
-                     process.env.TEST_CLIENT_ID && 
-                     process.env.TEST_CLIENT_SECRET;
+
+**Configure Real API Credentials:**
+Create `.env.local` in project root with real Kore.ai credentials:
+```bash
+# Required for real API E2E tests
+TEST_BOT_ID=st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+TEST_CLIENT_ID=cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+TEST_CLIENT_SECRET=your-actual-client-secret-here
 ```
+
+**Load Credentials in Test:**
+```javascript
+// Load real credentials from .env.local
+function loadCredentials() {
+  const envPath = path.join(__dirname, '../../.env.local');
+  
+  if (!fs.existsSync(envPath)) {
+    throw new Error('.env.local file not found');
+  }
+  
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  const credentials = {};
+  
+  envContent.split('\n').forEach(line => {
+    if (line.startsWith('TEST_BOT_ID=')) {
+      credentials.botId = line.substring('TEST_BOT_ID='.length).trim();
+    }
+    // ... similar for other credentials
+  });
+  
+  return credentials;
+}
+
+// Use in test
+const credentials = loadCredentials();
+await enterCredentials(page, credentials);
+```
+
+**Security Best Practices:**
+- Never hardcode credentials in test files
+- Use `.env.local` which is git-ignored
+- Use test bot credentials, never production credentials
+- Only configure on machines that need to run real API tests
 
 #### 3. Choose Framework
 - **Complex dialogs/session validation**: Use Puppeteer
@@ -275,7 +496,8 @@ const shouldRunTest = process.env.TEST_BOT_ID &&
 ### Development
 ```bash
 # Recommended: Puppeteer for critical tests
-node frontend/e2e/run-puppeteer-test.js
+node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js
 
 # Playwright for general UI testing
 npm run test:e2e

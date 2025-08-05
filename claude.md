@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code when working with this repository.
 
+## Production Environment
+
+- **Production URL**: https://www.koreai-xobcat.com
+- **Deployment**: Frontend and backend deployed to production infrastructure
+- **Testing**: E2E tests can be run against production using `--url` parameter
+
 ## Quick Commands
 
 ### Development
@@ -417,6 +423,19 @@ All phases completed successfully:
 - **Playwright**: Basic navigation, form testing, quick UI checks
 - **Rule**: If test involves session dialogs or message validation, prefer Puppeteer
 
+#### Puppeteer Test Organization
+- **Shared Workflow Pattern** (Recommended for new tests):
+  - Create shared workflow modules in `frontend/e2e/shared/`
+  - Separate test files for different configurations (mock vs real API)
+  - Example: `view-sessions-mock-api-puppeteer.test.js` and `view-sessions-real-api-puppeteer.test.js`
+- **Standalone Pattern** (Legacy, still valid):
+  - Single file contains all workflow logic
+  - Example: `run-puppeteer-test.js`
+- **Choose Shared Pattern When**:
+  - Testing same workflow with different data sources
+  - Need consistency across multiple test variations
+  - Want to reduce code duplication
+
 #### Creating New E2E Tests
 1. **Start with Mock APIs**: Use `mock-*` credentials for fast, reliable tests
 2. **Add Real API Tests**: Only after mock tests pass, create real API variants
@@ -614,8 +633,30 @@ node frontend/e2e/run-puppeteer-test.js
 ```
 
 #### Puppeteer Test Architecture
+
+**Shared Workflow Pattern** (Recommended Approach):
 ```javascript
-// Key configuration for reliability
+// frontend/e2e/shared/view-sessions-workflow.js
+module.exports = {
+  BROWSER_CONFIG,      // Common browser configuration
+  TIMEOUTS,           // Consistent timeout values
+  enterCredentials,   // Step 1-2: Navigate and enter credentials
+  waitForSessionsPage,// Step 3: Handle navigation
+  waitForSessions,    // Step 4: Load session data
+  clickSessionAndWaitForDialog, // Step 5-6: Open dialog
+  validateSanitization,// Step 7: Validate message sanitization
+  setupRequestLogging // Request/console logging
+};
+```
+
+**Benefits of Shared Workflow**:
+- **DRY Principle**: Write workflow logic once, use in multiple tests
+- **Consistency**: Same validation logic across mock and real API tests
+- **Maintainability**: Update workflow in one place
+- **Separation**: Clear boundary between test configuration and implementation
+
+**Legacy Configuration** (Still used in some tests):
+```javascript
 browser = await puppeteer.launch({
   headless: false,      // Visual debugging
   slowMo: 50,          // Human-like interactions
@@ -639,8 +680,67 @@ page.setDefaultNavigationTimeout(5000);
 #### 🎭 **Puppeteer Tests (Recommended)**
 | Test File | API Type | Purpose | Status |
 |-----------|----------|---------|---------|
-| `run-puppeteer-test.js` | Mock | Session message validation | ✅ Reliable |
-| `session-message-validation-puppeteer.test.js` | Mock | Jest-based (has WebSocket issues) | ⚠️ Not recommended |
+| `view-sessions-mock-api-puppeteer.test.js` | Mock | View sessions workflow with mock API | ✅ Reliable, shared workflow |
+| `view-sessions-real-api-puppeteer.test.js` | Real | View sessions workflow with real API | Uses ENV vars, supports `--url` param |
+| `run-puppeteer-bogus-credentials-test.js` | Invalid | Error handling validation | Tests auth failures |
+
+**Shared Workflow Architecture:**
+The view sessions tests use a shared workflow pattern:
+- `shared/view-sessions-workflow.js` - Common workflow steps and validation
+- Separate test files for mock vs real API configurations
+- Promotes code reuse and consistency
+
+**Implementation Example:**
+```javascript
+// view-sessions-mock-api-puppeteer.test.js
+const { enterCredentials, waitForSessions, validateSanitization } = require('./shared/view-sessions-workflow');
+
+const MOCK_CREDENTIALS = {
+  botId: 'mock-bot-id',
+  clientId: 'mock-client-id',
+  clientSecret: 'mock-client-secret'
+};
+
+// Use shared workflow steps
+await enterCredentials(page, MOCK_CREDENTIALS);
+await waitForSessionsPage(page);
+const { sessionRows } = await waitForSessions(page);
+const { sanitizationTests } = validateSanitization(dialogContent, false);
+```
+
+**Implementation Insights (August 2025):**
+After successful implementation of both tests, key learnings emerged:
+
+1. **Simplicity Over Complexity**: The shared workflow initially used complex selector fallback logic, but the simple, direct approach from working tests proved more reliable:
+   ```javascript
+   // ✅ Reliable: Direct pattern from working test
+   await page.waitForSelector('table', { timeout: 3000 });
+   const sessionRows = await page.$$('table tbody tr');
+   
+   // ❌ Over-engineered: Complex fallback logic
+   const possibleSelectors = [...]; // Multiple selectors cause edge cases
+   ```
+
+2. **Error Handling Strategy**: Return state information instead of throwing errors to enable graceful handling of no-data scenarios:
+   ```javascript
+   return { sessionRows: [], hasNoSessions: true, noTable: true };
+   ```
+
+3. **Real API Challenges**: Production APIs may have no data in default date ranges, requiring automatic date range expansion (7 days → 365 days)
+
+4. **Production Validation**: Both tests successfully validated against real production data, confirming message sanitization works correctly with actual Kore.ai API responses
+
+**Testing Against Production:**
+```bash
+# Test against production URL (https://www.koreai-xobcat.com)
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
+
+# Test against local (default)
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js
+
+# Run mock API test
+node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
+```
 
 #### 🎪 **Playwright Tests**
 | Test File | API Type | Purpose | Notes |
@@ -722,7 +822,50 @@ FRONTEND_URL=http://localhost:3000
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_ENABLE_DEV_FEATURES=true    # Controls mock reports and testing tools
+
+# Real API Testing Credentials (Optional)
+# Required only for running real API E2E tests
+TEST_BOT_ID=your-actual-bot-id-here
+TEST_CLIENT_ID=your-actual-client-id-here  
+TEST_CLIENT_SECRET=your-actual-client-secret-here
 ```
+
+## 🔐 Credentials Configuration
+
+### For Real API Testing
+
+Real API E2E tests require actual Kore.ai credentials to be configured in `.env.local`:
+
+#### Required Environment Variables
+```bash
+# Add to frontend/.env.local (or root .env.local)
+TEST_BOT_ID=st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+TEST_CLIENT_ID=cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+TEST_CLIENT_SECRET=your-client-secret-here
+```
+
+#### Security Notes
+- **File Location**: `.env.local` in project root (same level as package.json)
+- **Git Ignored**: `.env.local` is automatically ignored by git
+- **Never Commit**: Real credentials should never be committed to the repository
+- **Access Control**: Only developers who need to run real API tests need these credentials
+
+#### Testing Commands
+```bash
+# Mock API test (no credentials needed)
+node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
+
+# Real API test (requires credentials in .env.local)
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js
+
+# Test against production (requires credentials)
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
+```
+
+#### Credential Sources
+- **Development**: Use test bot credentials from Kore.ai platform
+- **CI/CD**: Not recommended - use mock tests in automated pipelines
+- **Production Testing**: Use dedicated test bot credentials, never production bot credentials
 
 ## Visual Actions & Playwright
 
