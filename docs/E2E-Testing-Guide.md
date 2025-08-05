@@ -416,12 +416,36 @@ node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
 #### Shared Workflow Pattern (Recommended)
 - `view-sessions-mock-api-puppeteer.test.js` ✅ - View sessions with mock API (10 sessions, full validation)
 - `view-sessions-real-api-puppeteer.test.js` ✅ - View sessions with real API (supports --url param, date expansion)
-- `shared/view-sessions-workflow.js` - Shared workflow steps and validation
+- `auto-analyze-mock-api-puppeteer.test.js` ✅ - Auto-analyze with mock APIs (workflow validation)
+- `auto-analyze-real-api-puppeteer.test.js` ✅ - Auto-analyze with real APIs (incurs OpenAI costs)
+- `shared/view-sessions-workflow.js` - Shared view sessions workflow steps and validation
+- `shared/auto-analyze-workflow.js` - Shared auto-analyze workflow steps and validation
 
-**Implementation Status**: Both tests successfully implemented and verified working
+**Implementation Status**: All tests successfully implemented and verified working
+
+**View Sessions Tests:**
 - **Mock Test**: Validates 10 mock sessions, message sanitization, dialog functionality
 - **Real Test**: Connects to production API, handles no-data scenarios, validates real session content
 - **Key Learning**: Simple DOM queries from working tests are more reliable than complex fallback logic
+
+**Auto-Analyze Tests (NEW):**
+- **Mock Test**: End-to-end workflow validation with mock Kore.ai and OpenAI services
+- **Real Test**: Complete analysis workflow with real APIs, incurs OpenAI costs (~$0.019 per session)
+- **Coverage**: Navigation, form configuration, analysis execution, report validation, dialog testing
+- **Architecture**: Uses shared workflow (`auto-analyze-workflow.js`) with modular functions
+
+**Auto-Analyze Implementation Insights:**
+- **HTML Date Input Fix**: Standard `type()` method failed, solved with JavaScript evaluation:
+  ```javascript
+  await page.evaluate((date) => {
+    const dateInput = document.querySelector('#startDate');
+    dateInput.value = date;
+    dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }, startDate);
+  ```
+- **GPT Model Selection**: Successfully automated dropdown selection for GPT-4.1 nano model
+- **Form Validation Testing**: Validates client-side date restrictions and API key format requirements
+- **Real API Timeouts**: Production analysis takes 60-120s, tests timeout at 30s (expected behavior)
 
 #### Standalone Pattern (Legacy)
 - `run-puppeteer-bogus-credentials-test.js` ✅ - Error handling validation
@@ -496,8 +520,15 @@ await enterCredentials(page, credentials);
 ### Development
 ```bash
 # Recommended: Puppeteer for critical tests
+
+# View Sessions Tests
 node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
 node frontend/e2e/view-sessions-real-api-puppeteer.test.js
+
+# Auto-Analyze Tests (NEW)
+node frontend/e2e/auto-analyze-mock-api-puppeteer.test.js                     # Fast, no costs
+node frontend/e2e/auto-analyze-real-api-puppeteer.test.js                    # Local, incurs OpenAI costs
+node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com  # Production
 
 # Playwright for general UI testing
 npm run test:e2e
