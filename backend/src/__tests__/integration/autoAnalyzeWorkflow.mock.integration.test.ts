@@ -2,6 +2,7 @@ import express from 'express';
 import request from 'supertest';
 import { autoAnalyzeRouter } from '../../routes/autoAnalyze';
 import { ServiceFactory } from '../../factories/serviceFactory';
+import { destroyBackgroundJobQueue } from '../../services/backgroundJobQueue';
 import {
   MOCK_CREDENTIALS,
   createTestApp,
@@ -55,6 +56,9 @@ describe('Auto-Analyze Integration Test - Mock API', () => {
     // Clean up environment
     delete process.env.USE_MOCK_SERVICES;
     ServiceFactory.resetToDefaults();
+    
+    // Clean up background job queue to prevent Jest hanging
+    destroyBackgroundJobQueue();
   });
 
   describe('Complete Analysis Workflow', () => {

@@ -532,3 +532,10 @@ export function getBackgroundJobQueue(): BackgroundJobQueue {
   }
   return backgroundJobQueueInstance;
 }
+
+export function destroyBackgroundJobQueue(): void {
+  if (backgroundJobQueueInstance) {
+    backgroundJobQueueInstance.destroy();
+    backgroundJobQueueInstance = null;
+  }
+}
