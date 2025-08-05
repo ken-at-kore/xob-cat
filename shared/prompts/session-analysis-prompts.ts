@@ -22,11 +22,25 @@ export const CLASSIFICATION_INSTRUCTIONS = `For each session, provide the follow
 
 2. **Session Outcome**: Either "Transfer" (if session was transferred to live agent) or "Contained" (if session was handled by bot). Classify sessions as "Transfer" if there's a transfer message toward the end of the session (e.g. "Please hold while I connect you with a customer service representative"). Classify sessions as "Contained" if the session was not transferred. Consider that some "Contained" sessions will end with the Bot saying it's ending the conversation ("I am closing our current conversation...").
 
-3. **Transfer Reason**: Why the session was transferred (only if Session Outcome is "Transfer"). Look for specific error messages or invalid responses that caused the transfer. Common reasons: "Invalid Provider ID" (when provider ID is rejected), "Invalid Member ID" (when member ID is rejected), "Invalid Claim Number" (when claim number is rejected), "No Provider ID" (when user says they don't have one), "Inactive Provider ID" (when provider ID is inactive), "Authentication Failed", "Technical Issue", "Policy Not Found", "Can't Capture Policy Number". If not transferred, leave blank.
+3. **Transfer Reason**: Why the session was transferred (only if Session Outcome is "Transfer"). Look for specific error messages or invalid responses that caused the transfer. Example reasons: "Invalid Provider ID" (when provider ID is rejected), "Live Agent Request", "Invalid Member ID" (when member ID is rejected), "Invalid Claim Number" (when claim number is rejected), "No Provider ID" (when user says they don't have one), "Inactive Provider ID" (when provider ID is inactive), "Authentication Failed", "Technical Issue", "Policy Not Found", "Can't Capture Policy Number". If not transferred, leave blank.
 
-4. **Drop-Off Location**: Where in the session flow (at which prompt) the user dropped off (started getting routed to an agent). Will only have a value if session_outcome is "Transfer"). Example locations: "Policy Number Prompt", "Authentication", "Claim Details", "Member Information", "Provider ID", "Date of Service", "User Name". If not transferred, leave blank.
+4. **Drop-Off Location**: Where in the session flow (at which prompt) the user dropped off (started getting routed to an agent), not counting error response prompts or Live Agent rebuttal prompts. Will only have a value if session_outcome is "Transfer"). Example locations: "Policy Number Prompt", "Help Offer Prompt", "Authentication", "Claim Details", "Member Information", "Provider ID", "Date of Service", "User Name". If not transferred, leave blank.
 
 5. **Notes**: One sentence summary of what happened in the session.
+
+EXAMPLE:
+Consider the following example transcript...
+---
+Bot: How can I help you today?
+User: Speak to a person
+Bot: I can connect you to an agent, but before I do, can you tell me the reason for your call?
+User: Live agent
+Bot: Please hold while I transfer you.
+---
+In that example, the classifications should be as follows:
+Outcome: Transfer
+Transfer Reason: Live Agent Request
+Drop-Off Location: Help Offer Prompt
 
 IMPORTANT: 
 - Use existing classifications when possible to maintain consistency
