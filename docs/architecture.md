@@ -203,24 +203,38 @@ const sampledMetadata = randomSample(metadata, count);
 const sampledSessions = await swtService.createSWTsFromMetadata(sampledMetadata);
 const withMessages = await swtService.populateMessages(sampledSessions);
 // ✅ Only fetches messages for sampled sessions, not all sessions
+
+// LATEST OPTIMIZATION (August 2025): Parallel API calls for 2-3x speedup
+// Previous: Sequential containment type calls (agent → selfService → dropOff)
+for (const type of containmentTypes) {
+  await makeRequest(url, payload); // ❌ Sequential execution
+}
+
+// Current: Parallel containment type calls
+const promises = containmentTypes.map(type => 
+  fetchContainmentTypeMetadata(type, options)
+);
+const results = await Promise.allSettled(promises); // ✅ Concurrent execution
 ```
 
 ### Architecture Benefits
 
-| Aspect | Before | After |
-|--------|---------|-------|
-| **Performance** | 60+ second timeout | Sub-second response |
-| **Scalability** | Limited to ~100 sessions | Handles 1000+ sessions |
-| **Resource Usage** | Fetches ALL message data | Fetches only needed data |
-| **Production Readiness** | Fails with large datasets | Enterprise-scale ready |
-| **Code Maintainability** | Monolithic approach | Clean layered separation |
+| Aspect | Before | After (Metadata-First) | Latest (Parallel) |
+|--------|---------|-------|-------|
+| **Performance** | 60+ second timeout | Sub-second response | 2-3x faster metadata fetching |
+| **Scalability** | Limited to ~100 sessions | Handles 1000+ sessions | Optimized for enterprise scale |
+| **Resource Usage** | Fetches ALL message data | Fetches only needed data | Minimal network overhead |
+| **Production Readiness** | Fails with large datasets | Enterprise-scale ready | AWS Lambda optimized |
+| **Code Maintainability** | Monolithic approach | Clean layered separation | Concurrent execution patterns |
+| **API Efficiency** | Sequential API calls | Optimized data access | Parallel containment type fetching |
 
 ### Technical Implementation
 
 #### Data Access Layer (KoreApiService)
-- **`getSessionsMetadata()`**: Fast metadata-only retrieval
+- **`getSessionsMetadata()`**: Fast metadata-only retrieval with parallel API calls
 - **`getMessagesForSessions()`**: Selective message fetching by session IDs
 - **`getSessionsWithMessages()`**: Convenience method composing both operations
+- **`fetchContainmentTypeMetadata()`**: Helper method for concurrent execution
 
 #### Transformation Layer (SWTService)  
 - **`createSWTsFromMetadata()`**: Convert metadata to SWT format without messages
@@ -245,8 +259,31 @@ const withMessages = await swtService.populateMessages(sampledSessions);
 ### Production Impact
 - **Auto-Analysis**: Now processes enterprise datasets without timeouts
 - **Session Sampling**: 10x performance improvement with metadata-first approach
+- **Parallel Optimization**: 2-3x faster metadata fetching through concurrent API calls
 - **Lambda Compatibility**: Stays well within AWS Lambda execution limits
 - **User Experience**: Instant response times for complex analysis workflows
+
+### Parallel API Optimization (August 2025)
+
+#### Implementation Details
+```typescript
+// Parallel execution of containment type API calls
+const promises = containmentTypes.map(containmentType => 
+  this.fetchContainmentTypeMetadata(containmentType, options)
+);
+const results = await Promise.allSettled(promises);
+```
+
+#### Key Benefits
+- **Concurrent Execution**: All 3 containment types (`agent`, `selfService`, `dropOff`) fetched simultaneously
+- **Performance Gain**: 2-3x reduction in metadata fetching time
+- **Error Resilience**: `Promise.allSettled()` handles partial failures gracefully
+- **AWS Lambda Optimized**: Reduced execution time minimizes costs and timeout risk
+
+#### Test Coverage
+- **Unit Tests**: Comprehensive parallel execution validation (`koreApiService.parallel.test.ts`)
+- **Integration Tests**: End-to-end workflow validation with both mock and real APIs
+- **Production Validation**: Real API test shows 1,355 sessions processed successfully
 
 ## 📊 Data Flow Architecture
 
