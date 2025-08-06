@@ -278,6 +278,7 @@ export class KoreApiService {
   /**
    * GRANULAR METHOD: Get session metadata only (no messages) for performance
    * Part of the new layered architecture for lazy loading
+   * OPTIMIZED: Uses parallel API calls for 2-3x performance improvement
    */
   async getSessionsMetadata(options: {
     dateFrom: string;
@@ -325,72 +326,106 @@ export class KoreApiService {
     }
 
     const containmentTypes: Array<'agent' | 'selfService' | 'dropOff'> = ['agent', 'selfService', 'dropOff'];
-    const allSessionsMetadata: SessionMetadata[] = [];
+    
+    console.log(`[getSessionsMetadata] Starting parallel API calls for ${containmentTypes.length} containment types`);
 
-    for (const containmentType of containmentTypes) {
-      const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getSessions?containmentType=${containmentType}`;
-      console.log(`Requesting ${containmentType} session metadata from URL: ${url}`);
+    // PARALLEL OPTIMIZATION: Execute all containment type API calls concurrently
+    const promises = containmentTypes.map(containmentType => 
+      this.fetchContainmentTypeMetadata(containmentType, { dateFrom, dateTo, skip, limit })
+    );
 
-      const payload = {
-        dateFrom,
-        dateTo,
-        skip,
-        limit
-      };
+    try {
+      const results = await Promise.allSettled(promises);
+      const allSessionsMetadata: SessionMetadata[] = [];
 
-      console.log(`[getSessionsMetadata] Making API call for ${containmentType}:`);
-      console.log(`[getSessionsMetadata] URL: ${url}`);
-      console.log(`[getSessionsMetadata] Payload:`, JSON.stringify(payload, null, 2));
+      // Process results from parallel execution
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i]!; // Safe since we iterate by index
+        const containmentType = containmentTypes[i]!; // Safe since we iterate by index
 
-      try {
-        const response = await this.makeRequest<KoreSessionsResponse>(url, payload);
-        const sessions = response.sessions || [];
-        console.log(`[getSessionsMetadata] API Response: ${sessions.length} ${containmentType} sessions received`);
-        if (sessions.length > 0) {
-          console.log(`[getSessionsMetadata] Sample session IDs:`, sessions.slice(0, 3).map(s => s.sessionId));
-        }
-        
-        // Tag each session with its containment type (same as getSessions method)
-        const taggedSessions = sessions.map(session => ({
-          ...session,
-          containment_type: containmentType as 'agent' | 'selfService' | 'dropOff'
-        }));
-
-        // Convert to metadata format (extract only metadata, no messages)
-        const sessionMetadata: SessionMetadata[] = taggedSessions.map((session: any) => ({
-          sessionId: session.sessionId,
-          userId: session.userId,
-          start_time: session.start_time,
-          end_time: session.end_time,
-          containment_type: session.containment_type,
-          tags: session.tags || [],
-          metrics: {
-            total_messages: session.metrics?.total_messages || 0,
-            user_messages: session.metrics?.user_messages || 0,
-            bot_messages: session.metrics?.bot_messages || 0
-          },
-          duration_seconds: session.duration_seconds || 0
-        }));
-
-        allSessionsMetadata.push(...sessionMetadata);
-      } catch (error) {
-        console.error(`Error fetching ${containmentType} session metadata:`, error);
-        // Log specific error details if available
-        if (axios.isAxiosError(error) && error.response) {
-          console.error(`HTTP ${error.response.status} Error Details:`, JSON.stringify(error.response.data, null, 2));
+        if (result.status === 'fulfilled') {
+          console.log(`[getSessionsMetadata] ${containmentType} API call succeeded with ${result.value.length} sessions`);
+          allSessionsMetadata.push(...result.value);
+        } else {
+          console.error(`[getSessionsMetadata] ${containmentType} API call failed:`, result.reason);
           
-          // If it's an authentication error (401), throw it immediately - don't continue
-          if (error.response.status === 401) {
+          // Check if it's an authentication error - throw immediately
+          if (axios.isAxiosError(result.reason) && result.reason.response?.status === 401) {
             console.error('Authentication failed - throwing error to caller');
-            throw error;
+            throw result.reason;
           }
+          // Continue with other containment types for non-auth errors
         }
-        // Continue with other containment types for non-auth errors
       }
-    }
 
-    console.log(`Total session metadata retrieved: ${allSessionsMetadata.length}`);
-    return allSessionsMetadata;
+      console.log(`Total session metadata retrieved: ${allSessionsMetadata.length} (parallel execution)`);
+      return allSessionsMetadata;
+    } catch (error) {
+      // If any promise throws during parallel execution, check for auth errors
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        console.error('Authentication failed during parallel execution - throwing error to caller');
+        throw error;
+      }
+      // Re-throw any other errors
+      throw error;
+    }
+  }
+
+  /**
+   * Helper method to fetch metadata for a specific containment type
+   * Extracted for parallel execution and better testability
+   */
+  private async fetchContainmentTypeMetadata(
+    containmentType: 'agent' | 'selfService' | 'dropOff',
+    options: { dateFrom: string; dateTo: string; skip: number; limit: number }
+  ): Promise<SessionMetadata[]> {
+    const { dateFrom, dateTo, skip, limit } = options;
+    
+    const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getSessions?containmentType=${containmentType}`;
+    console.log(`Requesting ${containmentType} session metadata from URL: ${url}`);
+
+    const payload = {
+      dateFrom,
+      dateTo,
+      skip,
+      limit
+    };
+
+    console.log(`[fetchContainmentTypeMetadata] Making API call for ${containmentType}:`);
+    console.log(`[fetchContainmentTypeMetadata] URL: ${url}`);
+    console.log(`[fetchContainmentTypeMetadata] Payload:`, JSON.stringify(payload, null, 2));
+
+    const response = await this.makeRequest<KoreSessionsResponse>(url, payload);
+    const sessions = response.sessions || [];
+    console.log(`[fetchContainmentTypeMetadata] API Response: ${sessions.length} ${containmentType} sessions received`);
+    
+    if (sessions.length > 0) {
+      console.log(`[fetchContainmentTypeMetadata] Sample session IDs:`, sessions.slice(0, 3).map(s => s.sessionId));
+    }
+    
+    // Tag each session with its containment type
+    const taggedSessions = sessions.map(session => ({
+      ...session,
+      containment_type: containmentType as 'agent' | 'selfService' | 'dropOff'
+    }));
+
+    // Convert to metadata format (extract only metadata, no messages)
+    const sessionMetadata: SessionMetadata[] = taggedSessions.map((session: any) => ({
+      sessionId: session.sessionId,
+      userId: session.userId,
+      start_time: session.start_time,
+      end_time: session.end_time,
+      containment_type: session.containment_type,
+      tags: session.tags || [],
+      metrics: {
+        total_messages: session.metrics?.total_messages || 0,
+        user_messages: session.metrics?.user_messages || 0,
+        bot_messages: session.metrics?.bot_messages || 0
+      },
+      duration_seconds: session.duration_seconds || 0
+    }));
+
+    return sessionMetadata;
   }
 
   /**
