@@ -6,7 +6,7 @@ This directory contains the core business logic services for XOBCAT's backend fu
 
 ### Real Services (`services/`)
 Production implementations that make actual API calls:
-- **openaiService.ts**: GPT-4o-mini integration with function calling
+- **openaiService.ts**: OpenAI integration with configurable models (GPT-4o-mini default) and function calling
 - **koreApiService.ts**: Kore.ai API client with JWT authentication
 - **swtService.ts**: Session analysis business logic
 - **realSessionDataService.ts**: Session data retrieval with SWT integration

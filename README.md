@@ -207,7 +207,7 @@ curl http://localhost:3001/health
   - **sessionSamplingService.ts**: Optimized sampling using layered architecture
 
 **AI Integration**:
-- **openaiService.ts**: GPT-4o-mini integration with function calling and cost tracking
+- **openaiService.ts**: OpenAI integration with configurable models (GPT-4o-mini default), function calling and cost tracking
 - **realSessionDataService.ts**: Session data retrieval with SWT integration
 
 ### Mock Service Architecture

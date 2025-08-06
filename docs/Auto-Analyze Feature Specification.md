@@ -358,7 +358,7 @@ interface ExistingClassifications {
 4. LLM instruction: "Use existing classifications when possible"
 
 #### OpenAI Integration
-- **Model**: GPT-4o-mini (cost-effective, sufficient for classification)
+- **Model**: Configurable GPT models (GPT-4o-mini default - cost-effective, sufficient for classification)
 - **Method**: Function calling with structured schema
 - **Temperature**: 0 (deterministic results)
 - **Error Handling**: Retry individual sessions on batch failures

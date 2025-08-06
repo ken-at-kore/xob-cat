@@ -150,7 +150,7 @@ curl "http://localhost:3001/api/sessions/session-123"
 
 #### `POST /analysis/session`
 
-Analyze a single session using GPT-4o-mini.
+Analyze a single session using configurable GPT models (GPT-4o-mini default).
 
 **Request Body:**
 ```json
