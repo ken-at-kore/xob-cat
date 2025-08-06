@@ -19,9 +19,18 @@ XOBCAT uses a hybrid E2E testing approach with **Puppeteer** for critical sessio
 - More reliable for session dialogs
 - Completes in seconds vs 30+ seconds
 
-**Example:**
+**Configuration:**
 ```bash
+# Basic execution (fast, no slowMo)
 node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
+
+# Debug mode with slowMo
+node test.js --slowMo                    # 50ms delay
+node test.js --slowMo --slowMoSpeed=100  # Custom delay
+PUPPETEER_SLOWMO=true node test.js      # Via env var
+
+# Show all options
+node test.js --help
 ```
 
 ### Playwright (General UI Testing)

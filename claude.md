@@ -467,6 +467,11 @@ Optimized sampling workflow:
 # Standalone execution (no Jest conflicts)
 node frontend/e2e/run-puppeteer-test.js
 
+# SlowMo Configuration (OFF by default for speed):
+node test.js --slowMo                    # Enable with 50ms delay
+node test.js --slowMo --slowMoSpeed=100  # Custom delay
+PUPPETEER_SLOWMO=true node test.js      # Via environment variable
+
 # Key advantages over Playwright:
 # - No hanging/timeout issues (completes in seconds vs 30+ seconds)
 # - Better WebSocket handling in Node.js environment
