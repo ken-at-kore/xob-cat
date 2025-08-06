@@ -14,8 +14,9 @@
  */
 
 const puppeteer = require('puppeteer');
+const { parseTestArgs, showHelp } = require('./shared/parse-test-args');
 const {
-  BROWSER_CONFIG,
+  getBrowserConfig,
   TIMEOUTS,
   enterCredentials,
   navigateToAutoAnalyze,
@@ -45,14 +46,32 @@ const MOCK_ANALYSIS_CONFIG = {
 };
 
 async function runAutoAnalyzeMockTest() {
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  
+  // Show help if requested
+  if (args.includes('--help')) {
+    showHelp();
+    process.exit(0);
+  }
+  
+  const config = parseTestArgs(args);
+  
   let browser;
   
   try {
     console.log('🎭 Starting Auto-Analyze Mock API Puppeteer Test');
+    console.log(`🌐 Testing against: ${config.baseUrl}`);
+    if (config.slowMo.enabled) {
+      console.log(`🐌 SlowMo enabled at ${config.slowMo.speed}ms`);
+    }
     console.log('🧪 Using mock services - no real API calls will be made');
     
     // Launch browser with shared configuration
-    browser = await puppeteer.launch(BROWSER_CONFIG);
+    browser = await puppeteer.launch(getBrowserConfig({ 
+      enableSlowMo: config.slowMo.enabled, 
+      slowMoSpeed: config.slowMo.speed 
+    }));
     const page = await browser.newPage();
     
     // Set timeouts
@@ -65,7 +84,7 @@ async function runAutoAnalyzeMockTest() {
     // Execute shared workflow steps
     
     // Step 1-2: Enter credentials
-    await enterCredentials(page, MOCK_CREDENTIALS);
+    await enterCredentials(page, MOCK_CREDENTIALS, config.baseUrl);
     
     // Step 3-4: Navigate to Auto-Analyze page
     await navigateToAutoAnalyze(page);

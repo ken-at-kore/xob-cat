@@ -18,8 +18,9 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const { parseTestArgs, showHelp } = require('./shared/parse-test-args');
 const {
-  BROWSER_CONFIG,
+  getBrowserConfig,
   TIMEOUTS,
   enterCredentials,
   waitForSessionsPage,
@@ -109,11 +110,20 @@ async function expandDateRangeIfNeeded(page) {
 async function runTest() {
   // Parse command line arguments
   const args = process.argv.slice(2);
-  const urlArg = args.find(arg => arg.startsWith('--url='));
-  const BASE_URL = urlArg ? urlArg.split('=')[1] : 'http://localhost:3000';
+  
+  // Show help if requested
+  if (args.includes('--help')) {
+    showHelp();
+    process.exit(0);
+  }
+  
+  const config = parseTestArgs(args);
   
   console.log('🚀 Starting View Sessions - Real API Puppeteer Test');
-  console.log(`🌐 Testing against: ${BASE_URL}`);
+  console.log(`🌐 Testing against: ${config.baseUrl}`);
+  if (config.slowMo.enabled) {
+    console.log(`🐌 SlowMo enabled at ${config.slowMo.speed}ms`);
+  }
   
   const credentials = loadCredentials();
   console.log(`📋 Using real credentials:`);
@@ -121,7 +131,10 @@ async function runTest() {
   console.log(`   Client ID: ${credentials.clientId}`);
   console.log(`   Client Secret: ${credentials.clientSecret?.substring(0, 10)}...`);
   
-  const browser = await puppeteer.launch(BROWSER_CONFIG);
+  const browser = await puppeteer.launch(getBrowserConfig({ 
+    enableSlowMo: config.slowMo.enabled, 
+    slowMoSpeed: config.slowMo.speed 
+  }));
   
   try {
     const page = await browser.newPage();
@@ -130,7 +143,7 @@ async function runTest() {
     await setupRequestLogging(page);
     
     // Step 1-2: Enter credentials
-    await enterCredentials(page, credentials, BASE_URL);
+    await enterCredentials(page, credentials, config.baseUrl);
     
     // Step 3: Wait for navigation
     await waitForSessionsPage(page);

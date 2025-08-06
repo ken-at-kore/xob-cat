@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const { parseTestArgs, showHelp } = require('./shared/parse-test-args');
 
 /**
  * Puppeteer E2E Test: Bogus Credentials Validation
@@ -9,7 +10,22 @@ const puppeteer = require('puppeteer');
  */
 
 async function runBogusCrendentialsTest() {
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  
+  // Show help if requested
+  if (args.includes('--help')) {
+    showHelp();
+    process.exit(0);
+  }
+  
+  const config = parseTestArgs(args);
+  
   console.log('🧪 Starting Puppeteer Bogus Credentials Test...');
+  console.log(`🌐 Testing against: ${config.baseUrl}`);
+  if (config.slowMo.enabled) {
+    console.log(`🐌 SlowMo enabled at ${config.slowMo.speed}ms`);
+  }
   
   let browser;
   let testPassed = false;
@@ -18,7 +34,7 @@ async function runBogusCrendentialsTest() {
     // Launch browser with debugging configuration
     browser = await puppeteer.launch({
       headless: false,      // Visual debugging
-      slowMo: 50,          // Human-like interactions
+      slowMo: config.slowMo.enabled ? config.slowMo.speed : undefined,
       defaultViewport: { width: 1280, height: 720 },
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
@@ -31,7 +47,7 @@ async function runBogusCrendentialsTest() {
     
     // Navigate to credentials page
     console.log('📍 Navigating to credentials page...');
-    await page.goto('http://localhost:3000', { waitUntil: 'networkidle2' });
+    await page.goto(config.baseUrl, { waitUntil: 'networkidle2' });
     
     // Take initial screenshot
     await page.screenshot({ path: 'bogus-credentials-initial.png' });

@@ -24,8 +24,9 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const { parseTestArgs, showHelp } = require('./shared/parse-test-args');
 const {
-  BROWSER_CONFIG,
+  getBrowserConfig,
   TIMEOUTS,
   enterCredentials,
   navigateToAutoAnalyze,
@@ -74,7 +75,7 @@ function loadCredentials() {
   return credentials;
 }
 
-// Parse command line arguments
+// Parse command line arguments (deprecated - use parseTestArgs)
 function parseArgs() {
   const args = process.argv.slice(2);
   const config = {
@@ -91,15 +92,30 @@ function parseArgs() {
 }
 
 async function runAutoAnalyzeRealTest() {
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  
+  // Show help if requested
+  if (args.includes('--help')) {
+    showHelp();
+    process.exit(0);
+  }
+  
+  const config = parseTestArgs(args);
+  
   let browser;
   
   try {
     console.log('🚀 Starting Auto-Analyze Real API Puppeteer Test');
     console.log('💰 WARNING: This test uses real APIs and will incur OpenAI costs');
+    console.log(`🌐 Testing against: ${config.baseUrl}`);
+    if (config.slowMo.enabled) {
+      console.log(`🐌 SlowMo enabled at ${config.slowMo.speed}ms`);
+    }
     
     // Load real credentials
     const credentials = loadCredentials();
-    const config = parseArgs();
+    // parseArgs() is now handled at the beginning of the function
     
     console.log(`🌐 Testing against: ${config.baseUrl}`);
     
@@ -113,7 +129,10 @@ async function runAutoAnalyzeRealTest() {
     };
     
     // Launch browser with shared configuration
-    browser = await puppeteer.launch(BROWSER_CONFIG);
+    browser = await puppeteer.launch(getBrowserConfig({ 
+      enableSlowMo: config.slowMo.enabled, 
+      slowMoSpeed: config.slowMo.speed 
+    }));
     const page = await browser.newPage();
     
     // Set timeouts (longer for real APIs)
