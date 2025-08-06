@@ -14,15 +14,27 @@ function parseTestArgs(args = []) {
   const urlArg = args.find(arg => arg.startsWith('--url='));
   const baseUrl = urlArg ? urlArg.split('=')[1] : 'http://localhost:3000';
   
-  // Parse slowMo configuration from command line or environment variables
-  const enableSlowMo = args.some(arg => arg === '--slowMo') || 
-                      process.env.PUPPETEER_SLOWMO === 'true' ||
-                      process.env.PUPPETEER_SLOWMO === '1';
+  // Parse slowMo configuration - single parameter approach like native Puppeteer
+  // Default to 25ms (was previously 50ms) for better production compatibility
+  let slowMo = 25; // Default speed in milliseconds
   
-  const slowMoSpeedArg = args.find(arg => arg.startsWith('--slowMoSpeed='));
-  const slowMoSpeed = slowMoSpeedArg ? parseInt(slowMoSpeedArg.split('=')[1]) : 
-                     process.env.PUPPETEER_SLOWMO_SPEED ? parseInt(process.env.PUPPETEER_SLOWMO_SPEED) : 
-                     50;
+  // Check for explicit slowMo speed argument
+  const slowMoArg = args.find(arg => arg.startsWith('--slowMo'));
+  if (slowMoArg) {
+    if (slowMoArg === '--slowMo') {
+      // --slowMo without value uses default
+      slowMo = 25;
+    } else if (slowMoArg.includes('=')) {
+      // --slowMo=50 format
+      slowMo = parseInt(slowMoArg.split('=')[1]) || 25;
+    }
+  } else if (process.env.PUPPETEER_SLOWMO) {
+    // Environment variable override
+    slowMo = parseInt(process.env.PUPPETEER_SLOWMO) || 25;
+  } else if (args.includes('--no-slowMo')) {
+    // Explicitly disable slowMo
+    slowMo = 0;
+  }
   
   // Parse other common options
   const headless = args.some(arg => arg === '--headless');
@@ -31,10 +43,7 @@ function parseTestArgs(args = []) {
   
   return {
     baseUrl,
-    slowMo: {
-      enabled: enableSlowMo,
-      speed: slowMoSpeed
-    },
+    slowMo, // Single speed value (0 = disabled, >0 = enabled with that speed)
     headless,
     screenshot,
     verbose
@@ -49,24 +58,24 @@ function showHelp() {
 Puppeteer Test Command Line Options:
 
   --url=<url>           Base URL to test against (default: http://localhost:3000)
-  --slowMo              Enable slow motion mode for easier debugging
-  --slowMoSpeed=<ms>    Set slow motion delay in milliseconds (default: 50)
+  --slowMo[=<ms>]       Enable slow motion with optional speed in ms (default: 25, was 50)
+  --no-slowMo           Explicitly disable slow motion (speed = 0)
   --headless            Run browser in headless mode
   --screenshot          Take screenshots on failures
   --verbose             Enable verbose logging
   --help                Show this help message
 
 Environment Variables:
-  PUPPETEER_SLOWMO=true         Enable slow motion mode
-  PUPPETEER_SLOWMO_SPEED=<ms>   Set slow motion delay (default: 50)
+  PUPPETEER_SLOWMO=<ms>     Set slow motion delay in milliseconds (default: 25)
 
 Examples:
-  node test.js --slowMo --slowMoSpeed=100
-  node test.js --url=https://production.com --headless
-  node test.js --slowMo --screenshot --verbose
+  node test.js --slowMo              # Use default 25ms slowMo
+  node test.js --slowMo=100          # Use 100ms slowMo
+  node test.js --no-slowMo           # Disable slowMo completely
+  node test.js --url=https://production.com --slowMo
   
   # Using environment variables
-  PUPPETEER_SLOWMO=true PUPPETEER_SLOWMO_SPEED=75 node test.js
+  PUPPETEER_SLOWMO=75 node test.js
 `);
 }
 

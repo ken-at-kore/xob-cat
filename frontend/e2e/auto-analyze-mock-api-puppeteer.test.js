@@ -62,15 +62,14 @@ async function runAutoAnalyzeMockTest() {
   try {
     console.log('🎭 Starting Auto-Analyze Mock API Puppeteer Test');
     console.log(`🌐 Testing against: ${config.baseUrl}`);
-    if (config.slowMo.enabled) {
-      console.log(`🐌 SlowMo enabled at ${config.slowMo.speed}ms`);
+    if (config.slowMo > 0) {
+      console.log(`🐌 SlowMo enabled at ${config.slowMo}ms`);
     }
     console.log('🧪 Using mock services - no real API calls will be made');
     
     // Launch browser with shared configuration
     browser = await puppeteer.launch(getBrowserConfig({ 
-      enableSlowMo: config.slowMo.enabled, 
-      slowMoSpeed: config.slowMo.speed 
+      slowMo: config.slowMo
     }));
     const page = await browser.newPage();
     

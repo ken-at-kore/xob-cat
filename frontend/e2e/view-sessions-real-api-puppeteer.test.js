@@ -121,8 +121,8 @@ async function runTest() {
   
   console.log('🚀 Starting View Sessions - Real API Puppeteer Test');
   console.log(`🌐 Testing against: ${config.baseUrl}`);
-  if (config.slowMo.enabled) {
-    console.log(`🐌 SlowMo enabled at ${config.slowMo.speed}ms`);
+  if (config.slowMo > 0) {
+    console.log(`🐌 SlowMo enabled at ${config.slowMo}ms`);
   }
   
   const credentials = loadCredentials();
@@ -132,8 +132,7 @@ async function runTest() {
   console.log(`   Client Secret: ${credentials.clientSecret?.substring(0, 10)}...`);
   
   const browser = await puppeteer.launch(getBrowserConfig({ 
-    enableSlowMo: config.slowMo.enabled, 
-    slowMoSpeed: config.slowMo.speed 
+    slowMo: config.slowMo
   }));
   
   try {

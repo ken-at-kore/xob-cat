@@ -467,10 +467,11 @@ Optimized sampling workflow:
 # Standalone execution (no Jest conflicts)
 node frontend/e2e/run-puppeteer-test.js
 
-# SlowMo Configuration (OFF by default for speed):
-node test.js --slowMo                    # Enable with 50ms delay
-node test.js --slowMo --slowMoSpeed=100  # Custom delay
-PUPPETEER_SLOWMO=true node test.js      # Via environment variable
+# SlowMo Configuration (default: 25ms, was previously 50ms):
+node test.js --slowMo                    # Enable with default 25ms delay
+node test.js --slowMo=100                # Custom delay
+node test.js --no-slowMo                 # Explicitly disable
+PUPPETEER_SLOWMO=75 node test.js        # Via environment variable
 
 # Key advantages over Playwright:
 # - No hanging/timeout issues (completes in seconds vs 30+ seconds)
@@ -505,7 +506,7 @@ module.exports = {
 ```javascript
 browser = await puppeteer.launch({
   headless: false,      // Visual debugging
-  slowMo: 50,          // Human-like interactions
+  slowMo: 25,          // Human-like interactions (default, was 50)
   defaultViewport: { width: 1280, height: 720 }
 });
 
