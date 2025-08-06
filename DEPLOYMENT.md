@@ -420,9 +420,8 @@ Client Secret: mock-client-secret-12345
 ```
 
 ### Smoke Test Workflow
-1. **Navigate to**: https://www.koreai-xobcat.com
-2. **Use Mock Credentials**: Enter the mock credentials above to test bot connection
-3. **Test Sessions View**: Verify mock session data loads in the sessions table
+1. **Test the View Sessions Workflow**: node frontend/e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
+2. **Test the Auto Analyze Workflow**: node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
 
 ### Health Check Commands
 ```bash
