@@ -162,7 +162,7 @@ The Auto-Analyze feature provides AI-powered batch analysis of customer service 
 autoAnalyzeService.ts         # Main orchestration service (singleton pattern)
 ├── sessionSamplingService.ts # Time window expansion algorithm (3hr → 6hr → 12hr → 6day)
 ├── batchAnalysisService.ts   # Batch processing with classification consistency
-├── openaiAnalysisService.ts  # GPT-4o-mini integration with function calling
+├── openaiAnalysisService.ts  # OpenAI integration with configurable models (GPT-4o-mini default)
 ├── analysisSummaryService.ts # Analysis summary generation with markdown output
 └── koreApiService.ts         # Session data retrieval with rate limiting
 ```
@@ -202,7 +202,7 @@ DELETE /api/analysis/auto-analyze/:id           # Cancel analysis
 6. **Summary Generation**: Generate analysis overview and detailed summary using aggregated session data
 
 #### OpenAI Integration
-- **Model**: GPT-4o-mini with function calling
+- **Model**: Configurable GPT models (GPT-4o-mini default) with function calling
 - **Schema**: Structured analysis output (intent, outcome, transfer reasons, notes)
 - **Cost Optimization**: ~$0.019 average cost per session analysis
 - **Quality**: 100% facts consistency verified with real conversation data
@@ -387,7 +387,7 @@ Environment-based service selection:
 - **Technical Design**: `docs/Auto-Analyze Technical Design.md`
 
 ### Auto-Analyze Feature
-AI-powered bot performance analysis using GPT-4o-mini with time window expansion, batch processing, and interactive visualizations. Supports 5-1000 sessions with real-time progress tracking and cost estimation.
+AI-powered bot performance analysis using configurable GPT models (GPT-4o-mini default) with time window expansion, batch processing, and interactive visualizations. Supports 5-1000 sessions with real-time progress tracking and cost estimation.
 
 ### Report Sharing
 - **Export**: Download versioned JSON files with all session data
