@@ -1,6 +1,6 @@
-# CLAUDE.md
+# claude.md
 
-This file provides guidance to Claude Code when working with this repository.
+This file (`claude.md` in the project root) provides guidance to Claude Code when working with this repository.
 
 ## Production Environment
 
