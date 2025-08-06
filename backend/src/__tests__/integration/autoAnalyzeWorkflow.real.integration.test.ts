@@ -29,12 +29,28 @@ import {
  * - TEST_CLIENT_SECRET: Valid Kore.ai client secret
  * - TEST_OPENAI_API_KEY: Valid OpenAI API key (incurs costs)
  * 
+ * Test Configuration (Environment Variables):
+ * - REAL_API_TEST_MODE: Controls which tests to run
+ *   - 'basic' (default): Run only the basic 5-session workflow test
+ *   - 'all': Run all test cases including rate limiting and error handling
+ *   - 'workflow': Run workflow tests only (basic + rate limiting)
+ *   - 'errors': Run error handling tests only
+ *   - 'validation': Run data validation tests only
+ * 
+ * Usage Examples:
+ * npm test -- --testPathPattern="autoAnalyzeWorkflow.real"                    # Basic test only
+ * REAL_API_TEST_MODE=all npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # All tests
+ * REAL_API_TEST_MODE=workflow npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # Workflow tests
+ * 
  * ⚠️  WARNING: This test makes real API calls and incurs OpenAI costs!
  * Only run when you need to validate production integration.
  */
 describe('Auto-Analyze Integration Test - Real API', () => {
   let app: express.Application;
 
+  // Get test mode from environment variable
+  const testMode = process.env.REAL_API_TEST_MODE || 'basic';
+  
   beforeAll(() => {
     // Validate real credentials are available
     try {
@@ -57,6 +73,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
     
     console.log('🔗 [Real API Test] Using real external APIs');
     console.log('🔗 [Real API Test] ServiceFactory type:', ServiceFactory.getServiceType());
+    console.log(`🔗 [Real API Test] Test mode: ${testMode}`);
     console.log('💰 [Real API Test] WARNING: This test will incur OpenAI costs!');
 
     // Create test app with real credentials
@@ -72,8 +89,17 @@ describe('Auto-Analyze Integration Test - Real API', () => {
     destroyBackgroundJobQueue();
   });
 
+  // Helper function to check if test should run
+  const shouldRunTest = (requiredModes: string[]) => {
+    return requiredModes.includes(testMode);
+  };
+
   describe('Production Integration Workflow', () => {
     it('should complete full auto-analysis workflow with real APIs', async () => {
+      if (!shouldRunTest(['basic', 'workflow', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping basic workflow test (mode: ${testMode})`);
+        return;
+      }
       // Use recent date for real API test
       const recentDate = new Date();
       recentDate.setDate(recentDate.getDate() - 7); // 7 days ago
@@ -114,6 +140,10 @@ describe('Auto-Analyze Integration Test - Real API', () => {
     }, 300000); // 5 minute timeout for real API calls
 
     it('should handle real API rate limiting gracefully', async () => {
+      if (!shouldRunTest(['workflow', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping rate limiting test (mode: ${testMode})`);
+        return;
+      }
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
         sessionCount: 10, // Reduced count to avoid timeouts while still testing rate limiting
         modelId: 'gpt-4.1-mini'
@@ -138,6 +168,10 @@ describe('Auto-Analyze Integration Test - Real API', () => {
 
   describe('Production Error Handling', () => {
     it('should handle real API cancellation', async () => {
+      if (!shouldRunTest(['errors', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping cancellation test (mode: ${testMode})`);
+        return;
+      }
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
         sessionCount: 10, // Reduced count to avoid timeouts but still allow cancellation testing
         modelId: 'gpt-4.1-mini'
@@ -149,14 +183,26 @@ describe('Auto-Analyze Integration Test - Real API', () => {
     }, 60000); // 1 minute timeout
 
     it('should handle invalid configuration with real APIs', async () => {
+      if (!shouldRunTest(['errors', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping invalid config test (mode: ${testMode})`);
+        return;
+      }
       await testInvalidConfiguration(app);
     });
 
     it('should handle non-existent analysis ID with real APIs', async () => {
+      if (!shouldRunTest(['errors', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping non-existent ID test (mode: ${testMode})`);
+        return;
+      }
       await testNonExistentAnalysisId(app);
     });
 
     it('should handle real API authentication errors', async () => {
+      if (!shouldRunTest(['errors', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping auth error test (mode: ${testMode})`);
+        return;
+      }
       // Create app with invalid credentials
       const invalidCredentials = {
         ...REAL_CREDENTIALS,
@@ -206,6 +252,10 @@ describe('Auto-Analyze Integration Test - Real API', () => {
 
   describe('Production Data Validation', () => {
     it('should return real session data with proper structure', async () => {
+      if (!shouldRunTest(['validation', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping data validation test (mode: ${testMode})`);
+        return;
+      }
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
         sessionCount: 3, // Small count to minimize cost
         modelId: 'gpt-4.1-mini'
@@ -247,6 +297,10 @@ describe('Auto-Analyze Integration Test - Real API', () => {
     }, 180000); // 3 minute timeout
 
     it('should handle different time ranges with real data', async () => {
+      if (!shouldRunTest(['validation', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping time range test (mode: ${testMode})`);
+        return;
+      }
       // Test with recent date range to ensure data availability
       const recentDate = new Date();
       recentDate.setDate(recentDate.getDate() - 7); // 7 days ago

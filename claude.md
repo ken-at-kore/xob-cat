@@ -43,7 +43,14 @@ cd backend && npm run test:coverage     # With coverage report
 
 # Backend integration tests (NEW Dec 2024)
 cd backend && npm test -- --testPathPattern="autoAnalyzeWorkflow.mock"  # Mock API (fast, no cost)
-cd backend && npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # Real API (needs credentials)
+cd backend && npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # Real API (5 sessions, basic mode)
+
+# Real API test modes (configurable)
+REAL_API_TEST_MODE=basic npm test -- --testPathPattern="autoAnalyzeWorkflow.real"     # Default: 5 sessions only
+REAL_API_TEST_MODE=all npm test -- --testPathPattern="autoAnalyzeWorkflow.real"       # All tests (rate limiting, errors, validation)
+REAL_API_TEST_MODE=workflow npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # Basic + rate limiting
+REAL_API_TEST_MODE=errors npm test -- --testPathPattern="autoAnalyzeWorkflow.real"    # Error handling only
+REAL_API_TEST_MODE=validation npm test -- --testPathPattern="autoAnalyzeWorkflow.real" # Data validation only
 
 # Puppeteer E2E (recommended for reliable E2E testing)
 node frontend/e2e/run-puppeteer-test.js  # Standalone Puppeteer test (no hanging issues)
