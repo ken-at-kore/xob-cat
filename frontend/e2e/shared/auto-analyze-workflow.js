@@ -7,14 +7,33 @@
 const puppeteer = require('puppeteer');
 
 /**
- * Common browser launch configuration
+ * Get browser configuration with configurable slowMo
+ * @param {Object} options - Configuration options
+ * @param {boolean} options.enableSlowMo - Whether to enable slowMo (default: false)
+ * @param {number} options.slowMoSpeed - Speed in milliseconds when enabled (default: 50)
+ * @returns {Object} Browser launch configuration
  */
-const BROWSER_CONFIG = {
-  headless: false,
-  slowMo: 50,
-  defaultViewport: { width: 1280, height: 800 },
-  args: ['--no-sandbox', '--disable-setuid-sandbox']
-};
+function getBrowserConfig(options = {}) {
+  const { enableSlowMo = false, slowMoSpeed = 50 } = options;
+  
+  const config = {
+    headless: false,
+    defaultViewport: { width: 1280, height: 800 },
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  };
+  
+  // Only add slowMo if explicitly enabled
+  if (enableSlowMo) {
+    config.slowMo = slowMoSpeed;
+  }
+  
+  return config;
+}
+
+/**
+ * Common browser launch configuration (deprecated - use getBrowserConfig instead)
+ */
+const BROWSER_CONFIG = getBrowserConfig();
 
 /**
  * Timeout configuration for auto-analyze workflow
@@ -479,6 +498,7 @@ async function setupRequestLogging(page) {
 
 module.exports = {
   BROWSER_CONFIG,
+  getBrowserConfig,
   TIMEOUTS,
   enterCredentials,
   navigateToAutoAnalyze,

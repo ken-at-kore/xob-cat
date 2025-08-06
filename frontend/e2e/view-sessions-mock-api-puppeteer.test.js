@@ -8,7 +8,7 @@
 
 const puppeteer = require('puppeteer');
 const {
-  BROWSER_CONFIG,
+  getBrowserConfig,
   TIMEOUTS,
   enterCredentials,
   waitForSessionsPage,
@@ -17,6 +17,7 @@ const {
   validateSanitization,
   setupRequestLogging
 } = require('./shared/view-sessions-workflow');
+const { parseTestArgs, showHelp } = require('./shared/parse-test-args');
 
 // Mock credentials to trigger mock services
 const MOCK_CREDENTIALS = {
@@ -26,10 +27,28 @@ const MOCK_CREDENTIALS = {
 };
 
 async function runTest() {
-  console.log('🚀 Starting View Sessions - Mock API Puppeteer Test');
-  console.log('🎭 Using mock credentials to trigger mock services');
+  // Parse command line arguments
+  const args = process.argv.slice(2);
   
-  const browser = await puppeteer.launch(BROWSER_CONFIG);
+  // Show help if requested
+  if (args.includes('--help')) {
+    showHelp();
+    process.exit(0);
+  }
+  
+  const config = parseTestArgs(args);
+  
+  console.log('🚀 Starting View Sessions - Mock API Puppeteer Test');
+  console.log(`🌐 Testing against: ${config.baseUrl}`);
+  console.log('🎭 Using mock credentials to trigger mock services');
+  if (config.slowMo.enabled) {
+    console.log(`🐌 SlowMo enabled at ${config.slowMo.speed}ms`);
+  }
+  
+  const browser = await puppeteer.launch(getBrowserConfig({ 
+    enableSlowMo: config.slowMo.enabled, 
+    slowMoSpeed: config.slowMo.speed 
+  }));
   
   try {
     const page = await browser.newPage();
@@ -42,7 +61,7 @@ async function runTest() {
     await setupRequestLogging(page);
     
     // Step 1-2: Enter credentials
-    await enterCredentials(page, MOCK_CREDENTIALS);
+    await enterCredentials(page, MOCK_CREDENTIALS, config.baseUrl);
     
     // Step 3: Wait for navigation
     await waitForSessionsPage(page);
