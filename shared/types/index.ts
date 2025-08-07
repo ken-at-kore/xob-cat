@@ -118,6 +118,7 @@ export interface GptModel {
   apiModelString: string;
   inputPricePerMillion: number;
   outputPricePerMillion: number;
+  contextWindow: number; // Total context window in tokens
 }
 
 export const GPT_MODELS: GptModel[] = [
@@ -126,35 +127,40 @@ export const GPT_MODELS: GptModel[] = [
     name: 'GPT-4o',
     apiModelString: 'gpt-4o',
     inputPricePerMillion: 2.50,
-    outputPricePerMillion: 10.00
+    outputPricePerMillion: 10.00,
+    contextWindow: 128000
   },
   {
     id: 'gpt-4o-mini',
     name: 'GPT-4o mini',
     apiModelString: 'gpt-4o-mini',
     inputPricePerMillion: 0.15,
-    outputPricePerMillion: 0.60
+    outputPricePerMillion: 0.60,
+    contextWindow: 128000
   },
   {
     id: 'gpt-4.1',
     name: 'GPT-4.1 (base)',
     apiModelString: 'gpt-4.1',
     inputPricePerMillion: 2.00,
-    outputPricePerMillion: 8.00
+    outputPricePerMillion: 8.00,
+    contextWindow: 1000000
   },
   {
     id: 'gpt-4.1-mini',
     name: 'GPT-4.1 mini',
     apiModelString: 'gpt-4.1-mini',
     inputPricePerMillion: 0.40,
-    outputPricePerMillion: 1.60
+    outputPricePerMillion: 1.60,
+    contextWindow: 1000000
   },
   {
     id: 'gpt-4.1-nano',
     name: 'GPT-4.1 nano',
     apiModelString: 'gpt-4.1-nano',
     inputPricePerMillion: 0.10,
-    outputPricePerMillion: 0.40
+    outputPricePerMillion: 0.40,
+    contextWindow: 1000000
   }
 ];
 
