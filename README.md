@@ -148,10 +148,12 @@ npm run lint
 ### Data Collection
 
 ```bash
-# Collect production data for testing
-npm run collect-data
+# Flexible production data collection (uses credentials from .env.local)
+npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --limit 20 --output "custom-name"
+# Options: --limit (session count), --files (complete,agent,messages,summary,all)
 
-# Historical data collection
+# Legacy collection scripts
+npm run collect-data
 npx tsx scripts/collect-july-6-13-full-range.ts
 ```
 
