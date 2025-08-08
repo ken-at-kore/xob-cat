@@ -51,6 +51,7 @@ export class ServiceFactory {
 
     switch (serviceType) {
       case ServiceType.MOCK:
+      case ServiceType.HYBRID: // HYBRID uses mock Kore API
         return new MockKoreApiService();
         
       case ServiceType.REAL:
@@ -75,6 +76,7 @@ export class ServiceFactory {
         return new MockOpenAIService();
         
       case ServiceType.REAL:
+      case ServiceType.HYBRID: // HYBRID uses real OpenAI API
         return createRealOpenAIService();
         
         
@@ -90,6 +92,7 @@ export class ServiceFactory {
 
     switch (serviceType) {
       case ServiceType.MOCK:
+      case ServiceType.HYBRID: // HYBRID uses mock session data
         return new MockSessionDataService();
         
       case ServiceType.REAL:
@@ -109,6 +112,10 @@ export class ServiceFactory {
 
   static useRealServices(): void {
     ServiceFactory.configure({ type: ServiceType.REAL });
+  }
+
+  static useHybridServices(): void {
+    ServiceFactory.configure({ type: ServiceType.HYBRID });
   }
 
 

@@ -184,9 +184,42 @@ npm test -- --testPathPattern=containmentType
 
 # With coverage report
 npm test -- --coverage
+
+# Hybrid tests (Mock Kore + Real OpenAI)
+npm test -- --testPathPattern="perSessionAnalysis.hybrid"
+
+# Hybrid test with production data and custom model
+HYBRID_INPUT_FILE="../data/agent-july30-data.json" HYBRID_MODEL="gpt-4.1" HYBRID_OUTPUT_TEXT="analysis.txt" npm test -- --testPathPattern="perSessionAnalysis.hybrid"
 ```
 
-## 📊 Containment Type Analysis
+## 📊 Data Collection & Analysis
+
+### Production Data Collection
+Use the flexible data collection script to gather production session data:
+
+```bash
+# Collect specific containment type data
+npx tsx ../scripts/collect-production-data.ts --start "2025-07-30T10:32:00" --end "2025-07-30T11:32:00" --containment agent --limit 20 --output "agent-july30-data"
+
+# Collect dropOff sessions only
+npx tsx ../scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --containment dropOff --limit 20
+
+# See all options
+npx tsx ../scripts/collect-production-data.ts --help
+```
+
+### Hybrid Testing
+Test OpenAI analysis with production data while using mock Kore.ai services:
+
+```bash
+# Test with production data file
+HYBRID_INPUT_FILE="../data/agent-july30-data-2025-08-08.json" HYBRID_OUTPUT_TEXT="agent-analysis-summary.txt" npm test -- --testPathPattern="perSessionAnalysis.hybrid"
+
+# Control costs with session limits
+HYBRID_SESSION_LIMIT=5 HYBRID_MODEL="gpt-4.1-nano" npm test -- --testPathPattern="perSessionAnalysis.hybrid"
+```
+
+### Containment Type Analysis
 
 The system tracks three types of session outcomes:
 

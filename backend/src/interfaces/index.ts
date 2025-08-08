@@ -47,7 +47,8 @@ export interface ISessionDataService {
 // Configuration for service types
 export enum ServiceType {
   REAL = 'real',
-  MOCK = 'mock'
+  MOCK = 'mock',
+  HYBRID = 'hybrid'  // Mock Kore + Real OpenAI
 }
 
 export interface ServiceConfig {
