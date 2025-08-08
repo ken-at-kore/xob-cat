@@ -1,0 +1,901 @@
+# Main Analysis Test - Analysis Results
+
+**Analysis Summary**
+- Timestamp: 2025-08-08T19:50:58.757Z
+- Test Mode: main
+- Model: gpt-4.1
+- Sessions Analyzed: 10
+- Total Cost: $0.0155
+- Total Tokens: 5,657
+- Average Tokens/Session: 566
+
+## Session 1: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User successfully submitted a time entry for an absence and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 689266c1c1191625bf9a49a1
+- User ID: u-865ad6d2-a175-5a60-9910-45f962f56e29
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Track time
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5605635
+
+bot: And your zip code?
+
+user: 19934
+
+bot: Thanks for verifying your account.
+
+bot: What's the date of the absence?
+
+user: August 5 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: Six hours 0 minutes
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode
+
+bot: Let's confirm everything is correct. You're submitting an absence for 5th August 2025 for 6 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No
+
+bot: What else can I help you with?
+
+user: Nothing
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 2: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User submitted multiple time entries for absences and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 689266ed7db0bd677d8334c7
+- User ID: u-f321d3bd-f905-55f2-aa04-8f6db48f76f6
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Time entry
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5458480
+
+bot: And your zip code?
+
+user: 46228
+
+bot: Thanks for verifying your account.
+
+bot: What's the date of the absence?
+
+user: August the 4th 2025 and August the 5th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 8 hours on both days
+
+bot: I didn't catch that. Please say or enter the number of hours and minutes you missed, using two digits for the hours, and two digits for the minutes.
+
+user: 8 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode of Incapacity
+
+bot: Let's confirm everything is correct. You're submitting an absence for 4th August 2025 for 8 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: Yes
+
+bot: Is it for the same leave request number?
+
+user: Yes
+
+bot: Okay
+
+bot: What's the date of the absence?
+
+user: August the 5th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 8 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode of Incapacity
+
+bot: Let's confirm everything is correct. You're submitting an absence for 5th August 2025 for 8 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No
+
+bot: What else can I help you with?
+
+user: Thats all
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 3: Claim Status → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Claim Status
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User checked the status of a claim and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 689267b0443f7095e9090e09
+- User ID: u-0aeec10e-4cea-5123-bfdd-df8fc97dd1c2
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Claim Washington Claim status
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5309447
+
+bot: And your zip code?
+
+user: 74403
+
+bot: Thanks for verifying your account.
+
+bot: As of today, your leave request is Requested with the reason being, Additional Information Needed Insufficient.
+
+bot: What else can I help you with?
+
+user: Nothing
+
+bot: Thank you for calling. Goodbye!
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 4: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User submitted a time entry for an absence and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 689267ba0d700d1adb66050f
+- User ID: u-049812b7-5099-520f-9a32-33a8b0949d1b
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Track time
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5405381
+
+bot: And your zip code?
+
+user: 35646
+
+bot: Thanks for verifying your account.
+
+bot: What's the date of the absence?
+
+user: March August 5th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 8 hours 0 minutes
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode of Incapacity
+
+bot: Let's confirm everything is correct. You're submitting an absence for 5th August 2025 for 8 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No
+
+bot: What else can I help you with?
+
+user: That will be all
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: Nothing
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 5: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User submitted multiple time entries for different absences and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 689268bce196ca7609725eed
+- User ID: u-27ef2816-d581-5f1b-b19d-41b1c8e249e0
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Time entry
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: I dont know
+
+bot: You can find your leave request number in the top left corner of the notification letter you received.
+
+bot: What's your leave request number?
+
+user: None
+
+bot: Okay Let's try a different  way.
+
+bot: what's your  employee number?
+
+user: 801213732
+
+bot: And your zip code?
+
+user: 19709
+
+bot: Thanks for verifying your account.
+
+bot: I found 5531468 leave request. The leave reason is Family Member's Serious Health Condition, and it's dated 2025-05-11. Is that the right one?
+
+user: Yes
+
+bot: What's the date of the absence?
+
+user: June 6th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 8 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode
+
+bot: Let's confirm everything is correct. You're submitting an absence for 6th June 2025 for 8 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: No
+
+bot: Sorry about that. Let's try again.
+
+bot: What's the date of the absence?
+
+user: June 6th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 12 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Mother had a stroke
+
+bot: I didn't catch that. Were you absent because of a "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode
+
+bot: Let's confirm everything is correct. You're submitting an absence for 6th June 2025 for 12 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: Yes
+
+bot: Is it for the same leave request number?
+
+user: Yes
+
+bot: Okay
+
+bot: What's the date of the absence?
+
+user: June 8th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 12 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: So it is incapacity
+
+bot: Let's confirm everything is correct. You're submitting an absence for 8th June 2025 for 12 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: Yes
+
+bot: Is it for the same leave request number?
+
+user: Yes
+
+bot: Okay
+
+bot: What's the date of the absence?
+
+user: August 3rd 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 12 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Something else
+
+bot: Let's confirm everything is correct. You're submitting an absence for 3rd August 2025 for 12 hours. The reason for the absence is Other. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: Yes
+
+bot: Is it for the same leave request number?
+
+user: Yes
+
+bot: Okay
+
+bot: What's the date of the absence?
+
+user: August 4th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 8 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Something else
+
+bot: Let's confirm everything is correct. You're submitting an absence for 4th August 2025 for 8 hours. The reason for the absence is Other. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No
+
+bot: What else can I help you with?
+
+user: Nothing
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 6: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User initially had trouble stating intent, then successfully submitted a time entry and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 689268c3f9118ccf9c713479
+- User ID: u-be827543-8e19-5148-a451-e176c9209119
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Report fine
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: Report Abscess
+
+bot: I still didn't get that. Let me ask you a few questions. First, are you calling to open a new leave request?
+
+user: No
+
+bot: Alright. Do you need to track time?
+
+user: Yes
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5494328
+
+bot: And your zip code?
+
+user: 31904
+
+bot: Thanks for verifying your account.
+
+bot: What's the date of the absence?
+
+user: August 5th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 8 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode
+
+bot: Let's confirm everything is correct. You're submitting an absence for 5th August 2025 for 8 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No
+
+bot: What else can I help you with?
+
+user: Thats all
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 7: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User did not know leave request number but verified with employee number, submitted a time entry, and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 6892696cdc76c7ba974e2e9b
+- User ID: u-1d1ce5fa-0020-5ca5-bf5c-6f2ebbadf2ea
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: I need a clock time for yesterday
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: I need to clock my time for yesterday
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: I dont know
+
+bot: You can find your leave request number in the top left corner of the notification letter you received.
+
+bot: What's your leave request number?
+
+user: I dont know it
+
+bot: Okay Let's try a different  way.
+
+bot: what's your  employee number?
+
+user: 6
+
+bot: And your zip code?
+
+user: 67217
+
+bot: Sorry about that. Let's try again.
+
+bot: what's your  employee number?
+
+user: 2616635
+
+bot: And your zip code?
+
+user: 67217
+
+bot: Thanks for verifying your account.
+
+bot: I found 5548156 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-05-22. Is that the right one?
+
+user: Yes
+
+bot: What's the date of the absence?
+
+user: 8425
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: 8 hours
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Episode of Incapacity
+
+bot: Let's confirm everything is correct. You're submitting an absence for 4th August 2025 for 8 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No
+
+bot: What else can I help you with?
+
+user: Nothing Thank you
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 8: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User asked how to enter FMLA time off, submitted a time entry, and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 6892698423e58d581d2cf7e6
+- User ID: u-625093dd-71c4-5e7f-9264-b8bd34df2f2c
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: How do I enter FMLA time off
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5622734
+
+bot: And your zip code?
+
+user: 48451
+
+bot: Thanks for verifying your account.
+
+bot: What's the date of the absence?
+
+user: August 4th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: One hour and 15 minutes
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Appointment
+
+bot: Let's confirm everything is correct. You're submitting an absence for 4th August 2025 for 1 hour 15 minutes. The reason for the absence is Treatment Appointment. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No
+
+bot: What else can I help you with?
+
+user: Nothing
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 9: Return to Work → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Return to Work
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User updated their return to work date and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 6892698841b2bcbda107190c
+- User ID: u-ec64fef7-e19e-5f7e-b387-77b048f8a44b
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: I need to update my return to work date
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5632838
+
+bot: And your zip code?
+
+user: 61109
+
+bot: Thanks for verifying your account.
+
+bot: What's the date you intend to return to work?
+
+user: August 11th 2025
+
+bot: Your return to work date has been successfully submitted.
+
+bot: What else can I help you with?
+
+user: Thats it
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 10: Return to Work → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Return to Work
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User asked about extending leave, then updated return to work date, and ended the session without transfer."
+
+**💬 Session Details**
+- Session ID: 68926a304346b46ab901fc4f
+- User ID: u-52e57cf5-195f-5294-9824-a2c8a92ec925
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: selfService
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Extend my leave
+
+bot: You can update your leave information any time. To change your leave end date, please visit our website. Or, just say "return to work". Please do not submit a new leave request to change your end date.
+
+bot: What else can I help you with?
+
+user: Return to work
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 5635802
+
+bot: And your zip code?
+
+user: 46818
+
+bot: Thanks for verifying your account.
+
+bot: What's the date you intend to return to work?
+
+user: August 21st 2025
+
+bot: Your return to work date has been successfully submitted.
+
+bot: What else can I help you with?
+
+user: Thats it
+
+bot: Thank you for calling. Goodbye!
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 5657
+- Processing Time: 8046ms
+- Batch Number: 1
+- Model: gpt-4.1
+

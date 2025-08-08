@@ -1,0 +1,629 @@
+# Main Analysis Test - Analysis Results
+
+**Analysis Summary**
+- Timestamp: 2025-08-08T20:01:35.547Z
+- Test Mode: main
+- Model: gpt-4.1
+- Sessions Analyzed: 10
+- Total Cost: $0.0134
+- Total Tokens: 4,451
+- Average Tokens/Session: 445
+
+## Session 1: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User attempted to submit a time entry but did not provide a valid zip code and stopped responding, so the bot ended the session."
+
+**💬 Session Details**
+- Session ID: 688a82c8443f7095e968430a
+- User ID: u-3f83f635-2c63-5bc9-b31c-e0fa797a0893
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Time entry
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: I dont know
+
+bot: You can find your leave request number in the top left corner of the notification letter you received.
+
+bot: What's your leave request number?
+
+user: 786305
+
+bot: I didn't catch that. Please say or enter your leave request number.
+
+user: 786
+
+bot: what's your  employee number?
+
+user: 800
+
+bot: And your zip code?
+
+user: 84
+
+bot: I didn't catch that. Please say or enter your five digit zip code.
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 2: Claim Status → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Claim Status
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User inquired about leave denial but did not provide a leave request number and stopped responding, so the bot ended the session."
+
+**💬 Session Details**
+- Session ID: 688a8379cfe7f42a92bcfb58
+- User ID: u-67a73277-3f97-511d-a710-7f2a61cc669a
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: So I received my letter to say that I was denied but they have the wrong date in there for my leave
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: I want to know why I was denied for my leave
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 3: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User successfully submitted a time entry and confirmed no further help was needed; session ended by the bot."
+
+**💬 Session Details**
+- Session ID: 688a83f6f1541dae36cd951b
+- User ID: u-f3c1dadb-680a-50a8-a517-fb1fac61da8c
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Time entry
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: 532
+
+bot: I didn't catch that. Please say or enter your leave request number.
+
+user: 287
+
+bot: what's your  employee number?
+
+user: 319332
+
+bot: And your zip code?
+
+user: 62675
+
+bot: Thanks for verifying your account.
+
+bot: I found 5326287 leave request. The leave reason is Family Member's Serious Health Condition, and it's dated 2024-12-20. Is that the right one?
+
+user: Yes
+
+bot: What's the date of the absence?
+
+user: July 28th 2025
+
+bot: And how much time did you miss? Please provide hours and minutes.
+
+user: Five hours 0 minutes
+
+bot: Lastly, what's the reason for your absence? You can say "treatment or appointment"; "episode of incapacity"; or, "something else".
+
+user: Of incapacity
+
+bot: Let's confirm everything is correct. You're submitting an absence for 28th July 2025 for 5 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`
+
+user: Yes
+
+bot: I successfully submitted your time entry.
+
+bot: Do you want to submit another absence?
+
+user: No thank you
+
+bot: What else can I help you with?
+
+user: Im done
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: I dont need any more help
+
+bot: Here are the actions I can perform for you. 
+ a) AgentTransfer 
+ b) Anything Else 
+ c) Api Validation 
+ d) Authentication 
+ e) Claim Status 
+ f) ComPsych API Test 
+ g) General Inquiries 
+ h) Login Issues 
+ i) Main Menu 
+ j) Maternity Leave 
+ k) Open New Leave Request 
+ l) Repeat Statement 
+ m) Return To Work 
+ n) Time Entry 
+ o) Update Information 
+ p) Welcome Task 
+ q) dummyAPI 
+ 
+I can help answer your questions on ComPsych_Dev.
+
+bot: What else can I help you with?
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 4: Unknown → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Unknown
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User input was unclear and did not respond to follow-up, so the bot ended the session."
+
+**💬 Session Details**
+- Session ID: 688a84b514dd27c3118b1081
+- User ID: u-f4e877ec-8d36-5179-9bc0-a939384ebdd6
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: *
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 5: Time Entry → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Time Entry
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User asked about work schedule and time entry but did not provide a leave request number and stopped responding, so the bot ended the session."
+
+**💬 Session Details**
+- Session ID: 688a84e7a121bc41a1794e53
+- User ID: u-06283f43-fe16-51fe-93ee-3c1f9bf619f7
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Need help with the work schedule
+
+bot: Here are the actions I can perform for you. 
+ a) AgentTransfer 
+ b) Anything Else 
+ c) Api Validation 
+ d) Authentication 
+ e) Claim Status 
+ f) ComPsych API Test 
+ g) General Inquiries 
+ h) Login Issues 
+ i) Main Menu 
+ j) Maternity Leave 
+ k) Open New Leave Request 
+ l) Repeat Statement 
+ m) Return To Work 
+ n) Time Entry 
+ o) Update Information 
+ p) Welcome Task 
+ q) dummyAPI 
+ 
+I can help answer your questions on ComPsych_Dev.
+
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Time entry
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: Dont have 1 yet
+
+bot: You can find your leave request number in the top left corner of the notification letter you received.
+
+bot: What's your leave request number?
+
+user: MMM hang on
+
+bot: I didn't catch that. Please say or enter your leave request number.
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 6: Return to Work → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Return to Work
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User updated return to work date, asked FMLA questions, and received information; session ended by the bot after no further input."
+
+**💬 Session Details**
+- Session ID: 688a85a8d461a0d4eb89fa42
+- User ID: u-03ca1993-1fbc-5e12-ac4c-7c88929c0e31
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Umm I already claimed the status 2 days ago but I wanna say that its gonna be 6 weeks out of the of my till my return to work
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: Is there a leave request number A leave request number I dont have one of those
+
+bot: You can find your leave request number in the top left corner of the notification letter you received.
+
+bot: What's your leave request number?
+
+user: I dont know
+
+bot: Okay Let's try a different  way.
+
+bot: what's your  employee number?
+
+user: 104595
+
+bot: And your zip code?
+
+user: 97220
+
+bot: Thanks for verifying your account.
+
+bot: I found leave request 5642265. The leave reason is Employee's Serious Health Condition, and it's dated 2025-07-28. Is that the right one?
+
+user: What is it again
+
+bot: I missed that. To continue with leave request 5642265 , with a leave reason of Employee's Serious Health Condition and a date of 2025-07-28, press 1. If not, 2.
+
+user: 1
+
+bot: As of today, your leave request is Requested with the reason being, There are multiple reasons. Please refer to the letter sent by us or visit our website for details..
+
+bot: What else can I help you with?
+
+user: Umm I just wanna let me know that its its the doctor My foot doctor told me its six weeks before I can return to work
+
+bot: Sure. Is that for the same leave request?
+
+user: Yeah broken foot
+
+bot: What's the date you intend to return to work?
+
+user: I believe September 6th
+
+bot: Your return to work date has been successfully submitted.
+
+bot: What else can I help you with?
+
+user: Am I going to get any papers in the mail with this stuff that I got to fill out
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: Am I going to get the the my FML papers in the mail
+
+bot: Select an option.
+a) Claim Status
+b) Will I be paid for hours protected under FMLA?
+
+user: Will I get my FMLA papers in the mail
+
+bot: Select an option.
+a) Will I be paid for hours protected under FMLA?
+b) Will I have the same job when I return from FMLA?
+
+user: Will I get my FMLA papers sent in the mail
+
+bot: Select an option.
+a) Will I have the same job when I return from FMLA?
+b) Will I be paid for hours protected under FMLA?
+
+user: 2
+
+bot: FMLA is a federal law providing employees with unpaid job protected leave. In some circumstances, you may use accrued paid sick time or vacation time. You might also qualify for short-term disability, State paid leaves, or company specific leaves which provide income replacement for eligible employees with qualifying leave reasons.
+
+bot: What else can I help you with?
+
+user: Am I set up for MSMLA
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: Am I going to get paid for FMLA
+
+bot: FMLA is a federal law providing employees with unpaid job protected leave. In some circumstances, you may use accrued paid sick time or vacation time. You might also qualify for short-term disability, State paid leaves, or company specific leaves which provide income replacement for eligible employees with qualifying leave reasons.
+
+bot: What else can I help you with?
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 7: Claim Status → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Claim Status
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User provided leave number but did not respond to follow-up, so the bot ended the session."
+
+**💬 Session Details**
+- Session ID: 688a86bacfe7f42a92bd8010
+- User ID: u-48cde29b-bb41-5cca-8a72-0afe2d8358e2
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Yeah my leave number is 5635210 and after you
+
+bot: I understand you want to speak with an agent. I can help with leave status, tracking time, return to work, date of delivery, and general FMLA questions. Or, if it's something else, press star for agent.
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 8: Claim Status → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Claim Status
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User wanted claim status but did not have a leave request number and stopped responding, so the bot ended the session."
+
+**💬 Session Details**
+- Session ID: 688a87c6712518226a0f2350
+- User ID: u-5d19d422-1c3b-5f77-af19-699451060dfc
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Claim
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: I dont have one
+
+bot: You can find your leave request number in the top left corner of the notification letter you received.
+
+bot: What's your leave request number?
+
+user: I dont have one
+
+bot: Okay Let's try a different  way.
+
+bot: what's your  employee number?
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 9: Claim Status → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Claim Status
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "User wanted to make a claim but did not provide a leave request number and stopped responding, so the bot ended the session."
+
+**💬 Session Details**
+- Session ID: 688a888de3804084747cdc13
+- User ID: u-6ca518aa-f956-5d07-b559-1669d1a8c12b
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: I would like to make a claim
+
+bot: I can help you with that.First,let's look up your account.
+
+bot: What's your leave request number?
+
+user: Oh shoot I dont know
+
+bot: You can find your leave request number in the top left corner of the notification letter you received.
+
+bot: What's your leave request number?
+
+user: You talk desk and corner
+
+bot: I didn't catch that. Please say or enter your leave request number.
+
+user: Thats fine
+
+bot: what's your  employee number?
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 4451
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 10: Unknown → Contained
+
+**🎯 OpenAI Analysis Results**
+- Intent: Unknown
+- Outcome: Contained
+- Transfer Reason: (empty - not transferred)
+- Drop-off Location: (empty - not transferred)
+- Notes: "Failed individual processing: Missing from batch response"
+
+**💬 Session Details**
+- Session ID: 688a86a8e196ca7609d2c859
+- User ID: u-5923ac6d-d8a5-549a-bffe-43595cca1a8d
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: dropOff
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Submit FMLA paperwork
+
+bot: To submit paperwork, please visit our website and use the upload document feature.
+
+bot: What else can I help you with?
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 0
+- Processing Time: 10296ms
+- Batch Number: 1
+- Model: gpt-4.1
+

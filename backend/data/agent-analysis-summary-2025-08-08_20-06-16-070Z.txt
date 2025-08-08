@@ -1,0 +1,439 @@
+# Main Analysis Test - Analysis Results
+
+**Analysis Summary**
+- Timestamp: 2025-08-08T20:06:16.071Z
+- Test Mode: main
+- Model: gpt-4.1
+- Sessions Analyzed: 10
+- Total Cost: $0.0110
+- Total Tokens: 3,218
+- Average Tokens/Session: 322
+
+## Session 1: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User requested a representative and was transferred to a live agent after confirming request."
+
+**💬 Session Details**
+- Session ID: 688ab94fd8d76ade8b4f24f7
+- User ID: u-80e309c5-871d-5d7f-947d-a61756001ceb
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Representative
+
+bot: I understand you want to speak with an agent. I can help with leave status, tracking time, return to work, date of delivery, and general FMLA questions. Or, if it's something else, press star for agent.
+
+user: *
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 2: Leave Request → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Leave Request
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Leave Request
+- Notes: "User was silent, then confirmed wanting to open a new leave request and was transferred to a live agent."
+
+**💬 Session Details**
+- Session ID: 688ab9546dc148aa9f8e622b
+- User ID: u-5ff7e433-75a9-56a7-b46a-ddc4835a5b40
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: <User is silent>
+
+bot: I still didn't get that. Let me ask you a few questions. First, are you calling to open a new leave request?
+
+user: Yes
+
+bot: One moment while I transfer you to someone who can assist with new leave requests.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 3: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User repeatedly requested a representative and was transferred to a live agent."
+
+**💬 Session Details**
+- Session ID: 688ab970cfe7f42a92c3fc16
+- User ID: u-32ded568-c2b8-5ed0-ae13-7ead13af52a7
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Representative
+
+bot: I understand you want to speak with an agent. I can help with leave status, tracking time, return to work, date of delivery, and general FMLA questions. Or, if it's something else, press star for agent.
+
+user: Thank you
+
+bot: I'm sorry, please tell me one more time what I can do for you
+
+user: Representative
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 4: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User requested a representative and was transferred to a live agent after pressing star."
+
+**💬 Session Details**
+- Session ID: 688ab98fc1191625bf018bba
+- User ID: u-87da0aee-a272-5175-ac95-05bcc14d42dc
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Representative
+
+bot: I understand you want to speak with an agent. I can help with leave status, tracking time, return to work, date of delivery, and general FMLA questions. Or, if it's something else, press star for agent.
+
+user: *
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 5: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User asked about FMLA and then requested a representative, resulting in transfer to a live agent."
+
+**💬 Session Details**
+- Session ID: 688ab9a3f1541dae36d48e01
+- User ID: u-d0637841-04b1-5567-b80d-73a1040dce0a
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Umm existing Uh FMLA please
+
+bot: FMLA is a federal law providing eligible employees with unpaid job protected leave for 12 weeks within a 12 month period. Those caring for an injured service member may be eligible for up to 26 weeks.
+
+bot: What else can I help you with?
+
+user: Umm a representative please
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 6: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User requested to speak to a live agent and was transferred after confirming request."
+
+**💬 Session Details**
+- Session ID: 688ab9ff78c1fe09a0eae841
+- User ID: u-abd1a501-1120-5546-8472-155eb8ec5d52
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Speak to a live agent
+
+bot: I understand you want to speak with an agent. I can help with leave status, tracking time, return to work, date of delivery, and general FMLA questions. Or, if it's something else, press star for agent.
+
+user: *
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 7: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User requested a representative and was transferred to a live agent after pressing star."
+
+**💬 Session Details**
+- Session ID: 688aba202673b4c55f37f030
+- User ID: u-26233e10-d2c0-5a7f-bd0b-cd056e8b4960
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Representative
+
+bot: I understand you want to speak with an agent. I can help with leave status, tracking time, return to work, date of delivery, and general FMLA questions. Or, if it's something else, press star for agent.
+
+user: *
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 8: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User repeatedly requested an agent and was transferred to a live agent."
+
+**💬 Session Details**
+- Session ID: 688aba21ef03d8ad2e392c2b
+- User ID: u-cb632950-ec23-5842-b603-1817a8248ad4
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Agent
+
+bot: I understand you want to speak with an agent. I can help with leave status, tracking time, return to work, date of delivery, and general FMLA questions. Or, if it's something else, press star for agent.
+
+user: Agent
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 9: Live Agent → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Live Agent
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Live Agent Request
+- Notes: "User asked about FMLA hours and then requested an operator, resulting in transfer to a live agent."
+
+**💬 Session Details**
+- Session ID: 688aba6e3a3160d25d52edc2
+- User ID: u-75bad3ed-efb1-525b-b87c-a77d04895e82
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: How much FMLA hours do I have left
+
+bot: Under FMLA, employees are entitled to a total of 12 weeks of leave in a 12 month period, for any applicible leave reasons.
+
+bot: What else can I help you with?
+
+user: 0
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: Operator
+
+bot: One moment while I transfer you to someone who can help.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+
+---
+
+## Session 10: Leave Request → Transfer
+
+**🎯 OpenAI Analysis Results**
+- Intent: Leave Request
+- Outcome: Transfer
+- Transfer Reason: Live Agent Requested
+- Drop-off Location: Leave Request
+- Notes: "User requested to open a new leave of absence and was transferred to a live agent."
+
+**💬 Session Details**
+- Session ID: 688aba9082adb3e2989e823f
+- User ID: u-4d3cc671-ea9f-58bf-bc45-46d2dbd4e378
+- Duration: Unknown
+- Total Messages: 0 (0 user + 0 bot)
+- Containment Type: agent
+
+**📋 Complete Transcript**
+```
+bot: Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?
+
+user: Yes I need to open a new leave of absence
+
+bot: I missed that. Tell me in a few words what you need help with.
+
+user: Open a new leave of absence
+
+bot: One moment while I transfer you to someone who can assist with new leave requests.
+
+bot: Please wait
+
+bot: I am closing our current conversation as I have not received any input from you. We can start over when you need.
+
+```
+
+**🤖 Analysis Metadata**
+- Tokens Used: 3218
+- Processing Time: 8355ms
+- Batch Number: 1
+- Model: gpt-4.1
+

@@ -52,6 +52,12 @@ REAL_API_TEST_MODE=workflow npm test -- --testPathPattern="autoAnalyzeWorkflow.r
 REAL_API_TEST_MODE=errors npm test -- --testPathPattern="autoAnalyzeWorkflow.real"    # Error handling only
 REAL_API_TEST_MODE=validation npm test -- --testPathPattern="autoAnalyzeWorkflow.real" # Data validation only
 
+# Hybrid integration tests (Mock/Production data + Real OpenAI API + Test assertions)
+cd backend && npm test -- --testPathPattern="perSessionAnalysis.hybrid"  # Mock data (default)
+HYBRID_TEST_MODE=main HYBRID_MODEL="gpt-4.1" npm test -- --testPathPattern="perSessionAnalysis.hybrid"  # Main test with gpt-4.1
+HYBRID_INPUT_FILE="../data/agent-july30-data.json" HYBRID_OUTPUT_TEXT="agent-analysis.txt" npm test -- --testPathPattern="perSessionAnalysis.hybrid"  # Production data
+HYBRID_SESSION_LIMIT=5 npm test -- --testPathPattern="perSessionAnalysis.hybrid"  # Limit sessions to control costs
+
 # Puppeteer E2E (recommended for reliable E2E testing)
 node frontend/e2e/run-puppeteer-test.js  # Standalone Puppeteer test (no hanging issues)
 ```
@@ -70,14 +76,16 @@ npm run collect-data          # Collect production data (legacy)
 
 # Flexible data collection script
 npx tsx scripts/collect-production-data.ts [options]
-  --start, -s   Start datetime (e.g., "2025-08-07T09:00:00")
-  --end, -e     End datetime (e.g., "2025-08-07T09:30:00")
-  --output, -o  Output filename prefix (default: "kore-api-responses")
-  --limit, -l   Max sessions to retrieve (default: 100)
-  --files, -f   Output files: complete,agent,messages,summary or "all"
+  --start, -s       Start datetime (e.g., "2025-08-07T09:00:00")
+  --end, -e         End datetime (e.g., "2025-08-07T09:30:00")
+  --output, -o      Output filename prefix (default: "kore-api-responses")
+  --limit, -l       Max sessions to output (applied after collection, default: 100)
+  --files, -f       Output files: complete,agent,messages,summary or "all"
+  --containment, -c Filter by containment type: agent, selfService, dropOff
   
-# Example: Collect 20 sessions from CompSych
-npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --limit 20 --output "kore-api-compsych-swts"
+# Examples:
+npx tsx scripts/collect-production-data.ts --start "2025-07-30T10:32:00" --end "2025-07-30T11:32:00" --containment agent --limit 20 --output "agent-july30-data"
+npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --containment dropOff --limit 20
 
 npm run generate-mock-analysis # Generate mock analysis results
 npm run generate-analysis-summary # Generate AI summaries
@@ -247,8 +255,9 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 - **API Key**: OpenAI API key validation (sk- prefix required)
 
 ### Testing & Performance
-- **Coverage**: Unit, E2E, and real API tests with 100% accuracy
+- **Coverage**: Unit, E2E, real API tests, and hybrid tests (production data + OpenAI analysis)
 - **Metrics**: ~$0.019 per session, 95%+ session discovery rate
+- **Hybrid Testing**: `perSessionAnalysis.hybrid` test supports production data files with assertions
 
 ### Async Architecture (August 2025)
 

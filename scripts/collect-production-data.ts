@@ -74,6 +74,10 @@ async function collectProductionData(): Promise<void> {
         type: 'string',
         short: 'f',
       },
+      containment: {
+        type: 'string',
+        short: 'c',
+      },
       help: {
         type: 'boolean',
         short: 'h',
@@ -97,7 +101,7 @@ Options:
   --output, -o  Output filename prefix (will be saved in data/ directory)
                 Default: "kore-api-responses"
                 
-  --limit, -l   Maximum number of sessions to retrieve
+  --limit, -l   Maximum number of sessions to output (applied after collection, across all containment types)
                 Default: 100
                 
   --files, -f   Comma-separated list of output files to generate
@@ -105,17 +109,25 @@ Options:
                 Default: "complete" (just the complete dataset)
                 Example: "complete,messages,summary" or "all" for all files
                 
+  --containment, -c  Filter by containment type (optional)
+                Options: agent, selfService, dropOff
+                Default: collect all types
+                Example: --containment dropOff
+                
   --help, -h    Show this help message
 
 Examples:
   # Collect 20 sessions, complete dataset only
   npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --limit 20 --files complete
   
+  # Collect only dropOff sessions
+  npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --containment dropOff --limit 20
+  
   # Collect all output files
   npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --files all
   
-  # Collect specific files
-  npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --files "complete,messages,summary"
+  # Collect specific files with containment filter
+  npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --containment selfService --files "complete,messages,summary"
     `);
     process.exit(0);
   }
@@ -247,7 +259,7 @@ Examples:
     const params = new URLSearchParams();
     params.append('start_date', startDateStr);
     params.append('end_date', endDateStr);
-    params.append('limit', sessionLimit.toString());
+    // Note: Don't apply limit here - we'll apply it after collecting all sessions
     
     const url = `${BACKEND_URL}/api/analysis/sessions?${params.toString()}`;
     console.log(`📡 Making API call: ${url}`);
@@ -274,6 +286,28 @@ Examples:
     if (response.data.success) {
       allSessions = response.data.data || [];
       console.log(`✅ Total sessions retrieved: ${allSessions.length}`);
+      
+      // Apply containment type filter if specified
+      if (values.containment) {
+        const containmentFilter = values.containment;
+        const beforeFilter = allSessions.length;
+        allSessions = allSessions.filter(session => session.containment_type === containmentFilter);
+        console.log(`🔍 Filtering by containment type: ${containmentFilter}`);
+        console.log(`🔍 Sessions after filter: ${allSessions.length} (was ${beforeFilter})`);
+        
+        if (allSessions.length === 0) {
+          console.log(`❌ No sessions found with containment type: ${containmentFilter}`);
+          console.log(`💡 Available types in this dataset: ${[...new Set(response.data.data.map((s: any) => s.containment_type))].join(', ')}`);
+          process.exit(1);
+        }
+      }
+      
+      // Apply session limit here (across all containment types)
+      if (sessionLimit && allSessions.length > sessionLimit) {
+        console.log(`🔢 Applying session limit: ${sessionLimit} (was ${allSessions.length})`);
+        allSessions = allSessions.slice(0, sessionLimit);
+        console.log(`✂️ Sessions limited to: ${allSessions.length}`);
+      }
       
       // Group sessions by containment type for storage  
       const sessionsByContainmentType = {
