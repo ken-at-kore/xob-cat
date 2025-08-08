@@ -256,6 +256,14 @@ export class ConflictResolutionService {
     
     console.log(`[ConflictResolutionService] Calling LLM for conflict resolution with model ${modelId}`);
     
+    if (process.env.OPENAI_LOGGING_VERBOSE === 'true') {
+      if (process.env.OPENAI_LOGGING_FULL_PROMPT === 'true') {
+        console.log('🔧 Full Conflict Resolution Prompt:', prompt);
+      } else {
+        console.log('🔧 Conflict Resolution Prompt Preview:', prompt.substring(0, 300) + '...');
+      }
+    }
+    
     try {
       const response = await client.chat.completions.create({
         model: modelId,
@@ -311,6 +319,10 @@ export class ConflictResolutionService {
         tokens: tokenUsage.totalTokens,
         cost: tokenUsage.cost
       });
+      
+      if (process.env.OPENAI_LOGGING_VERBOSE === 'true') {
+        console.log('🔧 Conflict Resolution Response:', JSON.stringify(resolutions, null, 2));
+      }
 
       return {
         resolutions,
