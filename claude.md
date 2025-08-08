@@ -66,7 +66,19 @@ npm run lint:fix             # Auto-fix linting (backend only)
 
 ### Data Collection
 ```bash
-npm run collect-data          # Collect production data
+npm run collect-data          # Collect production data (legacy)
+
+# Flexible data collection script
+npx tsx scripts/collect-production-data.ts [options]
+  --start, -s   Start datetime (e.g., "2025-08-07T09:00:00")
+  --end, -e     End datetime (e.g., "2025-08-07T09:30:00")
+  --output, -o  Output filename prefix (default: "kore-api-responses")
+  --limit, -l   Max sessions to retrieve (default: 100)
+  --files, -f   Output files: complete,agent,messages,summary or "all"
+  
+# Example: Collect 20 sessions from CompSych
+npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --limit 20 --output "kore-api-compsych-swts"
+
 npm run generate-mock-analysis # Generate mock analysis results
 npm run generate-analysis-summary # Generate AI summaries
 ```

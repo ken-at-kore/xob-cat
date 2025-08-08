@@ -7,12 +7,22 @@
  * This data will be used to build realistic mock services that reproduce
  * real-world edge cases and bugs.
  * 
- * Usage: npx tsx scripts/collect-production-data.ts
+ * Usage: 
+ *   npx tsx scripts/collect-production-data.ts
+ *   npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --output "kore-api-compsych-swts"
+ *   npx tsx scripts/collect-production-data.ts --start "2025-08-07T13:00:00Z" --end "2025-08-07T13:30:00Z" --output "custom-name"
+ * 
+ * Options:
+ *   --start   Start datetime in ISO format (defaults to July 7, 2025 00:00 ET)
+ *   --end     End datetime in ISO format (defaults to July 8, 2025 23:59:59 ET)
+ *   --output  Output filename prefix (defaults to "kore-api-responses")
  */
 
 import { promises as fs } from 'fs';
 import path from 'path';
 import axios from 'axios';
+import { parseArgs } from 'util';
+import dotenv from 'dotenv';
 
 interface ProductionDataCollection {
   collectionInfo: {
@@ -36,21 +46,161 @@ interface ProductionDataCollection {
 async function collectProductionData(): Promise<void> {
   console.log('🚀 Starting production data collection...');
   
-  // July 7-8, 2025 as requested
-  const startDate = new Date('2025-07-07T04:00:00.000Z'); // July 7th midnight ET (UTC-4 for EDT)
-  const endDate = new Date('2025-07-09T03:59:59.999Z');   // July 8th 23:59:59 ET
+  // Load environment variables from .env.local in project root
+  const envPath = path.join(__dirname, '../.env.local');
+  dotenv.config({ path: envPath });
+  
+  // Parse command line arguments
+  const { values } = parseArgs({
+    args: process.argv.slice(2),
+    options: {
+      start: {
+        type: 'string',
+        short: 's',
+      },
+      end: {
+        type: 'string', 
+        short: 'e',
+      },
+      output: {
+        type: 'string',
+        short: 'o',
+      },
+      limit: {
+        type: 'string',
+        short: 'l',
+      },
+      files: {
+        type: 'string',
+        short: 'f',
+      },
+      help: {
+        type: 'boolean',
+        short: 'h',
+      }
+    }
+  });
+
+  if (values.help) {
+    console.log(`
+Usage: npx tsx scripts/collect-production-data.ts [options]
+
+Options:
+  --start, -s   Start datetime in ISO format or local time
+                Examples: "2025-08-07T09:00:00" (local), "2025-08-07T13:00:00Z" (UTC)
+                Default: July 7, 2025 00:00 ET
+                
+  --end, -e     End datetime in ISO format or local time  
+                Examples: "2025-08-07T09:30:00" (local), "2025-08-07T13:30:00Z" (UTC)
+                Default: July 8, 2025 23:59:59 ET
+                
+  --output, -o  Output filename prefix (will be saved in data/ directory)
+                Default: "kore-api-responses"
+                
+  --limit, -l   Maximum number of sessions to retrieve
+                Default: 100
+                
+  --files, -f   Comma-separated list of output files to generate
+                Options: complete,agent,selfservice,dropoff,messages,summary
+                Default: "complete" (just the complete dataset)
+                Example: "complete,messages,summary" or "all" for all files
+                
+  --help, -h    Show this help message
+
+Examples:
+  # Collect 20 sessions, complete dataset only
+  npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --limit 20 --files complete
+  
+  # Collect all output files
+  npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --files all
+  
+  # Collect specific files
+  npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --files "complete,messages,summary"
+    `);
+    process.exit(0);
+  }
+
+  // Parse dates from arguments or use defaults
+  let startDate: Date;
+  let endDate: Date;
+  
+  if (values.start) {
+    // If the string doesn't contain 'Z' or timezone offset, treat as local time
+    if (!values.start.includes('Z') && !values.start.match(/[+-]\d{2}:\d{2}$/)) {
+      // Convert local time to ET (UTC-4 for EDT)
+      startDate = new Date(values.start + '-04:00');
+    } else {
+      startDate = new Date(values.start);
+    }
+  } else {
+    // Default: July 7, 2025 00:00 ET
+    startDate = new Date('2025-07-07T04:00:00.000Z');
+  }
+  
+  if (values.end) {
+    // If the string doesn't contain 'Z' or timezone offset, treat as local time
+    if (!values.end.includes('Z') && !values.end.match(/[+-]\d{2}:\d{2}$/)) {
+      // Convert local time to ET (UTC-4 for EDT)
+      endDate = new Date(values.end + '-04:00');
+    } else {
+      endDate = new Date(values.end);
+    }
+  } else {
+    // Default: July 8, 2025 23:59:59 ET
+    endDate = new Date('2025-07-09T03:59:59.999Z');
+  }
+
+  // Validate dates
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    console.error('❌ Invalid date format. Please use ISO format like "2025-08-07T09:00:00"');
+    process.exit(1);
+  }
+  
+  if (startDate >= endDate) {
+    console.error('❌ Start date must be before end date');
+    process.exit(1);
+  }
+  
+  const outputPrefix = values.output || 'kore-api-responses';
+  const sessionLimit = parseInt(values.limit || '100', 10);
+  const filesParam = values.files || 'complete';
+  
+  // Parse which files to generate
+  const filesToGenerate = {
+    complete: filesParam === 'all' || filesParam.includes('complete'),
+    agent: filesParam === 'all' || filesParam.includes('agent'),
+    selfService: filesParam === 'all' || filesParam.includes('selfservice'),
+    dropOff: filesParam === 'all' || filesParam.includes('dropoff'),
+    messages: filesParam === 'all' || filesParam.includes('messages'),
+    summary: filesParam === 'all' || filesParam.includes('summary'),
+  };
 
   const dateFrom = startDate.toISOString();
   const dateTo = endDate.toISOString();
   
   console.log(`📅 Collection period: ${dateFrom} to ${dateTo}`);
-  console.log(`📅 Human readable: July 7-8, 2025`);
+  console.log(`📅 Human readable: ${startDate.toLocaleString('en-US', { timeZone: 'America/New_York' })} to ${endDate.toLocaleString('en-US', { timeZone: 'America/New_York' })} ET`);
+  console.log(`📁 Output prefix: ${outputPrefix}`);
+  console.log(`🔢 Session limit: ${sessionLimit}`);
+  console.log(`📄 Files to generate: ${Object.entries(filesToGenerate).filter(([_, v]) => v).map(([k]) => k).join(', ')}`);
 
   // Use the same backend API endpoint that the working app uses
   const BACKEND_URL = 'http://localhost:3001';
   
+  // Get credentials from .env.local
+  const botId = process.env.TEST_BOT_ID;
+  const clientId = process.env.TEST_CLIENT_ID;
+  const clientSecret = process.env.TEST_CLIENT_SECRET;
+  
+  if (!botId || !clientId || !clientSecret) {
+    console.error('❌ Missing Kore.ai credentials in .env.local');
+    console.error('   Please ensure TEST_BOT_ID, TEST_CLIENT_ID, and TEST_CLIENT_SECRET are set');
+    process.exit(1);
+  }
+  
   console.log(`🔗 Using backend API at: ${BACKEND_URL}`);
-  console.log(`📡 This will use the same Kore.ai credentials that the app uses`);
+  console.log(`📡 Using CompSych bot credentials from .env.local`);
+  console.log(`🤖 Bot ID: ${botId.substring(0, 12)}...`);
   
   // Test backend connection
   try {
@@ -93,16 +243,22 @@ async function collectProductionData(): Promise<void> {
     
     console.log(`📡 Date filters: start_date=${startDateStr}, end_date=${endDateStr}`);
     
-    // Use the same API call that the frontend makes
+    // Use the same API call that the frontend makes, with credentials in headers
     const params = new URLSearchParams();
     params.append('start_date', startDateStr);
     params.append('end_date', endDateStr);
-    params.append('limit', '10000'); // Get lots of data for the week
+    params.append('limit', sessionLimit.toString());
     
     const url = `${BACKEND_URL}/api/analysis/sessions?${params.toString()}`;
     console.log(`📡 Making API call: ${url}`);
     
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: {
+        'x-bot-id': botId,
+        'x-client-id': clientId,
+        'x-client-secret': clientSecret,
+      }
+    });
     
     // Debug: Check if we're getting mock or real data
     console.log(`📊 Response metadata:`, response.data.meta);
@@ -224,50 +380,73 @@ async function collectProductionData(): Promise<void> {
   // Step 3: Save collected data
   console.log('\n💾 Step 3: Saving collected data...');
   
-  const outputDir = path.join(__dirname, '../data/production-api-responses');
+  const outputDir = path.join(__dirname, '../data');
   await fs.mkdir(outputDir, { recursive: true });
   
-  // Save complete collection  
-  const outputFile = path.join(outputDir, `kore-api-responses-${new Date().toISOString().split('T')[0]}.json`);
-  await fs.writeFile(outputFile, JSON.stringify(dataCollection, null, 2));
+  const filesCreated: string[] = [];
   
-  // Save individual parts for easier access
-  await fs.writeFile(
-    path.join(outputDir, 'session-history-agent.json'),
-    JSON.stringify(dataCollection.sessionHistory.agent, null, 2)
-  );
-  await fs.writeFile(
-    path.join(outputDir, 'session-history-selfService.json'),
-    JSON.stringify(dataCollection.sessionHistory.selfService, null, 2)
-  );
-  await fs.writeFile(
-    path.join(outputDir, 'session-history-dropOff.json'),
-    JSON.stringify(dataCollection.sessionHistory.dropOff, null, 2)
-  );
-  await fs.writeFile(
-    path.join(outputDir, 'conversation-messages.json'),
-    JSON.stringify(dataCollection.conversationMessages, null, 2)
-  );
+  // Save complete collection  
+  if (filesToGenerate.complete) {
+    const outputFile = path.join(outputDir, `${outputPrefix}-${new Date().toISOString().split('T')[0]}.json`);
+    await fs.writeFile(outputFile, JSON.stringify(dataCollection, null, 2));
+    filesCreated.push(`${outputPrefix}-${new Date().toISOString().split('T')[0]}.json (complete dataset)`);
+  }
+  
+  // Save individual parts for easier access (with prefix)
+  if (filesToGenerate.agent) {
+    await fs.writeFile(
+      path.join(outputDir, `${outputPrefix}-agent.json`),
+      JSON.stringify(dataCollection.sessionHistory.agent, null, 2)
+    );
+    filesCreated.push(`${outputPrefix}-agent.json (agent sessions)`);
+  }
+  
+  if (filesToGenerate.selfService) {
+    await fs.writeFile(
+      path.join(outputDir, `${outputPrefix}-selfService.json`),
+      JSON.stringify(dataCollection.sessionHistory.selfService, null, 2)
+    );
+    filesCreated.push(`${outputPrefix}-selfService.json (self-service sessions)`);
+  }
+  
+  if (filesToGenerate.dropOff) {
+    await fs.writeFile(
+      path.join(outputDir, `${outputPrefix}-dropOff.json`),
+      JSON.stringify(dataCollection.sessionHistory.dropOff, null, 2)
+    );
+    filesCreated.push(`${outputPrefix}-dropOff.json (drop-off sessions)`);
+  }
+  
+  if (filesToGenerate.messages) {
+    await fs.writeFile(
+      path.join(outputDir, `${outputPrefix}-messages.json`),
+      JSON.stringify(dataCollection.conversationMessages, null, 2)
+    );
+    filesCreated.push(`${outputPrefix}-messages.json (all messages)`);
+  }
   
   // Save collection summary
-  const summary = {
-    ...dataCollection.collectionInfo,
-    sampleSession: dataCollection.sessionHistory.agent[0] || 
-                   dataCollection.sessionHistory.selfService[0] || 
-                   dataCollection.sessionHistory.dropOff[0] || null,
-    sampleMessage: dataCollection.conversationMessages[0] || null,
-    messageStructureTypes: [...new Set(
-      dataCollection.conversationMessages
-        .flatMap((msg: any) => (msg.components || []).map((comp: any) => comp.cT))
-        .filter(Boolean)
-    )],
-    sessionIdSample: [...new Set(allSessionIds)].slice(0, 10)
-  };
-  
-  await fs.writeFile(
-    path.join(outputDir, 'collection-summary.json'),
-    JSON.stringify(summary, null, 2)
-  );
+  if (filesToGenerate.summary) {
+    const summary = {
+      ...dataCollection.collectionInfo,
+      sampleSession: dataCollection.sessionHistory.agent[0] || 
+                     dataCollection.sessionHistory.selfService[0] || 
+                     dataCollection.sessionHistory.dropOff[0] || null,
+      sampleMessage: dataCollection.conversationMessages[0] || null,
+      messageStructureTypes: [...new Set(
+        dataCollection.conversationMessages
+          .flatMap((msg: any) => (msg.components || []).map((comp: any) => comp.cT))
+          .filter(Boolean)
+      )],
+      sessionIdSample: [...new Set(allSessionIds)].slice(0, 10)
+    };
+    
+    await fs.writeFile(
+      path.join(outputDir, `${outputPrefix}-summary.json`),
+      JSON.stringify(summary, null, 2)
+    );
+    filesCreated.push(`${outputPrefix}-summary.json (analysis summary)`);
+  }
 
   // Final report
   console.log('\n✅ Data collection complete!');
@@ -281,10 +460,9 @@ async function collectProductionData(): Promise<void> {
     console.log(`      - ${type}: ${count} sessions`);
   }
   console.log('\n📁 Files created:');
-  console.log(`   - kore-api-responses-july-6-13-2024.json (complete dataset)`);
-  console.log(`   - session-history-*.json (individual containment types)`);
-  console.log(`   - conversation-messages.json (all messages)`);
-  console.log(`   - collection-summary.json (analysis summary)`);
+  filesCreated.forEach(file => {
+    console.log(`   - ${file}`);
+  });
   console.log('\n🔧 Next steps:');
   console.log('   1. Review the data structure in collection-summary.json');
   console.log('   2. Sanitize sensitive data if needed');
