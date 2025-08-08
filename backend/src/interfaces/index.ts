@@ -35,6 +35,7 @@ export interface IOpenAIService {
     cost: number;
     model: string;
   }>;
+  calculateCost(promptTokens: number, completionTokens: number, modelId: string): number;
 }
 
 // Session Data Service Interface (combines mock data service functionality)

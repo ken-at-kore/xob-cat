@@ -385,9 +385,74 @@ Environment-based service selection:
 - **API Reference**: `docs/api-reference.md`
 - **Auto-Analyze Spec**: `docs/Auto-Analyze Feature Specification.md`
 - **Technical Design**: `docs/Auto-Analyze Technical Design.md`
+- **Parallel Design**: `docs/Parallel Auto-Analyze Design.md`
+- **Debugging Guide**: `docs/Parallel Auto-Analyze Debugging Breakthroughs.md`
 
 ### Auto-Analyze Feature
 AI-powered bot performance analysis using configurable GPT models (GPT-4o-mini default) with time window expansion, batch processing, and interactive visualizations. Supports 5-1000 sessions with real-time progress tracking and cost estimation.
+
+**Two Analysis Systems Available:**
+- **Sequential Analysis**: Original implementation, reliable for all session counts
+- **Parallel Analysis**: Advanced multi-phase processing for improved performance and consistency
+
+#### Parallel Auto-Analyze System (August 2025)
+
+**Architecture:** Multi-phase parallel processing with intelligent conflict resolution
+
+**Five-Phase Processing:**
+1. **Phase 0: Session Sampling** - Time window expansion to find target sessions
+2. **Phase 1: Strategic Discovery** - Analyze subset to establish classification patterns  
+3. **Phase 2: Parallel Processing** - Concurrent analysis streams with dynamic batching
+4. **Phase 3: Conflict Resolution** - LLM-based classification consistency validation
+5. **Phase 4: Summary Generation** - Comprehensive analysis report creation
+
+**Key Components:** (`backend/src/services/`)
+```
+parallelAutoAnalyzeService.ts         # Main orchestration service (singleton pattern)
+├── strategicDiscoveryService.ts       # Phase 1: Pattern discovery from sample sessions
+├── parallelProcessingOrchestratorService.ts  # Phase 2: Multi-stream coordination
+├── streamProcessingService.ts         # Individual processing stream management
+├── conflictResolutionService.ts       # Phase 3: LLM-based consistency resolution
+├── tokenManagementService.ts          # Cost tracking and optimization
+├── sessionValidationService.ts        # Quality assurance and retry logic
+└── backgroundJobQueue.ts              # Async job processing with Jest integration
+```
+
+**API Endpoints:**
+```
+POST /api/analysis/auto-analyze/parallel/start    # Start parallel analysis
+GET  /api/analysis/auto-analyze/progress/:id      # Real-time progress (shared)
+GET  /api/analysis/auto-analyze/results/:id       # Fetch results (shared)  
+DELETE /api/analysis/auto-analyze/:id             # Cancel analysis (shared)
+```
+
+**Performance Benefits:**
+- **Consistency**: 2-3x better classification consistency through strategic discovery
+- **Speed**: Configurable parallelism (2-8 streams) for faster processing
+- **Quality**: LLM-based conflict resolution ensures analysis coherence
+- **Scalability**: Handles large session volumes with dynamic batching
+
+**Configuration:**
+```typescript
+// Environment variables (optional, auto-configures)
+PARALLEL_STREAM_COUNT=4          # 2-8 streams (default: auto-detect)
+PARALLEL_BATCH_SIZE=3            # Sessions per batch (default: 3)
+ENABLE_CONFLICT_RESOLUTION=true  # LLM conflict resolution (default: true)
+```
+
+**Testing:** (`backend/src/__tests__/integration/`)
+```bash
+# Mock API tests (fast, no costs)
+npm test -- --testPathPattern="autoAnalyzeWorkflow.mock"
+
+# Real API tests (requires credentials + OpenAI key)  
+npm test -- --testPathPattern="autoAnalyzeWorkflow.real"
+
+# Specific parallel tests
+npm test -- --testPathPattern="parallel"
+```
+
+**Debugging Documentation:** See `docs/Parallel Auto-Analyze Debugging Breakthroughs.md` for complete troubleshooting guide covering singleton patterns, progress synchronization, Jest integration, and API key management.
 
 ### Report Sharing
 - **Export**: Download versioned JSON files with all session data

@@ -89,6 +89,10 @@ export class RealOpenAIService implements IOpenAIService {
   }> {
     return this.openAIAnalysisService.analyzeBatch(sessions, existingClassifications, openaiApiKey, modelId);
   }
+
+  calculateCost(promptTokens: number, completionTokens: number, modelId: string): number {
+    return this.openAIAnalysisService.calculateCost(promptTokens, completionTokens, modelId);
+  }
 }
 
 // Factory function for creating real OpenAI service

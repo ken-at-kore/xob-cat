@@ -40,7 +40,7 @@ const MOCK_CREDENTIALS = {
 const MOCK_ANALYSIS_CONFIG = {
   startDate: '2025-07-01',  // Use July 1, 2025 (over a month ago)
   startTime: '09:00',
-  sessionCount: '5',
+  sessionCount: '10',  // Increased to 10 to potentially trigger parallel processing
   openaiApiKey: 'sk-mock-openai-key-for-testing',  // Use sk- prefix to pass validation
   modelId: 'gpt-4.1-nano'  // Select the nano model for testing (correct ID)
 };
@@ -99,7 +99,7 @@ async function runAutoAnalyzeMockTest() {
     console.log('Progress monitoring results:', progressResults);
     
     // Step 8: Wait for completion
-    const completionResults = await waitForCompletion(page);
+    const completionResults = await waitForCompletion(page, parseInt(MOCK_ANALYSIS_CONFIG.sessionCount));
     console.log('Completion results:', completionResults);
     
     // Step 9: Validate report content
@@ -124,6 +124,17 @@ async function runAutoAnalyzeMockTest() {
       dialogResults.dialogTested  // Dialog functionality works
     ];
     
+    // Log parallel processing results
+    if (completionResults.parallelProcessingDetected) {
+      console.log('🚀 Parallel processing system validation:');
+      console.log(`   - Strategic Discovery: ${completionResults.strategicDiscoveryDetected ? '✅' : '❌'}`);
+      console.log(`   - Parallel Processing: ${completionResults.parallelProgressDetected ? '✅' : '❌'}`);
+      console.log(`   - Conflict Resolution: ${completionResults.conflictResolutionDetected ? '✅' : '❌'}`);
+      console.log(`   - Report Indicators: ${validationResults.hasParallelProcessingIndicators ? '✅' : '❌'}`);
+    } else {
+      console.log('📝 Note: Sequential processing used (parallel processing not detected)');
+    }
+    
     const successCount = criticalValidations.filter(Boolean).length;
     const totalChecks = criticalValidations.length;
     
@@ -131,6 +142,11 @@ async function runAutoAnalyzeMockTest() {
       console.log('🎉 Auto-Analyze Mock Test completed successfully!');
       console.log(`✅ ${successCount}/${totalChecks} critical validations passed`);
       console.log('📊 Mock analysis workflow verified end-to-end');
+      
+      // Additional success message for parallel processing
+      if (completionResults.parallelProcessingDetected) {
+        console.log('🚀 Parallel processing system successfully validated!');
+      }
     } else {
       console.log(`⚠️ Test completed with issues: ${successCount}/${totalChecks} validations passed`);
       console.log('❓ Check console output above for specific validation failures');
@@ -145,6 +161,17 @@ async function runAutoAnalyzeMockTest() {
     console.log('✅ Report generation and content validation');
     console.log('✅ Session details dialog functionality');
     console.log('✅ Mock service integration (Kore.ai + OpenAI)');
+    
+    // Additional parallel processing coverage
+    if (completionResults.parallelProcessingDetected) {
+      console.log('🚀 Parallel processing system coverage:');
+      console.log(`   ✅ Strategic Discovery phase detection`);
+      console.log(`   ✅ Parallel Processing phase detection`);
+      console.log(`   ✅ Conflict Resolution phase detection`);
+      console.log(`   ✅ Report indicators validation`);
+    } else {
+      console.log('📝 Sequential processing system validated');
+    }
     
   } catch (error) {
     console.error('❌ Auto-Analyze Mock Test failed:', error.message);

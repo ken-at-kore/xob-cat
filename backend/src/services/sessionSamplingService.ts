@@ -34,9 +34,9 @@ export class SessionSamplingService {
       windowLabel: string
     ) => void
   ): Promise<SamplingResult> {
-    console.log(`[SessionSamplingService] Starting session sampling for ${config.startDate} ${config.startTime} (target: ${config.sessionCount})`);
-    console.log(`[SessionSamplingService] Using service: ${this.koreApiService.constructor.name}`);
+    
     const timeWindows = this.generateTimeWindows(config.startDate, config.startTime);
+    
     const allSessions = new Map<string, SessionWithTranscript>(); // Use Map for deduplication
     const usedWindows: TimeWindow[] = [];
 
@@ -46,22 +46,27 @@ export class SessionSamplingService {
       
       progressCallback?.(`Searching in ${window.label}...`, allSessions.size, windowIndex, window.label);
       
-      const sessionsInWindow = await this.getSessionsInTimeWindow(window);
-      const validSessions = this.filterValidSessions(sessionsInWindow);
+      try {
+        const sessionsInWindow = await this.getSessionsInTimeWindow(window);
+        const validSessions = this.filterValidSessions(sessionsInWindow);
 
-      // Add sessions to our collection (Map handles deduplication by session_id)
-      validSessions.forEach(session => {
-        allSessions.set(session.session_id, session);
-      });
+        // Add sessions to our collection (Map handles deduplication by session_id)
+        validSessions.forEach(session => {
+          allSessions.set(session.session_id, session);
+        });
 
-      usedWindows.push(window);
-      
-      progressCallback?.(`Found ${allSessions.size} sessions in ${window.label}`, allSessions.size, windowIndex, window.label);
+        usedWindows.push(window);
+        
+        progressCallback?.(`Found ${allSessions.size} sessions in ${window.label}`, allSessions.size, windowIndex, window.label);
 
-      // Check if we have enough sessions
-      if (allSessions.size >= config.sessionCount) {
-        progressCallback?.(`Found sufficient sessions (${allSessions.size}), completing search...`, allSessions.size, windowIndex, window.label);
-        break;
+        // Check if we have enough sessions
+        if (allSessions.size >= config.sessionCount) {
+          progressCallback?.(`Found sufficient sessions (${allSessions.size}), completing search...`, allSessions.size, windowIndex, window.label);
+          break;
+        }
+      } catch (error) {
+        console.error(`Error processing window ${windowIndex}:`, error);
+        throw error;
       }
     }
 
@@ -160,9 +165,6 @@ export class SessionSamplingService {
 
   private async getSessionsInTimeWindow(window: TimeWindow): Promise<SessionWithTranscript[]> {
     try {
-      console.log(`[SessionSamplingService] Fetching session metadata for ${window.label}: ${window.start.toISOString()} to ${window.end.toISOString()}`);
-      console.log(`[SessionSamplingService] Using koreApiService type: ${this.koreApiService.constructor.name}`);
-      console.log(`[SessionSamplingService] Service config botId: ${(this.koreApiService as any).config?.botId}`);
       
       // NEW OPTIMIZED APPROACH: Get ONLY session metadata (no messages) using granular method
       const sessionMetadata = await this.koreApiService.getSessionsMetadata({
@@ -171,12 +173,8 @@ export class SessionSamplingService {
         limit: 10000 // fetch up to 10k session metadata objects
       });
       
-      console.log(`[SessionSamplingService] Found ${sessionMetadata.length} session metadata objects in window ${window.label}`);
-      
       // Convert metadata to SWT format (no messages yet - will be populated later for sampled sessions only)
       const swts = await this.swtService.createSWTsFromMetadata(sessionMetadata);
-      
-      console.log(`Created ${swts.length} SWT objects from metadata (no messages) in ${window.label}`);
       
       return swts;
     } catch (error) {

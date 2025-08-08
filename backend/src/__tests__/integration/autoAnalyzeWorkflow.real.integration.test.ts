@@ -11,7 +11,9 @@ import {
   testCancellation,
   testInvalidConfiguration,
   testNonExistentAnalysisId,
-  validateCredentials
+  validateCredentials,
+  testLargeSessionCount,
+  testConfigurableSessionCounts
 } from './autoAnalyzeWorkflow.shared';
 
 /**
@@ -33,14 +35,19 @@ import {
  * - REAL_API_TEST_MODE: Controls which tests to run
  *   - 'basic' (default): Run only the basic 5-session workflow test
  *   - 'all': Run all test cases including rate limiting and error handling
- *   - 'workflow': Run workflow tests only (basic + rate limiting)
+ *   - 'workflow': Run workflow tests only (basic + rate limiting + large session counts)
  *   - 'errors': Run error handling tests only
  *   - 'validation': Run data validation tests only
+ * - REAL_API_TEST_SESSION_COUNTS: Comma-separated list of session counts to test (default: "5,10")
  * 
  * Usage Examples:
  * npm test -- --testPathPattern="autoAnalyzeWorkflow.real"                    # Basic test only
  * REAL_API_TEST_MODE=all npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # All tests
  * REAL_API_TEST_MODE=workflow npm test -- --testPathPattern="autoAnalyzeWorkflow.real"  # Workflow tests
+ * 
+ * # Test specific session counts (configurable)
+ * REAL_API_TEST_SESSION_COUNTS="100" REAL_API_TEST_MODE=workflow npm test -- --testPathPattern="autoAnalyzeWorkflow.real"
+ * REAL_API_TEST_SESSION_COUNTS="5,25,100" REAL_API_TEST_MODE=workflow npm test -- --testPathPattern="autoAnalyzeWorkflow.real"
  * 
  * ⚠️  WARNING: This test makes real API calls and incurs OpenAI costs!
  * Only run when you need to validate production integration.
@@ -109,7 +116,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
         startDate: dateString as string,
         startTime: '09:00', 
         sessionCount: 5, // Keep small to minimize costs
-        modelId: 'gpt-4.1-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       console.log('💰 [Real API Test] Starting analysis - this will incur OpenAI costs');
@@ -131,7 +138,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
       results.sessions.forEach((session: any) => {
         expect(session.facts.generalIntent).toBeTruthy();
         expect(session.facts.sessionOutcome).toBeTruthy();
-        expect(session.analysisMetadata.model).toBe('gpt-4.1-mini');
+        expect(session.analysisMetadata.model).toBe('gpt-4.1-nano');
         expect(session.analysisMetadata.tokensUsed).toBeGreaterThan(0);
       });
 
@@ -146,7 +153,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
       }
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
         sessionCount: 10, // Reduced count to avoid timeouts while still testing rate limiting
-        modelId: 'gpt-4.1-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       console.log('💰 [Real API Test] Testing rate limiting with 10 sessions');
@@ -164,6 +171,71 @@ describe('Auto-Analyze Integration Test - Real API', () => {
       console.log(`💰 [Real API Test] Rate limit test cost: $${progress.estimatedCost.toFixed(4)}`);
       
     }, 600000); // 10 minute timeout for rate limited requests
+
+    it('should handle large session count (100 sessions) with real APIs', async () => {
+      if (!shouldRunTest(['workflow', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping large session count test (mode: ${testMode})`);
+        return;
+      }
+      
+      // Use recent date for real API test
+      const recentDate = new Date();
+      recentDate.setDate(recentDate.getDate() - 7); // 7 days ago
+      const dateString = recentDate.toISOString().split('T')[0];
+      
+      console.log('💰 [Real API Test] Starting large session analysis - this will incur significant OpenAI costs');
+
+      const { progress, results } = await testLargeSessionCount(
+        app,
+        REAL_CREDENTIALS,
+        100,
+        'Real API Test',
+        {
+          startDate: dateString as string,
+          startTime: '09:00',
+          modelId: 'gpt-4.1-nano'
+        },
+        600 // 10 minutes timeout for large session count with real APIs
+      );
+
+      // Additional validation for real API results
+      expect(results.botId).toBe(REAL_CREDENTIALS.botId);
+      
+      // Validate real OpenAI analysis for all sessions
+      results.sessions.forEach((session: any) => {
+        expect(session.facts.generalIntent).toBeTruthy();
+        expect(session.facts.sessionOutcome).toBeTruthy();
+        expect(session.analysisMetadata.model).toBe('gpt-4.1-nano');
+        expect(session.analysisMetadata.tokensUsed).toBeGreaterThan(0);
+      });
+
+    }, 900000); // 15 minute timeout for large session count with real APIs (10min polling + 5min buffer)
+
+    it('should handle configurable session counts with real APIs', async () => {
+      if (!shouldRunTest(['workflow', 'all'])) {
+        console.log(`⏭️  [Real API Test] Skipping configurable session count test (mode: ${testMode})`);
+        return;
+      }
+      
+      // Use recent date for real API test
+      const recentDate = new Date();
+      recentDate.setDate(recentDate.getDate() - 7); // 7 days ago
+      const dateString = recentDate.toISOString().split('T')[0];
+      
+      await testConfigurableSessionCounts(
+        app,
+        REAL_CREDENTIALS,
+        'REAL_API_TEST_SESSION_COUNTS',
+        [5, 10], // Default to smaller counts to control costs
+        'Real API Test',
+        {
+          startDate: dateString as string,
+          startTime: '09:00',
+          modelId: 'gpt-4.1-nano'
+        }
+      );
+      
+    }, 900000); // 15 minute timeout for multiple configurable tests
   });
 
   describe('Production Error Handling', () => {
@@ -174,7 +246,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
       }
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
         sessionCount: 10, // Reduced count to avoid timeouts but still allow cancellation testing
-        modelId: 'gpt-4.1-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       console.log('💰 [Real API Test] Testing cancellation (minimal cost)');
@@ -214,7 +286,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
 
       const analysisConfig = createAnalysisConfig(invalidCredentials, {
         sessionCount: 5,
-        modelId: 'gpt-4.1-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       // Should fail with authentication error
@@ -258,7 +330,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
       }
       const analysisConfig = createAnalysisConfig(REAL_CREDENTIALS, {
         sessionCount: 3, // Small count to minimize cost
-        modelId: 'gpt-4.1-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       console.log('💰 [Real API Test] Validating real session data structure');
@@ -291,7 +363,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
         
         // Real token usage
         expect(session.analysisMetadata.tokensUsed).toBeGreaterThan(10); // Should be substantial
-        expect(session.analysisMetadata.model).toBe('gpt-4.1-mini');
+        expect(session.analysisMetadata.model).toBe('gpt-4.1-nano');
       });
       
     }, 180000); // 3 minute timeout
@@ -310,7 +382,7 @@ describe('Auto-Analyze Integration Test - Real API', () => {
         startDate: dateString as string,
         startTime: '09:00',
         sessionCount: 5,
-        modelId: 'gpt-4.1-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       console.log(`💰 [Real API Test] Testing with recent date: ${dateString}`);
