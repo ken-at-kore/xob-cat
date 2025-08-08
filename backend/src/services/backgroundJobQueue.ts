@@ -3,6 +3,7 @@ import { SessionSamplingService } from './sessionSamplingService';
 import { BatchAnalysisService } from './batchAnalysisService';
 import { OpenAIAnalysisService } from './openaiAnalysisService';
 import { AutoAnalyzeService } from './autoAnalyzeService';
+import { ParallelAutoAnalyzeService } from './parallelAutoAnalyzeService';
 import { KoreApiService } from './koreApiService';
 import { SWTService } from './swtService';
 import { ServiceFactory } from '../factories/serviceFactory';
@@ -142,10 +143,17 @@ export class BackgroundJobQueue {
     await this.updateJob(jobId, job);
 
     try {
-      if (job.phase === 'sampling') {
-        await this.processSamplingPhase(job);
-      } else if (job.phase === 'analyzing') {
-        await this.processAnalyzingPhase(job);
+      // Check if this is a parallel analysis job
+      if (jobId.endsWith('-parallel')) {
+        console.log(`[BackgroundJobQueue] Processing parallel analysis job ${jobId}`);
+        await this.processParallelAnalysis(job);
+      } else {
+        // Sequential analysis workflow
+        if (job.phase === 'sampling') {
+          await this.processSamplingPhase(job);
+        } else if (job.phase === 'analyzing') {
+          await this.processAnalyzingPhase(job);
+        }
       }
     } catch (error) {
       console.error(`[BackgroundJobQueue] Job ${jobId} failed:`, error);
@@ -409,6 +417,75 @@ export class BackgroundJobQueue {
     }
     
     console.log(`[BackgroundJobQueue] Analysis ${job.analysisId} completed with ${allResults.length} sessions`)
+  }
+
+  /**
+   * Process parallel analysis job
+   */
+  private async processParallelAnalysis(job: BackgroundJob): Promise<void> {
+    if (!job.config) {
+      console.error(`[BackgroundJobQueue] Job configuration missing for parallel analysis job ${job.id}`);
+      throw new Error('Job configuration missing for parallel analysis');
+    }
+
+    console.log(`[BackgroundJobQueue] Processing parallel analysis for bot ${job.credentials?.botId || 'mock-bot-id'}`);
+
+    // Get the existing ParallelAutoAnalyzeService instance (singleton pattern)
+    const botId = job.credentials?.botId || 'mock-bot-id';
+    let parallelService: any;
+    parallelService = ParallelAutoAnalyzeService.getInstance(botId);
+    
+    if (!parallelService) {
+      console.log(`[BackgroundJobQueue] Creating new ParallelAutoAnalyzeService instance for bot ${botId} (ServiceFactory: ${ServiceFactory.getServiceType()})`);
+      parallelService = ParallelAutoAnalyzeService.create(
+        botId,
+        'mock-jwt-token', // JWT token not used in mock mode
+        job.credentials ? {
+          clientId: job.credentials.clientId,
+          clientSecret: job.credentials.clientSecret
+        } : undefined
+      );
+    } else {
+      console.log(`[BackgroundJobQueue] Using existing ParallelAutoAnalyzeService instance for bot ${botId}`);
+    }
+
+    // Recreate the session in the service instance from job data
+    const analysisSession = {
+      id: job.analysisId,
+      config: job.config,
+      progress: job.progress as any, // Type conversion needed here
+      cancelled: false
+    };
+    
+    // Store the session in the service instance 
+    parallelService.activeSessions.set(job.analysisId, analysisSession);
+    console.log(`[BackgroundJobQueue] Session recreated for ${job.analysisId}`);
+
+    // Run the parallel analysis workflow
+    try {
+      await parallelService.runParallelAnalysis(job.analysisId);
+    } catch (error) {
+      console.error(`[BackgroundJobQueue] Parallel analysis failed for ${job.analysisId}:`, error);
+      throw error; // Re-throw to trigger failure handling
+    }
+
+    // Get final progress state from the service instance
+    const finalSession = parallelService.activeSessions.get(job.analysisId);
+    if (finalSession) {
+      // Update job progress with final completion state
+      job.progress = {
+        ...job.progress,
+        ...finalSession.progress,
+        backgroundJobStatus: 'completed'
+      };
+      console.log(`[BackgroundJobQueue] Updated job progress to final state: ${finalSession.progress.phase}`);
+    }
+
+    // Mark job as completed
+    job.status = 'completed';
+    job.completedAt = new Date();
+    await this.updateJob(job.id, job);
+    console.log(`[BackgroundJobQueue] Parallel analysis job ${job.id} completed successfully`);
   }
 
   /**

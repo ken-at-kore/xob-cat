@@ -19,6 +19,8 @@
  * Usage:
  *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js
  *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
+ *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=100
+ *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=50 --url=https://www.koreai-xobcat.com
  */
 
 const puppeteer = require('puppeteer');
@@ -112,6 +114,9 @@ async function runAutoAnalyzeRealTest() {
     if (config.slowMo > 0) {
       console.log(`🐌 SlowMo enabled at ${config.slowMo}ms`);
     }
+    if (config.sessions && config.sessions !== 10) {
+      console.log(`📊 Custom session count: ${config.sessions} sessions`);
+    }
     
     // Load real credentials
     const credentials = loadCredentials();
@@ -119,14 +124,17 @@ async function runAutoAnalyzeRealTest() {
     
     console.log(`🌐 Testing against: ${config.baseUrl}`);
     
-    // Real API analysis configuration
+    // Real API analysis configuration (configurable session count)
+    const sessionCount = config.sessions || 10;  // Default to 10, configurable via --sessions=N
     const realAnalysisConfig = {
       startDate: '2025-08-01',  // Date with confirmed real session data
       startTime: '09:00',       // 9 AM ET when data exists
-      sessionCount: '5',        // Small count for cost control
+      sessionCount: sessionCount.toString(),
       openaiApiKey: credentials.openaiApiKey,
       modelId: 'gpt-4.1-nano'   // Use nano model for testing (correct ID)
     };
+    
+    console.log(`📊 Configured for ${sessionCount} sessions with ${realAnalysisConfig.modelId} model`);
     
     // Launch browser with shared configuration
     browser = await puppeteer.launch(getBrowserConfig({ 
@@ -134,9 +142,14 @@ async function runAutoAnalyzeRealTest() {
     }));
     const page = await browser.newPage();
     
-    // Set timeouts (longer for real APIs)
-    page.setDefaultTimeout(TIMEOUTS.longWait);
-    page.setDefaultNavigationTimeout(TIMEOUTS.longWait);
+    // Set timeouts (longer for real APIs, extra long for large session counts)
+    const timeoutMultiplier = sessionCount >= 50 ? 3 : sessionCount >= 20 ? 2 : 1;
+    page.setDefaultTimeout(TIMEOUTS.longWait * timeoutMultiplier);
+    page.setDefaultNavigationTimeout(TIMEOUTS.longWait * timeoutMultiplier);
+    
+    if (sessionCount >= 50) {
+      console.log(`⏰ Extended timeouts configured for ${sessionCount} sessions (${TIMEOUTS.longWait * timeoutMultiplier}ms)`);
+    }
     
     // Setup request logging
     await setupRequestLogging(page);
@@ -159,8 +172,8 @@ async function runAutoAnalyzeRealTest() {
     const progressResults = await monitorProgress(page);
     console.log('Progress monitoring results:', progressResults);
     
-    // Step 8: Wait for completion (up to 2 minutes for real analysis)
-    const completionResults = await waitForCompletion(page);
+    // Step 8: Wait for completion (dynamic timeout based on session count)
+    const completionResults = await waitForCompletion(page, sessionCount);
     console.log('Completion results:', completionResults);
     
     // Step 9: Validate report content
@@ -190,6 +203,17 @@ async function runAutoAnalyzeRealTest() {
       console.log('  - Backend processing completes properly');
       console.log('💰 Remember: Real OpenAI costs were incurred for this test');
     } else {
+      // Log parallel processing results
+      if (completionResults.parallelProcessingDetected) {
+        console.log('🚀 Parallel processing system validation:');
+        console.log(`   - Strategic Discovery: ${completionResults.strategicDiscoveryDetected ? '✅' : '❌'}`);
+        console.log(`   - Parallel Processing: ${completionResults.parallelProgressDetected ? '✅' : '❌'}`);
+        console.log(`   - Conflict Resolution: ${completionResults.conflictResolutionDetected ? '✅' : '❌'}`);
+        console.log(`   - Report Indicators: ${validationResults.hasParallelProcessingIndicators ? '✅' : '❌'}`);
+      } else {
+        console.log('📝 Note: Sequential processing used (parallel processing not detected)');
+      }
+      
       const criticalValidations = [
         validationResults.hasReportHeader || completionResults.analysisCompleted,
         validationResults.hasBotId,
@@ -205,6 +229,11 @@ async function runAutoAnalyzeRealTest() {
         console.log(`✅ ${successCount}/${totalChecks} critical validations passed`);
         console.log('📊 Real API analysis workflow verified end-to-end');
         console.log('💰 Remember: Real OpenAI costs were incurred for this test');
+        
+        // Additional success message for parallel processing
+        if (completionResults.parallelProcessingDetected) {
+          console.log('🚀 Parallel processing system successfully validated with real APIs!');
+        }
       } else {
         console.log(`⚠️ Test completed with issues: ${successCount}/${totalChecks} validations passed`);
         console.log('❓ Check console output above for specific validation failures');
@@ -221,6 +250,17 @@ async function runAutoAnalyzeRealTest() {
     console.log('✅ Progress tracking and completion monitoring');
     console.log('✅ Report generation validation');
     console.log('✅ Real API integration (Kore.ai + OpenAI)');
+    
+    // Additional parallel processing coverage
+    if (completionResults && completionResults.parallelProcessingDetected) {
+      console.log('🚀 Parallel processing system coverage:');
+      console.log(`   ✅ Strategic Discovery phase detection`);
+      console.log(`   ✅ Parallel Processing phase detection`);
+      console.log(`   ✅ Conflict Resolution phase detection`);
+      console.log(`   ✅ Real API parallel processing validation`);
+    } else {
+      console.log('📝 Sequential processing system validated with real APIs');
+    }
     
   } catch (error) {
     console.error('❌ Auto-Analyze Real API Test failed:', error.message);

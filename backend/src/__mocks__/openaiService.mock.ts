@@ -221,4 +221,33 @@ export class MockOpenAIService implements IOpenAIService {
       model: modelId
     };
   }
+
+  calculateCost(promptTokens: number, completionTokens: number, modelId: string): number {
+    // Mock cost calculation based on model ID
+    // For simplicity, use GPT-4o-mini pricing as default for most models
+    let inputPricePerMillion = 0.15;  // GPT-4o-mini default
+    let outputPricePerMillion = 0.60; // GPT-4o-mini default
+    
+    // Adjust pricing based on model ID for more realistic mock behavior
+    if (modelId.includes('gpt-4o') && !modelId.includes('mini')) {
+      inputPricePerMillion = 2.50;
+      outputPricePerMillion = 10.00;
+    } else if (modelId.includes('gpt-4.1-mini')) {
+      inputPricePerMillion = 0.40;
+      outputPricePerMillion = 1.60;
+    } else if (modelId.includes('gpt-4.1-nano')) {
+      inputPricePerMillion = 0.10;
+      outputPricePerMillion = 0.40;
+    } else if (modelId.includes('gpt-4.1')) {
+      inputPricePerMillion = 2.00;
+      outputPricePerMillion = 8.00;
+    }
+    
+    const inputCost = (promptTokens / 1_000_000) * inputPricePerMillion;
+    const outputCost = (completionTokens / 1_000_000) * outputPricePerMillion;
+    
+    console.log(`🧪 MockOpenAIService: calculateCost(${promptTokens}, ${completionTokens}, ${modelId}) = $${(inputCost + outputCost).toFixed(6)}`);
+    
+    return inputCost + outputCost;
+  }
 }

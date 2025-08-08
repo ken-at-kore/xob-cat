@@ -115,14 +115,35 @@ export class AutoAnalyzeService {
     // Update progress from background job if available
     const jobQueue = getBackgroundJobQueue();
     if (session.progress.backgroundJobId) {
+      // Skip parallel analysis jobs to avoid type conflicts
+      if (session.progress.backgroundJobId.endsWith('-parallel')) {
+        return session.progress;
+      }
+      
       const backgroundJob = await jobQueue.getJob(session.progress.backgroundJobId);
       if (backgroundJob) {
-        // Merge background job progress with session progress
-        session.progress = {
-          ...session.progress,
-          ...backgroundJob.progress,
-          backgroundJobStatus: backgroundJob.status
-        };
+        // Merge background job progress with session progress (type-safe)
+        if (backgroundJob.progress.phase === 'sampling' || 
+            backgroundJob.progress.phase === 'analyzing' || 
+            backgroundJob.progress.phase === 'generating_summary' || 
+            backgroundJob.progress.phase === 'complete' || 
+            backgroundJob.progress.phase === 'error') {
+          session.progress = {
+            ...session.progress,
+            ...(backgroundJob.progress as AnalysisProgress),
+            backgroundJobStatus: backgroundJob.status
+          };
+        } else {
+          // Handle parallel-specific phases by mapping to sequential equivalents
+          session.progress = {
+            ...session.progress,
+            phase: backgroundJob.progress.phase === 'discovery' ? 'analyzing' : 
+                   backgroundJob.progress.phase === 'parallel_processing' ? 'analyzing' :
+                   backgroundJob.progress.phase === 'conflict_resolution' ? 'analyzing' : 'sampling',
+            currentStep: backgroundJob.progress.currentStep,
+            backgroundJobStatus: backgroundJob.status
+          } as AnalysisProgress;
+        }
         
         // If the background job failed, update the session progress accordingly
         if (backgroundJob.status === 'failed') {
@@ -135,11 +156,28 @@ export class AutoAnalyzeService {
         const analysisJobId = `${session.progress.backgroundJobId}-analysis`;
         const analysisJob = await jobQueue.getJob(analysisJobId);
         if (analysisJob) {
-          session.progress = {
-            ...session.progress,
-            ...analysisJob.progress,
-            backgroundJobStatus: analysisJob.status
-          };
+          // Handle analysis job progress (type-safe)
+          if (analysisJob.progress.phase === 'sampling' || 
+              analysisJob.progress.phase === 'analyzing' || 
+              analysisJob.progress.phase === 'generating_summary' || 
+              analysisJob.progress.phase === 'complete' || 
+              analysisJob.progress.phase === 'error') {
+            session.progress = {
+              ...session.progress,
+              ...(analysisJob.progress as AnalysisProgress),
+              backgroundJobStatus: analysisJob.status
+            };
+          } else {
+            // Handle parallel phases
+            session.progress = {
+              ...session.progress,
+              phase: analysisJob.progress.phase === 'discovery' ? 'analyzing' : 
+                     analysisJob.progress.phase === 'parallel_processing' ? 'analyzing' :
+                     analysisJob.progress.phase === 'conflict_resolution' ? 'analyzing' : 'sampling',
+              currentStep: analysisJob.progress.currentStep,
+              backgroundJobStatus: analysisJob.status
+            } as AnalysisProgress;
+          }
           
           // If the analysis job failed, update the session progress accordingly
           if (analysisJob.status === 'failed') {

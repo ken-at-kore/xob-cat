@@ -1,6 +1,6 @@
 import request from 'supertest';
 import express from 'express';
-import { AnalysisConfig, AnalysisProgress, SessionWithTranscript } from '../../../../shared/types';
+import { AnalysisConfig, AnalysisProgress, ParallelAnalysisProgress, SessionWithTranscript } from '../../../../shared/types';
 
 export interface TestCredentials {
   botId: string;
@@ -66,15 +66,19 @@ export function createAnalysisConfig(credentials: TestCredentials, overrides: Pa
     startTime: '12:00', // 12PM ET = 4PM UTC (assuming EST), matches mock data at 16:00-19:00 UTC
     sessionCount: 5, // Reduce default to be more reliable
     openaiApiKey: credentials.openaiApiKey,
-    modelId: 'gpt-4o-mini'
+    modelId: 'gpt-4.1-nano'
   };
 
   return { ...defaultConfig, ...overrides };
 }
 
-export async function startAnalysis(app: express.Application, config: AnalysisConfig): Promise<{ analysisId: string; response: any }> {
+export async function startAnalysis(
+  app: express.Application, 
+  config: AnalysisConfig,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<{ analysisId: string; response: any }> {
   const response = await request(app)
-    .post('/api/analysis/auto-analyze/start')
+    .post(`${routePrefix}/start`)
     .send(config)
     .expect(200);
 
@@ -92,16 +96,17 @@ export async function pollUntilComplete(
   app: express.Application, 
   analysisId: string,
   maxAttempts: number = 60,
-  pollInterval: number = 1000
-): Promise<AnalysisProgress> {
-  let progress: AnalysisProgress;
+  pollInterval: number = 1000,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<AnalysisProgress | ParallelAnalysisProgress> {
+  let progress: AnalysisProgress | ParallelAnalysisProgress;
   let attempts = 0;
 
   do {
     await new Promise(resolve => setTimeout(resolve, pollInterval));
     
     const progressResponse = await request(app)
-      .get(`/api/analysis/auto-analyze/progress/${analysisId}`)
+      .get(`${routePrefix}/progress/${analysisId}`)
       .expect(200);
 
     expect(progressResponse.body.success).toBe(true);
@@ -109,11 +114,22 @@ export async function pollUntilComplete(
 
     // Validate progress structure
     expect(progress.analysisId).toBe(analysisId);
-    expect(progress.phase).toMatch(/^(sampling|analyzing|generating_summary|complete|error)$/);
+    
+    // Support both sequential and parallel phase names
+    const validPhases = /^(sampling|analyzing|generating_summary|discovery|parallel_processing|conflict_resolution|complete|error)$/;
+    expect(progress.phase).toMatch(validPhases);
     expect(typeof progress.currentStep).toBe('string');
     expect(progress.startTime).toBeDefined();
 
-    console.log(`[Integration Test] Progress: ${progress.phase} - ${progress.currentStep}`);
+    // Log parallel-specific progress if available
+    if ('roundsCompleted' in progress && progress.roundsCompleted !== undefined) {
+      console.log(`[Integration Test] Parallel Progress: ${progress.phase} - ${progress.currentStep} (Round ${progress.roundsCompleted}/${progress.totalRounds || 'unknown'})`);
+      if (progress.streamsActive !== undefined) {
+        console.log(`[Integration Test] Active streams: ${progress.streamsActive}`);
+      }
+    } else {
+      console.log(`[Integration Test] Progress: ${progress.phase} - ${progress.currentStep}`);
+    }
 
     attempts++;
     if (attempts >= maxAttempts) {
@@ -125,22 +141,38 @@ export async function pollUntilComplete(
   return progress;
 }
 
-export async function getResults(app: express.Application, analysisId: string): Promise<any> {
+export async function getResults(
+  app: express.Application, 
+  analysisId: string,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<any> {
   const resultsResponse = await request(app)
-    .get(`/api/analysis/auto-analyze/results/${analysisId}`)
+    .get(`${routePrefix}/results/${analysisId}`)
     .expect(200);
 
   expect(resultsResponse.body.success).toBe(true);
   return resultsResponse.body.data;
 }
 
-export function validateAnalysisProgress(progress: AnalysisProgress): void {
+export function validateAnalysisProgress(progress: AnalysisProgress | ParallelAnalysisProgress): void {
   expect(progress.phase).toBe('complete');
-  expect(progress.currentStep).toBe('Analysis complete');
+  
+  // Handle different completion messages
+  const validCompletionSteps = ['Analysis complete', 'Parallel analysis complete'];
+  expect(validCompletionSteps).toContain(progress.currentStep);
+  
   expect(progress.endTime).toBeDefined();
   expect(progress.sessionsProcessed).toBeGreaterThan(0);
   expect(progress.tokensUsed).toBeGreaterThan(0);
   expect(progress.estimatedCost).toBeGreaterThan(0);
+  
+  // Additional validation for parallel progress
+  if ('roundsCompleted' in progress && progress.roundsCompleted !== undefined) {
+    expect(progress.roundsCompleted).toBeGreaterThanOrEqual(0);
+    if (progress.totalRounds !== undefined) {
+      expect(progress.totalRounds).toBeGreaterThanOrEqual(progress.roundsCompleted);
+    }
+  }
 }
 
 export function validateAnalysisResults(results: any): void {
@@ -174,17 +206,19 @@ export function validateAnalysisResults(results: any): void {
 export async function runFullAnalysisWorkflow(
   app: express.Application,
   config: AnalysisConfig,
-  testName: string
-): Promise<{ progress: AnalysisProgress; results: any }> {
+  testName: string,
+  maxAttempts: number = 60,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<{ progress: AnalysisProgress | ParallelAnalysisProgress; results: any }> {
   console.log(`\n[${testName}] Starting full analysis workflow...`);
   
   // Step 1: Start analysis
   console.log(`[${testName}] Step 1: Starting analysis`);
-  const { analysisId } = await startAnalysis(app, config);
+  const { analysisId } = await startAnalysis(app, config, routePrefix);
 
   // Step 2: Poll until complete
   console.log(`[${testName}] Step 2: Polling progress until completion`);
-  const progress = await pollUntilComplete(app, analysisId);
+  const progress = await pollUntilComplete(app, analysisId, maxAttempts, 1000, routePrefix);
 
   // Step 3: Validate completion
   console.log(`[${testName}] Step 3: Validating completion`);
@@ -192,7 +226,7 @@ export async function runFullAnalysisWorkflow(
 
   // Step 4: Get and validate results
   console.log(`[${testName}] Step 4: Getting and validating results`);
-  const results = await getResults(app, analysisId);
+  const results = await getResults(app, analysisId, routePrefix);
   validateAnalysisResults(results);
 
   console.log(`[${testName}] Analysis completed successfully:`);
@@ -200,24 +234,33 @@ export async function runFullAnalysisWorkflow(
   console.log(`  - Tokens used: ${progress.tokensUsed}`);
   console.log(`  - Estimated cost: $${progress.estimatedCost.toFixed(4)}`);
   console.log(`  - Duration: ${new Date(progress.endTime!).getTime() - new Date(progress.startTime).getTime()}ms`);
+  
+  // Log parallel-specific stats if available
+  if ('roundsCompleted' in progress && progress.roundsCompleted !== undefined) {
+    console.log(`  - Rounds completed: ${progress.roundsCompleted}/${progress.totalRounds || 'unknown'}`);
+  }
 
   return { progress, results };
 }
 
-export async function testCancellation(app: express.Application, config: AnalysisConfig): Promise<void> {
+export async function testCancellation(
+  app: express.Application, 
+  config: AnalysisConfig,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<void> {
   // Start analysis
-  const { analysisId } = await startAnalysis(app, config);
+  const { analysisId } = await startAnalysis(app, config, routePrefix);
 
   // Cancel immediately (mock services complete very quickly)
   const cancelResponse = await request(app)
-    .delete(`/api/analysis/auto-analyze/${analysisId}`)
+    .delete(`${routePrefix}/${analysisId}`)
     .expect(200);
 
   expect(cancelResponse.body.success).toBe(true);
 
   // Check that progress shows either cancelled state OR completed state (both are acceptable)
   const progressResponse = await request(app)
-    .get(`/api/analysis/auto-analyze/progress/${analysisId}`)
+    .get(`${routePrefix}/progress/${analysisId}`)
     .expect(200);
 
   const progress = progressResponse.body.data;
@@ -227,13 +270,17 @@ export async function testCancellation(app: express.Application, config: Analysi
   if (progress.phase === 'error') {
     expect(progress.error).toMatch(/cancelled/i);
   } else {
-    // Any other phase is acceptable (sampling, analyzing, complete)
+    // Any other phase is acceptable (sampling, analyzing, discovery, parallel_processing, complete)
     // Mock services can complete between request and cancellation
-    expect(['sampling', 'analyzing', 'complete']).toContain(progress.phase);
+    const validPhases = ['sampling', 'analyzing', 'discovery', 'parallel_processing', 'conflict_resolution', 'complete'];
+    expect(validPhases).toContain(progress.phase);
   }
 }
 
-export async function testInvalidConfiguration(app: express.Application): Promise<void> {
+export async function testInvalidConfiguration(
+  app: express.Application,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<void> {
   const invalidConfig = {
     startDate: 'invalid-date',
     startTime: '25:00',
@@ -243,7 +290,7 @@ export async function testInvalidConfiguration(app: express.Application): Promis
   };
 
   const response = await request(app)
-    .post('/api/analysis/auto-analyze/start')
+    .post(`${routePrefix}/start`)
     .send(invalidConfig)
     .expect(400);
 
@@ -251,27 +298,137 @@ export async function testInvalidConfiguration(app: express.Application): Promis
   expect(response.body.error).toBeDefined();
 }
 
-export async function testNonExistentAnalysisId(app: express.Application): Promise<void> {
+export async function testNonExistentAnalysisId(
+  app: express.Application,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<void> {
   const fakeAnalysisId = 'non-existent-analysis-id';
 
   // Test progress endpoint
   const progressResponse = await request(app)
-    .get(`/api/analysis/auto-analyze/progress/${fakeAnalysisId}`)
+    .get(`${routePrefix}/progress/${fakeAnalysisId}`)
     .expect(404);
 
   expect(progressResponse.body.success).toBe(false);
 
   // Test results endpoint
   const resultsResponse = await request(app)
-    .get(`/api/analysis/auto-analyze/results/${fakeAnalysisId}`)
+    .get(`${routePrefix}/results/${fakeAnalysisId}`)
     .expect(404);
 
   expect(resultsResponse.body.success).toBe(false);
 
   // Test cancel endpoint
   const cancelResponse = await request(app)
-    .delete(`/api/analysis/auto-analyze/${fakeAnalysisId}`)
+    .delete(`${routePrefix}/${fakeAnalysisId}`)
     .expect(404);
 
   expect(cancelResponse.body.success).toBe(false);
+}
+
+/**
+ * Test multiple session counts in a loop
+ */
+export async function testMultipleSessionCounts(
+  app: express.Application,
+  credentials: TestCredentials,
+  testSizes: number[],
+  testName: string,
+  configOverrides: Partial<AnalysisConfig> = {},
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<void> {
+  for (const sessionCount of testSizes) {
+    console.log(`\n[${testName}] Testing with ${sessionCount} sessions`);
+    
+    const analysisConfig = createAnalysisConfig(credentials, {
+      sessionCount,
+      ...configOverrides
+    });
+
+    const { progress, results } = await runFullAnalysisWorkflow(
+      app,
+      analysisConfig,
+      `${testName} - ${sessionCount} sessions`,
+      sessionCount >= 30 ? 180 : 60, // Use longer timeout for 30+ sessions
+      routePrefix
+    );
+
+    // Validate that we got the expected number of sessions (or available sessions)
+    expect(results.sessions.length).toBeGreaterThan(0);
+    expect(results.sessions.length).toBeLessThanOrEqual(sessionCount);
+    expect(progress.sessionsProcessed).toBe(results.sessions.length);
+    
+    console.log(`[${testName}] ${sessionCount} sessions test completed - Cost: $${progress.estimatedCost.toFixed(4)}`);
+  }
+}
+
+/**
+ * Test large session count (100+ sessions) with performance validation
+ */
+export async function testLargeSessionCount(
+  app: express.Application,
+  credentials: TestCredentials,
+  sessionCount: number,
+  testName: string,
+  configOverrides: Partial<AnalysisConfig> = {},
+  maxAttempts: number = 180, // Increased to 3 minutes for large session tests
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<{ progress: AnalysisProgress | ParallelAnalysisProgress; results: any }> {
+  console.log(`\n[${testName}] Testing large session count: ${sessionCount} sessions`);
+
+  const analysisConfig = createAnalysisConfig(credentials, {
+    sessionCount,
+    ...configOverrides
+  });
+
+  const { progress, results } = await runFullAnalysisWorkflow(
+    app,
+    analysisConfig,
+    `${testName} - ${sessionCount} sessions large scale test`,
+    maxAttempts,
+    routePrefix
+  );
+
+  // Validate that we processed the expected number of sessions
+  expect(results.sessions.length).toBeGreaterThan(0);
+  expect(results.sessions.length).toBeLessThanOrEqual(sessionCount);
+  expect(progress.sessionsProcessed).toBe(results.sessions.length);
+
+  // Validate performance characteristics for large batch
+  expect(progress.phase).toBe('complete');
+  expect(progress.tokensUsed).toBeGreaterThan(0);
+  expect(progress.estimatedCost).toBeGreaterThan(0);
+
+  console.log(`[${testName}] Successfully processed ${results.sessions.length} sessions`);
+  console.log(`[${testName}] Total tokens used: ${progress.tokensUsed}`);
+  console.log(`[${testName}] Estimated cost: $${progress.estimatedCost.toFixed(4)}`);
+
+  // Log parallel-specific stats if available
+  if ('roundsCompleted' in progress && progress.roundsCompleted !== undefined) {
+    console.log(`[${testName}] Rounds completed: ${progress.roundsCompleted}/${progress.totalRounds || 'unknown'}`);
+  }
+
+  return { progress, results };
+}
+
+/**
+ * Test configurable session counts from environment variable
+ */
+export async function testConfigurableSessionCounts(
+  app: express.Application,
+  credentials: TestCredentials,
+  envVarName: string,
+  defaultSizes: number[],
+  testName: string,
+  configOverrides: Partial<AnalysisConfig> = {},
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<void> {
+  // Allow environment variable to configure session count
+  const testSizes = process.env[envVarName] 
+    ? process.env[envVarName]!.split(',').map(n => parseInt(n.trim()))
+    : defaultSizes;
+  
+  console.log(`[${testName}] Testing with session counts: ${testSizes.join(', ')}`);
+  
+  await testMultipleSessionCounts(app, credentials, testSizes, testName, configOverrides, routePrefix);
 }

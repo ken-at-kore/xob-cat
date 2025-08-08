@@ -412,12 +412,12 @@ export interface BackgroundJob {
   id: string;
   analysisId: string;
   status: 'queued' | 'running' | 'completed' | 'failed';
-  phase: 'sampling' | 'analyzing';
+  phase: 'sampling' | 'analyzing' | 'discovery' | 'parallel_processing' | 'conflict_resolution';
   createdAt: Date;
   startedAt?: Date;
   completedAt?: Date;
   error?: string;
-  progress: AnalysisProgress;
+  progress: AnalysisProgress | ParallelAnalysisProgress;
   config?: AnalysisConfig; // Configuration used for this job
   sessionData?: SessionWithTranscript[]; // Session data between phases
   credentials?: {
@@ -443,4 +443,177 @@ export interface AutoAnalysisStartResponse {
   backgroundJobId: string;
   status: 'started';
   message: string;
-} 
+}
+
+// ===== PARALLEL AUTO-ANALYZE TYPES =====
+
+// Discovery Phase Types
+export interface DiscoveryConfig {
+  targetPercentage: number;      // 10-15% of total sessions
+  minSessions: number;           // 50 minimum
+  maxSessions: number;           // 150 maximum
+  diversityStrategy: {
+    sessionLengths: ['short', 'medium', 'long'];
+    containmentTypes: ['agent', 'selfService', 'dropOff'];
+    timeDistribution: 'spread';
+  };
+}
+
+export interface DiscoveryResult {
+  baseClassifications: ExistingClassifications;
+  processedSessions: SessionWithFacts[];
+  remainingSessions: SessionWithTranscript[];
+  discoveryStats: {
+    totalProcessed: number;
+    uniqueIntents: number;
+    uniqueReasons: number;
+    uniqueLocations: number;
+    discoveryRate: number;
+  };
+  tokenUsage: BatchTokenUsage;
+}
+
+export type DiscoveryProgressCallback = (
+  step: string,
+  progress: number,
+  total: number,
+  discoveries: number
+) => void;
+
+// Parallel Processing Types
+export interface ParallelConfig {
+  streamCount: number;              // PARALLEL_STREAM_COUNT (default: 8)
+  sessionsPerStream: number;        // SESSIONS_PER_STREAM (default: 4)
+  maxSessionsPerLLMCall: number;    // Dynamic based on model context
+  syncFrequency: 'after_each_round';
+  retryAttempts: number;           // Default: 3
+  debugLogging: boolean;           // PARALLEL_PROCESSING_DEBUG
+}
+
+export interface StreamConfig {
+  streamId: number;
+  sessions: SessionWithTranscript[];
+  baseClassifications: ExistingClassifications;
+  modelId: string;
+  apiKey: string;
+  maxSessionsPerCall: number;
+}
+
+export interface StreamProgress {
+  streamId: number;
+  sessionsAssigned: number;
+  sessionsProcessed: number;
+  status: 'idle' | 'processing' | 'completed' | 'error';
+  tokensUsed: number;
+}
+
+export interface StreamResult {
+  streamId: number;
+  processedSessions: SessionWithFacts[];
+  newClassifications: ExistingClassifications;
+  tokenUsage: BatchTokenUsage;
+  validationResults: SessionValidationResult[];
+  retryAttempts: number;
+  processingTime: number;
+}
+
+export interface ParallelProcessingResult {
+  processedSessions: SessionWithFacts[];
+  finalClassifications: ExistingClassifications;
+  streamResults: StreamResult[];
+  totalTokenUsage: BatchTokenUsage;
+  processingStats: {
+    totalRounds: number;
+    averageStreamUtilization: number;
+    syncPoints: number;
+  };
+}
+
+export type ParallelProgressCallback = (
+  phase: string,
+  streamsActive: number,
+  totalProgress: number,
+  streamProgress: StreamProgress[]
+) => void;
+
+export type StreamProgressCallback = (
+  streamId: number,
+  progress: number,
+  total: number,
+  tokensUsed: number
+) => void;
+
+// Session Validation Types
+export interface SessionValidationResult {
+  allSessionsProcessed: boolean;
+  processedCount: number;
+  missingCount: number;
+  missingSessions: SessionWithTranscript[];
+  validationErrors: string[];
+}
+
+export interface TokenEstimation {
+  estimatedTokens: number;
+  recommendedBatchSize: number;
+  requiresSplitting: boolean;
+  costEstimate: number;
+}
+
+// Conflict Resolution Types
+export interface ConflictResolutions {
+  generalIntents: Array<{
+    canonical: string;
+    aliases: string[];
+  }>;
+  transferReasons: Array<{
+    canonical: string;
+    aliases: string[];
+  }>;
+  dropOffLocations: Array<{
+    canonical: string;
+    aliases: string[];
+  }>;
+}
+
+export interface ConflictResolutionResult {
+  resolvedSessions: SessionWithFacts[];
+  resolutionStats: {
+    conflictsFound: number;
+    conflictsResolved: number;
+    canonicalMappings: number;
+  };
+  resolutions: ConflictResolutions;
+  tokenUsage: BatchTokenUsage;
+}
+
+export interface ClassificationConflicts {
+  intentConflicts: string[][];
+  reasonConflicts: string[][];
+  locationConflicts: string[][];
+}
+
+// Session Stream Distribution
+export interface SessionStream {
+  streamId: number;
+  sessions: SessionWithTranscript[];
+}
+
+// Enhanced Analysis Progress for Parallel Processing
+export interface ParallelAnalysisProgress extends Omit<AnalysisProgress, 'phase'> {
+  phase: 'sampling' | 'discovery' | 'parallel_processing' | 'conflict_resolution' | 'complete' | 'error';
+  roundsCompleted?: number;
+  totalRounds?: number;
+  streamsActive?: number;
+  streamProgress?: StreamProgress[];
+  discoveryStats?: {
+    discoveredIntents: number;
+    discoveredReasons: number;
+    discoveredLocations: number;
+    discoveryRate: number;
+  };
+  conflictStats?: {
+    conflictsFound: number;
+    conflictsResolved: number;
+    canonicalMappings: number;
+  };
+}

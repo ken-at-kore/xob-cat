@@ -325,31 +325,81 @@ async function monitorProgress(page) {
                                currentContent.includes('Analysis Report') ||
                                currentContent.includes('Starting analysis');
   
+  // Look for parallel processing specific indicators
+  const hasParallelIndicators = currentContent.includes('Strategic Discovery') ||
+                               currentContent.includes('Parallel Processing') ||
+                               currentContent.includes('Conflict Resolution') ||
+                               currentContent.includes('Stream') ||
+                               currentContent.includes('Round');
+  
   if (hasProgressIndicator) {
     console.log('✅ Progress or completion indicator found');
-    return { progressStarted: true };
+    
+    if (hasParallelIndicators) {
+      console.log('🚀 Parallel processing indicators detected');
+      return { progressStarted: true, parallelProcessingDetected: true };
+    }
+    
+    return { progressStarted: true, parallelProcessingDetected: false };
   }
   
   console.log('⚠️ No clear progress indicator found, continuing anyway');
-  return { progressStarted: false };
+  return { progressStarted: false, parallelProcessingDetected: false };
 }
 
 /**
  * Wait for analysis completion
  * @param {Page} page - Puppeteer page object
+ * @param {number} sessionCount - Number of sessions being analyzed (for dynamic timeout)
  * @returns {Object} Completion results
  */
-async function waitForCompletion(page) {
+async function waitForCompletion(page, sessionCount = 10) {
   console.log('📈 Step 8: Waiting for analysis completion');
   
-  // Production may take longer than mock services
+  // Dynamic timeout based on session count
+  // Small counts: 60s, Medium counts (20-49): 120s, Large counts (50+): 300s
+  let maxAttempts;
+  if (sessionCount >= 50) {
+    maxAttempts = 300; // 5 minutes for large session counts
+  } else if (sessionCount >= 20) {
+    maxAttempts = 120; // 2 minutes for medium session counts
+  } else {
+    maxAttempts = 60;  // 1 minute for small session counts
+  }
+  
+  console.log(`⏰ Configured timeout: ${maxAttempts} seconds for ${sessionCount} sessions`);
+  
   let attempts = 0;
-  const maxAttempts = 60; // 60 seconds for production
+  let parallelProgressDetected = false;
+  let strategicDiscoveryDetected = false;
+  let conflictResolutionDetected = false;
   
   while (attempts < maxAttempts) {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const currentContent = await page.$eval('body', el => el.textContent);
+    
+    // Track parallel processing phases
+    if (currentContent.includes('Strategic Discovery')) {
+      if (!strategicDiscoveryDetected) {
+        console.log('🔍 Strategic Discovery phase detected');
+        strategicDiscoveryDetected = true;
+      }
+    }
+    
+    if (currentContent.includes('Parallel Processing') || currentContent.includes('Stream')) {
+      if (!parallelProgressDetected) {
+        console.log('🚀 Parallel Processing phase detected');
+        parallelProgressDetected = true;
+      }
+    }
+    
+    if (currentContent.includes('Conflict Resolution')) {
+      if (!conflictResolutionDetected) {
+        console.log('⚖️ Conflict Resolution phase detected');
+        conflictResolutionDetected = true;
+      }
+    }
     
     // Look for completion indicators including error states
     if (currentContent.includes('Analysis Report') || 
@@ -357,33 +407,66 @@ async function waitForCompletion(page) {
         currentContent.includes('Session Outcomes') ||
         currentContent.includes('sessions analyzed') ||
         currentContent.includes('Analysis Complete') ||
+        currentContent.includes('Parallel analysis complete') ||
         currentContent.includes('Export Analysis') ||
         // Handle error states that indicate completion
         currentContent.includes('No sessions found') ||
         currentContent.includes('Analysis failed') ||
         currentContent.includes('Error occurred')) {
       console.log('✅ Analysis completed (report or final state detected)');
-      return { analysisCompleted: true };
+      
+      // Log parallel processing results
+      if (strategicDiscoveryDetected || parallelProgressDetected || conflictResolutionDetected) {
+        console.log('🎯 Parallel processing phases detected:');
+        console.log(`   - Strategic Discovery: ${strategicDiscoveryDetected ? '✅' : '❌'}`);
+        console.log(`   - Parallel Processing: ${parallelProgressDetected ? '✅' : '❌'}`);
+        console.log(`   - Conflict Resolution: ${conflictResolutionDetected ? '✅' : '❌'}`);
+      }
+      
+      return { 
+        analysisCompleted: true,
+        parallelProcessingDetected: strategicDiscoveryDetected || parallelProgressDetected || conflictResolutionDetected,
+        strategicDiscoveryDetected,
+        parallelProgressDetected,
+        conflictResolutionDetected
+      };
     }
     
     // Check if we're still in progress state
     if (currentContent.includes('Analysis in Progress') || 
         currentContent.includes('Initializing') ||
         currentContent.includes('Analyzing sessions') ||
+        currentContent.includes('Strategic Discovery') ||
+        currentContent.includes('Parallel Processing') ||
+        currentContent.includes('Conflict Resolution') ||
         currentContent.includes('Generating report')) {
       // Still in progress, continue waiting
     }
     
     attempts++;
-    if (attempts % 10 === 0) {
+    const logInterval = sessionCount >= 50 ? 30 : 10; // Log less frequently for large session counts
+    if (attempts % logInterval === 0) {
       console.log(`⏳ Still waiting for completion... (${attempts}/${maxAttempts})`);
-      // Debug: Show current content every 10 attempts
+      // Show progress indicators if detected
+      if (currentContent.includes('Batch') && currentContent.includes('of')) {
+        const batchMatch = currentContent.match(/Batch (\d+) \/ (\d+)/);
+        if (batchMatch) {
+          console.log(`📊 Progress: ${batchMatch[0]}`);
+        }
+      }
+      // Debug: Show current content
       console.log(`📋 Current content sample: ${currentContent.substring(0, 200)}...`);
     }
   }
   
   console.log('⚠️ Timeout waiting for analysis completion, but continuing');
-  return { analysisCompleted: false };
+  return { 
+    analysisCompleted: false,
+    parallelProcessingDetected: strategicDiscoveryDetected || parallelProgressDetected || conflictResolutionDetected,
+    strategicDiscoveryDetected,
+    parallelProgressDetected,
+    conflictResolutionDetected
+  };
 }
 
 /**
@@ -416,7 +499,8 @@ async function validateReport(page, expectedData = {}) {
   
   // Verify report header - look for Analysis Report text anywhere
   validationResults.hasReportHeader = pageContent.includes('Analysis Report') ||
-                                     pageContent.includes('Analysis Complete');
+                                     pageContent.includes('Analysis Complete') ||
+                                     pageContent.includes('Parallel analysis complete');
   
   // Verify bot ID is displayed
   validationResults.hasBotId = pageContent.includes('Bot ID');
@@ -426,6 +510,13 @@ async function validateReport(page, expectedData = {}) {
                                           pageContent.includes('Comprehensive analysis') ||
                                           pageContent.includes('AI-powered insights') ||
                                           pageContent.includes('Analysis Results');
+  
+  // Verify parallel processing indicators in the report
+  validationResults.hasParallelProcessingIndicators = pageContent.includes('Strategic Discovery') ||
+                                                     pageContent.includes('Parallel Processing') ||
+                                                     pageContent.includes('Conflict Resolution') ||
+                                                     pageContent.includes('rounds completed') ||
+                                                     pageContent.includes('streams active');
   
   // Verify charts are rendered (more flexible matching)
   validationResults.hasSessionOutcomesChart = pageContent.includes('Session Outcomes') ||

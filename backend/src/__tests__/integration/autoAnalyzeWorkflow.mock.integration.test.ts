@@ -11,7 +11,9 @@ import {
   testCancellation,
   testInvalidConfiguration,
   testNonExistentAnalysisId,
-  validateCredentials
+  validateCredentials,
+  testMultipleSessionCounts,
+  testLargeSessionCount
 } from './autoAnalyzeWorkflow.shared';
 
 /**
@@ -65,7 +67,7 @@ describe('Auto-Analyze Integration Test - Mock API', () => {
     it('should complete full auto-analysis workflow with mock data', async () => {
       const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
         sessionCount: 10, // Reasonable count for mock data
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       await runFullAnalysisWorkflow(
@@ -77,36 +79,35 @@ describe('Auto-Analyze Integration Test - Mock API', () => {
     }, 120000); // 2 minute timeout
 
     it('should handle different session counts correctly', async () => {
-      const testSizes = [5, 15, 25];
+      const testSizes = [5, 15, 25, 100];
       
-      for (const sessionCount of testSizes) {
-        console.log(`\n[Mock Test] Testing with ${sessionCount} sessions`);
-        
-        const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
-          sessionCount,
-          modelId: 'gpt-4o-mini'
-        });
-
-        const { progress, results } = await runFullAnalysisWorkflow(
-          app,
-          analysisConfig,
-          `Mock API - ${sessionCount} sessions`
-        );
-
-        // Validate that we got the expected number of sessions (or available sessions)
-        expect(results.sessions.length).toBeGreaterThan(0);
-        expect(results.sessions.length).toBeLessThanOrEqual(sessionCount);
-        expect(progress.sessionsProcessed).toBe(results.sessions.length);
-      }
+      await testMultipleSessionCounts(
+        app,
+        MOCK_CREDENTIALS,
+        testSizes,
+        'Mock Test',
+        { modelId: 'gpt-4.1-nano' }
+      );
       
     }, 180000); // 3 minute timeout for multiple tests
+
+    it('should handle large session count (100 sessions) efficiently', async () => {
+      await testLargeSessionCount(
+        app,
+        MOCK_CREDENTIALS,
+        100,
+        'Mock Test',
+        { modelId: 'gpt-4.1-nano' }
+      );
+      
+    }, 300000); // 5 minute timeout for large session count
   });
 
   describe('Error Handling and Edge Cases', () => {
     it('should handle cancellation during analysis', async () => {
       const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
         sessionCount: 50, // Larger count to have time to cancel
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       await testCancellation(app, analysisConfig);
@@ -124,7 +125,7 @@ describe('Auto-Analyze Integration Test - Mock API', () => {
     it('should maintain state consistency during concurrent requests', async () => {
       const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
         sessionCount: 10,
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       // Start analysis
@@ -165,7 +166,7 @@ describe('Auto-Analyze Integration Test - Mock API', () => {
     it('should return consistent mock session data', async () => {
       const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
         sessionCount: 5,
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       const { results } = await runFullAnalysisWorkflow(
@@ -200,7 +201,7 @@ describe('Auto-Analyze Integration Test - Mock API', () => {
     it('should have deterministic cost calculations', async () => {
       const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
         sessionCount: 10,
-        modelId: 'gpt-4o-mini'
+        modelId: 'gpt-4.1-nano'
       });
 
       // Run analysis twice with same config
