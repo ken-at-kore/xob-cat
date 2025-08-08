@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
 import { AnalysisResult, AnalysisResponse, ANALYSIS_FUNCTION_SCHEMA } from '../../../shared/types';
-import { analyzeSessionWithOpenAI } from '../services/openaiService';
 import { createSWTService } from '../services/swtService'; 
 import { ServiceFactory } from '../factories/serviceFactory';
 import { loadKoreCredentials, getKoreCredentials } from '../middleware/credentials';
@@ -123,16 +122,16 @@ router.post('/session', asyncHandler(async (req: Request, res: Response): Promis
     return;
   }
   
-  const analysis = await analyzeSessionWithOpenAI(session_id, messages);
+  const openaiService = ServiceFactory.createOpenAIService();
+  const result = await openaiService.analyzeSession(messages);
   
   const responseData = {
-    analyses: [analysis],
-    ...(analysis.token_usage && {
-      token_usage: {
-        ...analysis.token_usage,
-        timestamp: new Date().toISOString()
-      }
-    })
+    analyses: [result.analysis],
+    token_usage: {
+      ...result.tokenUsage,
+      cost: result.cost,
+      timestamp: new Date().toISOString()
+    }
   };
   
   successResponse(res, responseData, 'Session analysis completed');
@@ -156,18 +155,18 @@ router.post('/batch', asyncHandler(async (req: Request, res: Response): Promise<
     timestamp: new Date().toISOString()
   };
   
+  const openaiService = ServiceFactory.createOpenAIService();
+  
   // Analyze each session
   for (const session of sessions) {
     try {
-      const analysis = await analyzeSessionWithOpenAI(session.session_id, session.messages);
-      analyses.push(analysis);
+      const result = await openaiService.analyzeSession(session.messages);
+      analyses.push(result.analysis);
       
-      if (analysis.token_usage) {
-        totalTokenUsage.prompt_tokens += analysis.token_usage.prompt_tokens;
-        totalTokenUsage.completion_tokens += analysis.token_usage.completion_tokens;
-        totalTokenUsage.total_tokens += analysis.token_usage.total_tokens;
-        totalTokenUsage.cost += analysis.token_usage.cost;
-      }
+      totalTokenUsage.prompt_tokens += result.tokenUsage.promptTokens;
+      totalTokenUsage.completion_tokens += result.tokenUsage.completionTokens;
+      totalTokenUsage.total_tokens += result.tokenUsage.totalTokens;
+      totalTokenUsage.cost += result.cost;
     } catch (error) {
       console.error(`Error analyzing session ${session.session_id}:`, error);
       // Continue with other sessions even if one fails

@@ -1,6 +1,5 @@
 import { IOpenAIService } from '../interfaces';
 import { AnalysisResult, Message, SessionWithTranscript, ExistingClassifications } from '../../../shared/types';
-import { analyzeSessionWithOpenAI } from './openaiService';
 import { OpenAIAnalysisService } from './openaiAnalysisService';
 
 export class RealOpenAIService implements IOpenAIService {
@@ -23,24 +22,63 @@ export class RealOpenAIService implements IOpenAIService {
       process.env.OPENAI_API_KEY = apiKey;
       
       try {
-        const analysisResult = await analyzeSessionWithOpenAI(sessionId, messages);
-        
-        // Extract cost and token usage from the result
-        // The function includes tokenUsage with cost
-        const cost = (analysisResult as any).tokenUsage?.cost || 0;
-        const tokenUsage = (analysisResult as any).tokenUsage || {
-          prompt_tokens: 0,
-          completion_tokens: 0,
-          total_tokens: 0
+        // Create a session for batch analysis
+        const session: SessionWithTranscript = {
+          session_id: sessionId,
+          user_id: `user_${Date.now()}`,
+          start_time: new Date().toISOString(),
+          end_time: new Date().toISOString(),
+          containment_type: null,
+          tags: [],
+          metrics: {},
+          messages: messages,
+          message_count: messages.length,
+          user_message_count: messages.filter(m => m.message_type === 'user').length,
+          bot_message_count: messages.filter(m => m.message_type === 'bot').length
+        };
+
+        // Use batch analysis with single session
+        const batchResult = await this.openAIAnalysisService.analyzeBatch(
+          [session], 
+          { generalIntent: new Set(), transferReason: new Set(), dropOffLocation: new Set() },
+          apiKey,
+          'gpt-4o-mini'
+        );
+
+        if (batchResult.sessions.length === 0) {
+          throw new Error('No analysis results returned');
+        }
+
+        const batchSession = batchResult.sessions[0];
+        if (!batchSession) {
+          throw new Error('No session data in batch result');
+        }
+
+        // Convert batch result to AnalysisResult format
+        const analysisResult: AnalysisResult = {
+          session_id: sessionId,
+          user_id: batchSession.user_id,
+          general_intent: batchSession.general_intent,
+          call_outcome: batchSession.session_outcome,
+          ...(batchSession.transfer_reason && { transfer_reason: batchSession.transfer_reason }),
+          ...(batchSession.drop_off_location && { drop_off_location: batchSession.drop_off_location }),
+          notes: batchSession.notes,
+          token_usage: {
+            prompt_tokens: batchResult.promptTokens,
+            completion_tokens: batchResult.completionTokens,
+            total_tokens: batchResult.totalTokens,
+            cost: batchResult.cost
+          },
+          analyzed_at: new Date().toISOString()
         };
 
         return {
           analysis: analysisResult,
-          cost,
+          cost: batchResult.cost,
           tokenUsage: {
-            promptTokens: tokenUsage.prompt_tokens,
-            completionTokens: tokenUsage.completion_tokens,
-            totalTokens: tokenUsage.total_tokens
+            promptTokens: batchResult.promptTokens,
+            completionTokens: batchResult.completionTokens,
+            totalTokens: batchResult.totalTokens
           }
         };
       } finally {
@@ -52,23 +90,63 @@ export class RealOpenAIService implements IOpenAIService {
         }
       }
     } else {
-      const analysisResult = await analyzeSessionWithOpenAI(sessionId, messages);
-      
-      // Extract cost and token usage from the result
-      const cost = (analysisResult as any).tokenUsage?.cost || 0;
-      const tokenUsage = (analysisResult as any).tokenUsage || {
-        prompt_tokens: 0,
-        completion_tokens: 0,
-        total_tokens: 0
+      // Create a session for batch analysis
+      const session: SessionWithTranscript = {
+        session_id: sessionId,
+        user_id: `user_${Date.now()}`,
+        start_time: new Date().toISOString(),
+        end_time: new Date().toISOString(),
+        containment_type: null,
+        tags: [],
+        metrics: {},
+        messages: messages,
+        message_count: messages.length,
+        user_message_count: messages.filter(m => m.message_type === 'user').length,
+        bot_message_count: messages.filter(m => m.message_type === 'bot').length
+      };
+
+      // Use batch analysis with single session
+      const batchResult = await this.openAIAnalysisService.analyzeBatch(
+        [session], 
+        { generalIntent: new Set(), transferReason: new Set(), dropOffLocation: new Set() },
+        process.env.OPENAI_API_KEY!,
+        'gpt-4o-mini'
+      );
+
+      if (batchResult.sessions.length === 0) {
+        throw new Error('No analysis results returned');
+      }
+
+      const batchSession = batchResult.sessions[0];
+      if (!batchSession) {
+        throw new Error('No session data in batch result');
+      }
+
+      // Convert batch result to AnalysisResult format
+      const analysisResult: AnalysisResult = {
+        session_id: sessionId,
+        user_id: batchSession.user_id,
+        general_intent: batchSession.general_intent,
+        call_outcome: batchSession.session_outcome,
+        ...(batchSession.transfer_reason && { transfer_reason: batchSession.transfer_reason }),
+        ...(batchSession.drop_off_location && { drop_off_location: batchSession.drop_off_location }),
+        notes: batchSession.notes,
+        token_usage: {
+          prompt_tokens: batchResult.promptTokens,
+          completion_tokens: batchResult.completionTokens,
+          total_tokens: batchResult.totalTokens,
+          cost: batchResult.cost
+        },
+        analyzed_at: new Date().toISOString()
       };
 
       return {
         analysis: analysisResult,
-        cost,
+        cost: batchResult.cost,
         tokenUsage: {
-          promptTokens: tokenUsage.prompt_tokens,
-          completionTokens: tokenUsage.completion_tokens,
-          totalTokens: tokenUsage.total_tokens
+          promptTokens: batchResult.promptTokens,
+          completionTokens: batchResult.completionTokens,
+          totalTokens: batchResult.totalTokens
         }
       };
     }

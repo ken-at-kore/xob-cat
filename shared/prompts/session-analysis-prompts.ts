@@ -18,7 +18,7 @@ export const SESSION_ANALYSIS_SYSTEM_MESSAGE = 'You are an expert session analys
  */
 export const CLASSIFICATION_INSTRUCTIONS = `For each session, provide the following classifications:
 
-1. **General Intent**: What the user is trying to accomplish (usually 1-2 words). Common examples: "Claim Status", "Billing", "Eligibility", "Live Agent", "Provider Enrollment", "Portal Access", "Authorization". If unknown, use "Unknown".
+1. **General Intent**: What the user is trying to accomplish (usually 1-2 words). Common examples: "Claim Status", "Billing", "Eligibility", "Live Agent", "Provider Enrollment", "Portal Access", "Authorization". If unknown, use "Unknown". If the user's intent was both Live Agent and another intent, classify the intent as the other intent.
 
 2. **Session Outcome**: Either "Transfer" (if session was transferred to live agent) or "Contained" (if session was handled by bot). Classify sessions as "Transfer" if there's a transfer message toward the end of the session (e.g. "Please hold while I connect you with a customer service representative"). Classify sessions as "Contained" if the session was not transferred. Consider that some "Contained" sessions will end with the Bot saying it's ending the conversation ("I am closing our current conversation...").
 
@@ -28,7 +28,7 @@ export const CLASSIFICATION_INSTRUCTIONS = `For each session, provide the follow
 
 5. **Notes**: One sentence summary of what happened in the session.
 
-EXAMPLE:
+EXAMPLE 1:
 Consider the following example transcript...
 ---
 Bot: How can I help you today?
@@ -38,6 +38,22 @@ User: Live agent
 Bot: Please hold while I transfer you.
 ---
 In that example, the classifications should be as follows:
+Intent: Live Agent
+Outcome: Transfer
+Transfer Reason: Live Agent Request
+Drop-Off Location: Help Offer Prompt
+
+EXAMPLE 2:
+Consider the following example transcript...
+---
+Bot: How can I help you today?
+User: Claim status
+Bot: <After determining claim and giving info>. How else can I help you?
+User: Live agent
+Bot: Please hold while I transfer you.
+---
+In that example, the classifications should be as follows:
+Intent: Claim status
 Outcome: Transfer
 Transfer Reason: Live Agent Request
 Drop-Off Location: Help Offer Prompt

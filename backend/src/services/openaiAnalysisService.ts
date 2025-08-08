@@ -62,7 +62,11 @@ export class OpenAIAnalysisService {
         });
         
         if (process.env.OPENAI_LOGGING_VERBOSE === 'true') {
-          console.log('📝 Request Prompt Preview:', prompt.substring(0, 500) + '...');
+          if (process.env.OPENAI_LOGGING_FULL_PROMPT === 'true') {
+            console.log('📝 Full Request Prompt:', prompt);
+          } else {
+            console.log('📝 Request Prompt Preview:', prompt.substring(0, 500) + '...');
+          }
         }
       }
       
