@@ -16,20 +16,20 @@ router.get('/test', asyncHandler(async (req: Request, res: Response) => {
   const { config, botName } = getKoreCredentials(req);
   const koreService = createKoreApiService(config);
   
-  // Test with a small date range (last hour)
-  const dateFrom = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  // OPTIMIZED: Test with 1 minute window (was 60 minutes)
+  const dateFrom = new Date(Date.now() - 60 * 1000).toISOString();
   const dateTo = new Date().toISOString();
 
-  console.log('Testing Kore.ai API connectivity...');
+  console.log('Testing Kore.ai API connectivity with optimized connection test...');
   
   try {
-    // Use the more specific getSessionsMetadata to test connection
+    // OPTIMIZED: Use single API call with timeout for fastest connection testing
     // This will throw an error if authentication fails
-    const sessionMetadata = await koreService.getSessionsMetadata({
+    const sessionMetadata = await koreService.getSessionsMetadataForConnectionTest({
       dateFrom,
       dateTo,
-      skip: 0,
-      limit: 10
+      limit: 1,        // OPTIMIZED: Only need 1 session for connection test (was 10)
+      timeout: 10000   // OPTIMIZED: 10-second timeout for fast failure
     });
 
     // If we get here, authentication worked
