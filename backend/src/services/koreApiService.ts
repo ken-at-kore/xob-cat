@@ -429,6 +429,91 @@ export class KoreApiService {
   }
 
   /**
+   * OPTIMIZED METHOD: Get session metadata for connection testing only
+   * Makes SINGLE API call to 'agent' containment type for fastest connection validation
+   * Used specifically by the connection test endpoint for performance optimization
+   */
+  async getSessionsMetadataForConnectionTest(options: {
+    dateFrom: string;
+    dateTo: string;
+    limit?: number;
+    timeout?: number;
+  }): Promise<SessionMetadata[]> {
+    const { dateFrom, dateTo, limit = 1, timeout = 10000 } = options;
+
+    console.log(`[getSessionsMetadataForConnectionTest] Connection test with limit=${limit}, timeout=${timeout}ms`);
+    console.log(`[getSessionsMetadataForConnectionTest] isMockCredentials: ${this.isMockCredentials()}`);
+
+    // Check if using mock credentials and return mock data
+    if (this.isMockCredentials()) {
+      console.log('🧪 Mock credentials detected - returning mock session metadata for connection test');
+      
+      const filters: SessionFilters = { skip: 0, limit };
+      const startDateOnly = dateFrom?.split('T')[0];
+      const endDateOnly = dateTo?.split('T')[0];
+      
+      if (startDateOnly) filters.start_date = startDateOnly;
+      if (endDateOnly) filters.end_date = endDateOnly;
+      
+      const mockService = new MockSessionDataService();
+      const mockSessions = mockService.generateMockSessions(filters);
+      
+      // Convert to metadata format (remove messages)
+      const metadata: SessionMetadata[] = mockSessions.map(session => ({
+        sessionId: session.session_id,
+        userId: session.user_id,
+        start_time: session.start_time,
+        end_time: session.end_time,
+        containment_type: session.containment_type || 'agent', // Default to 'agent' if null/undefined
+        tags: session.tags || [],
+        metrics: {
+          total_messages: session.message_count || 0,
+          user_messages: session.user_message_count || 0,
+          bot_messages: session.bot_message_count || 0
+        },
+        duration_seconds: session.duration_seconds || 0
+      }));
+      
+      console.log(`Generated ${metadata.length} mock session metadata objects for connection test`);
+      return metadata;
+    }
+
+    // OPTIMIZATION: Use only 'agent' containment type for connection testing (single API call)
+    console.log(`[getSessionsMetadataForConnectionTest] Making SINGLE API call for 'agent' containment type`);
+
+    try {
+      // Create timeout promise
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error(`Connection test timeout after ${timeout}ms`)), timeout)
+      );
+
+      // Create API call promise
+      const apiCallPromise = this.fetchContainmentTypeMetadata('agent', {
+        dateFrom,
+        dateTo,
+        skip: 0,
+        limit
+      });
+
+      // Race between timeout and API call
+      const result = await Promise.race([apiCallPromise, timeoutPromise]);
+      
+      console.log(`[getSessionsMetadataForConnectionTest] Single API call succeeded with ${result.length} sessions`);
+      return result;
+    } catch (error) {
+      // Check if it's an authentication error - throw immediately
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        console.error('Authentication failed during connection test - throwing error to caller');
+        throw error;
+      }
+      
+      // For other errors (including timeout), re-throw
+      console.error(`[getSessionsMetadataForConnectionTest] Connection test failed:`, error);
+      throw error;
+    }
+  }
+
+  /**
    * GRANULAR METHOD: Get messages for specific session IDs only
    * Part of the new layered architecture for selective message loading
    */
