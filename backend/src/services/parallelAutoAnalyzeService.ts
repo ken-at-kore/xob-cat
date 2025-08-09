@@ -21,8 +21,10 @@ import { SessionValidationService } from './sessionValidationService';
 import { StreamProcessingService } from './streamProcessingService';
 import { BatchAnalysisService } from './batchAnalysisService';
 import { AnalysisSummaryService } from './analysisSummaryService';
+import { MockAnalysisSummaryService } from '../__mocks__/analysisSummaryService.mock';
 import { getBackgroundJobQueue } from './backgroundJobQueue';
 import { ServiceFactory } from '../factories/serviceFactory';
+import { ServiceType } from '../interfaces';
 import { IKoreApiService, IOpenAIService } from '../interfaces';
 
 interface ParallelAnalysisSession {
@@ -346,7 +348,9 @@ export class ParallelAutoAnalyzeService {
       currentStep: 'Starting strategic discovery phase...'
     });
     
-    const discoveryConfig: DiscoveryConfig = StrategicDiscoveryService.getDefaultConfig();
+    // Use adaptive discovery config based on session count
+    const totalSessions = samplingResult.sessions.length;
+    const discoveryConfig: DiscoveryConfig = this.getAdaptiveDiscoveryConfig(totalSessions);
     
     const discoveryResult = await this.strategicDiscoveryService.runDiscovery(
       samplingResult.sessions,
@@ -463,8 +467,20 @@ export class ParallelAutoAnalyzeService {
     });
 
     try {
-      const analysisSummaryService = new AnalysisSummaryService(session.config.openaiApiKey);
-      const analysisSummary = await analysisSummaryService.generateAnalysisSummary(resolvedSessions);
+      // Use mock or real service based on ServiceFactory configuration
+      const serviceType = ServiceFactory.getServiceType();
+      let analysisSummary;
+      
+      if (serviceType === ServiceType.MOCK || serviceType === ServiceType.HYBRID) {
+        console.log('[ParallelAutoAnalyzeService] Using mock analysis summary service');
+        const mockAnalysisSummaryService = new MockAnalysisSummaryService(session.config.openaiApiKey);
+        analysisSummary = await mockAnalysisSummaryService.generateAnalysisSummary(resolvedSessions);
+      } else {
+        console.log('[ParallelAutoAnalyzeService] Using real analysis summary service');
+        const analysisSummaryService = new AnalysisSummaryService(session.config.openaiApiKey);
+        analysisSummary = await analysisSummaryService.generateAnalysisSummary(resolvedSessions);
+      }
+      
       session.analysisSummary = analysisSummary;
 
       // Approximate additional token usage for summary generation
@@ -483,6 +499,31 @@ export class ParallelAutoAnalyzeService {
     if (!session) return;
 
     session.progress = { ...session.progress, ...updates };
+  }
+
+  private getAdaptiveDiscoveryConfig(totalSessions: number): DiscoveryConfig {
+    const baseConfig = StrategicDiscoveryService.getDefaultConfig();
+    
+    // For small session counts (typical in testing), use adaptive configuration
+    if (totalSessions <= 20) {
+      return {
+        ...baseConfig,
+        targetPercentage: 50, // Use half for discovery
+        minSessions: Math.max(2, Math.floor(totalSessions * 0.3)), // At least 30% but minimum 2
+        maxSessions: Math.floor(totalSessions * 0.7) // At most 70%
+      };
+    }
+    
+    // For medium session counts, adjust minimums
+    if (totalSessions <= 100) {
+      return {
+        ...baseConfig,
+        minSessions: Math.min(20, Math.floor(totalSessions * 0.2)) // At least 20% but max 20
+      };
+    }
+    
+    // For large session counts, use default config
+    return baseConfig;
   }
 
   private accumulateTokenUsage(
