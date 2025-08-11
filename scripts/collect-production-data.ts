@@ -23,6 +23,7 @@ import path from 'path';
 import axios from 'axios';
 import { parseArgs } from 'util';
 import dotenv from 'dotenv';
+import { DataSanitizer, SanitizationOptions } from './lib/data-sanitizer';
 
 interface ProductionDataCollection {
   collectionInfo: {
@@ -41,6 +42,20 @@ interface ProductionDataCollection {
     dropOff: any[];
   };
   conversationMessages: any[];
+}
+
+// Helper function to sanitize data if requested
+function sanitizeDataIfRequested(data: any, shouldSanitize: boolean): any {
+  if (!shouldSanitize) {
+    return data;
+  }
+  
+  const sanitizer = new DataSanitizer({
+    preserveStructure: true,
+    preserveInternalIds: true
+  });
+  
+  return sanitizer.sanitizeObject(data);
 }
 
 async function collectProductionData(): Promise<void> {
@@ -78,6 +93,10 @@ async function collectProductionData(): Promise<void> {
         type: 'string',
         short: 'c',
       },
+      sanitize: {
+        type: 'boolean',
+        short: 'x',
+      },
       help: {
         type: 'boolean',
         short: 'h',
@@ -114,6 +133,10 @@ Options:
                 Default: collect all types
                 Example: --containment dropOff
                 
+  --sanitize, -x    Automatically sanitize sensitive data in the collected files
+                Replaces names, phone numbers, addresses, etc. with consistent fake data
+                Default: false (collect raw production data)
+                
   --help, -h    Show this help message
 
 Examples:
@@ -128,6 +151,9 @@ Examples:
   
   # Collect specific files with containment filter
   npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --containment selfService --files "complete,messages,summary"
+  
+  # Collect and automatically sanitize sensitive data
+  npx tsx scripts/collect-production-data.ts --start "2025-08-07T09:00:00" --end "2025-08-07T09:30:00" --limit 10 --sanitize
     `);
     process.exit(0);
   }
@@ -176,6 +202,7 @@ Examples:
   const outputPrefix = values.output || 'kore-api-responses';
   const sessionLimit = parseInt(values.limit || '100', 10);
   const filesParam = values.files || 'complete';
+  const shouldSanitize = values.sanitize || false;
   
   // Parse which files to generate
   const filesToGenerate = {
@@ -195,6 +222,7 @@ Examples:
   console.log(`📁 Output prefix: ${outputPrefix}`);
   console.log(`🔢 Session limit: ${sessionLimit}`);
   console.log(`📄 Files to generate: ${Object.entries(filesToGenerate).filter(([_, v]) => v).map(([k]) => k).join(', ')}`);
+  console.log(`🔒 Sanitize data: ${shouldSanitize ? 'Yes - will replace sensitive information' : 'No - raw production data'}`);
 
   // Use the same backend API endpoint that the working app uses
   const BACKEND_URL = 'http://localhost:3001';
@@ -414,47 +442,64 @@ Examples:
   // Step 3: Save collected data
   console.log('\n💾 Step 3: Saving collected data...');
   
+  if (shouldSanitize) {
+    console.log('🔒 Applying data sanitization...');
+  }
+  
   const outputDir = path.join(__dirname, '../data');
   await fs.mkdir(outputDir, { recursive: true });
   
   const filesCreated: string[] = [];
+  let sanitizationStats: any = null;
   
   // Save complete collection  
   if (filesToGenerate.complete) {
     const outputFile = path.join(outputDir, `${outputPrefix}-${new Date().toISOString().split('T')[0]}.json`);
-    await fs.writeFile(outputFile, JSON.stringify(dataCollection, null, 2));
+    const dataToSave = sanitizeDataIfRequested(dataCollection, shouldSanitize);
+    await fs.writeFile(outputFile, JSON.stringify(dataToSave, null, 2));
     filesCreated.push(`${outputPrefix}-${new Date().toISOString().split('T')[0]}.json (complete dataset)`);
+    
+    // Capture sanitization stats from the first sanitization
+    if (shouldSanitize && !sanitizationStats) {
+      const tempSanitizer = new DataSanitizer({ preserveStructure: true, preserveInternalIds: true });
+      tempSanitizer.sanitizeObject(dataCollection);
+      sanitizationStats = tempSanitizer.getSanitizationStats();
+    }
   }
   
   // Save individual parts for easier access (with prefix)
   if (filesToGenerate.agent) {
+    const dataToSave = sanitizeDataIfRequested(dataCollection.sessionHistory.agent, shouldSanitize);
     await fs.writeFile(
       path.join(outputDir, `${outputPrefix}-agent.json`),
-      JSON.stringify(dataCollection.sessionHistory.agent, null, 2)
+      JSON.stringify(dataToSave, null, 2)
     );
     filesCreated.push(`${outputPrefix}-agent.json (agent sessions)`);
   }
   
   if (filesToGenerate.selfService) {
+    const dataToSave = sanitizeDataIfRequested(dataCollection.sessionHistory.selfService, shouldSanitize);
     await fs.writeFile(
       path.join(outputDir, `${outputPrefix}-selfService.json`),
-      JSON.stringify(dataCollection.sessionHistory.selfService, null, 2)
+      JSON.stringify(dataToSave, null, 2)
     );
     filesCreated.push(`${outputPrefix}-selfService.json (self-service sessions)`);
   }
   
   if (filesToGenerate.dropOff) {
+    const dataToSave = sanitizeDataIfRequested(dataCollection.sessionHistory.dropOff, shouldSanitize);
     await fs.writeFile(
       path.join(outputDir, `${outputPrefix}-dropOff.json`),
-      JSON.stringify(dataCollection.sessionHistory.dropOff, null, 2)
+      JSON.stringify(dataToSave, null, 2)
     );
     filesCreated.push(`${outputPrefix}-dropOff.json (drop-off sessions)`);
   }
   
   if (filesToGenerate.messages) {
+    const dataToSave = sanitizeDataIfRequested(dataCollection.conversationMessages, shouldSanitize);
     await fs.writeFile(
       path.join(outputDir, `${outputPrefix}-messages.json`),
-      JSON.stringify(dataCollection.conversationMessages, null, 2)
+      JSON.stringify(dataToSave, null, 2)
     );
     filesCreated.push(`${outputPrefix}-messages.json (all messages)`);
   }
@@ -475,9 +520,10 @@ Examples:
       sessionIdSample: [...new Set(allSessionIds)].slice(0, 10)
     };
     
+    const summaryToSave = sanitizeDataIfRequested(summary, shouldSanitize);
     await fs.writeFile(
       path.join(outputDir, `${outputPrefix}-summary.json`),
-      JSON.stringify(summary, null, 2)
+      JSON.stringify(summaryToSave, null, 2)
     );
     filesCreated.push(`${outputPrefix}-summary.json (analysis summary)`);
   }
@@ -497,9 +543,23 @@ Examples:
   filesCreated.forEach(file => {
     console.log(`   - ${file}`);
   });
+  
+  if (shouldSanitize && sanitizationStats) {
+    console.log('\n🔒 Data Sanitization Summary:');
+    console.log(`   - Unique names replaced: ${sanitizationStats.byType.names}`);
+    console.log(`   - Unique phone numbers replaced: ${sanitizationStats.byType.phones}`);
+    console.log(`   - Unique email addresses replaced: ${sanitizationStats.byType.emails}`);
+    console.log(`   - Unique addresses replaced: ${sanitizationStats.byType.addresses}`);
+    console.log(`   - Unique policy IDs replaced: ${sanitizationStats.byType.policyIds}`);
+    console.log(`   - Total replacements: ${sanitizationStats.totalReplacements}`);
+    console.log('   ✅ All sensitive data has been replaced with consistent fake data');
+  }
+  
   console.log('\n🔧 Next steps:');
   console.log('   1. Review the data structure in collection-summary.json');
-  console.log('   2. Sanitize sensitive data if needed');
+  if (!shouldSanitize) {
+    console.log('   2. Sanitize sensitive data if needed (add --sanitize flag)');
+  }
   console.log('   3. Update mock services to use this real data');
   console.log('   4. Test against edge cases found in the data');
 }
