@@ -22,12 +22,12 @@
         "timestamp": "2025-07-07T17:05:40.886Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:06:10.886Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:06:40.886Z"
       },
@@ -81,83 +81,83 @@
       "sessionTags": [
         {
           "value": "1975-02-25 11:05:22",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702685160",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-1363d779-57a7-55dd-9d4d-31833189f590",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "ec181540-7278-47d3-bb00-bcadcb6f86e8",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "0398315731",
-          "name": "callerNumber"
+          "value": "(307) 50--3504",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1995-04-12 11:06:58",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -174,12 +174,12 @@
         "timestamp": "2025-07-07T17:05:52.246Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:06:22.246Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:06:52.246Z"
       },
@@ -240,12 +240,12 @@
         "timestamp": "2025-07-07T17:08:00.128Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:08:30.128Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:09:00.128Z"
       },
@@ -306,12 +306,12 @@
         "timestamp": "2025-07-07T17:09:31.981Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:01.981Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:10:31.981Z"
       },
@@ -372,12 +372,12 @@
         "timestamp": "2025-07-07T17:11:12.139Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:11:42.139Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:12:12.139Z"
       },
@@ -448,12 +448,12 @@
         "timestamp": "2025-07-07T17:16:29.700Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:16:59.700Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:17:29.700Z"
       },
@@ -514,12 +514,12 @@
         "timestamp": "2025-07-07T17:18:44.653Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:19:14.653Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:19:44.653Z"
       },
@@ -585,12 +585,12 @@
         "timestamp": "2025-07-07T17:22:50.438Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:23:20.438Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:23:50.438Z"
       },
@@ -661,12 +661,12 @@
         "timestamp": "2025-07-07T17:38:08.859Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:38:38.859Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:39:08.859Z"
       },
@@ -737,12 +737,12 @@
         "timestamp": "2025-07-07T17:38:12.596Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:38:42.596Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:39:12.596Z"
       },
@@ -803,12 +803,12 @@
         "timestamp": "2025-07-07T17:42:43.535Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:43:13.535Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:43:43.535Z"
       },
@@ -869,12 +869,12 @@
         "timestamp": "2025-07-07T17:43:53.043Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:44:23.043Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:44:53.043Z"
       },
@@ -933,83 +933,83 @@
       "sessionTags": [
         {
           "value": "1970-06-02 11:53:24",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702698970",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-4a821218-e151-516c-b275-f2aa9db6c06e",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "71ad86aa-9699-49c3-bf19-fdac523439a9",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "9609963396",
-          "name": "callerNumber"
+          "value": "(928) -95--5524",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture failed",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Provider ID",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":2}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1974-05-23 11:54:55",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -1026,12 +1026,12 @@
         "timestamp": "2025-07-07T17:53:53.963Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:54:23.963Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:54:53.963Z"
       },
@@ -1085,83 +1085,83 @@
       "sessionTags": [
         {
           "value": "1975-09-06 11:56:33",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702699837",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-2530ab07-00d7-5bd8-bf9d-aa653d50adc1",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "ec9a480e-d7c7-487a-95ef-6c9aba6a9cf3",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "3778671127",
-          "name": "callerNumber"
+          "value": "(594) 476-9444",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1997-05-26 11:58:38",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -1178,12 +1178,12 @@
         "timestamp": "2025-07-07T17:57:03.036Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:57:33.036Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:58:03.036Z"
       },
@@ -1237,83 +1237,83 @@
       "sessionTags": [
         {
           "value": "1991-01-06 11:00:06",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702683690",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-68621c3f-d37c-5323-b4d5-88a88c4d2484",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "8b0fbabb-5a93-4a56-828d-38697d620476",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "4688666908",
-          "name": "callerNumber"
+          "value": "(659) -62--3436",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1977-01-13 11:03:07",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -1330,12 +1330,12 @@
         "timestamp": "2025-07-07T17:00:35.886Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:01:05.886Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:01:35.886Z"
       },
@@ -1389,83 +1389,83 @@
       "sessionTags": [
         {
           "value": "1994-10-14 11:00:27",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702683777",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-3c6b52c6-09ac-5e1b-9205-bd3352c66736",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "b7513ab4-98dd-4bf8-9d65-dd3aac7227bb",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "8233549882",
-          "name": "callerNumber"
+          "value": "(840) -367--4653",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Provider_Enrollment",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Provider_Enrollment\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1994-09-18 11:01:54",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -1482,12 +1482,12 @@
         "timestamp": "2025-07-07T17:00:57.061Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:01:27.061Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:01:57.061Z"
       },
@@ -1541,83 +1541,83 @@
       "sessionTags": [
         {
           "value": "1983-04-17 11:00:43",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702683857",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-45503d75-8c44-5109-af6f-21c8e24a4783",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "ae8b8f21-a911-4581-92c8-ce8c87950c4a",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "3159687980",
-          "name": "callerNumber"
+          "value": "(745) -311--3077",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Member_Eligibility",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Member_Eligibility\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1990-02-04 11:01:39",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -1634,12 +1634,12 @@
         "timestamp": "2025-07-07T17:01:13.416Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:01:43.416Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:02:13.416Z"
       },
@@ -1693,83 +1693,83 @@
       "sessionTags": [
         {
           "value": "1997-04-17 11:00:50",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702683885",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-f32b3086-52e2-5277-b6b7-cd36ec11db3c",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "5b7228e6-14f3-4ebb-a229-5d6d603bc73d",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "1577238179",
-          "name": "callerNumber"
+          "value": "(535) 482-4297",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture failed",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Provider ID",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Provider_Enrollment",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Provider_Enrollment\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1985-10-26 11:01:55",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -1786,12 +1786,12 @@
         "timestamp": "2025-07-07T17:01:20.204Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your authorization. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:01:50.204Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:02:20.204Z"
       },
@@ -1850,83 +1850,83 @@
       "sessionTags": [
         {
           "value": "1997-03-15 11:01:31",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702684095",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-3717d5d7-a0c5-565a-97c0-f6ed8482a9bc",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "79c6c64b-885c-4735-b0d4-8f7cb3c3bc7e",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "0666578366",
-          "name": "callerNumber"
+          "value": "(744) 992-6593",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Provider_Enrollment",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Provider_Enrollment\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1976-04-22 11:03:51",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -1943,12 +1943,12 @@
         "timestamp": "2025-07-07T17:02:01.221Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:02:31.221Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:03:01.221Z"
       },
@@ -2007,83 +2007,83 @@
       "sessionTags": [
         {
           "value": "1993-04-02 11:01:47",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702684152",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-8e0383dd-4f89-519a-8511-631aa3c38db3",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "1aa79d29-ce91-427a-9cb4-aaef2508c73c",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "7568033091",
-          "name": "callerNumber"
+          "value": "(979) 331-3753",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1999-07-19 11:03:13",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -2100,12 +2100,12 @@
         "timestamp": "2025-07-07T17:02:17.320Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:02:47.320Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:03:17.320Z"
       },
@@ -2159,83 +2159,83 @@
       "sessionTags": [
         {
           "value": "1987-11-23 11:02:35",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702684385",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-f8142fb0-c9ec-5758-8b08-d0249f826402",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "a1e847ca-c5eb-45b6-a5e0-1a2bbbd6881a",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "0176130518",
-          "name": "callerNumber"
+          "value": "(517) 654-5229",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "intent behavior",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Prior_Authorization",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Prior_Authorization\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1980-01-08 11:04:00",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -2252,12 +2252,12 @@
         "timestamp": "2025-07-07T17:03:05.574Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:03:35.574Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:04:05.574Z"
       },
@@ -2306,83 +2306,83 @@
       "sessionTags": [
         {
           "value": "1990-01-06 11:02:59",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702684502",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-5c1576b2-1231-5a95-8aa4-c1936ea3e954",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "c2121ab4-1d8b-4b0a-86dc-48a2aaee1e75",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "6691438489",
-          "name": "callerNumber"
+          "value": "(839) 148--3588",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture timeout",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Start date of service",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Member_Eligibility",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Member_Eligibility\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Member ID\":1,\"Start date of service\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1997-06-27 11:04:41",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -2399,12 +2399,12 @@
         "timestamp": "2025-07-07T17:03:29.158Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:03:59.158Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:04:29.158Z"
       },
@@ -2463,83 +2463,83 @@
       "sessionTags": [
         {
           "value": "1997-12-08 11:05:11",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702685109",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-540120d4-cec4-5ccf-8f99-a016e0d11ab0",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "8fe27713-a59d-4ab4-b76f-3c6a91aa5c8f",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "0601346271",
-          "name": "callerNumber"
+          "value": "(587) 735-3423",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "No",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "Yes",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "NA",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Payment_History",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":0,\"Payment_History\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":2,\"Claim Number\":1,\"Start date of service\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1978-07-28 11:10:04",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -2556,12 +2556,12 @@
         "timestamp": "2025-07-07T17:05:41.186Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:06:11.186Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:06:41.186Z"
       },
@@ -2620,83 +2620,83 @@
       "sessionTags": [
         {
           "value": "1995-08-20 11:07:30",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702685767",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-c6dbf817-b749-5a15-af03-5bc3f224855d",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "01dfe412-3e87-4fc0-83ca-2b176909aad0",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "2896546112",
-          "name": "callerNumber"
+          "value": "(421) 403-8222",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture failed",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Provider ID",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1981-02-26 11:08:33",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -2713,12 +2713,12 @@
         "timestamp": "2025-07-07T17:08:00.194Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:08:30.194Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:09:00.194Z"
       },
@@ -2767,83 +2767,83 @@
       "sessionTags": [
         {
           "value": "1980-11-25 11:08:08",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702685949",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-de9eae64-64dc-5f76-a273-289a0a525288",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "51102096-eb5a-4e5c-a585-969be557a32b",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "5418481710",
-          "name": "callerNumber"
+          "value": "(386) -135--2283",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1987-08-25 11:09:34",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -2860,12 +2860,12 @@
         "timestamp": "2025-07-07T17:08:37.780Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:09:07.780Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:09:37.780Z"
       },
@@ -2914,79 +2914,79 @@
       "sessionTags": [
         {
           "value": "1987-02-19 11:09:02",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686192",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-94494d84-a55b-597f-bf15-2800b5b2e21e",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "c8cb0924-3c26-4866-86e5-60d11fdd1d8f",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "5950123770",
-          "name": "callerNumber"
+          "value": "(471) 985-9737",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "No",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "Yes",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "NA",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "{}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1996-04-10 11:09:20",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -3003,12 +3003,12 @@
         "timestamp": "2025-07-07T17:09:32.123Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:02.123Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:10:32.123Z"
       },
@@ -3062,83 +3062,83 @@
       "sessionTags": [
         {
           "value": "1970-10-20 11:09:16",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686263",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-4c7d0011-4266-5c47-8fc6-bcd1628ec9ad",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "bcc30046-b564-4ee6-8a59-2c2d41225ca8",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "6046321072",
-          "name": "callerNumber"
+          "value": "(437) 128--2254",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture failed",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Provider ID",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1972-07-07 11:10:32",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -3155,12 +3155,12 @@
         "timestamp": "2025-07-07T17:09:45.696Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:15.696Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:10:45.696Z"
       },
@@ -3219,83 +3219,83 @@
       "sessionTags": [
         {
           "value": "1994-05-28 11:09:36",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686371",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-91153e4d-7daa-5387-8e96-d552dda7dc8f",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "5f3dc587-6773-4438-9fa5-2b89a92758be",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "6713402382",
-          "name": "callerNumber"
+          "value": "(761) 783-7330",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Provider_Enrollment",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Provider_Enrollment\":2}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1981-10-11 11:13:02",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -3312,12 +3312,12 @@
         "timestamp": "2025-07-07T17:10:05.970Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:35.970Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:11:05.970Z"
       },
@@ -3366,83 +3366,83 @@
       "sessionTags": [
         {
           "value": "1983-03-28 11:09:44",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686407",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-4450041e-f908-527c-9d6c-e7a2d4c725a1",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "201faac2-2f48-49c7-8f8a-04ee06b30e27",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "7852929792",
-          "name": "callerNumber"
+          "value": "(570) -21--2748",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1977-10-06 11:11:24",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -3459,12 +3459,12 @@
         "timestamp": "2025-07-07T17:10:13.860Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:10:43.860Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:11:13.860Z"
       },
@@ -3513,83 +3513,83 @@
       "sessionTags": [
         {
           "value": "1984-11-16 11:10:21",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686599",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-3fb06c0a-fccc-5958-b186-8746bdda8382",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "01d2ef0b-0fea-478b-a44d-bf2436ef7b38",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "7762361785",
-          "name": "callerNumber"
+          "value": "(898) -342-329",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Payment_History",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":0,\"Payment_History\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":2,\"End date of service\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1999-11-01 11:13:11",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -3606,12 +3606,12 @@
         "timestamp": "2025-07-07T17:10:51.004Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:11:21.004Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:11:51.004Z"
       },
@@ -3665,83 +3665,83 @@
       "sessionTags": [
         {
           "value": "1984-09-18 11:10:42",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686689",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-f380d5a2-48c4-53be-b0e9-c9482292b2ff",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "f0a1fccc-06b1-4af4-b71a-fb20a5319137",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "3871943563",
-          "name": "callerNumber"
+          "value": "(555) -465--2569",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "No",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "Yes",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "intent behavior",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Portal",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Portal\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1972-06-07 11:11:30",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -3758,12 +3758,12 @@
         "timestamp": "2025-07-07T17:11:12.206Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:11:42.206Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:12:12.206Z"
       },
@@ -3817,83 +3817,83 @@
       "sessionTags": [
         {
           "value": "1994-07-04 11:10:54",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686735",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-a572737a-4e17-5878-9acc-a8b9db5279ca",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "7535b1a2-9f30-436a-a4fc-22c9b8aec2c1",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "8992409723",
-          "name": "callerNumber"
+          "value": "(284) 569-9663",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1997-02-18 11:12:33",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -3910,12 +3910,12 @@
         "timestamp": "2025-07-07T17:11:23.901Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:11:53.901Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:12:23.901Z"
       },
@@ -3969,83 +3969,83 @@
       "sessionTags": [
         {
           "value": "1979-06-26 11:11:16",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686846",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-687087db-a4d3-5d68-9971-b97485f9aa46",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "47648049-2667-435b-a292-3dce07bef505",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "1709617568",
-          "name": "callerNumber"
+          "value": "(674) -208--2980",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture failed",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Provider ID",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Provider_Enrollment",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Provider_Enrollment\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1996-12-02 11:12:18",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -4062,12 +4062,12 @@
         "timestamp": "2025-07-07T17:11:45.698Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:12:15.698Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:12:45.698Z"
       },
@@ -4116,83 +4116,83 @@
       "sessionTags": [
         {
           "value": "1977-09-25 11:11:44",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702686966",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-ae38e5f9-9bd2-5aa7-ad41-0c5a6ad39653",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "359f59b6-ce6a-4efc-a98a-dfec69a915d5",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "2944372832",
-          "name": "callerNumber"
+          "value": "(283) -182--4380",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "intent behavior",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Portal",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Portal\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1988-05-02 11:13:19",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -4209,12 +4209,12 @@
         "timestamp": "2025-07-07T17:12:14.166Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:12:44.166Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:13:14.166Z"
       },
@@ -4273,83 +4273,83 @@
       "sessionTags": [
         {
           "value": "1993-04-04 11:13:10",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702687325",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-451bedd5-48be-5930-8e45-cfd139b519a5",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "d7f3fa0b-a979-4e86-b1f4-6757d2d00684",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "6193193696",
-          "name": "callerNumber"
+          "value": "(324) 494-4704",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1980-10-13 11:14:34",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -4366,12 +4366,12 @@
         "timestamp": "2025-07-07T17:13:39.837Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:14:09.837Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:14:39.837Z"
       },
@@ -4425,83 +4425,83 @@
       "sessionTags": [
         {
           "value": "1994-10-07 11:13:27",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702687423",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-938d213f-cade-50b1-9890-631f2ee17ca3",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "b7c4cb9c-ee3b-435d-81f0-6a2b7049caa8",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "7142089054",
-          "name": "callerNumber"
+          "value": "(516) 188--1422",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1970-09-23 11:16:34",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -4518,12 +4518,12 @@
         "timestamp": "2025-07-07T17:13:57.420Z"
       },
       {
-        "message": "I can help you with your billing. Please provide your member ID to get started.",
+        "message": "I can help you with your billing. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:14:27.420Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:14:57.420Z"
       },
@@ -4572,83 +4572,83 @@
       "sessionTags": [
         {
           "value": "1979-10-23 11:14:45",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702687749",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-a8d7cb78-d99c-50cf-860a-608a2044d5a7",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "1dbf3050-f69a-4837-95e7-602a0c525a7b",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "0059638879",
-          "name": "callerNumber"
+          "value": "(986) -126--133",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1992-05-10 11:15:39",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -4665,12 +4665,12 @@
         "timestamp": "2025-07-07T17:15:14.675Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:15:44.675Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:16:14.675Z"
       },
@@ -4729,83 +4729,83 @@
       "sessionTags": [
         {
           "value": "1983-03-18 11:15:26",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702687926",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-29785749-138a-5f46-a83e-0143bb6e698c",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "6ce46d67-1679-4141-b2f8-6c093394088f",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "8206091349",
-          "name": "callerNumber"
+          "value": "(780) 192-465",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1973-10-05 11:17:39",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -4822,12 +4822,12 @@
         "timestamp": "2025-07-07T17:15:56.009Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:16:26.009Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:16:56.009Z"
       },
@@ -4881,79 +4881,79 @@
       "sessionTags": [
         {
           "value": "1993-05-28 11:15:59",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688091",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-7a383e0c-69f5-5884-83d1-654bbede4cda",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "610f0936-5bce-4d6b-be3c-d38e492f574b",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "2940691635",
-          "name": "callerNumber"
+          "value": "(946) 849-1146",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "No",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "Yes",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "NA",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "{}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1997-04-22 11:16:28",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -4970,12 +4970,12 @@
         "timestamp": "2025-07-07T17:16:29.299Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:16:59.299Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:17:29.299Z"
       },
@@ -5029,83 +5029,83 @@
       "sessionTags": [
         {
           "value": "1978-05-12 11:16:24",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688245",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-b2b30ea5-4e12-546a-b880-2afba98f0729",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "9012a846-4833-4bc2-9ce0-45aee85eafa4",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "0608031745",
-          "name": "callerNumber"
+          "value": "(328) -103--3992",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture failed",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Provider ID",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":2}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1982-03-03 11:17:40",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -5122,12 +5122,12 @@
         "timestamp": "2025-07-07T17:16:54.506Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:17:24.506Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:17:54.506Z"
       },
@@ -5181,83 +5181,83 @@
       "sessionTags": [
         {
           "value": "1970-09-21 11:16:33",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688287",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-f15d5ed4-ccaf-573a-826e-5b27f3c247ca",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "314b1e85-ebb0-4812-a3c3-94e25a59d427",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "8372915351",
-          "name": "callerNumber"
+          "value": "(847) -486--2781",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1974-11-26 11:17:58",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -5274,12 +5274,12 @@
         "timestamp": "2025-07-07T17:17:02.711Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your authorization. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:17:32.711Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:18:02.711Z"
       },
@@ -5333,83 +5333,83 @@
       "sessionTags": [
         {
           "value": "1972-12-24 11:16:46",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688345",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-fc9a757a-5b04-599b-8b78-ec248da93fa6",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "ad4c1a90-7e4e-4d6b-b611-28d06172c22c",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "1299310322",
-          "name": "callerNumber"
+          "value": "(288) 93-255",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":1,\"End date of service\":1,\"Billed Amount Filter\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1973-03-12 11:20:03",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -5426,12 +5426,12 @@
         "timestamp": "2025-07-07T17:17:15.820Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your authorization. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:17:45.820Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:18:15.820Z"
       },
@@ -5485,83 +5485,83 @@
       "sessionTags": [
         {
           "value": "1978-09-24 11:16:51",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688380",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-51b7ee89-3c6b-56fb-b560-24e3a7d11143",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "7825d503-0e92-4dff-9fcf-df68fb1250c6",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "3750833771",
-          "name": "callerNumber"
+          "value": "(776) 880-6299",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture timeout",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Billed Amount Filter",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":1,\"End date of service\":1,\"Billed Amount Filter\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1986-03-25 11:19:52",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -5578,12 +5578,12 @@
         "timestamp": "2025-07-07T17:17:21.009Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:17:51.009Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:18:21.009Z"
       },
@@ -5637,83 +5637,83 @@
       "sessionTags": [
         {
           "value": "1976-09-05 11:17:19",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688514",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-79b9ef63-f7aa-5f9a-92d3-d58982e3fa8d",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "f36082ee-a636-49bf-9d6b-1f3e68e762a7",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "5874446388",
-          "name": "callerNumber"
+          "value": "(985) 646-3298",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Provider_Enrollment",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Provider_Enrollment\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1986-08-22 11:18:24",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -5730,12 +5730,12 @@
         "timestamp": "2025-07-07T17:17:49.612Z"
       },
       {
-        "message": "I can help you with your authorization. Please provide your member ID to get started.",
+        "message": "I can help you with your authorization. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:18:19.612Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:18:49.612Z"
       },
@@ -5784,83 +5784,83 @@
       "sessionTags": [
         {
           "value": "1975-04-04 11:18:11",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688754",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-1bfaa2bc-671a-52c6-a3e1-ecb0bfbfdc35",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "310e719c-f1d9-4e24-a91c-67300c94dab7",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "9886300645",
-          "name": "callerNumber"
+          "value": "(602) 623-6164",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1975-06-11 11:19:12",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -5877,12 +5877,12 @@
         "timestamp": "2025-07-07T17:18:41.166Z"
       },
       {
-        "message": "I can help you with your portal access. Please provide your member ID to get started.",
+        "message": "I can help you with your portal access. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:19:11.166Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:19:41.166Z"
       },
@@ -5936,83 +5936,83 @@
       "sessionTags": [
         {
           "value": "1976-09-07 11:18:14",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688767",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-8627bfed-f927-530c-89a4-e7d98d2be3c8",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "3d0d5129-7583-4232-9f65-ae88dd5ec6a7",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "5701822393",
-          "name": "callerNumber"
+          "value": "(637) -127-79",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Claim_Status",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Claim_Status\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1,\"Claim Number\":1,\"Start date of service\":1,\"End date of service\":1,\"Billed Amount Filter\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1981-02-14 11:21:25",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -6029,12 +6029,12 @@
         "timestamp": "2025-07-07T17:18:44.118Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:19:14.118Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:19:44.118Z"
       },
@@ -6083,83 +6083,83 @@
       "sessionTags": [
         {
           "value": "1999-06-11 11:18:38",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702688893",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-863de97f-09b3-53e1-a60b-b65e4f26aa3d",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "0c6d34a2-a2eb-4567-ae15-a1cd8970ee99",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "9632019127",
-          "name": "callerNumber"
+          "value": "(303) 356-4334",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Input capture timeout",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "Provider ID",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1990-11-28 11:20:33",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -6176,12 +6176,12 @@
         "timestamp": "2025-07-07T17:19:08.324Z"
       },
       {
-        "message": "I can help you with your claim status. Please provide your member ID to get started.",
+        "message": "I can help you with your claim status. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:19:38.324Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:20:08.324Z"
       },
@@ -6230,83 +6230,83 @@
       "sessionTags": [
         {
           "value": "1976-05-24 11:20:36",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702689396",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-6dd82182-6ab0-50af-9002-49d1b180e320",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "139a5f2d-128c-42ef-b1db-16e56815a0c9",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "2801803703",
-          "name": "callerNumber"
+          "value": "(747) 802-1602",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Member_Eligibility",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Member_Eligibility\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1988-07-27 11:21:40",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -6323,12 +6323,12 @@
         "timestamp": "2025-07-07T17:21:05.736Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:21:35.736Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:22:05.736Z"
       },
@@ -6377,83 +6377,83 @@
       "sessionTags": [
         {
           "value": "1990-04-28 11:21:05",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702689526",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-34a32e98-1578-520f-86b7-cf6eeab3c54b",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "70ce9b22-8211-4572-b01d-89e611368977",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "4720142617",
-          "name": "callerNumber"
+          "value": "(933) -557--6191",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "Yes",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Agent request",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "ConnectToAgent",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"ConnectToAgent\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1988-12-16 11:23:05",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -6470,12 +6470,12 @@
         "timestamp": "2025-07-07T17:21:34.870Z"
       },
       {
-        "message": "I can help you with your provider enrollment. Please provide your member ID to get started.",
+        "message": "I can help you with your provider enrollment. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:22:04.870Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:22:34.870Z"
       },
@@ -6529,83 +6529,83 @@
       "sessionTags": [
         {
           "value": "1994-09-12 11:21:17",
-          "name": "callStartTime"
+          "name": "Robert undefined"
         },
         {
           "value": "431702689564",
-          "name": "niceContactId"
+          "name": "Jane undefined"
         },
         {
           "value": "u-4e991bce-2468-5991-a3de-df9147ce6446",
-          "name": "koreUserId"
+          "name": "William Smith"
         },
         {
           "value": "9b66b30c-151c-4e0b-93ca-382a3c77e101",
-          "name": "koreCallId"
+          "name": "Charles Moore"
         },
         {
-          "value": "4502509289",
-          "name": "callerNumber"
+          "value": "(997) 462-8247",
+          "name": "Charles undefined"
         },
         {
           "value": "smartassist",
-          "name": "channelName"
+          "name": "Lisa Brown"
         },
         {
           "value": "Regular",
-          "name": "callerType"
+          "name": "Patricia Williams"
         },
         {
           "value": "No",
-          "name": "surveyOptedIn"
+          "name": "Jennifer Wilson"
         },
         {
           "value": "No",
-          "name": "surveyTransfer"
+          "name": "Sarah Wilson"
         },
         {
           "value": "Yes",
-          "name": "agentTransfer"
+          "name": "Sarah Davis"
         },
         {
           "value": "No",
-          "name": "userHangUp"
+          "name": "John undefined"
         },
         {
           "value": "SUCCESS",
-          "name": "niceApiStatus"
+          "name": "William Wilson"
         },
         {
           "value": "Caller Escalation",
-          "name": "agentTransferReason"
+          "name": "Linda Smith"
         },
         {
           "value": "NA",
-          "name": "lastUserUtterance"
+          "name": "John undefined"
         },
         {
           "value": "NA",
-          "name": "failedAPI"
+          "name": "Charles undefined"
         },
         {
           "value": "NA",
-          "name": "inputEntityFailedBeforeAgentTransfer"
+          "name": "Sarah Martinez"
         },
         {
           "value": "Member_Eligibility",
-          "name": "lastIntentBeforeSessionCompletion"
+          "name": "David Smith"
         },
         {
           "value": "{\"Member_Eligibility\":1}",
-          "name": "intentCounts"
+          "name": "Robert Davis"
         },
         {
           "value": "{\"Provider ID\":1}",
-          "name": "entityVisitCounts"
+          "name": "Jennifer Smith"
         },
         {
           "value": "1995-02-02 11:22:28",
-          "name": "callEndTime"
+          "name": "Sarah undefined"
         }
       ],
       "altText": []
@@ -6622,12 +6622,12 @@
         "timestamp": "2025-07-07T17:21:47.248Z"
       },
       {
-        "message": "I can help you with your eligibility. Please provide your member ID to get started.",
+        "message": "I can help you with your eligibility. Please provide your member Jane undefined.",
         "message_type": "bot",
         "timestamp": "2025-07-07T17:22:17.248Z"
       },
       {
-        "message": "My member ID is 123456789",
+        "message": "My member Patricia undefined 954-21-1721",
         "message_type": "user",
         "timestamp": "2025-07-07T17:22:47.248Z"
       },

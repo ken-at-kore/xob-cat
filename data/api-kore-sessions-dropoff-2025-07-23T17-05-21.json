@@ -25,83 +25,83 @@
         "sessionTags": [
           {
             "value": "1975-02-25 11:05:22",
-            "name": "callStartTime"
+            "name": "Robert undefined"
           },
           {
             "value": "431702685160",
-            "name": "niceContactId"
+            "name": "Jane undefined"
           },
           {
             "value": "u-1363d779-57a7-55dd-9d4d-31833189f590",
-            "name": "koreUserId"
+            "name": "William Smith"
           },
           {
             "value": "ec181540-7278-47d3-bb00-bcadcb6f86e8",
-            "name": "koreCallId"
+            "name": "Charles Moore"
           },
           {
-            "value": "0398315731",
-            "name": "callerNumber"
+            "value": "(307) 50--3504",
+            "name": "Charles undefined"
           },
           {
             "value": "smartassist",
-            "name": "channelName"
+            "name": "Lisa Brown"
           },
           {
             "value": "Regular",
-            "name": "callerType"
+            "name": "Patricia Williams"
           },
           {
             "value": "No",
-            "name": "surveyOptedIn"
+            "name": "Jennifer Wilson"
           },
           {
             "value": "No",
-            "name": "surveyTransfer"
+            "name": "Sarah Wilson"
           },
           {
             "value": "Yes",
-            "name": "agentTransfer"
+            "name": "Sarah Davis"
           },
           {
             "value": "No",
-            "name": "userHangUp"
+            "name": "John undefined"
           },
           {
             "value": "SUCCESS",
-            "name": "niceApiStatus"
+            "name": "William Wilson"
           },
           {
             "value": "Caller Escalation",
-            "name": "agentTransferReason"
+            "name": "Linda Smith"
           },
           {
             "value": "NA",
-            "name": "lastUserUtterance"
+            "name": "John undefined"
           },
           {
             "value": "NA",
-            "name": "failedAPI"
+            "name": "Charles undefined"
           },
           {
             "value": "NA",
-            "name": "inputEntityFailedBeforeAgentTransfer"
+            "name": "Sarah Martinez"
           },
           {
             "value": "Claim_Status",
-            "name": "lastIntentBeforeSessionCompletion"
+            "name": "David Smith"
           },
           {
             "value": "{\"Claim_Status\":1}",
-            "name": "intentCounts"
+            "name": "Robert Davis"
           },
           {
             "value": "{\"Provider ID\":1,\"Claim Number\":1}",
-            "name": "entityVisitCounts"
+            "name": "Jennifer Smith"
           },
           {
             "value": "1995-04-12 11:06:58",
-            "name": "callEndTime"
+            "name": "Sarah undefined"
           }
         ],
         "altText": []
@@ -249,83 +249,83 @@
         "sessionTags": [
           {
             "value": "1970-06-02 11:53:24",
-            "name": "callStartTime"
+            "name": "Robert undefined"
           },
           {
             "value": "431702698970",
-            "name": "niceContactId"
+            "name": "Jane undefined"
           },
           {
             "value": "u-4a821218-e151-516c-b275-f2aa9db6c06e",
-            "name": "koreUserId"
+            "name": "William Smith"
           },
           {
             "value": "71ad86aa-9699-49c3-bf19-fdac523439a9",
-            "name": "koreCallId"
+            "name": "Charles Moore"
           },
           {
-            "value": "9609963396",
-            "name": "callerNumber"
+            "value": "(928) -95--5524",
+            "name": "Charles undefined"
           },
           {
             "value": "smartassist",
-            "name": "channelName"
+            "name": "Lisa Brown"
           },
           {
             "value": "Regular",
-            "name": "callerType"
+            "name": "Patricia Williams"
           },
           {
             "value": "No",
-            "name": "surveyOptedIn"
+            "name": "Jennifer Wilson"
           },
           {
             "value": "No",
-            "name": "surveyTransfer"
+            "name": "Sarah Wilson"
           },
           {
             "value": "Yes",
-            "name": "agentTransfer"
+            "name": "Sarah Davis"
           },
           {
             "value": "No",
-            "name": "userHangUp"
+            "name": "John undefined"
           },
           {
             "value": "SUCCESS",
-            "name": "niceApiStatus"
+            "name": "William Wilson"
           },
           {
             "value": "Input capture failed",
-            "name": "agentTransferReason"
+            "name": "Linda Smith"
           },
           {
             "value": "NA",
-            "name": "lastUserUtterance"
+            "name": "John undefined"
           },
           {
             "value": "NA",
-            "name": "failedAPI"
+            "name": "Charles undefined"
           },
           {
             "value": "Provider ID",
-            "name": "inputEntityFailedBeforeAgentTransfer"
+            "name": "Sarah Martinez"
           },
           {
             "value": "Claim_Status",
-            "name": "lastIntentBeforeSessionCompletion"
+            "name": "David Smith"
           },
           {
             "value": "{\"Claim_Status\":1}",
-            "name": "intentCounts"
+            "name": "Robert Davis"
           },
           {
             "value": "{\"Provider ID\":2}",
-            "name": "entityVisitCounts"
+            "name": "Jennifer Smith"
           },
           {
             "value": "1974-05-23 11:54:55",
-            "name": "callEndTime"
+            "name": "Sarah undefined"
           }
         ],
         "altText": []
@@ -343,83 +343,83 @@
         "sessionTags": [
           {
             "value": "1975-09-06 11:56:33",
-            "name": "callStartTime"
+            "name": "Robert undefined"
           },
           {
             "value": "431702699837",
-            "name": "niceContactId"
+            "name": "Jane undefined"
           },
           {
             "value": "u-2530ab07-00d7-5bd8-bf9d-aa653d50adc1",
-            "name": "koreUserId"
+            "name": "William Smith"
           },
           {
             "value": "ec9a480e-d7c7-487a-95ef-6c9aba6a9cf3",
-            "name": "koreCallId"
+            "name": "Charles Moore"
           },
           {
-            "value": "3778671127",
-            "name": "callerNumber"
+            "value": "(594) 476-9444",
+            "name": "Charles undefined"
           },
           {
             "value": "smartassist",
-            "name": "channelName"
+            "name": "Lisa Brown"
           },
           {
             "value": "Regular",
-            "name": "callerType"
+            "name": "Patricia Williams"
           },
           {
             "value": "Yes",
-            "name": "surveyOptedIn"
+            "name": "Jennifer Wilson"
           },
           {
             "value": "No",
-            "name": "surveyTransfer"
+            "name": "Sarah Wilson"
           },
           {
             "value": "Yes",
-            "name": "agentTransfer"
+            "name": "Sarah Davis"
           },
           {
             "value": "No",
-            "name": "userHangUp"
+            "name": "John undefined"
           },
           {
             "value": "SUCCESS",
-            "name": "niceApiStatus"
+            "name": "William Wilson"
           },
           {
             "value": "Caller Escalation",
-            "name": "agentTransferReason"
+            "name": "Linda Smith"
           },
           {
             "value": "NA",
-            "name": "lastUserUtterance"
+            "name": "John undefined"
           },
           {
             "value": "NA",
-            "name": "failedAPI"
+            "name": "Charles undefined"
           },
           {
             "value": "NA",
-            "name": "inputEntityFailedBeforeAgentTransfer"
+            "name": "Sarah Martinez"
           },
           {
             "value": "Claim_Status",
-            "name": "lastIntentBeforeSessionCompletion"
+            "name": "David Smith"
           },
           {
             "value": "{\"Claim_Status\":1}",
-            "name": "intentCounts"
+            "name": "Robert Davis"
           },
           {
             "value": "{\"Provider ID\":1,\"Claim Number\":1}",
-            "name": "entityVisitCounts"
+            "name": "Jennifer Smith"
           },
           {
             "value": "1997-05-26 11:58:38",
-            "name": "callEndTime"
+            "name": "Sarah undefined"
           }
         ],
         "altText": []
@@ -436,7 +436,7 @@
       "from": "2025-07-07T17:00:00.000Z",
       "to": "2025-07-07T18:00:00.000Z"
     },
-    "bot_name": "Acme Bot",
+    "bot_name": "John Jones",
     "containment_type_filter": "dropOff"
   }
 }

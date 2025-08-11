@@ -1,0 +1,2900 @@
+{
+  "collectionInfo": {
+    "dateRange": {
+      "from": "2025-08-07T13:00:00.000Z",
+      "to": "2025-08-07T13:01:00.000Z"
+    },
+    "collectedAt": "2025-08-11T15:38:41.717Z",
+    "totalSessions": 2,
+    "totalMessages": 76,
+    "containmentTypeBreakdown": {
+      "agent": 0,
+      "selfService": 2,
+      "dropOff": 0
+    }
+  },
+  "sessionHistory": {
+    "agent": [],
+    "selfService": [
+      {
+        "session_id": "68950a67bd9c29219edb1472",
+        "user_id": "u-cd48c617-176a-588c-8693-287e6eb0b1ed",
+        "start_time": "2025-08-07T20:19:51.009Z",
+        "end_time": "2025-08-07T20:24:54.753Z",
+        "containment_type": "selfService",
+        "tags": {
+          "userTags": [],
+          "sessionTags": [
+            {
+              "value": "en",
+              "name": "langMode"
+            },
+            {
+              "value": "PROD",
+              "name": "env_type"
+            }
+          ],
+          "altText": []
+        },
+        "metrics": {
+          "total_messages": 0,
+          "user_messages": 0,
+          "bot_messages": 0
+        },
+        "duration_seconds": 0,
+        "message_count": 0,
+        "user_message_count": 0,
+        "bot_message_count": 0,
+        "messages": [
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754597991615",
+            "message": "Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:19:51.615Z",
+            "createdOn": "2025-08-07T20:19:51.615Z",
+            "components": [
+              {
+                "_id": "cp-3f2a7ee8-c2c5-5109-96b5-fec9ebae3460",
+                "cT": "text",
+                "data": {
+                  "text": "{\"type\":\"command\",\"command\":\"redirect\",\"queueCommand\":false,\"data\":[{\"verb\":\"config\",\"synthesizer\":{\"vendor\":\"microsoft\",\"voice\":\"en-US-AvaMultilingualNeural\",\"language\":\"en-US\"},\"recognizer\":{\"vendor\":\"microsoft\",\"language\":\"en-US\",\"punctuation\":false,\"azureOptions\":{\"speechSegmentationSilenceTimeoutMs\":2000}},\"record\":{\"recordingID\":\"68950a667db0bd677dc37c6f\",\"siprecServerURL\":[\"3.217.118.136:5068\",\"3.216.241.238:5068\"],\"headers\":{\"x-audc-call-id\":\"68950a667db0bd677dc37c6f\"},\"action\":\"startCallRecording\"}},{\"verb\":\"gather\",\"actionHook\":\"/actions/hooks\",\"input\":[\"digits\",\"speech\"],\"interDigitTimeout\":2,\"minDigits\":1,\"finishOnKey\":\"#\",\"numDigits\":8,\"say\":{\"text\":[\"Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?\"]},\"bargein\":false,\"listenDuringPrompt\":false,\"timeout\":10,\"dtmfBargein\":false}]}"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598005046",
+            "message": "Track time",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:20:05.046Z",
+            "createdOn": "2025-08-07T20:20:05.046Z",
+            "components": [
+              {
+                "_id": "cp-ccd2aec3-cfa7-57a9-83d5-def685a91be7",
+                "cT": "text",
+                "data": {
+                  "text": "Track time"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598005996",
+            "message": "I can help you with that.First,let's look up your account.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:20:05.996Z",
+            "createdOn": "2025-08-07T20:20:05.996Z",
+            "components": [
+              {
+                "_id": "cp-2a3f633c-7d3b-555f-898b-b247901d51e2",
+                "cT": "text",
+                "data": {
+                  "text": "<speak><prosody rate=\"-10%\">I can help you with that.First,let's look up your account.</prosody></speak>\n"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598006571",
+            "message": "What's your leave request number?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:20:06.571Z",
+            "createdOn": "2025-08-07T20:20:06.571Z",
+            "components": [
+              {
+                "_id": "cp-2f1a0574-f679-59a7-99ea-297e688668be",
+                "cT": "text",
+                "data": {
+                  "text": "What's your leave request number?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598017724",
+            "message": "555826",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:20:17.724Z",
+            "createdOn": "2025-08-07T20:20:17.724Z",
+            "components": [
+              {
+                "_id": "cp-951d53fc-7dd4-52c3-b744-0f404788e1f6",
+                "cT": "text",
+                "data": {
+                  "text": "555826"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598018411",
+            "message": "I didn't catch that. Please say or enter your leave request number.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:20:18.411Z",
+            "createdOn": "2025-08-07T20:20:18.411Z",
+            "components": [
+              {
+                "_id": "cp-629d5ffc-6b42-5a64-ba9a-b0c74853a7c3",
+                "cT": "text",
+                "data": {
+                  "text": "I didn't catch that. Please say or enter your leave request number."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598029263",
+            "message": "555826",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:20:29.263Z",
+            "createdOn": "2025-08-07T20:20:29.263Z",
+            "components": [
+              {
+                "_id": "cp-47d761cf-b2f1-5e04-8146-910cd67272ad",
+                "cT": "text",
+                "data": {
+                  "text": "555826"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598029886",
+            "message": "what's your  employee number?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:20:29.886Z",
+            "createdOn": "2025-08-07T20:20:29.886Z",
+            "components": [
+              {
+                "_id": "cp-14a12951-1be7-5e43-b4fa-e25720c27cc4",
+                "cT": "text",
+                "data": {
+                  "text": "what's your  employee number?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598037854",
+            "message": "47674",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:20:37.854Z",
+            "createdOn": "2025-08-07T20:20:37.854Z",
+            "components": [
+              {
+                "_id": "cp-c5b32438-a41d-57ae-b94d-2425395dd5b3",
+                "cT": "text",
+                "data": {
+                  "text": "47674"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598038694",
+            "message": "And your zip code?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:20:38.694Z",
+            "createdOn": "2025-08-07T20:20:38.694Z",
+            "components": [
+              {
+                "_id": "cp-c5be1747-90a5-5678-829e-6ec6a2b251eb",
+                "cT": "text",
+                "data": {
+                  "text": "And your zip code?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598047003",
+            "message": "18014",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:20:47.003Z",
+            "createdOn": "2025-08-07T20:20:47.003Z",
+            "components": [
+              {
+                "_id": "cp-5fde4935-4baa-5823-a98b-67d16651687a",
+                "cT": "text",
+                "data": {
+                  "text": "18014"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598049020",
+            "message": "Thanks for verifying your account.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:20:49.020Z",
+            "createdOn": "2025-08-07T20:20:49.020Z",
+            "components": [
+              {
+                "_id": "cp-b3f9c6f5-7bab-564e-bde1-01e4f3691141",
+                "cT": "text",
+                "data": {
+                  "text": "Thanks for verifying your account."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598049703",
+            "message": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:20:49.703Z",
+            "createdOn": "2025-08-07T20:20:49.703Z",
+            "components": [
+              {
+                "_id": "cp-e50a3ad8-f1bb-5b65-ad89-b61b5e1dfa25",
+                "cT": "text",
+                "data": {
+                  "text": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598068128",
+            "message": "Yes",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:21:08.128Z",
+            "createdOn": "2025-08-07T20:21:08.128Z",
+            "components": [
+              {
+                "_id": "cp-62ae8299-6afd-5e33-abd6-d2e617f68aa3",
+                "cT": "text",
+                "data": {
+                  "text": "Yes"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598068649",
+            "message": "What's the date of the absence?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:21:08.649Z",
+            "createdOn": "2025-08-07T20:21:08.649Z",
+            "components": [
+              {
+                "_id": "cp-5c49c9e1-eadf-5481-84a9-cda8c0c723cf",
+                "cT": "text",
+                "data": {
+                  "text": "What's the date of the absence?\n"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598078824",
+            "message": "August 7th 2025",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:21:18.824Z",
+            "createdOn": "2025-08-07T20:21:18.824Z",
+            "components": [
+              {
+                "_id": "cp-5ec79a2a-4a3e-508f-bd9e-37eae09fa0a1",
+                "cT": "text",
+                "data": {
+                  "text": "August 7th 2025"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598079592",
+            "message": "And how much time did you miss? Please provide hours and minutes.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:21:19.592Z",
+            "createdOn": "2025-08-07T20:21:19.592Z",
+            "components": [
+              {
+                "_id": "cp-a8a76bf6-4f41-598c-8716-4f745e24b532",
+                "cT": "text",
+                "data": {
+                  "text": "And how much time did you miss? Please provide hours and minutes."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598089661",
+            "message": "10 hours 0 minutes",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:21:29.661Z",
+            "createdOn": "2025-08-07T20:21:29.661Z",
+            "components": [
+              {
+                "_id": "cp-5b482139-23de-5a19-bf52-0b60e42b513a",
+                "cT": "text",
+                "data": {
+                  "text": "10 hours 0 minutes"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598090450",
+            "message": "Lastly, what's the reason for your absence? You can say \"treatment or appointment\"; \"episode of incapacity\"; or, \"something else\".",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:21:30.450Z",
+            "createdOn": "2025-08-07T20:21:30.450Z",
+            "components": [
+              {
+                "_id": "cp-6dd3f9b6-7fe1-5505-9f8e-e936c65a7750",
+                "cT": "text",
+                "data": {
+                  "text": "Lastly, what's the reason for your absence? You can say &quot;treatment or appointment&quot;; &quot;episode of incapacity&quot;; or, &quot;something else&quot;."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598106428",
+            "message": "Episode of Incapacity",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:21:46.428Z",
+            "createdOn": "2025-08-07T20:21:46.428Z",
+            "components": [
+              {
+                "_id": "cp-de788cb1-3c18-5178-9d1c-e4a2916f0847",
+                "cT": "text",
+                "data": {
+                  "text": "Episode of Incapacity"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598107200",
+            "message": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:21:47.200Z",
+            "createdOn": "2025-08-07T20:21:47.200Z",
+            "components": [
+              {
+                "_id": "cp-917423ed-f947-50e2-95b1-b41f74225f2d",
+                "cT": "text",
+                "data": {
+                  "text": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598121751",
+            "message": "Ye",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:22:01.751Z",
+            "createdOn": "2025-08-07T20:22:01.751Z",
+            "components": [
+              {
+                "_id": "cp-3f5e1962-8f84-513b-a3a1-da53ded723dd",
+                "cT": "text",
+                "data": {
+                  "text": "Ye"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598122231",
+            "message": "I didn't quite catch that. If you're logging an absence for 7th August 2025 , for 10 hours; and the reason for the absence is Episode of Incapacity, press 1. If not, 2.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:02.231Z",
+            "createdOn": "2025-08-07T20:22:02.231Z",
+            "components": [
+              {
+                "_id": "cp-c2805844-1a3c-5e7b-ae20-34428915ab44",
+                "cT": "text",
+                "data": {
+                  "text": "I didn't quite catch that. If you're logging an absence for 7th August 2025 , for 10 hours; and the reason for the absence is Episode of Incapacity, press 1. If not, 2.\n"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598139350",
+            "message": "1",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:22:19.350Z",
+            "createdOn": "2025-08-07T20:22:19.350Z",
+            "components": [
+              {
+                "_id": "cp-8a424569-b604-59cf-abb3-dd3317536565",
+                "cT": "text",
+                "data": {
+                  "text": "1"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598140491",
+            "message": "I successfully submitted your time entry.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:20.491Z",
+            "createdOn": "2025-08-07T20:22:20.491Z",
+            "components": [
+              {
+                "_id": "cp-33ce788c-defc-5c75-a62e-a44c5703c8b4",
+                "cT": "text",
+                "data": {
+                  "text": "I successfully submitted your time entry."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598140875",
+            "message": "Do you want to submit another absence?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:20.875Z",
+            "createdOn": "2025-08-07T20:22:20.875Z",
+            "components": [
+              {
+                "_id": "cp-50eea4f8-6136-556f-b57f-8712c94f85d0",
+                "cT": "text",
+                "data": {
+                  "text": "Do you want to submit another absence?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598147018",
+            "message": "Yes",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:22:27.018Z",
+            "createdOn": "2025-08-07T20:22:27.018Z",
+            "components": [
+              {
+                "_id": "cp-1df592fa-2356-546e-ad96-bfcb981e980d",
+                "cT": "text",
+                "data": {
+                  "text": "Yes"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598147624",
+            "message": "Is it for the same leave request number?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:27.624Z",
+            "createdOn": "2025-08-07T20:22:27.624Z",
+            "components": [
+              {
+                "_id": "cp-29a2ac1f-66b8-5619-9d27-613be26fc4a2",
+                "cT": "text",
+                "data": {
+                  "text": "Is it for the same leave request number?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598152925",
+            "message": "2",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:22:32.925Z",
+            "createdOn": "2025-08-07T20:22:32.925Z",
+            "components": [
+              {
+                "_id": "cp-70e57bd8-d228-50a2-9337-ede8e63b749d",
+                "cT": "text",
+                "data": {
+                  "text": "2"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598153606",
+            "message": "Okay",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:33.606Z",
+            "createdOn": "2025-08-07T20:22:33.606Z",
+            "components": [
+              {
+                "_id": "cp-2482d2dd-6b0d-5070-b075-2e73a549265d",
+                "cT": "text",
+                "data": {
+                  "text": "Okay"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598153969",
+            "message": "Do you have the leave request number?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:33.969Z",
+            "createdOn": "2025-08-07T20:22:33.969Z",
+            "components": [
+              {
+                "_id": "cp-1a7fb5eb-63c0-581a-980e-85b789d9774a",
+                "cT": "text",
+                "data": {
+                  "text": "Do you have the leave request number?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598161157",
+            "message": "No were done here",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:22:41.157Z",
+            "createdOn": "2025-08-07T20:22:41.157Z",
+            "components": [
+              {
+                "_id": "cp-8254bca8-c850-5d91-8435-7aefada6d56f",
+                "cT": "text",
+                "data": {
+                  "text": "No were done here"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598161995",
+            "message": "Let me pull up your eligible leave requests.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:41.995Z",
+            "createdOn": "2025-08-07T20:22:41.995Z",
+            "components": [
+              {
+                "_id": "cp-04972195-35ba-52df-b8f3-0c0691c8fb5d",
+                "cT": "text",
+                "data": {
+                  "text": "Let me pull up your eligible leave requests."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598162490",
+            "message": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:22:42.490Z",
+            "createdOn": "2025-08-07T20:22:42.490Z",
+            "components": [
+              {
+                "_id": "cp-c3539bf1-9652-55db-aa44-d2c0818ac3ac",
+                "cT": "text",
+                "data": {
+                  "text": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598183663",
+            "message": "I am done I dont need to file anything else",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:23:03.663Z",
+            "createdOn": "2025-08-07T20:23:03.663Z",
+            "components": [
+              {
+                "_id": "cp-20b2ef37-a1f0-59a8-af58-3d158a762be4",
+                "cT": "text",
+                "data": {
+                  "text": "I am done I dont need to file anything else"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598184264",
+            "message": "What's the date of the absence?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:23:04.264Z",
+            "createdOn": "2025-08-07T20:23:04.264Z",
+            "components": [
+              {
+                "_id": "cp-a2d98178-bcd3-5ff6-90e0-3baf9b750404",
+                "cT": "text",
+                "data": {
+                  "text": "What's the date of the absence?\n"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598205063",
+            "message": "OK you said talking complete sentence You couldnt even understand the  word Yes Im done I had one absence August 7th 2025 Thats it Jesus  I want to record this but   work on your",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:23:25.063Z",
+            "createdOn": "2025-08-07T20:23:25.063Z",
+            "components": [
+              {
+                "_id": "cp-aad7255e-be18-5e0c-955c-0298ae6150e6",
+                "cT": "text",
+                "data": {
+                  "text": "OK you said talking complete sentence You couldnt even understand the  word Yes Im done I had one absence August 7th 2025 Thats it Jesus  I want to record this but   work on your "
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598206022",
+            "message": "And how much time did you miss? Please provide hours and minutes.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:23:26.022Z",
+            "createdOn": "2025-08-07T20:23:26.022Z",
+            "components": [
+              {
+                "_id": "cp-8e912180-9b69-5a16-84cb-6eac8b885475",
+                "cT": "text",
+                "data": {
+                  "text": "And how much time did you miss? Please provide hours and minutes."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598216654",
+            "message": "Did you track this Oh not done here Whats",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:23:36.654Z",
+            "createdOn": "2025-08-07T20:23:36.654Z",
+            "components": [
+              {
+                "_id": "cp-3a45d3bb-914a-5aef-8966-32f7c3ccd611",
+                "cT": "text",
+                "data": {
+                  "text": "Did you track this Oh not done here Whats"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598217207",
+            "message": "I didn't catch that. Please say or enter the number of hours and minutes you missed, using two digits for the hours, and two digits for the minutes.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:23:37.207Z",
+            "createdOn": "2025-08-07T20:23:37.207Z",
+            "components": [
+              {
+                "_id": "cp-872c35f6-f67d-5607-b011-7ce374c14ced",
+                "cT": "text",
+                "data": {
+                  "text": "I didn't catch that. Please say or enter the number of hours and minutes you missed, using two digits for the hours, and two digits for the minutes.\n"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598233285",
+            "message": "10 hours 0 minutes",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:23:53.285Z",
+            "createdOn": "2025-08-07T20:23:53.285Z",
+            "components": [
+              {
+                "_id": "cp-969239c0-2b15-5941-832d-5924d397710d",
+                "cT": "text",
+                "data": {
+                  "text": "10 hours 0 minutes"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598234100",
+            "message": "Lastly, what's the reason for your absence? You can say \"treatment or appointment\"; \"episode of incapacity\"; or, \"something else\".",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:23:54.100Z",
+            "createdOn": "2025-08-07T20:23:54.100Z",
+            "components": [
+              {
+                "_id": "cp-4153af9a-0393-53b6-a5ed-748abedf854c",
+                "cT": "text",
+                "data": {
+                  "text": "Lastly, what's the reason for your absence? You can say &quot;treatment or appointment&quot;; &quot;episode of incapacity&quot;; or, &quot;something else&quot;."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598249767",
+            "message": "Episode of Incapacity",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:24:09.767Z",
+            "createdOn": "2025-08-07T20:24:09.767Z",
+            "components": [
+              {
+                "_id": "cp-f30da12b-cb58-594c-bf37-5000947d28df",
+                "cT": "text",
+                "data": {
+                  "text": "Episode of Incapacity"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598250499",
+            "message": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:24:10.499Z",
+            "createdOn": "2025-08-07T20:24:10.499Z",
+            "components": [
+              {
+                "_id": "cp-d226f9f6-984e-5f57-bf25-06825d610092",
+                "cT": "text",
+                "data": {
+                  "text": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598265349",
+            "message": "Yes",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:24:25.349Z",
+            "createdOn": "2025-08-07T20:24:25.349Z",
+            "components": [
+              {
+                "_id": "cp-e20b7737-4614-5ff6-8fc3-0de9f8068110",
+                "cT": "text",
+                "data": {
+                  "text": "Yes"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598266508",
+            "message": "I successfully submitted your time entry.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:24:26.508Z",
+            "createdOn": "2025-08-07T20:24:26.508Z",
+            "components": [
+              {
+                "_id": "cp-6f7a26dd-855a-596f-9ced-030a59f25a01",
+                "cT": "text",
+                "data": {
+                  "text": "I successfully submitted your time entry."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598266846",
+            "message": "According to my records, You already reported leave time for the date you are adding..",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:24:26.846Z",
+            "createdOn": "2025-08-07T20:24:26.846Z",
+            "components": [
+              {
+                "_id": "cp-ffc32410-9c4b-5e54-bd53-313026f88fa8",
+                "cT": "text",
+                "data": {
+                  "text": "According to my records, You already reported leave time for the date you are adding.."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598267219",
+            "message": "Do you want to submit another absence?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:24:27.219Z",
+            "createdOn": "2025-08-07T20:24:27.219Z",
+            "components": [
+              {
+                "_id": "cp-78f9401e-0dcb-5da8-8455-61df283e4850",
+                "cT": "text",
+                "data": {
+                  "text": "Do you want to submit another absence?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598281369",
+            "message": "No",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:24:41.369Z",
+            "createdOn": "2025-08-07T20:24:41.369Z",
+            "components": [
+              {
+                "_id": "cp-162eff57-aaf4-58df-bdc5-dd9ec03e4ac0",
+                "cT": "text",
+                "data": {
+                  "text": "No"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598282161",
+            "message": "What else can I help you with?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:24:42.161Z",
+            "createdOn": "2025-08-07T20:24:42.161Z",
+            "components": [
+              {
+                "_id": "cp-8bf60655-49f6-5cd1-b517-1def1319b9d8",
+                "cT": "text",
+                "data": {
+                  "text": "What else can I help you with?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598289714",
+            "message": "Thats it were done Goodbye",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:24:49.714Z",
+            "createdOn": "2025-08-07T20:24:49.714Z",
+            "components": [
+              {
+                "_id": "cp-43d0ca55-0b50-5092-bee8-b20d76fc7c5c",
+                "cT": "text",
+                "data": {
+                  "text": "Thats it were done Goodbye"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754598290338",
+            "message": "Thank you for calling. Goodbye!",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:24:50.338Z",
+            "createdOn": "2025-08-07T20:24:50.338Z",
+            "components": [
+              {
+                "_id": "cp-3ce765e6-4ddd-5de5-9493-f60b958ed73d",
+                "cT": "text",
+                "data": {
+                  "text": "Thank you for calling. Goodbye!"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950a67bd9c29219edb1472_1754599243221",
+            "message": "I am Charles undefined as I have not received any input from you. We can start over when you need.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:40:43.221Z",
+            "createdOn": "2025-08-07T20:40:43.221Z",
+            "components": [
+              {
+                "_id": "cp-84e28e50-bb3f-5c4d-a005-488f8a9b499a",
+                "cT": "text",
+                "data": {
+                  "text": "I am Charles undefined as I have not received any input from you. We can start over when you need."
+                },
+                "thumbnails": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "session_id": "68950bece3804084745c34ce",
+        "user_id": "u-3edabadd-5d66-5195-95cb-2e640bf58416",
+        "start_time": "2025-08-07T20:26:20.048Z",
+        "end_time": "2025-08-07T20:28:18.010Z",
+        "containment_type": "selfService",
+        "tags": {
+          "userTags": [],
+          "sessionTags": [
+            {
+              "value": "en",
+              "name": "langMode"
+            },
+            {
+              "value": "PROD",
+              "name": "env_type"
+            }
+          ],
+          "altText": []
+        },
+        "metrics": {
+          "total_messages": 0,
+          "user_messages": 0,
+          "bot_messages": 0
+        },
+        "duration_seconds": 0,
+        "message_count": 0,
+        "user_message_count": 0,
+        "bot_message_count": 0,
+        "messages": [
+          {
+            "messageId": "68950bece3804084745c34ce_1754598380609",
+            "message": "Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:26:20.609Z",
+            "createdOn": "2025-08-07T20:26:20.609Z",
+            "components": [
+              {
+                "_id": "cp-ee79b162-186b-5791-a314-933252103335",
+                "cT": "text",
+                "data": {
+                  "text": "{\"type\":\"command\",\"command\":\"redirect\",\"queueCommand\":false,\"data\":[{\"verb\":\"config\",\"synthesizer\":{\"vendor\":\"microsoft\",\"voice\":\"en-US-AvaMultilingualNeural\",\"language\":\"en-US\"},\"recognizer\":{\"vendor\":\"microsoft\",\"language\":\"en-US\",\"punctuation\":false,\"azureOptions\":{\"speechSegmentationSilenceTimeoutMs\":2000}},\"record\":{\"recordingID\":\"68950bebdc76c7ba978e05f9\",\"siprecServerURL\":[\"3.217.118.136:5068\",\"3.216.241.238:5068\"],\"headers\":{\"x-audc-call-id\":\"68950bebdc76c7ba978e05f9\"},\"action\":\"startCallRecording\"}},{\"verb\":\"gather\",\"actionHook\":\"/actions/hooks\",\"input\":[\"digits\",\"speech\"],\"interDigitTimeout\":2,\"minDigits\":1,\"finishOnKey\":\"#\",\"numDigits\":8,\"say\":{\"text\":[\"Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?\"]},\"bargein\":false,\"listenDuringPrompt\":false,\"timeout\":10,\"dtmfBargein\":false}]}"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598398285",
+            "message": "I need to report time for FMLA leave",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:26:38.285Z",
+            "createdOn": "2025-08-07T20:26:38.285Z",
+            "components": [
+              {
+                "_id": "cp-b4e67a3e-8368-5a9f-880e-8164d14d51f2",
+                "cT": "text",
+                "data": {
+                  "text": "I need to report time for FMLA leave"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598399135",
+            "message": "I can help you with that.First,let's look up your account.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:26:39.135Z",
+            "createdOn": "2025-08-07T20:26:39.135Z",
+            "components": [
+              {
+                "_id": "cp-90732fea-2eff-5f2a-b3d2-d37f76b86d00",
+                "cT": "text",
+                "data": {
+                  "text": "<speak><prosody rate=\"-10%\">I can help you with that.First,let's look up your account.</prosody></speak>\n"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598399584",
+            "message": "What's your leave request number?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:26:39.584Z",
+            "createdOn": "2025-08-07T20:26:39.584Z",
+            "components": [
+              {
+                "_id": "cp-eaf2f44e-412f-5109-bc7a-71822eeb746d",
+                "cT": "text",
+                "data": {
+                  "text": "What's your leave request number?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598411629",
+            "message": "5591045",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:26:51.629Z",
+            "createdOn": "2025-08-07T20:26:51.629Z",
+            "components": [
+              {
+                "_id": "cp-7404bd0f-fb7f-5bee-a571-c7815838a16d",
+                "cT": "text",
+                "data": {
+                  "text": "5591045"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598412391",
+            "message": "And your zip code?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:26:52.391Z",
+            "createdOn": "2025-08-07T20:26:52.391Z",
+            "components": [
+              {
+                "_id": "cp-5487acf4-858f-52bd-9097-c4d1e97d6ff2",
+                "cT": "text",
+                "data": {
+                  "text": "And your zip code?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598420739",
+            "message": "74107",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:27:00.739Z",
+            "createdOn": "2025-08-07T20:27:00.739Z",
+            "components": [
+              {
+                "_id": "cp-16c14306-e8de-5664-8207-96078f9546a1",
+                "cT": "text",
+                "data": {
+                  "text": "74107"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598422088",
+            "message": "Thanks for verifying your account.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:27:02.088Z",
+            "createdOn": "2025-08-07T20:27:02.088Z",
+            "components": [
+              {
+                "_id": "cp-6b6d083c-d762-54fa-aa7b-102193a122dd",
+                "cT": "text",
+                "data": {
+                  "text": "Thanks for verifying your account."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598423395",
+            "message": "What's the date of the absence?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:27:03.395Z",
+            "createdOn": "2025-08-07T20:27:03.395Z",
+            "components": [
+              {
+                "_id": "cp-c4a79543-995c-5337-b564-edeeb2b83c4e",
+                "cT": "text",
+                "data": {
+                  "text": "What's the date of the absence?\n"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598433887",
+            "message": "August 7th 2025",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:27:13.887Z",
+            "createdOn": "2025-08-07T20:27:13.887Z",
+            "components": [
+              {
+                "_id": "cp-02a3b425-9d15-579e-ab57-8156deb07c7b",
+                "cT": "text",
+                "data": {
+                  "text": "August 7th 2025"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598434670",
+            "message": "And how much time did you miss? Please provide hours and minutes.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:27:14.670Z",
+            "createdOn": "2025-08-07T20:27:14.670Z",
+            "components": [
+              {
+                "_id": "cp-398614bf-fa02-5df7-b29a-0c853851d448",
+                "cT": "text",
+                "data": {
+                  "text": "And how much time did you miss? Please provide hours and minutes."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598445913",
+            "message": "Three hours",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:27:25.913Z",
+            "createdOn": "2025-08-07T20:27:25.913Z",
+            "components": [
+              {
+                "_id": "cp-a35c3e0c-d363-5f16-ad5d-9db426c7bc55",
+                "cT": "text",
+                "data": {
+                  "text": "Three hours"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598446781",
+            "message": "Lastly, what's the reason for your absence? You can say \"treatment or appointment\"; \"episode of incapacity\"; or, \"something else\".",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:27:26.781Z",
+            "createdOn": "2025-08-07T20:27:26.781Z",
+            "components": [
+              {
+                "_id": "cp-e0d76b60-1149-52e9-a14f-0475b16c1f1c",
+                "cT": "text",
+                "data": {
+                  "text": "Lastly, what's the reason for your absence? You can say &quot;treatment or appointment&quot;; &quot;episode of incapacity&quot;; or, &quot;something else&quot;."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598461593",
+            "message": "Appointment for my mother",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:27:41.593Z",
+            "createdOn": "2025-08-07T20:27:41.593Z",
+            "components": [
+              {
+                "_id": "cp-a9917e60-9ea3-51d5-97d5-5fffc4f832d3",
+                "cT": "text",
+                "data": {
+                  "text": "Appointment for my mother"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598462304",
+            "message": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 3 hours. The reason for the absence is Treatment Appointment. Is everything correct?`",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:27:42.304Z",
+            "createdOn": "2025-08-07T20:27:42.304Z",
+            "components": [
+              {
+                "_id": "cp-faa9ee2f-a382-59b5-a0e9-3e4a2755f83b",
+                "cT": "text",
+                "data": {
+                  "text": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 3 hours. The reason for the absence is Treatment Appointment. Is everything correct?`"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598478814",
+            "message": "Yes",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:27:58.814Z",
+            "createdOn": "2025-08-07T20:27:58.814Z",
+            "components": [
+              {
+                "_id": "cp-1eddcaeb-0aa6-57df-91b6-0b8cbc9dc146",
+                "cT": "text",
+                "data": {
+                  "text": "Yes"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598479958",
+            "message": "I successfully submitted your time entry.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:27:59.958Z",
+            "createdOn": "2025-08-07T20:27:59.958Z",
+            "components": [
+              {
+                "_id": "cp-2000728b-f5f0-546e-828c-394c7fd4dd52",
+                "cT": "text",
+                "data": {
+                  "text": "I successfully submitted your time entry."
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598480306",
+            "message": "Do you want to submit another absence?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:28:00.306Z",
+            "createdOn": "2025-08-07T20:28:00.306Z",
+            "components": [
+              {
+                "_id": "cp-a56c7450-e486-5a13-aead-0eace67d56d7",
+                "cT": "text",
+                "data": {
+                  "text": "Do you want to submit another absence?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598489395",
+            "message": "No",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:28:09.395Z",
+            "createdOn": "2025-08-07T20:28:09.395Z",
+            "components": [
+              {
+                "_id": "cp-2e3b234d-1ee8-5114-bf0f-f39ae9a4ee15",
+                "cT": "text",
+                "data": {
+                  "text": "No"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598490220",
+            "message": "What else can I help you with?",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:28:10.220Z",
+            "createdOn": "2025-08-07T20:28:10.220Z",
+            "components": [
+              {
+                "_id": "cp-bf711a90-cb03-551e-8f3d-0eb23023fcbb",
+                "cT": "text",
+                "data": {
+                  "text": "What else can I help you with?"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598496735",
+            "message": "Thats all",
+            "message_type": "user",
+            "type": "incoming",
+            "timestamp": "2025-08-07T20:28:16.735Z",
+            "createdOn": "2025-08-07T20:28:16.735Z",
+            "components": [
+              {
+                "_id": "cp-6afc7199-47ae-56d3-b2cd-0c9ca7ccc916",
+                "cT": "text",
+                "data": {
+                  "text": "Thats all"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754598497327",
+            "message": "Thank you for calling. Goodbye!",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:28:17.327Z",
+            "createdOn": "2025-08-07T20:28:17.327Z",
+            "components": [
+              {
+                "_id": "cp-2257dfe7-fe67-52cb-b3cd-e6b337978125",
+                "cT": "text",
+                "data": {
+                  "text": "Thank you for calling. Goodbye!"
+                },
+                "thumbnails": []
+              }
+            ]
+          },
+          {
+            "messageId": "68950bece3804084745c34ce_1754599433675",
+            "message": "I am Charles undefined as I have not received any input from you. We can start over when you need.",
+            "message_type": "bot",
+            "type": "outgoing",
+            "timestamp": "2025-08-07T20:43:53.675Z",
+            "createdOn": "2025-08-07T20:43:53.675Z",
+            "components": [
+              {
+                "_id": "cp-30eedc97-3fc7-50f7-a8e7-9471b740733d",
+                "cT": "text",
+                "data": {
+                  "text": "I am Charles undefined as I have not received any input from you. We can start over when you need."
+                },
+                "thumbnails": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "dropOff": []
+  },
+  "conversationMessages": [
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754597991615",
+      "message": "Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:19:51.615Z",
+      "createdOn": "2025-08-07T20:19:51.615Z",
+      "components": [
+        {
+          "_id": "cp-3f2a7ee8-c2c5-5109-96b5-fec9ebae3460",
+          "cT": "text",
+          "data": {
+            "text": "{\"type\":\"command\",\"command\":\"redirect\",\"queueCommand\":false,\"data\":[{\"verb\":\"config\",\"synthesizer\":{\"vendor\":\"microsoft\",\"voice\":\"en-US-AvaMultilingualNeural\",\"language\":\"en-US\"},\"recognizer\":{\"vendor\":\"microsoft\",\"language\":\"en-US\",\"punctuation\":false,\"azureOptions\":{\"speechSegmentationSilenceTimeoutMs\":2000}},\"record\":{\"recordingID\":\"68950a667db0bd677dc37c6f\",\"siprecServerURL\":[\"3.217.118.136:5068\",\"3.216.241.238:5068\"],\"headers\":{\"x-audc-call-id\":\"68950a667db0bd677dc37c6f\"},\"action\":\"startCallRecording\"}},{\"verb\":\"gather\",\"actionHook\":\"/actions/hooks\",\"input\":[\"digits\",\"speech\"],\"interDigitTimeout\":2,\"minDigits\":1,\"finishOnKey\":\"#\",\"numDigits\":8,\"say\":{\"text\":[\"Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?\"]},\"bargein\":false,\"listenDuringPrompt\":false,\"timeout\":10,\"dtmfBargein\":false}]}"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598005046",
+      "message": "Track time",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:20:05.046Z",
+      "createdOn": "2025-08-07T20:20:05.046Z",
+      "components": [
+        {
+          "_id": "cp-ccd2aec3-cfa7-57a9-83d5-def685a91be7",
+          "cT": "text",
+          "data": {
+            "text": "Track time"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598005996",
+      "message": "I can help you with that.First,let's look up your account.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:20:05.996Z",
+      "createdOn": "2025-08-07T20:20:05.996Z",
+      "components": [
+        {
+          "_id": "cp-2a3f633c-7d3b-555f-898b-b247901d51e2",
+          "cT": "text",
+          "data": {
+            "text": "<speak><prosody rate=\"-10%\">I can help you with that.First,let's look up your account.</prosody></speak>\n"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598006571",
+      "message": "What's your leave request number?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:20:06.571Z",
+      "createdOn": "2025-08-07T20:20:06.571Z",
+      "components": [
+        {
+          "_id": "cp-2f1a0574-f679-59a7-99ea-297e688668be",
+          "cT": "text",
+          "data": {
+            "text": "What's your leave request number?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598017724",
+      "message": "555826",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:20:17.724Z",
+      "createdOn": "2025-08-07T20:20:17.724Z",
+      "components": [
+        {
+          "_id": "cp-951d53fc-7dd4-52c3-b744-0f404788e1f6",
+          "cT": "text",
+          "data": {
+            "text": "555826"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598018411",
+      "message": "I didn't catch that. Please say or enter your leave request number.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:20:18.411Z",
+      "createdOn": "2025-08-07T20:20:18.411Z",
+      "components": [
+        {
+          "_id": "cp-629d5ffc-6b42-5a64-ba9a-b0c74853a7c3",
+          "cT": "text",
+          "data": {
+            "text": "I didn't catch that. Please say or enter your leave request number."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598029263",
+      "message": "555826",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:20:29.263Z",
+      "createdOn": "2025-08-07T20:20:29.263Z",
+      "components": [
+        {
+          "_id": "cp-47d761cf-b2f1-5e04-8146-910cd67272ad",
+          "cT": "text",
+          "data": {
+            "text": "555826"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598029886",
+      "message": "what's your  employee number?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:20:29.886Z",
+      "createdOn": "2025-08-07T20:20:29.886Z",
+      "components": [
+        {
+          "_id": "cp-14a12951-1be7-5e43-b4fa-e25720c27cc4",
+          "cT": "text",
+          "data": {
+            "text": "what's your  employee number?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598037854",
+      "message": "47674",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:20:37.854Z",
+      "createdOn": "2025-08-07T20:20:37.854Z",
+      "components": [
+        {
+          "_id": "cp-c5b32438-a41d-57ae-b94d-2425395dd5b3",
+          "cT": "text",
+          "data": {
+            "text": "47674"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598038694",
+      "message": "And your zip code?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:20:38.694Z",
+      "createdOn": "2025-08-07T20:20:38.694Z",
+      "components": [
+        {
+          "_id": "cp-c5be1747-90a5-5678-829e-6ec6a2b251eb",
+          "cT": "text",
+          "data": {
+            "text": "And your zip code?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598047003",
+      "message": "18014",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:20:47.003Z",
+      "createdOn": "2025-08-07T20:20:47.003Z",
+      "components": [
+        {
+          "_id": "cp-5fde4935-4baa-5823-a98b-67d16651687a",
+          "cT": "text",
+          "data": {
+            "text": "18014"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598049020",
+      "message": "Thanks for verifying your account.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:20:49.020Z",
+      "createdOn": "2025-08-07T20:20:49.020Z",
+      "components": [
+        {
+          "_id": "cp-b3f9c6f5-7bab-564e-bde1-01e4f3691141",
+          "cT": "text",
+          "data": {
+            "text": "Thanks for verifying your account."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598049703",
+      "message": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:20:49.703Z",
+      "createdOn": "2025-08-07T20:20:49.703Z",
+      "components": [
+        {
+          "_id": "cp-e50a3ad8-f1bb-5b65-ad89-b61b5e1dfa25",
+          "cT": "text",
+          "data": {
+            "text": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598068128",
+      "message": "Yes",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:21:08.128Z",
+      "createdOn": "2025-08-07T20:21:08.128Z",
+      "components": [
+        {
+          "_id": "cp-62ae8299-6afd-5e33-abd6-d2e617f68aa3",
+          "cT": "text",
+          "data": {
+            "text": "Yes"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598068649",
+      "message": "What's the date of the absence?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:21:08.649Z",
+      "createdOn": "2025-08-07T20:21:08.649Z",
+      "components": [
+        {
+          "_id": "cp-5c49c9e1-eadf-5481-84a9-cda8c0c723cf",
+          "cT": "text",
+          "data": {
+            "text": "What's the date of the absence?\n"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598078824",
+      "message": "August 7th 2025",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:21:18.824Z",
+      "createdOn": "2025-08-07T20:21:18.824Z",
+      "components": [
+        {
+          "_id": "cp-5ec79a2a-4a3e-508f-bd9e-37eae09fa0a1",
+          "cT": "text",
+          "data": {
+            "text": "August 7th 2025"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598079592",
+      "message": "And how much time did you miss? Please provide hours and minutes.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:21:19.592Z",
+      "createdOn": "2025-08-07T20:21:19.592Z",
+      "components": [
+        {
+          "_id": "cp-a8a76bf6-4f41-598c-8716-4f745e24b532",
+          "cT": "text",
+          "data": {
+            "text": "And how much time did you miss? Please provide hours and minutes."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598089661",
+      "message": "10 hours 0 minutes",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:21:29.661Z",
+      "createdOn": "2025-08-07T20:21:29.661Z",
+      "components": [
+        {
+          "_id": "cp-5b482139-23de-5a19-bf52-0b60e42b513a",
+          "cT": "text",
+          "data": {
+            "text": "10 hours 0 minutes"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598090450",
+      "message": "Lastly, what's the reason for your absence? You can say \"treatment or appointment\"; \"episode of incapacity\"; or, \"something else\".",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:21:30.450Z",
+      "createdOn": "2025-08-07T20:21:30.450Z",
+      "components": [
+        {
+          "_id": "cp-6dd3f9b6-7fe1-5505-9f8e-e936c65a7750",
+          "cT": "text",
+          "data": {
+            "text": "Lastly, what's the reason for your absence? You can say &quot;treatment or appointment&quot;; &quot;episode of incapacity&quot;; or, &quot;something else&quot;."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598106428",
+      "message": "Episode of Incapacity",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:21:46.428Z",
+      "createdOn": "2025-08-07T20:21:46.428Z",
+      "components": [
+        {
+          "_id": "cp-de788cb1-3c18-5178-9d1c-e4a2916f0847",
+          "cT": "text",
+          "data": {
+            "text": "Episode of Incapacity"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598107200",
+      "message": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:21:47.200Z",
+      "createdOn": "2025-08-07T20:21:47.200Z",
+      "components": [
+        {
+          "_id": "cp-917423ed-f947-50e2-95b1-b41f74225f2d",
+          "cT": "text",
+          "data": {
+            "text": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598121751",
+      "message": "Ye",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:22:01.751Z",
+      "createdOn": "2025-08-07T20:22:01.751Z",
+      "components": [
+        {
+          "_id": "cp-3f5e1962-8f84-513b-a3a1-da53ded723dd",
+          "cT": "text",
+          "data": {
+            "text": "Ye"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598122231",
+      "message": "I didn't quite catch that. If you're logging an absence for 7th August 2025 , for 10 hours; and the reason for the absence is Episode of Incapacity, press 1. If not, 2.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:02.231Z",
+      "createdOn": "2025-08-07T20:22:02.231Z",
+      "components": [
+        {
+          "_id": "cp-c2805844-1a3c-5e7b-ae20-34428915ab44",
+          "cT": "text",
+          "data": {
+            "text": "I didn't quite catch that. If you're logging an absence for 7th August 2025 , for 10 hours; and the reason for the absence is Episode of Incapacity, press 1. If not, 2.\n"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598139350",
+      "message": "1",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:22:19.350Z",
+      "createdOn": "2025-08-07T20:22:19.350Z",
+      "components": [
+        {
+          "_id": "cp-8a424569-b604-59cf-abb3-dd3317536565",
+          "cT": "text",
+          "data": {
+            "text": "1"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598140491",
+      "message": "I successfully submitted your time entry.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:20.491Z",
+      "createdOn": "2025-08-07T20:22:20.491Z",
+      "components": [
+        {
+          "_id": "cp-33ce788c-defc-5c75-a62e-a44c5703c8b4",
+          "cT": "text",
+          "data": {
+            "text": "I successfully submitted your time entry."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598140875",
+      "message": "Do you want to submit another absence?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:20.875Z",
+      "createdOn": "2025-08-07T20:22:20.875Z",
+      "components": [
+        {
+          "_id": "cp-50eea4f8-6136-556f-b57f-8712c94f85d0",
+          "cT": "text",
+          "data": {
+            "text": "Do you want to submit another absence?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598147018",
+      "message": "Yes",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:22:27.018Z",
+      "createdOn": "2025-08-07T20:22:27.018Z",
+      "components": [
+        {
+          "_id": "cp-1df592fa-2356-546e-ad96-bfcb981e980d",
+          "cT": "text",
+          "data": {
+            "text": "Yes"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598147624",
+      "message": "Is it for the same leave request number?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:27.624Z",
+      "createdOn": "2025-08-07T20:22:27.624Z",
+      "components": [
+        {
+          "_id": "cp-29a2ac1f-66b8-5619-9d27-613be26fc4a2",
+          "cT": "text",
+          "data": {
+            "text": "Is it for the same leave request number?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598152925",
+      "message": "2",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:22:32.925Z",
+      "createdOn": "2025-08-07T20:22:32.925Z",
+      "components": [
+        {
+          "_id": "cp-70e57bd8-d228-50a2-9337-ede8e63b749d",
+          "cT": "text",
+          "data": {
+            "text": "2"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598153606",
+      "message": "Okay",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:33.606Z",
+      "createdOn": "2025-08-07T20:22:33.606Z",
+      "components": [
+        {
+          "_id": "cp-2482d2dd-6b0d-5070-b075-2e73a549265d",
+          "cT": "text",
+          "data": {
+            "text": "Okay"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598153969",
+      "message": "Do you have the leave request number?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:33.969Z",
+      "createdOn": "2025-08-07T20:22:33.969Z",
+      "components": [
+        {
+          "_id": "cp-1a7fb5eb-63c0-581a-980e-85b789d9774a",
+          "cT": "text",
+          "data": {
+            "text": "Do you have the leave request number?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598161157",
+      "message": "No were done here",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:22:41.157Z",
+      "createdOn": "2025-08-07T20:22:41.157Z",
+      "components": [
+        {
+          "_id": "cp-8254bca8-c850-5d91-8435-7aefada6d56f",
+          "cT": "text",
+          "data": {
+            "text": "No were done here"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598161995",
+      "message": "Let me pull up your eligible leave requests.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:41.995Z",
+      "createdOn": "2025-08-07T20:22:41.995Z",
+      "components": [
+        {
+          "_id": "cp-04972195-35ba-52df-b8f3-0c0691c8fb5d",
+          "cT": "text",
+          "data": {
+            "text": "Let me pull up your eligible leave requests."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598162490",
+      "message": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:22:42.490Z",
+      "createdOn": "2025-08-07T20:22:42.490Z",
+      "components": [
+        {
+          "_id": "cp-c3539bf1-9652-55db-aa44-d2c0818ac3ac",
+          "cT": "text",
+          "data": {
+            "text": "I found 5558266 leave request. The leave reason is Employee's Serious Health Condition, and it's dated 2025-06-07. Is that the right one?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598183663",
+      "message": "I am done I dont need to file anything else",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:23:03.663Z",
+      "createdOn": "2025-08-07T20:23:03.663Z",
+      "components": [
+        {
+          "_id": "cp-20b2ef37-a1f0-59a8-af58-3d158a762be4",
+          "cT": "text",
+          "data": {
+            "text": "I am done I dont need to file anything else"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598184264",
+      "message": "What's the date of the absence?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:23:04.264Z",
+      "createdOn": "2025-08-07T20:23:04.264Z",
+      "components": [
+        {
+          "_id": "cp-a2d98178-bcd3-5ff6-90e0-3baf9b750404",
+          "cT": "text",
+          "data": {
+            "text": "What's the date of the absence?\n"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598205063",
+      "message": "OK you said talking complete sentence You couldnt even understand the  word Yes Im done I had one absence August 7th 2025 Thats it Jesus  I want to record this but   work on your",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:23:25.063Z",
+      "createdOn": "2025-08-07T20:23:25.063Z",
+      "components": [
+        {
+          "_id": "cp-aad7255e-be18-5e0c-955c-0298ae6150e6",
+          "cT": "text",
+          "data": {
+            "text": "OK you said talking complete sentence You couldnt even understand the  word Yes Im done I had one absence August 7th 2025 Thats it Jesus  I want to record this but   work on your "
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598206022",
+      "message": "And how much time did you miss? Please provide hours and minutes.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:23:26.022Z",
+      "createdOn": "2025-08-07T20:23:26.022Z",
+      "components": [
+        {
+          "_id": "cp-8e912180-9b69-5a16-84cb-6eac8b885475",
+          "cT": "text",
+          "data": {
+            "text": "And how much time did you miss? Please provide hours and minutes."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598216654",
+      "message": "Did you track this Oh not done here Whats",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:23:36.654Z",
+      "createdOn": "2025-08-07T20:23:36.654Z",
+      "components": [
+        {
+          "_id": "cp-3a45d3bb-914a-5aef-8966-32f7c3ccd611",
+          "cT": "text",
+          "data": {
+            "text": "Did you track this Oh not done here Whats"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598217207",
+      "message": "I didn't catch that. Please say or enter the number of hours and minutes you missed, using two digits for the hours, and two digits for the minutes.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:23:37.207Z",
+      "createdOn": "2025-08-07T20:23:37.207Z",
+      "components": [
+        {
+          "_id": "cp-872c35f6-f67d-5607-b011-7ce374c14ced",
+          "cT": "text",
+          "data": {
+            "text": "I didn't catch that. Please say or enter the number of hours and minutes you missed, using two digits for the hours, and two digits for the minutes.\n"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598233285",
+      "message": "10 hours 0 minutes",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:23:53.285Z",
+      "createdOn": "2025-08-07T20:23:53.285Z",
+      "components": [
+        {
+          "_id": "cp-969239c0-2b15-5941-832d-5924d397710d",
+          "cT": "text",
+          "data": {
+            "text": "10 hours 0 minutes"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598234100",
+      "message": "Lastly, what's the reason for your absence? You can say \"treatment or appointment\"; \"episode of incapacity\"; or, \"something else\".",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:23:54.100Z",
+      "createdOn": "2025-08-07T20:23:54.100Z",
+      "components": [
+        {
+          "_id": "cp-4153af9a-0393-53b6-a5ed-748abedf854c",
+          "cT": "text",
+          "data": {
+            "text": "Lastly, what's the reason for your absence? You can say &quot;treatment or appointment&quot;; &quot;episode of incapacity&quot;; or, &quot;something else&quot;."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598249767",
+      "message": "Episode of Incapacity",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:24:09.767Z",
+      "createdOn": "2025-08-07T20:24:09.767Z",
+      "components": [
+        {
+          "_id": "cp-f30da12b-cb58-594c-bf37-5000947d28df",
+          "cT": "text",
+          "data": {
+            "text": "Episode of Incapacity"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598250499",
+      "message": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:24:10.499Z",
+      "createdOn": "2025-08-07T20:24:10.499Z",
+      "components": [
+        {
+          "_id": "cp-d226f9f6-984e-5f57-bf25-06825d610092",
+          "cT": "text",
+          "data": {
+            "text": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 10 hours. The reason for the absence is Episode of Incapacity. Is everything correct?`"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598265349",
+      "message": "Yes",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:24:25.349Z",
+      "createdOn": "2025-08-07T20:24:25.349Z",
+      "components": [
+        {
+          "_id": "cp-e20b7737-4614-5ff6-8fc3-0de9f8068110",
+          "cT": "text",
+          "data": {
+            "text": "Yes"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598266508",
+      "message": "I successfully submitted your time entry.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:24:26.508Z",
+      "createdOn": "2025-08-07T20:24:26.508Z",
+      "components": [
+        {
+          "_id": "cp-6f7a26dd-855a-596f-9ced-030a59f25a01",
+          "cT": "text",
+          "data": {
+            "text": "I successfully submitted your time entry."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598266846",
+      "message": "According to my records, You already reported leave time for the date you are adding..",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:24:26.846Z",
+      "createdOn": "2025-08-07T20:24:26.846Z",
+      "components": [
+        {
+          "_id": "cp-ffc32410-9c4b-5e54-bd53-313026f88fa8",
+          "cT": "text",
+          "data": {
+            "text": "According to my records, You already reported leave time for the date you are adding.."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598267219",
+      "message": "Do you want to submit another absence?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:24:27.219Z",
+      "createdOn": "2025-08-07T20:24:27.219Z",
+      "components": [
+        {
+          "_id": "cp-78f9401e-0dcb-5da8-8455-61df283e4850",
+          "cT": "text",
+          "data": {
+            "text": "Do you want to submit another absence?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598281369",
+      "message": "No",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:24:41.369Z",
+      "createdOn": "2025-08-07T20:24:41.369Z",
+      "components": [
+        {
+          "_id": "cp-162eff57-aaf4-58df-bdc5-dd9ec03e4ac0",
+          "cT": "text",
+          "data": {
+            "text": "No"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598282161",
+      "message": "What else can I help you with?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:24:42.161Z",
+      "createdOn": "2025-08-07T20:24:42.161Z",
+      "components": [
+        {
+          "_id": "cp-8bf60655-49f6-5cd1-b517-1def1319b9d8",
+          "cT": "text",
+          "data": {
+            "text": "What else can I help you with?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598289714",
+      "message": "Thats it were done Goodbye",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:24:49.714Z",
+      "createdOn": "2025-08-07T20:24:49.714Z",
+      "components": [
+        {
+          "_id": "cp-43d0ca55-0b50-5092-bee8-b20d76fc7c5c",
+          "cT": "text",
+          "data": {
+            "text": "Thats it were done Goodbye"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754598290338",
+      "message": "Thank you for calling. Goodbye!",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:24:50.338Z",
+      "createdOn": "2025-08-07T20:24:50.338Z",
+      "components": [
+        {
+          "_id": "cp-3ce765e6-4ddd-5de5-9493-f60b958ed73d",
+          "cT": "text",
+          "data": {
+            "text": "Thank you for calling. Goodbye!"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950a67bd9c29219edb1472_1754599243221",
+      "message": "I am Charles undefined as I have not received any input from you. We can start over when you need.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:40:43.221Z",
+      "createdOn": "2025-08-07T20:40:43.221Z",
+      "components": [
+        {
+          "_id": "cp-84e28e50-bb3f-5c4d-a005-488f8a9b499a",
+          "cT": "text",
+          "data": {
+            "text": "I am Charles undefined as I have not received any input from you. We can start over when you need."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950a67bd9c29219edb1472"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598380609",
+      "message": "Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:26:20.609Z",
+      "createdOn": "2025-08-07T20:26:20.609Z",
+      "components": [
+        {
+          "_id": "cp-ee79b162-186b-5791-a314-933252103335",
+          "cT": "text",
+          "data": {
+            "text": "{\"type\":\"command\",\"command\":\"redirect\",\"queueCommand\":false,\"data\":[{\"verb\":\"config\",\"synthesizer\":{\"vendor\":\"microsoft\",\"voice\":\"en-US-AvaMultilingualNeural\",\"language\":\"en-US\"},\"recognizer\":{\"vendor\":\"microsoft\",\"language\":\"en-US\",\"punctuation\":false,\"azureOptions\":{\"speechSegmentationSilenceTimeoutMs\":2000}},\"record\":{\"recordingID\":\"68950bebdc76c7ba978e05f9\",\"siprecServerURL\":[\"3.217.118.136:5068\",\"3.216.241.238:5068\"],\"headers\":{\"x-audc-call-id\":\"68950bebdc76c7ba978e05f9\"},\"action\":\"startCallRecording\"}},{\"verb\":\"gather\",\"actionHook\":\"/actions/hooks\",\"input\":[\"digits\",\"speech\"],\"interDigitTimeout\":2,\"minDigits\":1,\"finishOnKey\":\"#\",\"numDigits\":8,\"say\":{\"text\":[\"Hello. You can talk to me in complete sentences about claim status, time entry, and more. So, how can I help you today?\"]},\"bargein\":false,\"listenDuringPrompt\":false,\"timeout\":10,\"dtmfBargein\":false}]}"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598398285",
+      "message": "I need to report time for FMLA leave",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:26:38.285Z",
+      "createdOn": "2025-08-07T20:26:38.285Z",
+      "components": [
+        {
+          "_id": "cp-b4e67a3e-8368-5a9f-880e-8164d14d51f2",
+          "cT": "text",
+          "data": {
+            "text": "I need to report time for FMLA leave"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598399135",
+      "message": "I can help you with that.First,let's look up your account.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:26:39.135Z",
+      "createdOn": "2025-08-07T20:26:39.135Z",
+      "components": [
+        {
+          "_id": "cp-90732fea-2eff-5f2a-b3d2-d37f76b86d00",
+          "cT": "text",
+          "data": {
+            "text": "<speak><prosody rate=\"-10%\">I can help you with that.First,let's look up your account.</prosody></speak>\n"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598399584",
+      "message": "What's your leave request number?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:26:39.584Z",
+      "createdOn": "2025-08-07T20:26:39.584Z",
+      "components": [
+        {
+          "_id": "cp-eaf2f44e-412f-5109-bc7a-71822eeb746d",
+          "cT": "text",
+          "data": {
+            "text": "What's your leave request number?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598411629",
+      "message": "5591045",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:26:51.629Z",
+      "createdOn": "2025-08-07T20:26:51.629Z",
+      "components": [
+        {
+          "_id": "cp-7404bd0f-fb7f-5bee-a571-c7815838a16d",
+          "cT": "text",
+          "data": {
+            "text": "5591045"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598412391",
+      "message": "And your zip code?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:26:52.391Z",
+      "createdOn": "2025-08-07T20:26:52.391Z",
+      "components": [
+        {
+          "_id": "cp-5487acf4-858f-52bd-9097-c4d1e97d6ff2",
+          "cT": "text",
+          "data": {
+            "text": "And your zip code?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598420739",
+      "message": "74107",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:27:00.739Z",
+      "createdOn": "2025-08-07T20:27:00.739Z",
+      "components": [
+        {
+          "_id": "cp-16c14306-e8de-5664-8207-96078f9546a1",
+          "cT": "text",
+          "data": {
+            "text": "74107"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598422088",
+      "message": "Thanks for verifying your account.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:27:02.088Z",
+      "createdOn": "2025-08-07T20:27:02.088Z",
+      "components": [
+        {
+          "_id": "cp-6b6d083c-d762-54fa-aa7b-102193a122dd",
+          "cT": "text",
+          "data": {
+            "text": "Thanks for verifying your account."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598423395",
+      "message": "What's the date of the absence?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:27:03.395Z",
+      "createdOn": "2025-08-07T20:27:03.395Z",
+      "components": [
+        {
+          "_id": "cp-c4a79543-995c-5337-b564-edeeb2b83c4e",
+          "cT": "text",
+          "data": {
+            "text": "What's the date of the absence?\n"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598433887",
+      "message": "August 7th 2025",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:27:13.887Z",
+      "createdOn": "2025-08-07T20:27:13.887Z",
+      "components": [
+        {
+          "_id": "cp-02a3b425-9d15-579e-ab57-8156deb07c7b",
+          "cT": "text",
+          "data": {
+            "text": "August 7th 2025"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598434670",
+      "message": "And how much time did you miss? Please provide hours and minutes.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:27:14.670Z",
+      "createdOn": "2025-08-07T20:27:14.670Z",
+      "components": [
+        {
+          "_id": "cp-398614bf-fa02-5df7-b29a-0c853851d448",
+          "cT": "text",
+          "data": {
+            "text": "And how much time did you miss? Please provide hours and minutes."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598445913",
+      "message": "Three hours",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:27:25.913Z",
+      "createdOn": "2025-08-07T20:27:25.913Z",
+      "components": [
+        {
+          "_id": "cp-a35c3e0c-d363-5f16-ad5d-9db426c7bc55",
+          "cT": "text",
+          "data": {
+            "text": "Three hours"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598446781",
+      "message": "Lastly, what's the reason for your absence? You can say \"treatment or appointment\"; \"episode of incapacity\"; or, \"something else\".",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:27:26.781Z",
+      "createdOn": "2025-08-07T20:27:26.781Z",
+      "components": [
+        {
+          "_id": "cp-e0d76b60-1149-52e9-a14f-0475b16c1f1c",
+          "cT": "text",
+          "data": {
+            "text": "Lastly, what's the reason for your absence? You can say &quot;treatment or appointment&quot;; &quot;episode of incapacity&quot;; or, &quot;something else&quot;."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598461593",
+      "message": "Appointment for my mother",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:27:41.593Z",
+      "createdOn": "2025-08-07T20:27:41.593Z",
+      "components": [
+        {
+          "_id": "cp-a9917e60-9ea3-51d5-97d5-5fffc4f832d3",
+          "cT": "text",
+          "data": {
+            "text": "Appointment for my mother"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598462304",
+      "message": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 3 hours. The reason for the absence is Treatment Appointment. Is everything correct?`",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:27:42.304Z",
+      "createdOn": "2025-08-07T20:27:42.304Z",
+      "components": [
+        {
+          "_id": "cp-faa9ee2f-a382-59b5-a0e9-3e4a2755f83b",
+          "cT": "text",
+          "data": {
+            "text": "Let's confirm everything is correct. You're submitting an absence for 7th August 2025 for 3 hours. The reason for the absence is Treatment Appointment. Is everything correct?`"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598478814",
+      "message": "Yes",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:27:58.814Z",
+      "createdOn": "2025-08-07T20:27:58.814Z",
+      "components": [
+        {
+          "_id": "cp-1eddcaeb-0aa6-57df-91b6-0b8cbc9dc146",
+          "cT": "text",
+          "data": {
+            "text": "Yes"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598479958",
+      "message": "I successfully submitted your time entry.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:27:59.958Z",
+      "createdOn": "2025-08-07T20:27:59.958Z",
+      "components": [
+        {
+          "_id": "cp-2000728b-f5f0-546e-828c-394c7fd4dd52",
+          "cT": "text",
+          "data": {
+            "text": "I successfully submitted your time entry."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598480306",
+      "message": "Do you want to submit another absence?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:28:00.306Z",
+      "createdOn": "2025-08-07T20:28:00.306Z",
+      "components": [
+        {
+          "_id": "cp-a56c7450-e486-5a13-aead-0eace67d56d7",
+          "cT": "text",
+          "data": {
+            "text": "Do you want to submit another absence?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598489395",
+      "message": "No",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:28:09.395Z",
+      "createdOn": "2025-08-07T20:28:09.395Z",
+      "components": [
+        {
+          "_id": "cp-2e3b234d-1ee8-5114-bf0f-f39ae9a4ee15",
+          "cT": "text",
+          "data": {
+            "text": "No"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598490220",
+      "message": "What else can I help you with?",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:28:10.220Z",
+      "createdOn": "2025-08-07T20:28:10.220Z",
+      "components": [
+        {
+          "_id": "cp-bf711a90-cb03-551e-8f3d-0eb23023fcbb",
+          "cT": "text",
+          "data": {
+            "text": "What else can I help you with?"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598496735",
+      "message": "Thats all",
+      "message_type": "user",
+      "type": "incoming",
+      "timestamp": "2025-08-07T20:28:16.735Z",
+      "createdOn": "2025-08-07T20:28:16.735Z",
+      "components": [
+        {
+          "_id": "cp-6afc7199-47ae-56d3-b2cd-0c9ca7ccc916",
+          "cT": "text",
+          "data": {
+            "text": "Thats all"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754598497327",
+      "message": "Thank you for calling. Goodbye!",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:28:17.327Z",
+      "createdOn": "2025-08-07T20:28:17.327Z",
+      "components": [
+        {
+          "_id": "cp-2257dfe7-fe67-52cb-b3cd-e6b337978125",
+          "cT": "text",
+          "data": {
+            "text": "Thank you for calling. Goodbye!"
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    },
+    {
+      "messageId": "68950bece3804084745c34ce_1754599433675",
+      "message": "I am Charles undefined as I have not received any input from you. We can start over when you need.",
+      "message_type": "bot",
+      "type": "outgoing",
+      "timestamp": "2025-08-07T20:43:53.675Z",
+      "createdOn": "2025-08-07T20:43:53.675Z",
+      "components": [
+        {
+          "_id": "cp-30eedc97-3fc7-50f7-a8e7-9471b740733d",
+          "cT": "text",
+          "data": {
+            "text": "I am Charles undefined as I have not received any input from you. We can start over when you need."
+          },
+          "thumbnails": []
+        }
+      ],
+      "session_id": "68950bece3804084745c34ce"
+    }
+  ]
+}
