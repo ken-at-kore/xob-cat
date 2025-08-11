@@ -6,9 +6,9 @@
  * 
  * Usage:
  * 1. Set environment variables in .env.local:
- *    TEST_BOT_ID="***REMOVED***"
- *    TEST_CLIENT_ID="***REMOVED***"
- *    TEST_CLIENT_SECRET="***REMOVED***"
+ *    TEST_BOT_ID="st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+ *    TEST_CLIENT_ID="cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+ *    TEST_CLIENT_SECRET="your-client-secret-here"
  *    TEST_OPENAI_API_KEY="sk-your-real-openai-key"
  * 
  * 2. Run the test:

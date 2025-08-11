@@ -1,5 +1,9 @@
 /**
  * Test if credentials are being detected correctly as real vs mock
+ * Real credentials should be set in .env.local file:
+ * TEST_BOT_ID=st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * TEST_CLIENT_ID=cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * TEST_CLIENT_SECRET=your-client-secret-here
  */
 
 // Mock credentials from the service
@@ -9,11 +13,21 @@ const MOCK_CREDENTIALS = {
   CLIENT_SECRET: 'mock-client-secret-12345'
 };
 
-// Real credentials
+// Check for required environment variables
+const requiredVars = ['TEST_BOT_ID', 'TEST_CLIENT_ID', 'TEST_CLIENT_SECRET'];
+const missingVars = requiredVars.filter(varName => !process.env[varName]);
+
+if (missingVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingVars.join(', '));
+  console.error('Please set these variables in your .env.local file and try again.');
+  process.exit(1);
+}
+
+// Real credentials from environment variables
 const REAL_CREDENTIALS = {
-  botId: '***REMOVED***',
-  clientId: '***REMOVED***',
-  clientSecret: '***REMOVED***'
+  botId: process.env.TEST_BOT_ID,
+  clientId: process.env.TEST_CLIENT_ID,
+  clientSecret: process.env.TEST_CLIENT_SECRET
 };
 
 function isMockCredentials(config) {

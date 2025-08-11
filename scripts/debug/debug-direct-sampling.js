@@ -1,15 +1,29 @@
 /**
  * Test SessionSamplingService directly with real credentials
+ * Credentials should be set in .env.local file:
+ * TEST_BOT_ID=st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * TEST_CLIENT_ID=cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * TEST_CLIENT_SECRET=your-client-secret-here
  */
 
 const { ServiceFactory } = require('./backend/dist/backend/src/factories/serviceFactory');
 const { SessionSamplingService } = require('./backend/dist/backend/src/services/sessionSamplingService');
 const { SWTService } = require('./backend/dist/backend/src/services/swtService');
 
+// Check for required environment variables
+const requiredVars = ['TEST_BOT_ID', 'TEST_CLIENT_ID', 'TEST_CLIENT_SECRET'];
+const missingVars = requiredVars.filter(varName => !process.env[varName]);
+
+if (missingVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingVars.join(', '));
+  console.error('Please set these variables in your .env.local file and try again.');
+  process.exit(1);
+}
+
 const credentials = {
-  botId: '***REMOVED***',
-  clientId: '***REMOVED***',
-  clientSecret: '***REMOVED***'
+  botId: process.env.TEST_BOT_ID,
+  clientId: process.env.TEST_CLIENT_ID,
+  clientSecret: process.env.TEST_CLIENT_SECRET
 };
 
 async function testDirectSampling() {
