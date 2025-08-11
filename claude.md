@@ -380,7 +380,11 @@ Environment-based service selection:
 **IMPORTANT**: Always use standardized npm scripts:
 - **Server Management**: `npm run start/stop/status` commands only
 - **Individual Servers**: Use `npm run start:frontend/backend` (not cd commands)
-- **Script Location**: All scripts in `scripts/` directory
+- **Script Organization**:
+  - Production scripts: `scripts/` directory
+  - Debug scripts: `scripts/debug/` directory (for `debug-*.js` files)
+  - Test utilities: `scripts/test-utils/` directory (for `test-*.js` standalone test files)
+  - Deployment scripts: Root directory (for `deploy-*.sh`, `package-*.sh`, etc.)
 
 ### E2E Testing Guidelines
 
