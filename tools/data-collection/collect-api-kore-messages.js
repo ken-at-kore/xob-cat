@@ -6,7 +6,7 @@ async function collectKoreMessages() {
   console.log('Collecting /api/kore/messages data for July 7, 2025 (12-1 PM ET)...');
   
   // Create data directory if it doesn't exist
-  const dataDir = '/Users/kengrafals/workspace/XOB CAT/data';
+  const dataDir = path.join(__dirname, '..', '..', 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }
