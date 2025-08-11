@@ -1,15 +1,29 @@
 /**
  * Test if the provided Kore.ai credentials are valid and have data
+ * Credentials should be set in .env.local file:
+ * TEST_BOT_ID=st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * TEST_CLIENT_ID=cs-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * TEST_CLIENT_SECRET=your-client-secret-here
  */
 
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
-// The credentials you provided
+// Check for required environment variables
+const requiredVars = ['TEST_BOT_ID', 'TEST_CLIENT_ID', 'TEST_CLIENT_SECRET'];
+const missingVars = requiredVars.filter(varName => !process.env[varName]);
+
+if (missingVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingVars.join(', '));
+  console.error('Please set these variables in your .env.local file and try again.');
+  process.exit(1);
+}
+
+// The credentials from environment variables
 const credentials = {
-  botId: 'st-90549a67-7f19-5074-afcf-3120db51a26d',
-  clientId: 'cs-2a4298ea-947c-5a42-9846-670c660da0fd',
-  clientSecret: 'CvRFRrwOOeUJLca4twBWJWdaf1TKaOa91UgTnLSCKDs='
+  botId: process.env.TEST_BOT_ID,
+  clientId: process.env.TEST_CLIENT_ID,
+  clientSecret: process.env.TEST_CLIENT_SECRET
 };
 
 function generateJwtToken(clientId, clientSecret) {
