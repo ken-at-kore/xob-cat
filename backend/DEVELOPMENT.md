@@ -82,7 +82,6 @@ backend/
 │   ├── routes/            # Route tests
 │   └── utils/             # Utility tests
 ├── config/                # Configuration files
-├── output/                # Generated output files
 └── dist/                  # Compiled output
 ```
 

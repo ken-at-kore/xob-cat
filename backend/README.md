@@ -266,7 +266,6 @@ backend/
 │   │   └── configManager.ts
 │   └── index.ts           # Application entry point
 ├── __tests__/             # Test files
-├── output/                # Generated output files
 ├── config/                # Configuration files
 └── dist/                  # Compiled output
 ```
