@@ -6,7 +6,7 @@ async function collectConversationHistory() {
   console.log('Collecting session history for July 7, 2025 (12-1 PM ET / 5-6 PM UTC)...');
   
   // Create data directory if it doesn't exist
-  const dataDir = '/Users/kengrafals/workspace/XOB CAT/data';
+  const dataDir = path.join(__dirname, '..', '..', 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }

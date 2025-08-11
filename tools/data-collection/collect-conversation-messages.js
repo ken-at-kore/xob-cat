@@ -53,7 +53,7 @@ async function collectConversationMessages() {
   console.log('Collecting conversation messages for July 7, 2025 1-hour sessions...');
   
   // Read the session history data to get session IDs
-  const dataDir = '/Users/kengrafals/workspace/XOB CAT/data';
+  const dataDir = path.join(__dirname, '..', '..', 'data');
   const sessionHistoryFile = path.join(dataDir, 'session-history-july-7-1hour-2025-07-23T14-23-56.json');
   
   console.log('📖 Reading session history data...');
