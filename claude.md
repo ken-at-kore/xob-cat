@@ -2,6 +2,26 @@
 
 This file (`claude.md` in the project root) provides guidance to Claude Code when working with this repository.
 
+## 🔐 SECURITY - CRITICAL
+
+**NEVER hardcode credentials.** Always use environment variables:
+
+```javascript
+// ❌ WRONG
+const botId = '***REMOVED***';
+
+// ✅ CORRECT  
+const botId = process.env.TEST_BOT_ID;
+if (!botId) throw new Error('Missing TEST_BOT_ID in .env.local');
+```
+
+**Before committing, run:**
+```bash
+git grep -E "(st-[a-f0-9\-]{36}|cs-[a-f0-9\-]{36}|sk-[A-Za-z0-9]{20,})" -- ':(exclude).env.local'
+```
+
+**If credentials leak:** Immediately rotate them and clean git history.
+
 ## Production Environment
 
 - **Production URL**: https://www.koreai-xobcat.com
@@ -371,6 +391,8 @@ Environment-based service selection:
 - **TDD Approach**: Write failing tests first, then implement
 - **Conventional Commits**: `<type>(scope): message` format
 - **Pre-commit**: Run `npm run typecheck` before committing
+- **🔐 SECURITY**: **NEVER** hardcode credentials - always use environment variables
+- **Credential Check**: Run `git grep -E "(st-[a-f0-9\-]{36}|cs-[a-f0-9\-]{36}|sk-[A-Za-z0-9]{20,})" -- ':(exclude).env.local'` before committing
 - **Update claude.md**: When workflows, scripts, or structure changes
 
 ### Recent Quality Improvements (August 2025)
