@@ -476,7 +476,27 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
     let baseProgress = 0;
     
     if (progress.phase === 'sampling') {
-      if (progress.samplingProgress) {
+      // Enhanced progress calculation for sampling phase with message retrieval
+      if ((progress as any).messageProgress) {
+        // When message retrieval is happening, show more detailed progress
+        const sessionDiscoveryWeight = 0.4; // 40% for finding sessions
+        const messageRetrievalWeight = 0.6;  // 60% for retrieving message details
+        
+        // Session discovery progress
+        const sessionDiscoveryProgress = progress.samplingProgress ? 
+          Math.min(progress.sessionsFound / progress.samplingProgress.targetSessionCount, 1) : 1;
+        
+        // Message retrieval progress
+        const messageRetrievalProgress = (progress as any).messageProgress.totalSessions > 0 ?
+          (progress as any).messageProgress.sessionsWithMessages / (progress as any).messageProgress.totalSessions : 0;
+        
+        const totalSamplingProgress = 
+          (sessionDiscoveryProgress * sessionDiscoveryWeight) + 
+          (messageRetrievalProgress * messageRetrievalWeight);
+        
+        return Math.min(totalSamplingProgress * phaseWeights.sampling, phaseWeights.sampling);
+      } else if (progress.samplingProgress) {
+        // Original logic for session discovery without message retrieval
         const windowProgressWeight = 0.6;
         const sessionProgressWeight = 0.4;
         
@@ -573,10 +593,12 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>{progress.currentStep}</span>
               <span>
-                {progress.phase === 'sampling' && progress.samplingProgress
-                  ? `${progress.sessionsFound} / ${progress.samplingProgress.targetSessionCount} sessions • Window ${progress.samplingProgress.currentWindowIndex + 1} / ${progress.samplingProgress.totalWindows}`
-                  : progress.phase === 'sampling' 
-                    ? `${progress.sessionsFound} sessions found`
+                {progress.phase === 'sampling' && (progress as any).messageProgress
+                  ? `Retrieving details: ${(progress as any).messageProgress.sessionsWithMessages} / ${(progress as any).messageProgress.totalSessions} sessions${(progress as any).messageProgress.currentBatch ? ` • Batch ${(progress as any).messageProgress.currentBatch}/${(progress as any).messageProgress.totalBatches}` : ''}`
+                  : progress.phase === 'sampling' && progress.samplingProgress
+                    ? `${progress.sessionsFound} / ${progress.samplingProgress.targetSessionCount} sessions • Window ${progress.samplingProgress.currentWindowIndex + 1} / ${progress.samplingProgress.totalWindows}`
+                    : progress.phase === 'sampling' 
+                      ? `${progress.sessionsFound} sessions found`
                     : progress.phase === 'discovery' && (progress as any).discoveryStats
                       ? `Discovery: ${(progress as any).discoveryStats.discoveredIntents + (progress as any).discoveryStats.discoveredReasons + (progress as any).discoveryStats.discoveredLocations} classifications`
                       : progress.phase === 'parallel_processing' && (progress as any).streamsActive
@@ -595,6 +617,25 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
             {progress.phase === 'sampling' && progress.samplingProgress && (
               <div className="text-xs text-gray-500 mt-1">
                 Current window: {progress.samplingProgress.currentWindowLabel}
+              </div>
+            )}
+            {progress.phase === 'sampling' && (progress as any).messageProgress && (
+              <div className="space-y-2 mt-3">
+                <div className="text-xs text-gray-600 font-medium">Session Details Retrieval:</div>
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>Retrieved messages from {(progress as any).messageProgress.sessionsWithMessages} of {(progress as any).messageProgress.totalSessions} sessions</span>
+                  {(progress as any).messageProgress.currentBatch && (progress as any).messageProgress.totalBatches && (
+                    <span>Batch {(progress as any).messageProgress.currentBatch} / {(progress as any).messageProgress.totalBatches}</span>
+                  )}
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div 
+                    className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                    style={{ 
+                      width: `${((progress as any).messageProgress.sessionsWithMessages / (progress as any).messageProgress.totalSessions) * 100}%` 
+                    }}
+                  />
+                </div>
               </div>
             )}
             {progress.phase === 'discovery' && (progress as any).discoveryStats && (

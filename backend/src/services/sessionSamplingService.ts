@@ -31,22 +31,36 @@ export class SessionSamplingService {
       currentStep: string, 
       sessionsFound: number, 
       windowIndex: number, 
-      windowLabel: string
+      windowLabel: string,
+      messageProgress?: { 
+        sessionsWithMessages: number, 
+        totalSessions: number,
+        currentBatch?: number,
+        totalBatches?: number 
+      }
     ) => void
   ): Promise<SamplingResult> {
+    
+    const samplingStartTime = Date.now();
+    console.log(`\n🕐 ============ SESSION SAMPLING STARTED ============`);
+    console.log(`🕐 [SessionSampling] Starting session sampling at ${new Date().toISOString()}`);
     
     const timeWindows = this.generateTimeWindows(config.startDate, config.startTime);
     
     const allSessions = new Map<string, SessionWithTranscript>(); // Use Map for deduplication
     const usedWindows: TimeWindow[] = [];
 
+    const sessionDiscoveryStartTime = Date.now();
+    
     for (let i = 0; i < timeWindows.length; i++) {
       const window = timeWindows[i]!;
       const windowIndex = i;
       
+      console.log(`🔍 [SessionDiscovery] Starting window ${i + 1}/4: ${window.label}`);
       progressCallback?.(`Searching in ${window.label}...`, allSessions.size, windowIndex, window.label);
       
       try {
+        const windowStartTime = Date.now();
         const sessionsInWindow = await this.getSessionsInTimeWindow(window);
         const validSessions = this.filterValidSessions(sessionsInWindow);
 
@@ -57,15 +71,20 @@ export class SessionSamplingService {
 
         usedWindows.push(window);
         
+        const windowDuration = Date.now() - windowStartTime;
+        console.log(`✅ [SessionDiscovery] Window ${i + 1} completed in ${windowDuration}ms: found ${validSessions.length} new sessions (total: ${allSessions.size})`);
+        console.log(`⏱️  TIMING: Window ${i + 1} took ${windowDuration}ms (${(windowDuration/1000).toFixed(2)}s)`);
         progressCallback?.(`Found ${allSessions.size} sessions in ${window.label}`, allSessions.size, windowIndex, window.label);
 
         // Check if we have enough sessions
         if (allSessions.size >= config.sessionCount) {
+          const discoveryDuration = Date.now() - sessionDiscoveryStartTime;
+          console.log(`🎯 [SessionDiscovery] Target reached! Found ${allSessions.size} sessions in ${discoveryDuration}ms`);
           progressCallback?.(`Found sufficient sessions (${allSessions.size}), completing search...`, allSessions.size, windowIndex, window.label);
           break;
         }
       } catch (error) {
-        console.error(`Error processing window ${windowIndex}:`, error);
+        console.error(`❌ [SessionDiscovery] Error processing window ${windowIndex}:`, error);
         throw error;
       }
     }
@@ -81,11 +100,43 @@ export class SessionSamplingService {
     }
 
     // Random sample to target count
+    const samplingDuration = Date.now() - sessionDiscoveryStartTime;
+    console.log(`🎲 [SessionSampling] Random sampling from ${sessionArray.length} sessions to ${config.sessionCount} sessions`);
     const sampledSessions = this.randomSample(sessionArray, config.sessionCount);
 
     // Now fetch messages ONLY for the sampled sessions to avoid timeout
-    console.log(`Fetching messages for ${sampledSessions.length} sampled sessions...`);
-    const sessionsWithMessages = await this.fetchMessagesForSessions(sampledSessions);
+    const messageRetrievalStartTime = Date.now();
+    console.log(`\n📬 ============ MESSAGE RETRIEVAL STARTED ============`);
+    console.log(`📬 [MessageRetrieval] Starting message retrieval for ${sampledSessions.length} sampled sessions at ${new Date().toISOString()}`);
+    const sessionsWithMessages = await this.fetchMessagesForSessions(
+      sampledSessions, 
+      progressCallback ? (sessionsWithMessages: number, totalSessions: number, currentBatch?: number, totalBatches?: number) => {
+        console.log(`📊 [MessageProgress] Retrieved messages: ${sessionsWithMessages}/${totalSessions} sessions${currentBatch ? ` (Batch ${currentBatch}/${totalBatches})` : ''}`);
+        progressCallback(
+          `Fetching session details: ${sessionsWithMessages}/${totalSessions} sessions retrieved`,
+          allSessions.size,
+          usedWindows.length - 1,
+          usedWindows[usedWindows.length - 1]?.label || 'Unknown',
+          { 
+            sessionsWithMessages, 
+            totalSessions,
+            ...(currentBatch !== undefined && { currentBatch }),
+            ...(totalBatches !== undefined && { totalBatches })
+          }
+        );
+      } : undefined
+    );
+
+    const messageRetrievalDuration = Date.now() - messageRetrievalStartTime;
+    const totalDuration = Date.now() - samplingStartTime;
+    
+    console.log(`\n🎉 ============ SESSION SAMPLING COMPLETED ============`);
+    console.log(`⏱️  TOTAL TIME: ${totalDuration}ms (${(totalDuration/1000).toFixed(2)}s)`);
+    console.log(`⏱️  Session Discovery: ${samplingDuration}ms (${(samplingDuration/1000).toFixed(2)}s) - ${((samplingDuration/totalDuration)*100).toFixed(1)}% of total`);
+    console.log(`⏱️  Message Retrieval: ${messageRetrievalDuration}ms (${(messageRetrievalDuration/1000).toFixed(2)}s) - ${((messageRetrievalDuration/totalDuration)*100).toFixed(1)}% of total`);
+    console.log(`⏱️  Performance: ${(sessionsWithMessages.length / (totalDuration/1000)).toFixed(1)} sessions/second`);
+    console.log(`🎯 Final result: ${sessionsWithMessages.length} sessions with messages retrieved`);
+    console.log(`====================================================\n`);
 
     return {
       sessions: sessionsWithMessages,
@@ -130,7 +181,15 @@ export class SessionSamplingService {
     return shuffled.slice(0, count);
   }
 
-  private async fetchMessagesForSessions(sessions: SessionWithTranscript[]): Promise<SessionWithTranscript[]> {
+  private async fetchMessagesForSessions(
+    sessions: SessionWithTranscript[],
+    messageProgressCallback?: (
+      sessionsWithMessages: number, 
+      totalSessions: number,
+      currentBatch?: number,
+      totalBatches?: number
+    ) => void
+  ): Promise<SessionWithTranscript[]> {
     try {
       // Get the session IDs
       const sessionIds = sessions
@@ -144,8 +203,12 @@ export class SessionSamplingService {
 
       console.log(`Using new lazy loading approach to populate messages for ${sessionIds.length} sampled sessions`);
       
-      // NEW OPTIMIZED APPROACH: Use SWTService lazy loading to populate messages
-      const sessionsWithMessages = await this.swtService.populateMessages(sessions, sessionIds);
+      // NEW OPTIMIZED APPROACH: Use SWTService lazy loading to populate messages with progress tracking
+      const sessionsWithMessages = await this.swtService.populateMessages(
+        sessions, 
+        sessionIds,
+        messageProgressCallback
+      );
 
       console.log(`Successfully populated messages for ${sessionIds.length} sessions using lazy loading`);
 

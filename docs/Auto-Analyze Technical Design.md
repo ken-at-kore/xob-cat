@@ -428,6 +428,17 @@ interface ClassificationStats {
 - **Caching**: Cache existing classifications to reduce prompt sizes
 - **Progress Batching**: Update UI progress in reasonable intervals to avoid excessive re-renders
 
+### Message Fetching Optimization (Aug 2025)
+- **Problem**: Single API call for all session messages causes timeouts
+- **Solution**: Concurrent batch processing with controlled parallelism
+- **Implementation**:
+  - Split sessions into batches of 20
+  - Process up to 10 batches concurrently
+  - 30-second timeout per API request
+  - Aggregate results from all batches
+- **Performance**: 5-10x improvement for 100+ sessions
+- **Resilience**: Partial results on batch failures
+
 ## Security Considerations
 
 ### API Key Handling

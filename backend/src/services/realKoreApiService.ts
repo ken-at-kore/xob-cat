@@ -28,8 +28,16 @@ export class RealKoreApiService implements IKoreApiService {
     return this.koreApiService.getSessionsMetadata(options);
   }
 
-  async getMessagesForSessions(sessionIds: string[], dateRange?: { dateFrom: string; dateTo: string }): Promise<KoreMessage[]> {
-    return this.koreApiService.getMessagesForSessions(sessionIds, dateRange);
+  async getMessagesForSessions(
+    sessionIds: string[], 
+    dateRange?: { dateFrom: string; dateTo: string },
+    progressCallback?: (
+      batchCompleted: number, 
+      totalBatches: number, 
+      currentBatchSessions: number
+    ) => void
+  ): Promise<KoreMessage[]> {
+    return this.koreApiService.getMessagesForSessions(sessionIds, dateRange, progressCallback);
   }
 
   async getSessionMessages(sessionId: string): Promise<KoreMessage[]> {

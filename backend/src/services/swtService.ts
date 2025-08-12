@@ -72,7 +72,13 @@ export class SWTService {
    */
   async populateMessages(
     swts: SessionWithTranscript[], 
-    sessionIds?: string[]
+    sessionIds?: string[],
+    progressCallback?: (
+      sessionsWithMessages: number, 
+      totalSessions: number,
+      currentBatch?: number,
+      totalBatches?: number
+    ) => void
   ): Promise<SessionWithTranscript[]> {
     // If no specific session IDs provided, populate all sessions
     const targetSessionIds = sessionIds || swts.map(swt => swt.session_id);
@@ -99,8 +105,21 @@ export class SWTService {
       dateTo: new Date(Math.max(...endTimes.map(d => d.getTime()))).toISOString()
     } : undefined;
     
-    // Fetch messages for specific sessions
-    const messages = await this.koreService.getMessagesForSessions(targetSessionIds, dateRange);
+    // Fetch messages for specific sessions with progress tracking
+    const messages = await this.koreService.getMessagesForSessions(
+      targetSessionIds, 
+      dateRange, 
+      progressCallback ? (batchCompleted: number, totalBatches: number, currentBatchSessions: number) => {
+        // Track cumulative progress across batches
+        const estimatedSessionsCompleted = batchCompleted * 20 + currentBatchSessions; // 20 sessions per batch
+        progressCallback(
+          Math.min(estimatedSessionsCompleted, targetSessionIds.length), 
+          targetSessionIds.length,
+          batchCompleted + 1,
+          totalBatches
+        );
+      } : undefined
+    );
     console.log(`Retrieved ${messages.length} messages for ${targetSessionIds.length} sessions`);
     
     // Group messages by session

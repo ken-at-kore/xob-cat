@@ -603,7 +603,15 @@ export class MockKoreApiService implements IKoreApiService {
     return metadata;
   }
 
-  async getMessagesForSessions(sessionIds: string[], dateRange?: { dateFrom: string; dateTo: string }): Promise<KoreMessage[]> {
+  async getMessagesForSessions(
+    sessionIds: string[], 
+    dateRange?: { dateFrom: string; dateTo: string },
+    progressCallback?: (
+      batchCompleted: number, 
+      totalBatches: number, 
+      currentBatchSessions: number
+    ) => void
+  ): Promise<KoreMessage[]> {
     console.log(`🧪 MockKoreApiService: Getting messages for ${sessionIds.length} sessions`);
     
     const messages: KoreMessage[] = [];

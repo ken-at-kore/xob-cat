@@ -1,0 +1,1077 @@
+
+> xob-cat-backend@1.0.0 dev
+> tsx watch src/index.ts
+
+🚀 XOB CAT Backend API running on port 3001
+📊 Health check: http://localhost:3001/health
+🔗 Frontend URL: http://localhost:3000
+🔗 Detected real credentials - clearing mock service environment variable
+🔗 Using user-provided Kore.ai credentials: User Bot st-90549...
+Testing Kore.ai API connectivity with optimized connection test...
+[getSessionsMetadataForConnectionTest] Connection test with limit=1, timeout=10000ms
+[getSessionsMetadataForConnectionTest] isMockCredentials: false
+[getSessionsMetadataForConnectionTest] Making SINGLE API call for 'agent' containment type
+Requesting agent session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Making API call for agent:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-12T02:11:23.316Z",
+  "dateTo": "2025-08-12T02:12:23.316Z",
+  "skip": 0,
+  "limit": 1
+}
+[fetchContainmentTypeMetadata] API Response: 0 agent sessions received
+[getSessionsMetadataForConnectionTest] Single API call succeeded with 0 sessions
+::1 - - [12/Aug/2025:02:12:26 +0000] "GET /api/kore/test HTTP/1.1" 200 299 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+🔗 Detected real credentials - clearing mock service environment variable
+🔗 Using user-provided Kore.ai credentials: User Bot st-90549...
+🏭 ServiceFactory: Creating Kore API service (type: real)
+🏭 ServiceFactory: NODE_ENV=development, USE_MOCK_SERVICES=undefined
+🏭 ServiceFactory: Config: { type: 'real', environment: 'development' }
+🏭 ServiceFactory: Has koreConfig: true bot: ***REMOVED***
+[Direct API] Fetching real Kore.ai sessions from 2025-08-05T02:12:26.813Z to 2025-08-12T02:12:26.813Z for User Bot st-90549... (limit=50)
+Retrieving sessions from 2025-08-05T02:12:26.813Z to 2025-08-12T02:12:26.813Z (limit=50), populateMessages=true...
+[getSessionsMetadata] Called with options: {
+  "dateFrom": "2025-08-05T02:12:26.813Z",
+  "dateTo": "2025-08-12T02:12:26.813Z",
+  "limit": 50
+}
+[getSessionsMetadata] isMockCredentials: false
+[getSessionsMetadata] Starting parallel API calls for 3 containment types
+Requesting agent session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Making API call for agent:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T02:12:26.813Z",
+  "dateTo": "2025-08-12T02:12:26.813Z",
+  "skip": 0,
+  "limit": 50
+}
+Requesting selfService session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=selfService
+[fetchContainmentTypeMetadata] Making API call for selfService:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=selfService
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T02:12:26.813Z",
+  "dateTo": "2025-08-12T02:12:26.813Z",
+  "skip": 0,
+  "limit": 50
+}
+Requesting dropOff session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=dropOff
+[fetchContainmentTypeMetadata] Making API call for dropOff:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=dropOff
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T02:12:26.813Z",
+  "dateTo": "2025-08-12T02:12:26.813Z",
+  "skip": 0,
+  "limit": 50
+}
+::1 - - [12/Aug/2025:02:12:27 +0000] "GET /api/analysis/sessions?limit=50 HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+🔗 Detected real credentials - clearing mock service environment variable
+🔗 Using user-provided Kore.ai credentials: User Bot st-90549...
+🏭 ServiceFactory: Creating Kore API service (type: real)
+🏭 ServiceFactory: NODE_ENV=development, USE_MOCK_SERVICES=undefined
+🏭 ServiceFactory: Config: { type: 'real', environment: 'development' }
+🏭 ServiceFactory: Has koreConfig: true bot: ***REMOVED***
+[Direct API] Fetching real Kore.ai sessions from 2025-08-05T02:12:27.656Z to 2025-08-12T02:12:27.656Z for User Bot st-90549... (limit=50)
+Retrieving sessions from 2025-08-05T02:12:27.656Z to 2025-08-12T02:12:27.656Z (limit=50), populateMessages=true...
+[getSessionsMetadata] Called with options: {
+  "dateFrom": "2025-08-05T02:12:27.656Z",
+  "dateTo": "2025-08-12T02:12:27.656Z",
+  "limit": 50
+}
+[getSessionsMetadata] isMockCredentials: false
+[getSessionsMetadata] Starting parallel API calls for 3 containment types
+Requesting agent session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Making API call for agent:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T02:12:27.656Z",
+  "dateTo": "2025-08-12T02:12:27.656Z",
+  "skip": 0,
+  "limit": 50
+}
+Requesting selfService session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=selfService
+[fetchContainmentTypeMetadata] Making API call for selfService:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=selfService
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T02:12:27.656Z",
+  "dateTo": "2025-08-12T02:12:27.656Z",
+  "skip": 0,
+  "limit": 50
+}
+Requesting dropOff session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=dropOff
+[fetchContainmentTypeMetadata] Making API call for dropOff:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=dropOff
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T02:12:27.656Z",
+  "dateTo": "2025-08-12T02:12:27.656Z",
+  "skip": 0,
+  "limit": 50
+}
+::1 - - [12/Aug/2025:02:12:27 +0000] "GET /api/analysis/sessions?limit=50 HTTP/1.1" - - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+[fetchContainmentTypeMetadata] API Response: 50 selfService sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '689aa18d0a261bd44366dc1f',
+  '689a9ddbb110c33d6977a4d7',
+  '689a9b5d995362de8de21eda'
+]
+[fetchContainmentTypeMetadata] API Response: 50 dropOff sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '689a9a761fa10dad3e907bab',
+  '689a97b5144f8feea17188cf',
+  '689a96f3f54cdbf3dee324a0'
+]
+[fetchContainmentTypeMetadata] API Response: 50 agent sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '689a9fe1296df1d830c05e55',
+  '689a9f815ed4804abeac9597',
+  '689a9f7f886ba2d0d23d0c98'
+]
+[getSessionsMetadata] agent API call succeeded with 50 sessions
+[getSessionsMetadata] selfService API call succeeded with 50 sessions
+[getSessionsMetadata] dropOff API call succeeded with 50 sessions
+Total session metadata retrieved: 150 (parallel execution)
+Retrieved 150 session metadata objects
+Creating 150 SWTs from metadata (no messages)
+Created 150 SWT objects from metadata
+Populating messages for all sessions (legacy behavior)
+Populating messages for 150 sessions
+
+📬 ============ KORE API MESSAGE FETCH STARTED ============
+📬 [KoreAPI] Fetching messages for 150 sessions from 2025-08-11T21:55:29.466Z to 2025-08-12T02:07:53.656Z at 2025-08-12T02:12:30.268Z
+🚀 [ConcurrentBatch] Split 150 sessions into 8 batches of up to 20 sessions each
+🚀 [ConcurrentBatch] Processing with max 10 concurrent API calls
+[Batch 1/8] Starting: 20 sessions
+[Batch 2/8] Starting: 20 sessions
+[Batch 3/8] Starting: 20 sessions
+[Batch 4/8] Starting: 20 sessions
+[Batch 5/8] Starting: 20 sessions
+[Batch 6/8] Starting: 20 sessions
+[Batch 7/8] Starting: 20 sessions
+[Batch 8/8] Starting: 10 sessions
+[fetchContainmentTypeMetadata] API Response: 50 selfService sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '689aa18d0a261bd44366dc1f',
+  '689a9ddbb110c33d6977a4d7',
+  '689a9b5d995362de8de21eda'
+]
+[fetchContainmentTypeMetadata] API Response: 50 dropOff sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '689a9a761fa10dad3e907bab',
+  '689a97b5144f8feea17188cf',
+  '689a96f3f54cdbf3dee324a0'
+]
+[fetchContainmentTypeMetadata] API Response: 50 agent sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '689a9fe1296df1d830c05e55',
+  '689a9f815ed4804abeac9597',
+  '689a9f7f886ba2d0d23d0c98'
+]
+[getSessionsMetadata] agent API call succeeded with 50 sessions
+[getSessionsMetadata] selfService API call succeeded with 50 sessions
+[getSessionsMetadata] dropOff API call succeeded with 50 sessions
+Total session metadata retrieved: 150 (parallel execution)
+Retrieved 150 session metadata objects
+Creating 150 SWTs from metadata (no messages)
+Created 150 SWT objects from metadata
+Populating messages for all sessions (legacy behavior)
+Populating messages for 150 sessions
+
+📬 ============ KORE API MESSAGE FETCH STARTED ============
+📬 [KoreAPI] Fetching messages for 150 sessions from 2025-08-11T21:55:29.466Z to 2025-08-12T02:07:53.656Z at 2025-08-12T02:12:30.457Z
+🚀 [ConcurrentBatch] Split 150 sessions into 8 batches of up to 20 sessions each
+🚀 [ConcurrentBatch] Processing with max 10 concurrent API calls
+[Batch 1/8] Starting: 20 sessions
+[Batch 2/8] Starting: 20 sessions
+[Batch 3/8] Starting: 20 sessions
+[Batch 4/8] Starting: 20 sessions
+[Batch 5/8] Starting: 20 sessions
+[Batch 6/8] Starting: 20 sessions
+[Batch 7/8] Starting: 20 sessions
+[Batch 8/8] Starting: 10 sessions
+[Batch 2/8] Completed in 198ms: 213 messages retrieved (1/8 done)
+[Batch 1/8] Completed in 313ms: 262 messages retrieved (2/8 done)
+[Batch 3/8] Completed in 321ms: 495 messages retrieved (3/8 done)
+[Batch 7/8] Completed in 359ms: 187 messages retrieved (4/8 done)
+[Batch 1/8] Completed in 200ms: 262 messages retrieved (1/8 done)
+[Batch 2/8] Completed in 219ms: 213 messages retrieved (2/8 done)
+[Batch 5/8] Completed in 479ms: 505 messages retrieved (5/8 done)
+[Batch 8/8] Completed in 486ms: 110 messages retrieved (6/8 done)
+[Batch 4/8] Completed in 341ms: 568 messages retrieved (3/8 done)
+[Batch 4/8] Completed in 622ms: 568 messages retrieved (7/8 done)
+[Batch 6/8] Completed in 476ms: 385 messages retrieved (4/8 done)
+[Batch 6/8] Completed in 693ms: 385 messages retrieved (8/8 done)
+
+🎉 ============ KORE API BATCH PROCESSING COMPLETE ============
+⏱️  TOTAL TIME: 693ms (0.69s)
+⏱️  Batch Processing: 693ms (0.69s)
+📦 Total batches: 8 (max 10 concurrent)
+✅ Successful batches: 8/8
+💬 Total messages: 2725
+📈 Avg time per batch: 87ms
+🚀 Time per session: 5ms
+💪 Performance: 216.5 sessions/second
+=======================================================
+
+Retrieved 2725 messages for 150 sessions
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+Populated messages for 150 SWT objects
+Generated 150 SWT objects in 4173ms using layered architecture
+[Batch 3/8] Completed in 540ms: 495 messages retrieved (5/8 done)
+[Batch 5/8] Completed in 543ms: 505 messages retrieved (6/8 done)
+[Batch 7/8] Completed in 558ms: 187 messages retrieved (7/8 done)
+[Batch 8/8] Completed in 723ms: 110 messages retrieved (8/8 done)
+
+🎉 ============ KORE API BATCH PROCESSING COMPLETE ============
+⏱️  TOTAL TIME: 724ms (0.72s)
+⏱️  Batch Processing: 724ms (0.72s)
+📦 Total batches: 8 (max 10 concurrent)
+✅ Successful batches: 8/8
+💬 Total messages: 2725
+📈 Avg time per batch: 91ms
+🚀 Time per session: 5ms
+💪 Performance: 207.2 sessions/second
+=======================================================
+
+Retrieved 2725 messages for 150 sessions
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+Populated messages for 150 SWT objects
+Generated 150 SWT objects in 3537ms using layered architecture
+🚀 [AutoAnalyzeRoute] Starting analysis for bot ***REMOVED*** with real credentials
+🚀 AutoAnalyzeService: Creating services for bot ***REMOVED***
+🏭 ServiceFactory: Creating Kore API service (type: real)
+🏭 ServiceFactory: NODE_ENV=development, USE_MOCK_SERVICES=undefined
+🏭 ServiceFactory: Config: { type: 'real', environment: 'development' }
+🏭 ServiceFactory: Has koreConfig: true bot: ***REMOVED***
+🏭 ServiceFactory: Creating OpenAI service (type: real)
+🚀 [AutoAnalyzeService] Starting analysis f20d18bc-a519-4e47-a314-08eeb56e4436 with bot ***REMOVED***
+🚀 [AutoAnalyzeService] Using credentials: real
+🚀 [AutoAnalyzeRoute] Analysis started: f20d18bc-a519-4e47-a314-08eeb56e4436
+::1 - - [12/Aug/2025:02:12:45 +0000] "POST /api/analysis/auto-analyze/start HTTP/1.1" 200 205 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:12:45 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 478 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:12:45 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+[BackgroundJobQueue] Starting job processing after delay for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling
+[BackgroundJobQueue] Starting processing for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling, phase: sampling
+[BackgroundJobQueue] Job credentials available: true
+[BackgroundJobQueue] Processing sampling phase for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling
+[BackgroundJobQueue] Processing sampling phase for bot: ***REMOVED***
+[BackgroundJobQueue] Creating real service for bot: ***REMOVED***
+[BackgroundJobQueue] Full config: {
+  "botId": "***REMOVED***",
+  "clientId": "***REMOVED***",
+  "clientSecret": "***REMOVED***",
+  "baseUrl": "https://bots.kore.ai"
+}
+🏭 ServiceFactory: Creating Kore API service (type: real)
+🏭 ServiceFactory: NODE_ENV=development, USE_MOCK_SERVICES=undefined
+🏭 ServiceFactory: Config: { type: 'real', environment: 'development' }
+🏭 ServiceFactory: Has koreConfig: true bot: ***REMOVED***
+[BackgroundJobQueue] Created service type: RealKoreApiService
+
+🕐 ============ SESSION SAMPLING STARTED ============
+🕐 [SessionSampling] Starting session sampling at 2025-08-12T02:12:46.477Z
+🔍 [SessionDiscovery] Starting window 1/4: Initial 3-hour window
+[getSessionsMetadata] Called with options: {
+  "dateFrom": "2025-08-05T13:00:00.000Z",
+  "dateTo": "2025-08-05T16:00:00.000Z",
+  "limit": 10000
+}
+[getSessionsMetadata] isMockCredentials: false
+[getSessionsMetadata] Starting parallel API calls for 3 containment types
+Requesting agent session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Making API call for agent:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=agent
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T13:00:00.000Z",
+  "dateTo": "2025-08-05T16:00:00.000Z",
+  "skip": 0,
+  "limit": 10000
+}
+Requesting selfService session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=selfService
+[fetchContainmentTypeMetadata] Making API call for selfService:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=selfService
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T13:00:00.000Z",
+  "dateTo": "2025-08-05T16:00:00.000Z",
+  "skip": 0,
+  "limit": 10000
+}
+Requesting dropOff session metadata from URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=dropOff
+[fetchContainmentTypeMetadata] Making API call for dropOff:
+[fetchContainmentTypeMetadata] URL: https://bots.kore.ai/api/public/bot/***REMOVED***/getSessions?containmentType=dropOff
+[fetchContainmentTypeMetadata] Payload: {
+  "dateFrom": "2025-08-05T13:00:00.000Z",
+  "dateTo": "2025-08-05T16:00:00.000Z",
+  "skip": 0,
+  "limit": 10000
+}
+::1 - - [12/Aug/2025:02:12:47 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 533 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+[fetchContainmentTypeMetadata] API Response: 80 selfService sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '68922a1287849680ad9fe59e',
+  '689229f9583056c6108e38fb',
+  '68922914f8bee7ba6c3e67b8'
+]
+[fetchContainmentTypeMetadata] API Response: 139 dropOff sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '68922a6a14dd27c3112087cd',
+  '68922a22ef03d8ad2ec7b4ba',
+  '68922a1278c1fe09a079719c'
+]
+::1 - - [12/Aug/2025:02:12:49 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+[fetchContainmentTypeMetadata] API Response: 1338 agent sessions received
+[fetchContainmentTypeMetadata] Sample session IDs: [
+  '68922a6d14dd27c31120888b',
+  '68922a62e3804084741191d5',
+  '68922a523a3160d25de144c8'
+]
+[getSessionsMetadata] agent API call succeeded with 1338 sessions
+[getSessionsMetadata] selfService API call succeeded with 80 sessions
+[getSessionsMetadata] dropOff API call succeeded with 139 sessions
+Total session metadata retrieved: 1557 (parallel execution)
+Creating 1557 SWTs from metadata (no messages)
+Created 1557 SWT objects from metadata
+✅ [SessionDiscovery] Window 1 completed in 4934ms: found 1557 new sessions (total: 1557)
+⏱️  TIMING: Window 1 took 4934ms (4.93s)
+🎯 [SessionDiscovery] Target reached! Found 1557 sessions in 4934ms
+🎲 [SessionSampling] Random sampling from 1557 sessions to 10 sessions
+
+📬 ============ MESSAGE RETRIEVAL STARTED ============
+📬 [MessageRetrieval] Starting message retrieval for 10 sampled sessions at 2025-08-12T02:12:51.412Z
+Using new lazy loading approach to populate messages for 10 sampled sessions
+Populating messages for 10 sessions
+
+📬 ============ KORE API MESSAGE FETCH STARTED ============
+📬 [KoreAPI] Fetching messages for 10 sessions from 2025-08-05T13:06:58.777Z to 2025-08-05T15:35:04.671Z at 2025-08-12T02:12:51.412Z
+🔄 [KoreAPI] Using single API call for 10 sessions (≤20)
+::1 - - [12/Aug/2025:02:12:51 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 553 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+✅ [KoreAPI] Single call completed in 240ms: 119 messages
+Retrieved 119 messages for 10 sessions
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "{"type":"command","command":"redirect","queueCommand":true,"data":[{"verb":"pause","length":0.2},{"verb":"hangup","headers":{}}]}" (bot)
+🧼 SWTService: Filtered out message: "Welcome Task" (user)
+🧼 SWTService: Filtered out message: "" (bot)
+Populated messages for 10 SWT objects
+Successfully populated messages for 10 sessions using lazy loading
+Applying final filtering to 10 sessions with populated messages
+Final result: 10 sessions passed filtering with populated messages
+
+🎉 ============ SESSION SAMPLING COMPLETED ============
+⏱️  TOTAL TIME: 5176ms (5.18s)
+⏱️  Session Discovery: 4934ms (4.93s) - 95.3% of total
+⏱️  Message Retrieval: 241ms (0.24s) - 4.7% of total
+⏱️  Performance: 1.9 sessions/second
+🎯 Final result: 10 sessions with messages retrieved
+====================================================
+
+[BackgroundJobQueue] Found 10 sessions for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling
+[BackgroundJobQueue] Starting job processing after delay for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling-analysis
+[BackgroundJobQueue] Starting processing for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling-analysis, phase: analyzing
+[BackgroundJobQueue] Job credentials available: true
+[BackgroundJobQueue] Processing analysis phase for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling-analysis with 10 sessions
+🏭 ServiceFactory: Creating OpenAI service (type: real)
+
+🤖 OpenAI API Request: {
+  timestamp: '2025-08-12T02:12:52.656Z',
+  model: 'gpt-4.1-nano',
+  modelId: 'gpt-4.1-nano',
+  sessionCount: 5,
+  apiKey: 'sk-proj-...',
+  promptLength: 6724,
+  existingClassifications: { intents: 0, transferReasons: 0, dropOffLocations: 0 }
+}
+📝 Request Prompt Preview: Analyze the following session transcripts and classify each session according to the specified criteria.
+
+
+
+For each session, provide the following classifications:
+
+1. **General Intent**: What the user is trying to accomplish (usually 1-2 words). Common examples: "Claim Status", "Billing", "Eligibility", "Live Agent", "Provider Enrollment", "Portal Access", "Authorization". If unknown, use "Unknown". If the user's intent was both Live Agent and another intent, classify the intent as the other i...
+::1 - - [12/Aug/2025:02:12:53 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 521 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:12:55 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+✅ OpenAI API Response: {
+  timestamp: '2025-08-12T02:12:55.742Z',
+  duration: '3086ms',
+  model: 'gpt-4.1-nano-2025-04-14',
+  usage: {
+    prompt_tokens: 1956,
+    completion_tokens: 335,
+    total_tokens: 2291,
+    prompt_tokens_details: { cached_tokens: 0, audio_tokens: 0 },
+    completion_tokens_details: {
+      reasoning_tokens: 0,
+      audio_tokens: 0,
+      accepted_prediction_tokens: 0,
+      rejected_prediction_tokens: 0
+    }
+  },
+  finishReason: 'stop',
+  hasToolCalls: true
+}
+📊 Parsed Analysis Results: {
+  sessionsAnalyzed: 5,
+  intentsFound: [ 'Claim Status', 'Unknown' ],
+  transferCount: 3,
+  containedCount: 2
+}
+📋 Full Function Arguments: {
+  "sessions": [
+    {
+      "user_id": "u-8126563b-e494-55d5-9511-40288ef17b49",
+      "general_intent": "Claim Status",
+      "session_outcome": "Contained",
+      "notes": "User needed help with a claim, session was handled by bot."
+    },
+    {
+      "user_id": "u-0166205d-0c7a-55b3-9e07-111b6dae59d7",
+      "general_intent": "Unknown",
+      "session_outcome": "Transfer",
+      "transfer_reason": "Live Agent Request",
+      "drop_off_location": "Help Offer Prompt",
+      "notes": "User requested customer service and was transferred to an agent."
+    },
+    {
+      "user_id": "u-86a4c1e1-bbf4-5386-9a53-90c0714b79f5",
+      "general_intent": "Unknown",
+      "session_outcome": "Transfer",
+      "transfer_reason": "Live Agent Request",
+      "drop_off_location": "Help Offer Prompt",
+      "notes": "User requested to speak to an agent and was transferred."
+    },
+    {
+      "user_id": "u-9c8b9970-d345-5240-b8f0-91f54acc7469",
+      "general_intent": "Claim Status",
+      "session_outcome": "Contained",
+      "notes": "User provided claim details and received a status update."
+    },
+    {
+      "user_id": "u-3f48cbe1-1f8f-5e2a-8a85-c22b43e243de",
+      "general_intent": "Unknown",
+      "session_outcome": "Transfer",
+      "transfer_reason": "Live Agent Request",
+      "drop_off_location": "Help Offer Prompt",
+      "notes": "User asked about doctor sending FMLA paperwork and was transferred."
+    }
+  ]
+}
+💰 Cost Calculation: {
+  promptTokens: 1956,
+  completionTokens: 335,
+  totalTokens: 2291,
+  cost: '$0.000330',
+  modelUsedForCost: 'gpt-4.1-nano'
+}
+::1 - - [12/Aug/2025:02:12:57 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 532 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+
+🤖 OpenAI API Request: {
+  timestamp: '2025-08-12T02:12:57.745Z',
+  model: 'gpt-4.1-nano',
+  modelId: 'gpt-4.1-nano',
+  sessionCount: 5,
+  apiKey: 'sk-proj-...',
+  promptLength: 7316,
+  existingClassifications: { intents: 2, transferReasons: 1, dropOffLocations: 1 }
+}
+📝 Request Prompt Preview: Analyze the following session transcripts and classify each session according to the specified criteria.
+
+
+Existing General Intent classifications: Claim Status, Unknown
+Existing Transfer Reason classifications: Live Agent Request
+Existing Drop-Off Location classifications: Help Offer Prompt
+
+For each session, provide the following classifications:
+
+1. **General Intent**: What the user is trying to accomplish (usually 1-2 words). Common examples: "Claim Status", "Billing", "Eligibility", "Live A...
+::1 - - [12/Aug/2025:02:12:59 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 532 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+✅ OpenAI API Response: {
+  timestamp: '2025-08-12T02:13:00.047Z',
+  duration: '2301ms',
+  model: 'gpt-4.1-nano-2025-04-14',
+  usage: {
+    prompt_tokens: 2092,
+    completion_tokens: 323,
+    total_tokens: 2415,
+    prompt_tokens_details: { cached_tokens: 0, audio_tokens: 0 },
+    completion_tokens_details: {
+      reasoning_tokens: 0,
+      audio_tokens: 0,
+      accepted_prediction_tokens: 0,
+      rejected_prediction_tokens: 0
+    }
+  },
+  finishReason: 'stop',
+  hasToolCalls: true
+}
+📊 Parsed Analysis Results: {
+  sessionsAnalyzed: 5,
+  intentsFound: [ 'Claim Status', 'Live Agent' ],
+  transferCount: 2,
+  containedCount: 3
+}
+📋 Full Function Arguments: {
+  "sessions": [
+    {
+      "user_id": "u-f3ba59dd-762d-5bf3-ae72-fa82b8026e56",
+      "general_intent": "Claim Status",
+      "session_outcome": "Contained",
+      "notes": "User was unable to provide leave request number and the session was closed without transfer."
+    },
+    {
+      "user_id": "u-30f50bcc-b24c-519d-987e-df1b5803c392",
+      "general_intent": "Claim Status",
+      "session_outcome": "Contained",
+      "notes": "User was silent; no transfer occurred."
+    },
+    {
+      "user_id": "u-1e335903-d482-5092-aebf-1c3765fca936",
+      "general_intent": "Live Agent",
+      "session_outcome": "Transfer",
+      "transfer_reason": "Live Agent Request",
+      "drop_off_location": "Help Offer Prompt",
+      "notes": "User requested to speak with an operator; session was transferred to an agent."
+    },
+    {
+      "user_id": "u-336964cc-89d8-5f7d-8752-594032bb16c8",
+      "general_intent": "Claim Status",
+      "session_outcome": "Contained",
+      "notes": "User provided claim and personal details but did not complete the request; session ended without transfer."
+    },
+    {
+      "user_id": "u-f49ff565-7e3b-5d8a-afb5-6f2318aa26b7",
+      "general_intent": "Live Agent",
+      "session_outcome": "Transfer",
+      "transfer_reason": "Live Agent Request",
+      "drop_off_location": "Help Offer Prompt",
+      "notes": "User requested to speak with an agent; session was transferred."
+    }
+  ]
+}
+💰 Cost Calculation: {
+  promptTokens: 2092,
+  completionTokens: 323,
+  totalTokens: 2415,
+  cost: '$0.000338',
+  modelUsedForCost: 'gpt-4.1-nano'
+}
+[BackgroundJobQueue] Session analysis completed for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling-analysis, processed 10 sessions
+::1 - - [12/Aug/2025:02:13:01 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 548 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:03 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:05 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:07 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:09 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:11 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:13 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:15 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:17 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:19 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+[BackgroundJobQueue] Analysis summary generated for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling-analysis
+[BackgroundJobQueue] Analysis completed for job f20d18bc-a519-4e47-a314-08eeb56e4436-sampling-analysis, processed 10 sessions
+[BackgroundJobQueue] Results successfully stored in AutoAnalyzeService for analysis f20d18bc-a519-4e47-a314-08eeb56e4436
+[BackgroundJobQueue] Analysis f20d18bc-a519-4e47-a314-08eeb56e4436 completed with 10 sessions
+::1 - - [12/Aug/2025:02:13:21 +0000] "GET /api/analysis/auto-analyze/progress/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 564 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+::1 - - [12/Aug/2025:02:13:21 +0000] "GET /api/analysis/auto-analyze/results/f20d18bc-a519-4e47-a314-08eeb56e4436 HTTP/1.1" 200 71375 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"

@@ -312,7 +312,7 @@ export class ParallelAutoAnalyzeService {
     try {
       const samplingResult = await this.sessionSamplingService.sampleSessions(
         session.config,
-        (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string) => {
+        (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string, messageProgress?: { sessionsWithMessages: number; totalSessions: number; currentBatch?: number; totalBatches?: number }) => {
           // Update progress with sampling details
           this.updateProgress(session.id, {
             currentStep,
@@ -322,7 +322,8 @@ export class ParallelAutoAnalyzeService {
               totalWindows: 4,
               currentWindowLabel: windowLabel,
               targetSessionCount: session.config.sessionCount
-            }
+            },
+            ...(messageProgress && { messageProgress })
           });
         }
       );

@@ -229,6 +229,13 @@ export interface AnalysisProgress {
     currentWindowLabel: string;
     targetSessionCount: number;
   };
+  // Message fetching progress during sampling phase
+  messageProgress?: {
+    sessionsWithMessages: number;
+    totalSessions: number;
+    currentBatch?: number;
+    totalBatches?: number;
+  };
 }
 
 export interface AnalysisSummary {
