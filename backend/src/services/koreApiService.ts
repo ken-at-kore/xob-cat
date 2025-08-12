@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import axios, { AxiosResponse } from 'axios';
+import pLimit from 'p-limit';
 import { TranscriptSanitizationService } from './transcriptSanitizationService';
 import { MockSessionDataService } from '../__mocks__/sessionDataService.mock';
 import { SessionFilters, SessionWithTranscript } from '../../../shared/types';
@@ -181,7 +182,7 @@ export class KoreApiService {
   /**
    * Make authenticated API request with rate limiting
    */
-  private async makeRequest<T>(url: string, payload: Record<string, unknown>): Promise<T> {
+  private async makeRequest<T>(url: string, payload: Record<string, unknown>, timeout: number = 30000): Promise<T> {
     await this.checkRateLimit();
     
     const token = this.generateJwtToken();
@@ -191,7 +192,10 @@ export class KoreApiService {
     };
 
     try {
-      const response: AxiosResponse<T> = await axios.post(url, payload, { headers });
+      const response: AxiosResponse<T> = await axios.post(url, payload, { 
+        headers,
+        timeout // 30 second default timeout
+      });
       
       if (response.status === 429) {
         console.log('Rate limit exceeded. Waiting 60 seconds before retrying...');
@@ -516,10 +520,21 @@ export class KoreApiService {
   /**
    * GRANULAR METHOD: Get messages for specific session IDs only
    * Part of the new layered architecture for selective message loading
+   * 
+   * PERFORMANCE OPTIMIZATION (Aug 2025): Implements concurrent batch processing
+   * - Splits sessions into batches of 20
+   * - Processes up to 10 batches concurrently
+   * - 30-second timeout per request
+   * - Graceful handling of partial failures
    */
   async getMessagesForSessions(
     sessionIds: string[], 
-    dateRange?: { dateFrom: string; dateTo: string }
+    dateRange?: { dateFrom: string; dateTo: string },
+    progressCallback?: (
+      batchCompleted: number, 
+      totalBatches: number, 
+      currentBatchSessions: number
+    ) => void
   ): Promise<KoreMessage[]> {
     if (sessionIds.length === 0) {
       return [];
@@ -528,10 +543,116 @@ export class KoreApiService {
     // Use provided date range or create intelligent default
     const { dateFrom, dateTo } = dateRange || this.createIntelligentDateRange();
 
-    console.log(`Fetching messages for ${sessionIds.length} sessions from ${dateFrom} to ${dateTo}`);
+    const fetchStartTime = Date.now();
+    console.log(`\n📬 ============ KORE API MESSAGE FETCH STARTED ============`);
+    console.log(`📬 [KoreAPI] Fetching messages for ${sessionIds.length} sessions from ${dateFrom} to ${dateTo} at ${new Date().toISOString()}`);
+
+    // Configuration for batch processing
+    const BATCH_SIZE = 20; // Sessions per batch
+    const MAX_CONCURRENT = 10; // Maximum concurrent API calls
+    
+    // If we have few sessions, use the original single-call approach
+    if (sessionIds.length <= BATCH_SIZE) {
+      console.log(`🔄 [KoreAPI] Using single API call for ${sessionIds.length} sessions (≤${BATCH_SIZE})`);
+      const startTime = Date.now();
+      const result = await this.fetchMessageBatch(sessionIds, dateFrom, dateTo);
+      const duration = Date.now() - startTime;
+      console.log(`✅ [KoreAPI] Single call completed in ${duration}ms: ${result.length} messages`);
+      return result;
+    }
+
+    // Split session IDs into batches
+    const batches: string[][] = [];
+    for (let i = 0; i < sessionIds.length; i += BATCH_SIZE) {
+      batches.push(sessionIds.slice(i, i + BATCH_SIZE));
+    }
+
+    console.log(`🚀 [ConcurrentBatch] Split ${sessionIds.length} sessions into ${batches.length} batches of up to ${BATCH_SIZE} sessions each`);
+    console.log(`🚀 [ConcurrentBatch] Processing with max ${MAX_CONCURRENT} concurrent API calls`);
+
+    // Create concurrency limiter
+    const limit = pLimit(MAX_CONCURRENT);
+    
+    // Track batch processing
+    let completedBatches = 0;
+    const totalBatches = batches.length;
+    const batchStartTime = Date.now();
+
+    // Process batches concurrently with limit
+    const batchPromises = batches.map((batch, index) => 
+      limit(async () => {
+        const batchNum = index + 1;
+        try {
+          console.log(`[Batch ${batchNum}/${totalBatches}] Starting: ${batch.length} sessions`);
+          const startTime = Date.now();
+          
+          const messages = await this.fetchMessageBatch(batch, dateFrom, dateTo);
+          
+          const duration = Date.now() - startTime;
+          completedBatches++;
+          console.log(`[Batch ${batchNum}/${totalBatches}] Completed in ${duration}ms: ${messages.length} messages retrieved (${completedBatches}/${totalBatches} done)`);
+          
+          // Report progress if callback provided
+          if (progressCallback) {
+            console.log(`📊 [BatchProgress] Reporting batch ${completedBatches}/${totalBatches} completed (${batch.length} sessions in this batch)`);
+            progressCallback(completedBatches, totalBatches, batch.length);
+          }
+          
+          return messages;
+        } catch (error) {
+          console.error(`[Batch ${batchNum}/${totalBatches}] Failed:`, error);
+          // Return empty array for failed batch to allow partial results
+          return [];
+        }
+      })
+    );
 
     try {
-      // Use the correct API endpoint and method (same as working getMessages)
+      // Wait for all batches to complete
+      const batchResults = await Promise.all(batchPromises);
+      
+      // Aggregate results from all batches
+      const allMessages = batchResults.flat();
+      
+      const totalDuration = Date.now() - batchStartTime;
+      const avgTimePerBatch = totalDuration / batches.length;
+      const successfulBatches = batchResults.filter(r => r.length > 0).length;
+      
+      const finalDuration = Date.now() - fetchStartTime;
+      console.log(`\n🎉 ============ KORE API BATCH PROCESSING COMPLETE ============`);
+      console.log(`⏱️  TOTAL TIME: ${finalDuration}ms (${(finalDuration/1000).toFixed(2)}s)`);
+      console.log(`⏱️  Batch Processing: ${totalDuration}ms (${(totalDuration/1000).toFixed(2)}s)`);
+      console.log(`📦 Total batches: ${totalBatches} (max ${MAX_CONCURRENT} concurrent)`);
+      console.log(`✅ Successful batches: ${successfulBatches}/${totalBatches}`);
+      console.log(`💬 Total messages: ${allMessages.length}`);
+      console.log(`📈 Avg time per batch: ${avgTimePerBatch.toFixed(0)}ms`);
+      console.log(`🚀 Time per session: ${(totalDuration / sessionIds.length).toFixed(0)}ms`);
+      console.log(`💪 Performance: ${(sessionIds.length / (finalDuration/1000)).toFixed(1)} sessions/second`);
+      console.log(`=======================================================\n`);
+      
+      return allMessages;
+    } catch (error) {
+      console.error('Critical error during batch processing:', error);
+      // Attempt fallback to single request if batch processing fails completely
+      console.log('Attempting fallback to single request...');
+      try {
+        return await this.fetchMessageBatch(sessionIds, dateFrom, dateTo);
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError);
+        return [];
+      }
+    }
+  }
+
+  /**
+   * Helper method to fetch messages for a batch of sessions
+   */
+  private async fetchMessageBatch(
+    sessionIds: string[],
+    dateFrom: string,
+    dateTo: string
+  ): Promise<KoreMessage[]> {
+    try {
       const url = `${this.baseUrl}/api/public/bot/${this.config.botId}/getMessagesV2`;
 
       const payload = {
@@ -542,20 +663,36 @@ export class KoreApiService {
         limit: 10000
       };
 
-      console.log(`Making request for messages with ${sessionIds.length} session IDs`);
-      
-      // Use makeRequest method (same as working getMessages)
-      const response = await this.makeRequest<KoreMessagesResponse>(url, payload);
+      // Use makeRequest with timeout
+      const response = await this.makeRequest<KoreMessagesResponse>(url, payload, 30000);
       
       if (response.messages) {
-        console.log(`Retrieved ${response.messages.length} messages for specified sessions`);
         return response.messages;
       }
 
       return [];
     } catch (error) {
-      console.error('Error fetching messages for sessions:', error);
-      return [];
+      // Check if it's a timeout error
+      if (axios.isAxiosError(error) && error.code === 'ECONNABORTED') {
+        console.error(`Timeout fetching messages for ${sessionIds.length} sessions after 30 seconds`);
+        throw new Error(`Request timeout after 30 seconds for ${sessionIds.length} sessions`);
+      }
+      
+      // Check for other common API errors
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        if (status === 401) {
+          throw new Error(`Authentication failed for message batch of ${sessionIds.length} sessions`);
+        }
+        if (status === 429) {
+          throw new Error(`Rate limit exceeded for message batch of ${sessionIds.length} sessions`);
+        }
+        if (status === 500) {
+          throw new Error(`Server error for message batch of ${sessionIds.length} sessions`);
+        }
+      }
+      
+      throw error;
     }
   }
 

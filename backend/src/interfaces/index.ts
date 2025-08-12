@@ -7,7 +7,15 @@ export interface IKoreApiService {
   getMessages(dateFrom: string, dateTo: string, sessionIds: string[]): Promise<unknown[]>;
   getSessionById(sessionId: string): Promise<SessionWithTranscript | null>;
   getSessionsMetadata(options: { dateFrom: string; dateTo: string; limit?: number }): Promise<SessionMetadata[]>;
-  getMessagesForSessions(sessionIds: string[], dateRange?: { dateFrom: string; dateTo: string }): Promise<KoreMessage[]>;
+  getMessagesForSessions(
+    sessionIds: string[], 
+    dateRange?: { dateFrom: string; dateTo: string },
+    progressCallback?: (
+      batchCompleted: number, 
+      totalBatches: number, 
+      currentBatchSessions: number
+    ) => void
+  ): Promise<KoreMessage[]>;
   getSessionMessages(sessionId: string): Promise<KoreMessage[]>;
 }
 

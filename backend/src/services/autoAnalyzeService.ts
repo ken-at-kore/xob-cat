@@ -287,7 +287,7 @@ export class AutoAnalyzeService {
 
       const samplingResult = await this.sessionSamplingService.sampleSessions(
         session.config, 
-        (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string) => {
+        (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string, messageProgress?: { sessionsWithMessages: number; totalSessions: number; currentBatch?: number; totalBatches?: number }) => {
           this.updateProgress(analysisId, {
             currentStep,
             sessionsFound,
@@ -296,7 +296,8 @@ export class AutoAnalyzeService {
               totalWindows: 4, // We have 4 expansion strategy windows
               currentWindowLabel: windowLabel,
               targetSessionCount: session.config.sessionCount
-            }
+            },
+            ...(messageProgress && { messageProgress })
           });
         }
       );

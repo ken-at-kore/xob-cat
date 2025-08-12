@@ -304,6 +304,7 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 - **Coverage**: Unit, E2E, real API tests, and hybrid tests (production data + OpenAI analysis)
 - **Metrics**: ~$0.019 per session, 95%+ session discovery rate
 - **Hybrid Testing**: `perSessionAnalysis.hybrid` test supports production data files with assertions
+- **Message Fetching**: Concurrent batch processing (20 sessions/batch, max 10 concurrent) for 5-10x performance
 
 ### Async Architecture (August 2025)
 
@@ -313,10 +314,11 @@ OPENAI_API_KEY=sk-...         # Required for session analysis
 
 **Note**: See "Data Access Architecture" section below for detailed layered architecture implementation.
 
-### Known Limitations
+### Known Limitations & Fixes
 - **MVP Constraint**: In-memory state only (no database persistence)
 - **API Dependency**: Requires valid OpenAI API key for analysis
 - **Mock Data**: Kore.ai integration uses mock credentials for MVP
+- **Performance Fix (Aug 2025)**: Added 30s timeout + concurrent batching to prevent hanging on large sessions
 - **Session Cleanup**: Analysis results expire after 1 hour
 - **Job Queue**: In-memory job storage (not suitable for multi-instance deployments)
 
