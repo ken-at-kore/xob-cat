@@ -255,7 +255,8 @@ router.get('/debug/service-comparison', loadKoreCredentials, asyncHandler(async 
 }));
 
 // Mount auto-analyze routes
-router.use('/auto-analyze', autoAnalyzeRouter);
-router.use('/auto-analyze/parallel', parallelAutoAnalyzeRouter);
+// Note: Sequential auto-analyze is deprecated in favor of parallel processing
+router.use('/auto-analyze', autoAnalyzeRouter); // @deprecated - use /auto-analyze/parallel instead
+router.use('/auto-analyze/parallel', parallelAutoAnalyzeRouter); // Recommended
 
 export { router as analysisRouter }; 

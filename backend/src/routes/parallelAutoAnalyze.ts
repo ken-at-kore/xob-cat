@@ -4,6 +4,10 @@ import { AnalysisExportService } from '../services/analysisExportService';
 import { AnalysisConfig, GPT_MODELS } from '../../../shared/types';
 import { ApiResponse } from '../../../shared/types';
 
+/**
+ * ✅ RECOMMENDED: Parallel auto-analyze routes with multi-phase processing.
+ * This is the preferred implementation over sequential auto-analyze for better performance and consistency.
+ */
 export const parallelAutoAnalyzeRouter = Router();
 
 // Validation helpers (reuse from existing autoAnalyze router)

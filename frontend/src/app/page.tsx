@@ -97,11 +97,27 @@ export default function Home({ onNavigate }: HomeProps = {}) {
         // Handle specific authentication errors
         if (error.status === 401) {
           setConnectionError('Invalid credentials. Please check your Bot ID, Client ID, and Client Secret.');
+        } else if (error.status === 0 && error.statusText === 'Network Error') {
+          setConnectionError('Network error - unable to reach server. Please check your internet connection.');
+        } else if (error.status === 0 && error.statusText === 'Unknown Error') {
+          setConnectionError('Connection timeout - the server is not responding. Please try again.');
         } else {
-          setConnectionError(`Connection failed: ${error.message}`);
+          setConnectionError(`Connection failed (${error.status}): ${error.message}`);
         }
+        
+        // Log detailed error for debugging
+        console.error('Connection test failed:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          data: error.data
+        });
       } else {
-        setConnectionError(error instanceof Error ? error.message : 'Connection failed - unable to reach server');
+        const errorMessage = error instanceof Error ? error.message : 'Connection failed - unable to reach server';
+        setConnectionError(errorMessage);
+        
+        // Log unexpected errors
+        console.error('Unexpected connection error:', error);
       }
     } finally {
       setIsConnecting(false);

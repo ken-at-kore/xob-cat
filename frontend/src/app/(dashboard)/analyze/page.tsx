@@ -24,7 +24,7 @@ import {
 import { autoAnalyze } from '../../../lib/api';
 import { AnalyzedSessionDetailsDialog } from '../../../components/AnalyzedSessionDetailsDialog';
 import { AnalysisReportView } from '../../../components/AnalysisReportView';
-import { getSimplifiedStatusText, calculateProgressPercentage, getPhaseLabel } from './progressUtils';
+import { getSimplifiedStatusText, calculateProgressPercentage, getPhaseLabel, resetProgressTracker } from './progressUtils';
 
 /**
  * Load mock analysis results for testing
@@ -475,9 +475,9 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
             </Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <div className="text-sm text-gray-600 mb-2">
+        <CardContent className="pt-2">
+          <div className="space-y-2">
+            <div className="text-sm text-gray-600">
               {getSimplifiedStatusText(progress.currentStep)}
             </div>
             <Progress value={progressPercentage} className="w-full" />
@@ -515,6 +515,8 @@ export default function AutoAnalyzePage() {
   const showDevFeatures = process.env.NEXT_PUBLIC_ENABLE_DEV_FEATURES === 'true';
 
   const handleAnalysisStart = (newAnalysisId: string) => {
+    // Reset progress tracker for new analysis
+    resetProgressTracker();
     setAnalysisId(newAnalysisId);
     setCurrentView('progress');
   };
@@ -525,6 +527,8 @@ export default function AutoAnalyzePage() {
   };
 
   const handleStartNew = () => {
+    // Reset progress tracker for new analysis
+    resetProgressTracker();
     setCurrentView('config');
     setAnalysisId('');
     setResults({ sessions: [] });

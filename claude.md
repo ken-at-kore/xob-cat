@@ -221,11 +221,13 @@ Enhanced credentials page with improved visual appeal, accessibility, and user e
 ### Overview
 The Auto-Analyze feature provides AI-powered batch analysis of customer service sessions using OpenAI GPT-4o-mini. It implements intelligent session sampling with time window expansion, maintains classification consistency across analysis batches, and generates comprehensive analysis summaries with actionable insights.
 
+**⚠️ DEPRECATION NOTICE**: The sequential/serial auto-analyze implementation (`AutoAnalyzeService`) is deprecated. Use the parallel implementation (`ParallelAutoAnalyzeService`) instead for better performance and consistency.
+
 ### Key Components
 
 #### Backend Services (`backend/src/services/`)
 ```
-autoAnalyzeService.ts         # Main orchestration service (singleton pattern)
+autoAnalyzeService.ts         # DEPRECATED: Main orchestration service (use ParallelAutoAnalyzeService instead)
 ├── sessionSamplingService.ts # Time window expansion algorithm (3hr → 6hr → 12hr → 6day)
 ├── batchAnalysisService.ts   # Batch processing with classification consistency
 ├── openaiAnalysisService.ts  # OpenAI integration with configurable models (GPT-4o-mini default)
@@ -468,8 +470,8 @@ Environment-based service selection:
 AI-powered bot performance analysis using configurable GPT models (GPT-4o-mini default) with time window expansion, batch processing, and interactive visualizations. Supports 5-1000 sessions with real-time progress tracking and cost estimation.
 
 **Two Analysis Systems Available:**
-- **Sequential Analysis**: Original implementation, reliable for all session counts
-- **Parallel Analysis**: Advanced multi-phase processing for improved performance and consistency
+- **Sequential Analysis**: ⚠️ **DEPRECATED** - Original implementation, maintained for backward compatibility only
+- **Parallel Analysis**: ✅ **RECOMMENDED** - Advanced multi-phase processing for improved performance and consistency
 
 #### Parallel Auto-Analyze System (August 2025)
 

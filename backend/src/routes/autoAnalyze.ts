@@ -4,6 +4,11 @@ import { AnalysisExportService } from '../services/analysisExportService';
 import { AnalysisConfig, GPT_MODELS } from '../../../shared/types';
 import { ApiResponse } from '../../../shared/types';
 
+/**
+ * @deprecated Sequential auto-analyze routes are deprecated.
+ * Use /api/analysis/auto-analyze/parallel routes instead for better performance and consistency.
+ * This router is maintained for backward compatibility only.
+ */
 export const autoAnalyzeRouter = Router();
 
 // Validation helpers

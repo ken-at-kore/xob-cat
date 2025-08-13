@@ -203,6 +203,10 @@ export function validateAnalysisResults(results: any): void {
   }
 }
 
+/**
+ * @deprecated Sequential auto-analyze is deprecated. Use parallel auto-analyze instead.
+ * This function is maintained for backward compatibility testing only.
+ */
 export async function runFullAnalysisWorkflow(
   app: express.Application,
   config: AnalysisConfig,

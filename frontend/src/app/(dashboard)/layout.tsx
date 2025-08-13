@@ -19,21 +19,40 @@ export default function DashboardLayout({
   const [credentials, setCredentials] = useState<BotCredentials | null>(null);
 
   useEffect(() => {
-    // Check if user is authenticated
-    const storedCredentials = sessionStorage.getItem('botCredentials');
-    if (!storedCredentials) {
-      // Redirect to login if no credentials
-      redirectTo('/');
+    // Check if user is authenticated with retry logic for race conditions
+    const checkCredentials = () => {
+      try {
+        const storedCredentials = sessionStorage.getItem('botCredentials');
+        if (!storedCredentials) {
+          console.warn('No credentials found in sessionStorage');
+          return false;
+        }
+
+        const parsedCredentials = JSON.parse(storedCredentials);
+        console.log('Successfully loaded credentials from sessionStorage');
+        setCredentials(parsedCredentials);
+        return true;
+      } catch (error) {
+        console.error('Failed to parse stored credentials:', error);
+        return false;
+      }
+    };
+
+    // Try immediately first
+    if (checkCredentials()) {
       return;
     }
 
-    try {
-      const parsedCredentials = JSON.parse(storedCredentials);
-      setCredentials(parsedCredentials);
-    } catch (error) {
-      console.error('Failed to parse stored credentials:', error);
-      redirectTo('/');
-    }
+    // If failed, wait 100ms and try again (handles race conditions)
+    console.log('Retrying credential check after 100ms...');
+    const retryTimeout = setTimeout(() => {
+      if (!checkCredentials()) {
+        console.log('Credential check failed after retry, redirecting to login');
+        redirectTo('/');
+      }
+    }, 100);
+
+    return () => clearTimeout(retryTimeout);
   }, []);
 
   if (!credentials) {

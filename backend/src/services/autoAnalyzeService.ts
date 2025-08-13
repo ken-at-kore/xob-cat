@@ -29,6 +29,10 @@ interface AnalysisSession {
   cancelled: boolean;
 }
 
+/**
+ * @deprecated Use ParallelAutoAnalyzeService instead for better performance and consistency.
+ * This sequential implementation is maintained for backward compatibility only.
+ */
 export class AutoAnalyzeService {
   private readonly BATCH_SIZE = 5;
   private readonly POLLING_INTERVAL = 2000; // 2 seconds between batches
