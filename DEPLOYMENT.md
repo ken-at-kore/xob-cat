@@ -127,16 +127,15 @@ aws amplify list-jobs \
 ./package-lambda.sh
 
 # Manual deployment steps:
-# 1. Build and package Lambda
+# 1. Build and package Lambda (from project root)
 ./package-lambda.sh
 
-# 2. Upload to S3
-cd backend/lambda-package
-zip -r ../lambda-focused.zip .
-aws s3 cp ../lambda-focused.zip s3://xobcat-lambda-fix-1753902369/ --profile ken-at-kore
+# 2. Upload to S3 (IMPORTANT: Run from backend/ directory)
+cd backend
+aws s3 cp lambda-focused.zip s3://xobcat-lambda-fix-1753902369/ --profile ken-at-kore
 
-# 3. Deploy CloudFormation stack
-cd ../../xobcat-backend
+# 3. Deploy CloudFormation stack (only needed for initial setup)
+cd ../xobcat-backend
 aws cloudformation deploy --template-file template.yaml \
   --stack-name xobcat-backend \
   --capabilities CAPABILITY_IAM \
@@ -144,13 +143,24 @@ aws cloudformation deploy --template-file template.yaml \
   --region us-east-2 \
   --profile ken-at-kore
 
-# 4. Update Lambda function code (if function exists)
+# 4. Update Lambda function code (for regular updates)
 aws lambda update-function-code \
   --function-name xobcat-backend-ApiFunction-7yG0yqId5Qg2 \
   --s3-bucket xobcat-lambda-fix-1753902369 \
   --s3-key lambda-focused.zip \
   --profile ken-at-kore
 ```
+
+### ⚠️ Common Deployment Pitfalls
+
+1. **Wrong Directory Issue**: The `./package-lambda.sh` script creates `lambda-focused.zip` in the `backend/` directory, not in the `backend/lambda-package/` directory as the old instructions suggested.
+
+2. **Path Navigation**: Always run AWS CLI commands from the correct directory:
+   - `./package-lambda.sh` → from project root
+   - `aws s3 cp lambda-focused.zip` → from `backend/` directory
+   - Lambda function update → can be run from any directory (uses absolute paths)
+
+3. **File Location**: After running `./package-lambda.sh`, the zip file is located at `backend/lambda-focused.zip`, not `backend/lambda-package/../lambda-focused.zip`
 
 ### Stack Management
 ```bash
@@ -193,18 +203,24 @@ aws cloudformation delete-stack \
 #### Backend Updates
 ```bash
 # 1. Make code changes in backend/
-# 2. Build and deploy
+# 2. Build and deploy (from project root)
 ./package-lambda.sh
 
-# 3. Upload and update Lambda function
-cd backend/lambda-package && zip -r ../lambda-focused.zip .
-aws s3 cp ../lambda-focused.zip s3://xobcat-lambda-fix-1753902369/ --profile ken-at-kore
+# 3. Upload and update Lambda function (from backend/ directory)
+cd backend
+aws s3 cp lambda-focused.zip s3://xobcat-lambda-fix-1753902369/ --profile ken-at-kore
 aws lambda update-function-code \
   --function-name xobcat-backend-ApiFunction-7yG0yqId5Qg2 \
   --s3-bucket xobcat-lambda-fix-1753902369 \
   --s3-key lambda-focused.zip --profile ken-at-kore
 
 # 4. No frontend changes needed (API URL stays same)
+```
+
+#### Quick Backend Update (One-liner from project root)
+```bash
+# For experienced users - complete backend update in one command:
+./package-lambda.sh && cd backend && aws s3 cp lambda-focused.zip s3://xobcat-lambda-fix-1753902369/ --profile ken-at-kore && aws lambda update-function-code --function-name xobcat-backend-ApiFunction-7yG0yqId5Qg2 --s3-bucket xobcat-lambda-fix-1753902369 --s3-key lambda-focused.zip --profile ken-at-kore && cd ..
 ```
 
 ## 🛠️ Development vs Production
