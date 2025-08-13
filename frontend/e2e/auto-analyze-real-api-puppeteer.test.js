@@ -38,6 +38,7 @@ const {
   waitForCompletion,
   validateReport,
   testSessionDetailsDialog,
+  assertProgressIndicators,
   setupRequestLogging
 } = require('./shared/auto-analyze-workflow');
 
@@ -172,8 +173,91 @@ async function runAutoAnalyzeRealTest() {
     const progressResults = await monitorProgress(page);
     console.log('Progress monitoring results:', progressResults);
     
+    // Step 7.5: Continuously assert progress indicators with stuck detection
+    console.log('🔍 Step 7.5: Starting continuous progress indicator assertions');
+    const progressAssertionResults = [];
+    let assertionAttempts = 0;
+    let previousAssertion = null;
+    let stuckCount = 0;
+    const maxAssertionAttempts = sessionCount >= 50 ? 180 : 90; // 3 minutes for large sessions, 1.5 for small
+    
+    const assertionInterval = setInterval(async () => {
+      if (assertionAttempts >= maxAssertionAttempts) {
+        clearInterval(assertionInterval);
+        return;
+      }
+      
+      try {
+        const assertions = await assertProgressIndicators(page, previousAssertion);
+        
+        if (assertions.progressPhase) {
+          console.log(`📊 PROGRESS ASSERTION - Phase: ${assertions.progressPhase}`);
+          
+          // Log numeric values to track actual progress
+          console.log(`   📈 Progress Values:`);
+          console.log(`     - Sessions Found: ${assertions.numericValues.sessionsFound}`);
+          console.log(`     - Batches Completed: ${assertions.numericValues.batchesCompleted}`);
+          console.log(`     - Sessions Processed: ${assertions.numericValues.sessionsProcessed}`);
+          console.log(`     - Tokens Used: ${assertions.numericValues.tokensUsed}`);
+          console.log(`     - Estimated Cost: $${assertions.numericValues.estimatedCost}`);
+          console.log(`     - Progress %: ${assertions.numericValues.progressPercentage}%`);
+          
+          // Check if progress is actually happening
+          if (assertions.actualProgress) {
+            console.log(`   ✅ REAL PROGRESS DETECTED - values are changing!`);
+            stuckCount = 0; // Reset stuck counter
+          } else if (previousAssertion) {
+            console.log(`   ⚠️ NO PROGRESS - values unchanged from previous check`);
+          }
+          
+          // Track if progress appears stuck
+          if (assertions.progressStuck) {
+            stuckCount++;
+            console.log(`   🚨 PROGRESS STUCK - same values for ${stuckCount} consecutive checks`);
+            
+            if (stuckCount >= 5) { // Stuck for 10+ seconds
+              console.log(`   ❌ PROGRESS FAILURE - Analysis appears frozen for ${stuckCount * 2} seconds`);
+              console.log(`   🔍 Current state: ${assertions.progressPhase} with all metrics at zero`);
+            }
+          }
+          
+          // Log phase-specific indicators
+          if (Object.keys(assertions.phaseSpecific).length > 0) {
+            Object.entries(assertions.phaseSpecific).forEach(([key, detected]) => {
+              console.log(`   - ${key}: ${detected ? '✅' : '❌'}`);
+            });
+          }
+          
+          // Log universal indicators (now more stringent)
+          console.log(`   📊 Progress Indicators:`);
+          console.log(`     - Session Counts: ${assertions.sessionCounts ? '✅' : '❌'}`);
+          console.log(`     - Batch Progress: ${assertions.batchProgress ? '✅' : '❌'}`);
+          console.log(`     - Stream Activity: ${assertions.streamActivity ? '✅' : '❌'}`);
+          console.log(`     - Token Usage: ${assertions.tokenUsage ? '✅' : '❌'}`);
+          console.log(`     - Estimated Cost: ${assertions.estimatedCost ? '✅' : '❌'}`);
+          
+          progressAssertionResults.push(assertions);
+          previousAssertion = assertions;
+        }
+        
+        // Check if analysis is complete (stop assertions)
+        const currentContent = await page.$eval('body', el => el.textContent);
+        if (currentContent.includes('Analysis Report') || 
+            currentContent.includes('Export Analysis') ||
+            currentContent.includes('Analysis Complete')) {
+          console.log('📊 Analysis completed - stopping progress assertions');
+          clearInterval(assertionInterval);
+        }
+      } catch (error) {
+        console.log(`⚠️ Progress assertion error: ${error.message}`);
+      }
+      
+      assertionAttempts++;
+    }, 2000); // Check every 2 seconds
+    
     // Step 8: Wait for completion (dynamic timeout based on session count)
     const completionResults = await waitForCompletion(page, sessionCount);
+    clearInterval(assertionInterval); // Ensure interval is cleared
     console.log('Completion results:', completionResults);
     
     // Step 9: Validate report content
@@ -239,6 +323,52 @@ async function runAutoAnalyzeRealTest() {
         console.log('❓ Check console output above for specific validation failures');
         console.log('💡 Real APIs may have variable response times or data availability');
       }
+    }
+    
+    // Summary of progress assertions with stuck detection
+    if (progressAssertionResults.length > 0) {
+      console.log('\n🎯 Progress Assertion Summary:');
+      const uniquePhases = [...new Set(progressAssertionResults.map(r => r.progressPhase))];
+      console.log(`   - Phases Detected: [${uniquePhases.join(', ')}]`);
+      console.log(`   - Total Assertions: ${progressAssertionResults.length}`);
+      
+      // Count actual progress detections
+      const progressCounts = {
+        actualProgress: progressAssertionResults.filter(r => r.actualProgress).length,
+        progressStuck: progressAssertionResults.filter(r => r.progressStuck).length,
+        sessionCounts: progressAssertionResults.filter(r => r.sessionCounts).length,
+        batchProgress: progressAssertionResults.filter(r => r.batchProgress).length,
+        streamActivity: progressAssertionResults.filter(r => r.streamActivity).length,
+        tokenUsage: progressAssertionResults.filter(r => r.tokenUsage).length,
+        estimatedCost: progressAssertionResults.filter(r => r.estimatedCost).length
+      };
+      
+      console.log('\n🚨 PROGRESS ANALYSIS:');
+      console.log(`   - Real Progress Detected: ${progressCounts.actualProgress}/${progressAssertionResults.length} times (${((progressCounts.actualProgress/progressAssertionResults.length)*100).toFixed(1)}%)`);
+      console.log(`   - Progress Stuck: ${progressCounts.progressStuck}/${progressAssertionResults.length} times (${((progressCounts.progressStuck/progressAssertionResults.length)*100).toFixed(1)}%)`);
+      
+      console.log('\n📊 Indicator Detection Rates:');
+      Object.entries(progressCounts).forEach(([indicator, count]) => {
+        if (indicator !== 'actualProgress' && indicator !== 'progressStuck') {
+          console.log(`   - ${indicator}: ${count}/${progressAssertionResults.length} times detected (${((count/progressAssertionResults.length)*100).toFixed(1)}%)`);
+        }
+      });
+      
+      // Show final progress values
+      if (progressAssertionResults.length > 0) {
+        const finalAssertion = progressAssertionResults[progressAssertionResults.length - 1];
+        console.log('\n📈 Final Progress State:');
+        console.log(`   - Sessions Found: ${finalAssertion.numericValues.sessionsFound}`);
+        console.log(`   - Batches Completed: ${finalAssertion.numericValues.batchesCompleted}`);
+        console.log(`   - Sessions Processed: ${finalAssertion.numericValues.sessionsProcessed}`);
+        console.log(`   - Tokens Used: ${finalAssertion.numericValues.tokensUsed}`);
+        console.log(`   - Estimated Cost: $${finalAssertion.numericValues.estimatedCost}`);
+        console.log(`   - Progress Percentage: ${finalAssertion.numericValues.progressPercentage}%`);
+      }
+      
+      // Overall progress assessment
+      const overallProgressWorking = progressCounts.actualProgress > 0 && progressCounts.progressStuck < progressAssertionResults.length * 0.8;
+      console.log(`\n🎯 OVERALL PROGRESS ASSESSMENT: ${overallProgressWorking ? '✅ WORKING' : '❌ STUCK/BROKEN'}`);
     }
     
     // Summary of what was tested

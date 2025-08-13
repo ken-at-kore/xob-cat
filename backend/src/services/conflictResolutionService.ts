@@ -288,9 +288,12 @@ export class ConflictResolutionService {
 
       const toolCall = response.choices[0].message.tool_calls[0];
       const functionArgs = JSON.parse(toolCall.function.arguments);
+      
+      console.log('[ConflictResolution] LLM response:', JSON.stringify(functionArgs, null, 2));
 
       // Validate response format
       if (!this.validateResolutionResponse(functionArgs)) {
+        console.error('[ConflictResolution] Full invalid response:', JSON.stringify(functionArgs, null, 2));
         throw new Error('Invalid conflict resolution response format');
       }
 
@@ -490,19 +493,29 @@ Guidelines:
 
   private validateResolutionResponse(response: any): boolean {
     if (!response || typeof response !== 'object') {
+      console.log('[ConflictResolution] Validation failed: response is not an object');
       return false;
     }
     
     const categories = ['generalIntents', 'transferReasons', 'dropOffLocations'];
     
     for (const category of categories) {
+      // Allow missing categories - they should just be empty arrays
+      if (response[category] === undefined) {
+        console.log(`[ConflictResolution] Category ${category} is missing, will use empty array`);
+        response[category] = [];
+        continue;
+      }
+      
       if (!Array.isArray(response[category])) {
+        console.log(`[ConflictResolution] Validation failed: ${category} is not an array`);
         return false;
       }
       
       for (const group of response[category]) {
         if (!group.canonical || typeof group.canonical !== 'string' ||
             !Array.isArray(group.aliases)) {
+          console.log(`[ConflictResolution] Validation failed: invalid group structure in ${category}`, group);
           return false;
         }
       }

@@ -422,6 +422,9 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
       try {
         const response = await autoAnalyze.getProgress(analysisId);
         if (response.success && response.data) {
+          // Debug: Log the progress data to console to see what's being received
+          console.log('[Progress Debug] Received progress data:', JSON.stringify(response.data, null, 2));
+          
           setProgress(response.data);
           
           if (response.data.phase === 'complete') {
@@ -506,7 +509,19 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
         const samplingProgress = (windowProgress * windowProgressWeight) + (sessionProgress * sessionProgressWeight);
         return Math.min(samplingProgress * phaseWeights.sampling, phaseWeights.sampling);
       }
-      return 0;
+      
+      // Fallback progress for sampling phase when detailed progress isn't available
+      // Show some progress based on the fact that we're in sampling phase
+      if (progress.sessionsFound > 0) {
+        // If we found sessions, show at least 5% progress
+        const basicSamplingProgress = Math.min(progress.sessionsFound / 100, 0.5); // Cap at 50% of sampling phase
+        console.log(`📊 Frontend sampling fallback: sessionsFound=${progress.sessionsFound}, basicProgress=${basicSamplingProgress}, weighted=${basicSamplingProgress * phaseWeights.sampling}`);
+        return basicSamplingProgress * phaseWeights.sampling;
+      }
+      
+      console.log(`📊 Frontend sampling fallback: No sessions found, showing minimal progress (2%)`);
+      // If we're in sampling phase but have no detailed data, show minimal progress (2%)
+      return 2;
     }
     
     // Add completed phases
@@ -567,6 +582,12 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
       return phaseWeights.sampling + phaseWeights.discovery + (sessionProgress * phaseWeights.parallel_processing);
     }
     
+    // Fallback for unknown or incomplete progress states
+    // If we have any kind of progress data, show minimal progress
+    if (progress.phase && progress.phase !== 'complete') {
+      return Math.max(baseProgress, 1); // At least 1% if analysis is running
+    }
+    
     return baseProgress;
   })();
 
@@ -603,6 +624,8 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
                       ? `Discovery: ${(progress as any).discoveryStats.discoveredIntents + (progress as any).discoveryStats.discoveredReasons + (progress as any).discoveryStats.discoveredLocations} classifications`
                       : progress.phase === 'parallel_processing' && (progress as any).streamsActive
                         ? `${(progress as any).streamsActive} streams • Round ${((progress as any).roundsCompleted || 0) + 1} / ${(progress as any).totalRounds || 1}`
+                      : progress.currentStep?.includes('Conflict resolution') && progress.currentStep?.includes('round')
+                        ? progress.currentStep.replace('Conflict resolution', 'Resolving conflicts')
                         : progress.phase === 'conflict_resolution' && (progress as any).conflictStats
                           ? `${(progress as any).conflictStats.conflictsFound} conflicts • ${(progress as any).conflictStats.canonicalMappings} mappings`
                           : progress.phase === 'analyzing'
@@ -620,22 +643,11 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
               </div>
             )}
             {progress.phase === 'sampling' && (progress as any).messageProgress && (
-              <div className="space-y-2 mt-3">
-                <div className="text-xs text-gray-600 font-medium">Session Details Retrieval:</div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Retrieved messages from {(progress as any).messageProgress.sessionsWithMessages} of {(progress as any).messageProgress.totalSessions} sessions</span>
-                  {(progress as any).messageProgress.currentBatch && (progress as any).messageProgress.totalBatches && (
-                    <span>Batch {(progress as any).messageProgress.currentBatch} / {(progress as any).messageProgress.totalBatches}</span>
-                  )}
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-1.5">
-                  <div 
-                    className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
-                    style={{ 
-                      width: `${((progress as any).messageProgress.sessionsWithMessages / (progress as any).messageProgress.totalSessions) * 100}%` 
-                    }}
-                  />
-                </div>
+              <div className="text-xs text-gray-500 mt-1">
+                Session Details: Retrieved {(progress as any).messageProgress.sessionsWithMessages}/{(progress as any).messageProgress.totalSessions} sessions
+                {(progress as any).messageProgress.currentBatch && (progress as any).messageProgress.totalBatches && (
+                  <span> • Batch {(progress as any).messageProgress.currentBatch}/{(progress as any).messageProgress.totalBatches}</span>
+                )}
               </div>
             )}
             {progress.phase === 'discovery' && (progress as any).discoveryStats && (
@@ -643,9 +655,16 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
                 Discovered: {(progress as any).discoveryStats.discoveredIntents} intents, {(progress as any).discoveryStats.discoveredReasons} reasons, {(progress as any).discoveryStats.discoveredLocations} locations
               </div>
             )}
-            {progress.phase === 'parallel_processing' && (progress as any).streamProgress && (
+            {progress.phase === 'parallel_processing' && (
               <div className="text-xs text-gray-500 mt-1">
-                Active streams: {(progress as any).streamProgress.filter((s: any) => s.status === 'processing').length} processing, {(progress as any).streamProgress.filter((s: any) => s.status === 'completed').length} completed
+                {(progress as any).streamsActive > 0 && (
+                  <>Parallel processing: {(progress as any).streamsActive} streams active, round {((progress as any).roundsCompleted || 0) + 1} of {(progress as any).totalRounds || 0}</>
+                )}
+              </div>
+            )}
+            {progress.currentStep?.includes('Conflict resolution') && progress.currentStep?.includes('round') && (
+              <div className="text-xs text-amber-600 mt-1 font-medium">
+                ⚖️ {progress.currentStep.includes('complete') ? 'Completed' : 'Running'} inter-round conflict resolution
               </div>
             )}
             {progress.phase === 'conflict_resolution' && (progress as any).conflictStats && (
@@ -723,35 +742,6 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
             </div>
           </div>
           
-          {/* Additional parallel processing details */}
-          {progress.phase === 'parallel_processing' && (progress as any).streamProgress && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium text-gray-900 mb-3">Stream Status</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {(progress as any).streamProgress.map((stream: any) => (
-                  <div key={stream.streamId} className="text-center p-2 bg-white rounded border">
-                    <div className="font-semibold text-sm text-gray-700">Stream {stream.streamId}</div>
-                    <div className="text-xs text-gray-500 mb-1">{stream.status}</div>
-                    <div className="text-sm font-medium">
-                      {stream.sessionsProcessed}/{stream.sessionsAssigned}
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
-                      <div 
-                        className={`h-1 rounded-full ${
-                          stream.status === 'completed' ? 'bg-green-500' :
-                          stream.status === 'processing' ? 'bg-blue-500' :
-                          stream.status === 'error' ? 'bg-red-500' : 'bg-gray-300'
-                        }`}
-                        style={{ 
-                          width: `${stream.sessionsAssigned > 0 ? (stream.sessionsProcessed / stream.sessionsAssigned) * 100 : 0}%` 
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
           
           {/* Model info */}
           <div className="text-center">

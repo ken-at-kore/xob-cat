@@ -13,6 +13,7 @@ import {
 } from '../../../shared/types';
 import { StreamProcessingService } from './streamProcessingService';
 import { TokenManagementService } from './tokenManagementService';
+import { ConflictResolutionService } from './conflictResolutionService';
 
 export class ParallelProcessingOrchestratorService {
   private readonly DEFAULT_CONFIG: ParallelConfig = {
@@ -26,7 +27,8 @@ export class ParallelProcessingOrchestratorService {
 
   constructor(
     private streamProcessingService: StreamProcessingService,
-    private tokenManagementService: TokenManagementService
+    private tokenManagementService: TokenManagementService,
+    private conflictResolutionService?: ConflictResolutionService
   ) {}
 
   async processInParallel(
@@ -37,9 +39,15 @@ export class ParallelProcessingOrchestratorService {
     modelId: string,
     progressCallback?: ParallelProgressCallback
   ): Promise<ParallelProcessingResult> {
+    const parallelStartTime = Date.now();
+    console.log(`\n🚀 ============ PARALLEL PROCESSING STARTED ============`);
+    console.log(`⏱️  Start Time: ${new Date().toISOString()}`);
+    console.log(`📊 Total Sessions: ${sessions.length}`);
+    
     const fullConfig = { ...this.DEFAULT_CONFIG, ...config };
     
     // Calculate optimal configuration based on model
+    const configStartTime = Date.now();
     const optimalBatchConfig = this.tokenManagementService.getOptimalBatchConfig(modelId);
     fullConfig.maxSessionsPerLLMCall = optimalBatchConfig.maxSessionsPerCall;
     
@@ -50,12 +58,18 @@ export class ParallelProcessingOrchestratorService {
         Math.ceil(sessions.length / fullConfig.sessionsPerStream)
       );
     }
-
-    console.log(`[ParallelProcessingOrchestrator] Starting parallel processing with config:`, fullConfig);
-    console.log(`[ParallelProcessingOrchestrator] Processing ${sessions.length} sessions with ${fullConfig.streamCount} streams`);
+    const configDuration = Date.now() - configStartTime;
+    
+    console.log(`\n⚙️  ============ PARALLEL CONFIGURATION ============`);
+    console.log(`⏱️  Config Time: ${configDuration}ms`);
+    console.log(`🔧 Stream Count: ${fullConfig.streamCount}`);
+    console.log(`📦 Sessions Per Stream: ${fullConfig.sessionsPerStream}`);
+    console.log(`🧠 Model: ${modelId}`);
+    console.log(`📊 Max Sessions Per API Call: ${fullConfig.maxSessionsPerLLMCall}`);
+    console.log(`🎯 Debug Logging: ${fullConfig.debugLogging}`);
 
     if (fullConfig.debugLogging) {
-      console.log(`[ParallelProcessingOrchestrator] Model: ${modelId}, Max sessions per call: ${fullConfig.maxSessionsPerLLMCall}`);
+      console.log(`[DEBUG] Model: ${modelId}, Max sessions per call: ${fullConfig.maxSessionsPerLLMCall}`);
     }
 
     const startTime = Date.now();
@@ -83,21 +97,31 @@ export class ParallelProcessingOrchestratorService {
 
     while (remainingSessions.length > 0) {
       roundNumber++;
-      console.log(`[ParallelProcessingOrchestrator] Starting round ${roundNumber}/${totalRounds} with ${remainingSessions.length} sessions`);
+      const roundStartTime = Date.now();
+      console.log(`\n🔄 ============ ROUND ${roundNumber}/${totalRounds} STARTED ============`);
+      console.log(`⏱️  Round ${roundNumber} Start: ${new Date().toISOString()}`);
+      console.log(`📊 Sessions Remaining: ${remainingSessions.length}`);
 
       // Distribute sessions across streams for this round
+      const distributionStartTime = Date.now();
       const sessionStreams = this.distributeSessionsAcrossStreams(
         remainingSessions,
         fullConfig.streamCount,
         fullConfig.sessionsPerStream
       );
+      const distributionDuration = Date.now() - distributionStartTime;
+      
+      console.log(`⏱️  Session Distribution Time: ${distributionDuration}ms`);
+      console.log(`🌊 Active Streams: ${sessionStreams.length}`);
 
       if (sessionStreams.length === 0) {
-        console.warn(`[ParallelProcessingOrchestrator] No sessions to distribute in round ${roundNumber}`);
+        console.warn(`⚠️  No sessions to distribute in round ${roundNumber}`);
         break;
       }
 
       // Process all streams in parallel
+      const parallelProcessingStartTime = Date.now();
+      console.log(`\n🚀 Starting parallel stream processing...`);
       const roundResults = await this.processStreamsInParallel(
         sessionStreams,
         currentClassifications,
@@ -113,6 +137,8 @@ export class ParallelProcessingOrchestratorService {
           );
         }
       );
+      const parallelProcessingDuration = Date.now() - parallelProcessingStartTime;
+      console.log(`⏱️  Parallel Processing Time: ${parallelProcessingDuration}ms (${(parallelProcessingDuration/1000).toFixed(2)}s)`);
 
       // Collect results from all streams
       for (const streamResult of roundResults) {
@@ -126,13 +152,69 @@ export class ParallelProcessingOrchestratorService {
       }
 
       // Synchronization point - merge new classifications
+      const syncStartTime = Date.now();
       const syncResult = this.synchronizeClassifications(roundResults, currentClassifications);
       currentClassifications = syncResult.mergedClassifications;
+      const syncDuration = Date.now() - syncStartTime;
+      
+      console.log(`\n🔄 ============ CLASSIFICATION SYNCHRONIZATION ============`);
+      console.log(`⏱️  Sync Time: ${syncDuration}ms`);
+      console.log(`🆕 New Classifications: ${syncResult.newClassificationsCount}`);
+      console.log(`📊 Total Classifications: ${currentClassifications.generalIntent.size + currentClassifications.transferReason.size + currentClassifications.dropOffLocation.size}`);
 
-      console.log(`[ParallelProcessingOrchestrator] Round ${roundNumber} sync complete: ${syncResult.newClassificationsCount} new classifications discovered`);
+      // NEW: Conflict resolution between rounds
+      if (syncResult.newClassificationsCount > 0 && this.shouldRunConflictResolution(currentClassifications)) {
+        const conflictResolutionStartTime = Date.now();
+        console.log(`\n⚖️ ============ INTER-ROUND CONFLICT RESOLUTION ============`);
+        console.log(`⏱️  Starting conflict resolution after round ${roundNumber}`);
+        
+        // Notify UI that conflict resolution is starting
+        progressCallback?.(
+          `Conflict resolution after round ${roundNumber}`,
+          0,
+          allProcessedSessions.length,
+          []
+        );
+        
+        try {
+          // Run conflict resolution on current processed sessions
+          const processedSessionsFromRound = roundResults.flatMap(r => r.processedSessions);
+          const resolvedClassifications = await this.runInterRoundConflictResolution(
+            processedSessionsFromRound,
+            currentClassifications,
+            apiKey,
+            modelId
+          );
+          
+          if (resolvedClassifications) {
+            currentClassifications = resolvedClassifications;
+            const conflictResolutionDuration = Date.now() - conflictResolutionStartTime;
+            
+            console.log(`⏱️  Conflict Resolution Time: ${conflictResolutionDuration}ms`);
+            console.log(`✅ Classifications consolidated between rounds`);
+            console.log(`📊 Consolidated Classifications: ${currentClassifications.generalIntent.size + currentClassifications.transferReason.size + currentClassifications.dropOffLocation.size}`);
+            
+            // Notify UI that conflict resolution completed
+            progressCallback?.(
+              `Conflict resolution complete (round ${roundNumber})`,
+              0,
+              allProcessedSessions.length,
+              []
+            );
+          }
+        } catch (error) {
+          console.warn(`⚠️  Inter-round conflict resolution failed: ${error}. Continuing with unresolved classifications.`);
+          progressCallback?.(
+            `Conflict resolution failed (round ${roundNumber})`,
+            0,
+            allProcessedSessions.length,
+            []
+          );
+        }
+      }
 
       if (fullConfig.debugLogging) {
-        console.log(`[ParallelProcessingOrchestrator] Current classifications after sync:`, {
+        console.log(`[DEBUG] Current classifications after sync:`, {
           intents: currentClassifications.generalIntent.size,
           reasons: currentClassifications.transferReason.size,
           locations: currentClassifications.dropOffLocation.size
@@ -140,15 +222,26 @@ export class ParallelProcessingOrchestratorService {
       }
 
       // Remove processed sessions from remaining pool
+      const cleanupStartTime = Date.now();
       const processedUserIds = new Set(roundResults.flatMap(r => 
         r.processedSessions.map(s => s.user_id)
       ));
       remainingSessions = remainingSessions.filter(s => !processedUserIds.has(s.user_id));
-
-      console.log(`[ParallelProcessingOrchestrator] Round ${roundNumber} complete: ${remainingSessions.length} sessions remaining`);
+      const cleanupDuration = Date.now() - cleanupStartTime;
+      
+      const roundDuration = Date.now() - roundStartTime;
+      console.log(`\n✅ ============ ROUND ${roundNumber} COMPLETED ============`);
+      console.log(`⏱️  Round ${roundNumber} Total Time: ${roundDuration}ms (${(roundDuration/1000).toFixed(2)}s)`);
+      console.log(`⏱️  Session Cleanup Time: ${cleanupDuration}ms`);
+      console.log(`📊 Sessions Remaining: ${remainingSessions.length}`);
+      console.log(`🎯 Round Breakdown:`);
+      console.log(`   • Distribution: ${distributionDuration}ms (${((distributionDuration/roundDuration)*100).toFixed(1)}%)`);
+      console.log(`   • Parallel Processing: ${parallelProcessingDuration}ms (${((parallelProcessingDuration/roundDuration)*100).toFixed(1)}%)`);
+      console.log(`   • Synchronization: ${syncDuration}ms (${((syncDuration/roundDuration)*100).toFixed(1)}%)`);
+      console.log(`   • Cleanup: ${cleanupDuration}ms (${((cleanupDuration/roundDuration)*100).toFixed(1)}%)`);
     }
 
-    const processingTime = Date.now() - startTime;
+    const processingTime = Date.now() - parallelStartTime;
     
     const result: ParallelProcessingResult = {
       processedSessions: allProcessedSessions,
@@ -162,12 +255,29 @@ export class ParallelProcessingOrchestratorService {
       }
     };
 
-    console.log(`[ParallelProcessingOrchestrator] Parallel processing complete in ${processingTime}ms:`, {
-      totalSessions: allProcessedSessions.length,
-      totalRounds: roundNumber,
-      totalTokens: totalTokenUsage.totalTokens,
-      totalCost: totalTokenUsage.cost,
-      averageUtilization: result.processingStats.averageStreamUtilization
+    console.log(`\n🎉 ============ PARALLEL PROCESSING COMPLETE ============`);
+    console.log(`⏱️  TOTAL TIME: ${processingTime}ms (${(processingTime/1000).toFixed(2)}s)`);
+    console.log(`📊 Sessions Processed: ${allProcessedSessions.length}/${sessions.length}`);
+    console.log(`🔄 Total Rounds: ${roundNumber}`);
+    console.log(`🌊 Stream Results: ${allStreamResults.length}`);
+    console.log(`💰 Token Usage: ${totalTokenUsage.totalTokens} tokens ($${totalTokenUsage.cost.toFixed(4)})`);
+    console.log(`📈 Stream Utilization: ${(result.processingStats.averageStreamUtilization * 100).toFixed(1)}%`);
+    console.log(`🎯 Performance: ${(allProcessedSessions.length / (processingTime/1000)).toFixed(1)} sessions/second`);
+    
+    // Calculate average time per session
+    const avgTimePerSession = processingTime / allProcessedSessions.length;
+    console.log(`⚡ Avg Time Per Session: ${avgTimePerSession.toFixed(2)}ms`);
+    
+    // Show stream processing distribution
+    const streamTimings = allStreamResults.map(sr => ({
+      streamId: sr.streamId,
+      sessions: sr.processedSessions.length,
+      time: sr.processingTime,
+      tokensPerSec: sr.tokenUsage.totalTokens / (sr.processingTime/1000)
+    }));
+    console.log(`\n📊 Stream Performance Breakdown:`);
+    streamTimings.forEach(st => {
+      console.log(`   Stream ${st.streamId}: ${st.sessions} sessions in ${st.time}ms (${st.tokensPerSec.toFixed(1)} tokens/sec)`);
     });
 
     return result;
@@ -387,18 +497,31 @@ export class ParallelProcessingOrchestratorService {
   ): ParallelConfig {
     const batchConfig = this.tokenManagementService.getOptimalBatchConfig(modelId);
     
-    // Calculate optimal stream count based on session count and model capabilities
-    let optimalStreamCount = batchConfig.recommendedStreamCount;
-    let optimalSessionsPerStream = Math.ceil(sessionCount / optimalStreamCount);
+    // Follow design specification: 8 streams × 4 sessions per stream = 32 sessions per round
+    // This ensures proper multi-round processing with synchronization points
+    const designStreamCount = this.DEFAULT_CONFIG.streamCount; // 8 streams
+    const designSessionsPerStream = this.DEFAULT_CONFIG.sessionsPerStream; // 4 sessions per stream
     
-    // Adjust if sessions per stream is too low (inefficient) or too high (overwhelming)
-    if (optimalSessionsPerStream < 4) {
+    // Only adjust for very small session counts where 8 streams would be wasteful
+    let optimalStreamCount = designStreamCount;
+    let optimalSessionsPerStream = designSessionsPerStream;
+    
+    if (sessionCount < 16) {
+      // For very small counts, reduce streams but keep 4 sessions per stream when possible
       optimalStreamCount = Math.max(1, Math.ceil(sessionCount / 4));
       optimalSessionsPerStream = Math.ceil(sessionCount / optimalStreamCount);
-    } else if (optimalSessionsPerStream > batchConfig.maxSessionsPerCall) {
+    }
+    
+    // Ensure sessions per stream doesn't exceed model limits
+    if (optimalSessionsPerStream > batchConfig.maxSessionsPerCall) {
       optimalSessionsPerStream = batchConfig.maxSessionsPerCall;
       optimalStreamCount = Math.ceil(sessionCount / optimalSessionsPerStream);
     }
+    
+    console.log(`[ParallelProcessingOrchestrator] Configuration for ${sessionCount} sessions:`);
+    console.log(`  Design: ${designStreamCount} streams × ${designSessionsPerStream} sessions = ${designStreamCount * designSessionsPerStream} per round`);
+    console.log(`  Optimal: ${optimalStreamCount} streams × ${optimalSessionsPerStream} sessions = ${optimalStreamCount * optimalSessionsPerStream} per round`);
+    console.log(`  Estimated Rounds: ${Math.ceil(sessionCount / (optimalStreamCount * optimalSessionsPerStream))}`);
     
     return {
       streamCount: optimalStreamCount,
@@ -427,5 +550,118 @@ export class ParallelProcessingOrchestratorService {
     };
     
     console.log(`[ParallelProcessingOrchestrator] Processing Analysis:`, analysis);
+  }
+
+  // NEW: Helper method to determine if conflict resolution should run
+  private shouldRunConflictResolution(classifications: ExistingClassifications): boolean {
+    // Run conflict resolution if we have enough classifications to potentially have conflicts
+    const totalClassifications = classifications.generalIntent.size + 
+                                classifications.transferReason.size + 
+                                classifications.dropOffLocation.size;
+    
+    console.log(`🔍 [ConflictResolution] Checking if conflict resolution should run:`);
+    console.log(`   • Total Classifications: ${totalClassifications}`);
+    console.log(`   • Intents: ${classifications.generalIntent.size}`);
+    console.log(`   • Reasons: ${classifications.transferReason.size}`);
+    console.log(`   • Locations: ${classifications.dropOffLocation.size}`);
+    
+    const shouldRun = totalClassifications >= 3; // Lower threshold for testing
+    console.log(`   • Should Run: ${shouldRun} (threshold: 3)`);
+    
+    return shouldRun;
+  }
+
+  // NEW: Inter-round conflict resolution method
+  private async runInterRoundConflictResolution(
+    processedSessions: SessionWithFacts[],
+    currentClassifications: ExistingClassifications,
+    apiKey: string,
+    modelId: string
+  ): Promise<ExistingClassifications | null> {
+    if (!this.conflictResolutionService) {
+      console.log(`⚠️  ConflictResolutionService not available, skipping inter-round resolution`);
+      return null;
+    }
+
+    try {
+      // Run conflict resolution on sessions processed in this round
+      const conflictResult = await this.conflictResolutionService.resolveConflicts(
+        processedSessions,
+        apiKey,
+        modelId
+      );
+
+      if (conflictResult.resolutions) {
+        // Apply resolutions to update the current classifications
+        const resolvedClassifications = this.applyResolutionsToClassifications(
+          currentClassifications,
+          conflictResult.resolutions
+        );
+
+        console.log(`⚖️  Conflict resolution applied: ${conflictResult.resolutionStats.conflictsResolved} conflicts resolved`);
+        return resolvedClassifications;
+      }
+
+      return currentClassifications;
+    } catch (error) {
+      console.error(`❌ Inter-round conflict resolution failed:`, error);
+      return null;
+    }
+  }
+
+  // NEW: Apply conflict resolutions to current classifications
+  private applyResolutionsToClassifications(
+    classifications: ExistingClassifications,
+    resolutions: any
+  ): ExistingClassifications {
+    const resolvedClassifications = this.cloneClassifications(classifications);
+
+    // Create mapping from resolutions
+    const intentMapping = this.createResolutionMapping(resolutions.generalIntents);
+    const reasonMapping = this.createResolutionMapping(resolutions.transferReasons);
+    const locationMapping = this.createResolutionMapping(resolutions.dropOffLocations);
+
+    // Apply intent resolutions
+    const resolvedIntents = new Set<string>();
+    for (const intent of resolvedClassifications.generalIntent) {
+      const resolved = intentMapping.get(intent) || intent;
+      resolvedIntents.add(resolved);
+    }
+    resolvedClassifications.generalIntent = resolvedIntents;
+
+    // Apply reason resolutions
+    const resolvedReasons = new Set<string>();
+    for (const reason of resolvedClassifications.transferReason) {
+      const resolved = reasonMapping.get(reason) || reason;
+      resolvedReasons.add(resolved);
+    }
+    resolvedClassifications.transferReason = resolvedReasons;
+
+    // Apply location resolutions
+    const resolvedLocations = new Set<string>();
+    for (const location of resolvedClassifications.dropOffLocation) {
+      const resolved = locationMapping.get(location) || location;
+      resolvedLocations.add(resolved);
+    }
+    resolvedClassifications.dropOffLocation = resolvedLocations;
+
+    return resolvedClassifications;
+  }
+
+  // NEW: Helper method to create resolution mapping
+  private createResolutionMapping(resolutions: Array<{ canonical: string; aliases: string[] }>): Map<string, string> {
+    const mapping = new Map<string, string>();
+    
+    for (const resolution of resolutions) {
+      // Map canonical to itself
+      mapping.set(resolution.canonical, resolution.canonical);
+      
+      // Map all aliases to canonical
+      for (const alias of resolution.aliases) {
+        mapping.set(alias, resolution.canonical);
+      }
+    }
+    
+    return mapping;
   }
 }

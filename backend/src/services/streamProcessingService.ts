@@ -29,18 +29,29 @@ export class StreamProcessingService {
     const startTime = Date.now();
     const streamId = streamConfig.streamId;
     
-    console.log(`[Stream ${streamId}] Starting processing of ${streamConfig.sessions.length} sessions`);
+    console.log(`\n🌊 ===== STREAM ${streamId} PROCESSING START =====`);
+    console.log(`⏱️  Stream ${streamId} Start: ${new Date().toISOString()}`);
+    console.log(`📊 Sessions Assigned: ${streamConfig.sessions.length}`);
+    console.log(`🧠 Model: ${streamConfig.modelId}`);
+    console.log(`📊 Max Sessions Per Call: ${streamConfig.maxSessionsPerCall}`);
     
     progressCallback?.(streamId, 0, streamConfig.sessions.length, 0);
 
     try {
       // Calculate token usage and determine batching strategy
+      const tokenEstimationStartTime = Date.now();
       const tokenEstimation = this.tokenManagementService.calculateTokenEstimation(
         streamConfig.sessions, 
         streamConfig.modelId
       );
+      const tokenEstimationDuration = Date.now() - tokenEstimationStartTime;
       
-      console.log(`[Stream ${streamId}] Token estimation:`, tokenEstimation);
+      console.log(`\n🧠 ===== TOKEN ESTIMATION (Stream ${streamId}) =====`);
+      console.log(`⏱️  Token Estimation Time: ${tokenEstimationDuration}ms`);
+      console.log(`📊 Estimated Tokens: ${tokenEstimation.estimatedTokens}`);
+      console.log(`📦 Recommended Batch Size: ${tokenEstimation.recommendedBatchSize}`);
+      console.log(`🔄 Requires Splitting: ${tokenEstimation.requiresSplitting}`);
+      console.log(`💰 Cost Estimate: $${tokenEstimation.costEstimate.toFixed(4)}`);
       
       let processedSessions: SessionWithFacts[] = [];
       let totalTokenUsage: BatchTokenUsage = {
@@ -55,24 +66,32 @@ export class StreamProcessingService {
 
       if (tokenEstimation.requiresSplitting) {
         // Process in multiple batches
-        console.log(`[Stream ${streamId}] Token limit exceeded, processing in batches`);
+        console.log(`\n🔄 Stream ${streamId}: Token limit exceeded, processing in multiple batches`);
+        const batchProcessingStartTime = Date.now();
         const result = await this.processStreamInBatches(
           streamConfig, 
           tokenEstimation.recommendedBatchSize,
           progressCallback
         );
+        const batchProcessingDuration = Date.now() - batchProcessingStartTime;
+        console.log(`⏱️  Stream ${streamId} Batch Processing Time: ${batchProcessingDuration}ms (${(batchProcessingDuration/1000).toFixed(2)}s)`);
+        
         processedSessions = result.processedSessions;
         totalTokenUsage = result.totalTokenUsage;
         validationResults = result.validationResults;
         retryAttempts = result.retryAttempts;
       } else {
         // Process all sessions in single call
-        console.log(`[Stream ${streamId}] Processing all sessions in single call`);
+        console.log(`\n⚡ Stream ${streamId}: Processing all sessions in single API call`);
+        const singleBatchStartTime = Date.now();
         const result = await this.processSingleBatch(
           streamConfig,
           streamConfig.sessions,
           progressCallback
         );
+        const singleBatchDuration = Date.now() - singleBatchStartTime;
+        console.log(`⏱️  Stream ${streamId} Single Batch Time: ${singleBatchDuration}ms (${(singleBatchDuration/1000).toFixed(2)}s)`);
+        
         processedSessions = result.processedSessions;
         totalTokenUsage = result.totalTokenUsage;
         validationResults = [result.validationResult];
@@ -87,7 +106,13 @@ export class StreamProcessingService {
 
       const processingTime = Date.now() - startTime;
       
-      console.log(`[Stream ${streamId}] Completed in ${processingTime}ms, ${totalTokenUsage.totalTokens} tokens used`);
+      console.log(`\n✅ ===== STREAM ${streamId} PROCESSING COMPLETE =====`);
+      console.log(`⏱️  Stream ${streamId} Total Time: ${processingTime}ms (${(processingTime/1000).toFixed(2)}s)`);
+      console.log(`📊 Sessions Processed: ${processedSessions.length}/${streamConfig.sessions.length}`);
+      console.log(`💰 Tokens Used: ${totalTokenUsage.totalTokens} ($${totalTokenUsage.cost.toFixed(4)})`);
+      console.log(`🔄 Retry Attempts: ${retryAttempts}`);
+      console.log(`🎯 Performance: ${(processedSessions.length / (processingTime/1000)).toFixed(1)} sessions/sec`);
+      console.log(`⚡ Avg Time Per Session: ${(processingTime / processedSessions.length).toFixed(2)}ms`);
       
       progressCallback?.(streamId, streamConfig.sessions.length, streamConfig.sessions.length, totalTokenUsage.totalTokens);
 
@@ -103,7 +128,9 @@ export class StreamProcessingService {
 
     } catch (error) {
       const processingTime = Date.now() - startTime;
-      console.error(`[Stream ${streamId}] Processing failed after ${processingTime}ms:`, error);
+      console.log(`\n❌ ===== STREAM ${streamId} PROCESSING FAILED =====`);
+      console.log(`⏱️  Stream ${streamId} Failed After: ${processingTime}ms (${(processingTime/1000).toFixed(2)}s)`);
+      console.error(`🚫 Stream ${streamId} Error:`, error);
       
       // Create fallback results for all sessions
       const fallbackSessions = this.sessionValidationService.createFallbackResults(
@@ -158,7 +185,10 @@ export class StreamProcessingService {
       batchSize
     );
     
-    console.log(`[Stream ${streamId}] Split into ${batches.length} batches`);
+    console.log(`\n🔄 ===== STREAM ${streamId} BATCH SPLITTING =====`);
+    console.log(`📦 Batch Count: ${batches.length}`);
+    console.log(`📊 Batch Sizes: ${batches.map(b => b.length).join(', ')}`);
+    console.log(`📊 Avg Batch Size: ${(streamConfig.sessions.length / batches.length).toFixed(1)} sessions`);
     
     let allProcessedSessions: SessionWithFacts[] = [];
     let totalTokenUsage: BatchTokenUsage = {
@@ -175,7 +205,10 @@ export class StreamProcessingService {
       const batch = batches[i]!;
       const batchNumber = i + 1;
       
-      console.log(`[Stream ${streamId}] Processing batch ${batchNumber}/${batches.length} (${batch.length} sessions)`);
+      const batchStartTime = Date.now();
+      console.log(`\n📦 --- Batch ${batchNumber}/${batches.length} (Stream ${streamId}) ---`);
+      console.log(`⏱️  Batch Start: ${new Date().toISOString()}`);
+      console.log(`📊 Sessions in Batch: ${batch.length}`);
       
       const batchResult = await this.processSingleBatch(
         streamConfig,
@@ -191,6 +224,11 @@ export class StreamProcessingService {
       totalTokenUsage = this.accumulateTokenUsage(totalTokenUsage, batchResult.totalTokenUsage);
       validationResults.push(batchResult.validationResult);
       totalRetryAttempts += batchResult.retryAttempts;
+      
+      const batchDuration = Date.now() - batchStartTime;
+      console.log(`⏱️  Batch ${batchNumber} Time: ${batchDuration}ms`);
+      console.log(`📊 Batch ${batchNumber} Results: ${batchResult.processedSessions.length} sessions processed`);
+      console.log(`💰 Batch ${batchNumber} Tokens: ${batchResult.totalTokenUsage.totalTokens}`);
     }
 
     return {
@@ -253,12 +291,14 @@ export class StreamProcessingService {
       
       while (remainingMissingSessions.length > 0 && retryAttempts < this.MAX_RETRY_ATTEMPTS) {
         retryAttempts++;
-        console.log(`[Stream ${streamId}] Retry attempt ${retryAttempts}/${this.MAX_RETRY_ATTEMPTS} for ${remainingMissingSessions.length} sessions`);
+        console.log(`\n🔄 ===== RETRY ${retryAttempts}/${this.MAX_RETRY_ATTEMPTS} (Stream ${streamId}) =====`);
+        console.log(`⏱️  Retry Start: ${new Date().toISOString()}`);
+        console.log(`📊 Missing Sessions: ${remainingMissingSessions.length}`);
         
         // Add exponential backoff delay
         if (retryAttempts > 1) {
           const delay = this.RETRY_DELAY_MS * Math.pow(2, retryAttempts - 1);
-          console.log(`[Stream ${streamId}] Waiting ${delay}ms before retry`);
+          console.log(`⏳ Stream ${streamId}: Waiting ${delay}ms before retry`);
           await this.sleep(delay);
         }
 
@@ -295,17 +335,22 @@ export class StreamProcessingService {
           // Update remaining missing sessions
           remainingMissingSessions = retryValidation.missingSessions;
 
-          console.log(`[Stream ${streamId}] Retry ${retryAttempts} processed ${retrySessions.length} sessions, ${remainingMissingSessions.length} still missing`);
+          console.log(`✅ Stream ${streamId} Retry ${retryAttempts} Results:`);
+          console.log(`   • Processed: ${retrySessions.length} sessions`);
+          console.log(`   • Still Missing: ${remainingMissingSessions.length} sessions`);
 
         } catch (retryError) {
-          console.error(`[Stream ${streamId}] Retry ${retryAttempts} failed:`, retryError);
+          console.log(`❌ Stream ${streamId} Retry ${retryAttempts} Failed:`, retryError);
           // Continue with remaining retry attempts
         }
       }
 
       // Create fallback results for any remaining missing sessions
       if (remainingMissingSessions.length > 0) {
-        console.warn(`[Stream ${streamId}] ${remainingMissingSessions.length} sessions still missing after ${retryAttempts} retries, creating fallbacks`);
+        console.log(`\n⚠️  ===== FALLBACK CREATION (Stream ${streamId}) =====`);
+        console.log(`🚫 Sessions Still Missing: ${remainingMissingSessions.length}`);
+        console.log(`🔄 Retry Attempts Exhausted: ${retryAttempts}`);
+        console.log(`🔄 Creating fallback results...`);
         const fallbackSessions = this.sessionValidationService.createFallbackResults(
           remainingMissingSessions,
           `Failed after ${retryAttempts} retry attempts`,
@@ -367,12 +412,32 @@ export class StreamProcessingService {
       model: string;
     }
   }> {
+    const apiCallStartTime = Date.now();
+    console.log(`\n🤖 ===== OPENAI API CALL =====`);
+    console.log(`⏱️  API Call Start: ${new Date().toISOString()}`);
+    console.log(`📊 Sessions to Analyze: ${sessions.length}`);
+    console.log(`🧠 Model: ${modelId}`);
+    console.log(`🔧 Base Classifications:`);
+    console.log(`   • Intents: ${baseClassifications.generalIntent.size}`);
+    console.log(`   • Reasons: ${baseClassifications.transferReason.size}`);
+    console.log(`   • Locations: ${baseClassifications.dropOffLocation.size}`);
+    
     const result = await this.openaiService.analyzeBatch(
       sessions,
       baseClassifications,
       apiKey,
       modelId
     );
+    
+    const apiCallDuration = Date.now() - apiCallStartTime;
+    console.log(`\n✅ ===== OPENAI API CALL COMPLETE =====`);
+    console.log(`⏱️  API Call Time: ${apiCallDuration}ms (${(apiCallDuration/1000).toFixed(2)}s)`);
+    console.log(`📊 Sessions Returned: ${result.sessions.length}`);
+    console.log(`💰 Tokens Used: ${result.totalTokens} ($${result.cost.toFixed(4)})`);
+    console.log(`⚡ Performance: ${(result.totalTokens / (apiCallDuration/1000)).toFixed(1)} tokens/sec`);
+    console.log(`📈 Token Breakdown:`);
+    console.log(`   • Prompt Tokens: ${result.promptTokens}`);
+    console.log(`   • Completion Tokens: ${result.completionTokens}`);
 
     return {
       llmResponse: {

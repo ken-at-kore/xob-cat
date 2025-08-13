@@ -18,11 +18,11 @@ import { ParallelProcessingOrchestratorService } from './parallelProcessingOrche
 import { ConflictResolutionService } from './conflictResolutionService';
 import { TokenManagementService } from './tokenManagementService';
 import { SessionValidationService } from './sessionValidationService';
+import { getBackgroundJobQueue } from './backgroundJobQueue';
 import { StreamProcessingService } from './streamProcessingService';
 import { BatchAnalysisService } from './batchAnalysisService';
 import { AnalysisSummaryService } from './analysisSummaryService';
 import { MockAnalysisSummaryService } from '../__mocks__/analysisSummaryService.mock';
-import { getBackgroundJobQueue } from './backgroundJobQueue';
 import { ServiceFactory } from '../factories/serviceFactory';
 import { ServiceType } from '../interfaces';
 import { IKoreApiService, IOpenAIService } from '../interfaces';
@@ -64,6 +64,11 @@ export class ParallelAutoAnalyzeService {
       this.openaiAnalysisService
     );
     
+    // Initialize ConflictResolutionService BEFORE ParallelProcessingOrchestratorService
+    this.conflictResolutionService = new ConflictResolutionService(
+      this.openaiAnalysisService
+    );
+    
     this.streamProcessingService = new StreamProcessingService(
       this.tokenManagementService,
       this.sessionValidationService,
@@ -72,11 +77,8 @@ export class ParallelAutoAnalyzeService {
     
     this.parallelProcessingOrchestratorService = new ParallelProcessingOrchestratorService(
       this.streamProcessingService,
-      this.tokenManagementService
-    );
-    
-    this.conflictResolutionService = new ConflictResolutionService(
-      this.openaiAnalysisService
+      this.tokenManagementService,
+      this.conflictResolutionService
     );
   }
 
@@ -215,7 +217,7 @@ export class ParallelAutoAnalyzeService {
     }
 
     session.cancelled = true;
-    this.updateProgress(analysisId, {
+    await this.updateProgress(analysisId, {
       phase: 'error',
       currentStep: 'Analysis cancelled by user',
       error: 'Cancelled',
@@ -304,7 +306,7 @@ export class ParallelAutoAnalyzeService {
   }
 
   private async runSamplingPhase(session: ParallelAnalysisSession): Promise<any> {
-    this.updateProgress(session.id, {
+    await this.updateProgress(session.id, {
       phase: 'sampling',
       currentStep: 'Initializing session search...'
     });
@@ -312,9 +314,9 @@ export class ParallelAutoAnalyzeService {
     try {
       const samplingResult = await this.sessionSamplingService.sampleSessions(
         session.config,
-        (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string, messageProgress?: { sessionsWithMessages: number; totalSessions: number; currentBatch?: number; totalBatches?: number }) => {
+        async (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string, messageProgress?: { sessionsWithMessages: number; totalSessions: number; currentBatch?: number; totalBatches?: number }) => {
           // Update progress with sampling details
-          this.updateProgress(session.id, {
+          await this.updateProgress(session.id, {
             currentStep,
             sessionsFound,
             samplingProgress: {
@@ -330,7 +332,7 @@ export class ParallelAutoAnalyzeService {
       
       // Sampling completed successfully
       
-      this.updateProgress(session.id, {
+      await this.updateProgress(session.id, {
         currentStep: `Sampling complete: found ${samplingResult.sessions.length} sessions`,
         sessionsFound: samplingResult.sessions.length,
         totalSessions: samplingResult.sessions.length
@@ -344,7 +346,7 @@ export class ParallelAutoAnalyzeService {
   }
 
   private async runDiscoveryPhase(session: ParallelAnalysisSession, samplingResult: any): Promise<any> {
-    this.updateProgress(session.id, {
+    await this.updateProgress(session.id, {
       phase: 'discovery',
       currentStep: 'Starting strategic discovery phase...'
     });
@@ -356,13 +358,13 @@ export class ParallelAutoAnalyzeService {
     const discoveryResult = await this.strategicDiscoveryService.runDiscovery(
       samplingResult.sessions,
       discoveryConfig,
-      (step: string, progress: number, total: number, discoveries: number) => {
-        this.updateProgress(session.id, {
+      async (step: string, progress: number, total: number, discoveries: number) => {
+        await this.updateProgress(session.id, {
           currentStep: step,
           discoveryStats: {
-            discoveredIntents: 0, // Will be updated from result
-            discoveredReasons: 0,
-            discoveredLocations: 0,
+            discoveredIntents: discoveries, // Use actual discovery count from callback
+            discoveredReasons: 0, // Will be broken down in final update
+            discoveredLocations: 0, // Will be broken down in final update
             discoveryRate: discoveries / Math.max(total, 1)
           }
         });
@@ -371,7 +373,7 @@ export class ParallelAutoAnalyzeService {
       session.config.modelId
     );
 
-    this.updateProgress(session.id, {
+    await this.updateProgress(session.id, {
       currentStep: `Discovery complete: ${discoveryResult.discoveryStats.totalProcessed} sessions processed`,
       discoveryStats: {
         discoveredIntents: discoveryResult.discoveryStats.uniqueIntents,
@@ -385,7 +387,7 @@ export class ParallelAutoAnalyzeService {
   }
 
   private async runParallelProcessingPhase(session: ParallelAnalysisSession, discoveryResult: any): Promise<any> {
-    this.updateProgress(session.id, {
+    await this.updateProgress(session.id, {
       phase: 'parallel_processing',
       currentStep: 'Starting parallel processing...'
     });
@@ -413,8 +415,8 @@ export class ParallelAutoAnalyzeService {
       (phase: string, streamsActive: number, totalProgress: number, streamProgress: any[]) => {
         this.updateProgress(session.id, {
           currentStep: `Parallel processing: ${phase}`,
-          streamsActive,
-          streamProgress
+          streamsActive
+          // streamProgress removed - not displaying individual streams in simplified UI
         });
       }
     );
@@ -495,36 +497,53 @@ export class ParallelAutoAnalyzeService {
     }
   }
 
-  private updateProgress(analysisId: string, updates: Partial<ParallelAnalysisProgress>): void {
+  private async updateProgress(analysisId: string, updates: Partial<ParallelAnalysisProgress>): Promise<void> {
     const session = this.activeSessions.get(analysisId);
     if (!session) return;
 
+    // Update local session progress
     session.progress = { ...session.progress, ...updates };
+    
+    // Also update background job progress if available so frontend can see real-time updates
+    if (session.progress.backgroundJobId) {
+      try {
+        const jobQueue = getBackgroundJobQueue();
+        const backgroundJob = await jobQueue.getJob(session.progress.backgroundJobId);
+        if (backgroundJob) {
+          // Update the background job's progress with the new data
+          backgroundJob.progress = {
+            ...backgroundJob.progress,
+            ...updates,
+            lastUpdated: new Date().toISOString()
+          } as ParallelAnalysisProgress;
+          
+          await jobQueue.updateJob(session.progress.backgroundJobId, backgroundJob);
+        }
+      } catch (error) {
+        console.error(`[ParallelAutoAnalyzeService] Failed to sync progress with background job: ${error}`);
+        // Continue execution - local progress is still updated
+      }
+    }
   }
 
   private getAdaptiveDiscoveryConfig(totalSessions: number): DiscoveryConfig {
     const baseConfig = StrategicDiscoveryService.getDefaultConfig();
     
-    // For small session counts (typical in testing), use adaptive configuration
-    if (totalSessions <= 20) {
-      return {
-        ...baseConfig,
-        targetPercentage: 50, // Use half for discovery
-        minSessions: Math.max(2, Math.floor(totalSessions * 0.3)), // At least 30% but minimum 2
-        maxSessions: Math.floor(totalSessions * 0.7) // At most 70%
-      };
-    }
+    // Always ensure discovery runs according to design: 10-15% of sessions
+    // Minimum 5 sessions, maximum 150 sessions (as per design document)
+    const targetPercentage = 15; // Always use 15% as per design
+    const targetSessions = Math.ceil(totalSessions * (targetPercentage / 100));
     
-    // For medium session counts, adjust minimums
-    if (totalSessions <= 100) {
-      return {
-        ...baseConfig,
-        minSessions: Math.min(20, Math.floor(totalSessions * 0.2)) // At least 20% but max 20
-      };
-    }
+    // Design requirements: minimum 5 sessions for meaningful discovery
+    const minSessions = Math.max(5, Math.floor(totalSessions * 0.10)); // At least 10% 
+    const maxSessions = Math.min(150, Math.floor(totalSessions * 0.15)); // At most 15%
     
-    // For large session counts, use default config
-    return baseConfig;
+    return {
+      ...baseConfig,
+      targetPercentage,
+      minSessions,
+      maxSessions: Math.max(minSessions, maxSessions) // Ensure maxSessions >= minSessions
+    };
   }
 
   private accumulateTokenUsage(

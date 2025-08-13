@@ -205,13 +205,13 @@ export class BackgroundJobQueue {
     try {
       samplingResult = await sessionSamplingService.sampleSessions(
         job.config,
-        (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string, messageProgress?: { sessionsWithMessages: number; totalSessions: number; currentBatch?: number; totalBatches?: number }) => {
+        async (currentStep: string, sessionsFound: number, windowIndex: number, windowLabel: string, messageProgress?: { sessionsWithMessages: number; totalSessions: number; currentBatch?: number; totalBatches?: number }) => {
           job.progress.currentStep = currentStep;
           job.progress.sessionsFound = sessionsFound;
           if (messageProgress) {
             (job.progress as any).messageProgress = messageProgress;
           }
-          this.updateJob(job.id, job);
+          await this.updateJob(job.id, job);
         }
       );
     } catch (error) {
