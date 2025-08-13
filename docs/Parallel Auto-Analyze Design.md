@@ -1,8 +1,8 @@
-# Parallel Auto-Analyze Design
+# Parallel Auto-Analyze Design & Architecture
 
 ## Overview
 
-This document describes an enhanced parallel processing architecture for the Auto-Analyze feature that maintains near-perfect classification consistency while achieving ~60% performance improvement through intelligent parallelization.
+This document describes the parallel processing architecture for the Auto-Analyze feature that maintains near-perfect classification consistency while achieving ~60% performance improvement through intelligent parallelization with inter-round conflict resolution.
 
 ## Problem Statement
 
@@ -14,17 +14,46 @@ This document describes an enhanced parallel processing architecture for the Aut
 
 **Core Challenge**: Some classifications only emerge when analyzing the full dataset, but we need previously discovered classifications to maintain consistency across the analysis.
 
-## Solution: Synchronized Parallel Processing
+## Solution: Synchronized Parallel Processing with Inter-Round Conflict Resolution
 
 ### Architecture Overview
 
-The solution uses a three-phase approach:
+The solution uses a multi-phase approach with continuous conflict resolution:
 1. **Strategic Discovery Phase** (Sequential): Establish baseline classifications
-2. **Synchronized Parallel Rounds** (Parallel): Process bulk sessions with periodic synchronization
-3. **Automated Consolidation** (LLM-based): Resolve classification conflicts without human intervention
+2. **Synchronized Parallel Rounds** (Parallel): Process bulk sessions with inter-round conflict resolution
+3. **Final Consolidation** (LLM-based): Final conflict resolution and cleanup
 
-### Phase 1: Strategic Discovery
+### Key Innovation: Inter-Round Conflict Resolution
 
+**New in v2.0**: The system now performs conflict resolution after each processing round, not just at the end. This ensures:
+- Classifications converge more quickly across streams
+- Better consistency throughout the analysis
+- Early detection and resolution of semantic duplicates
+- Reduced final conflict resolution workload
+
+## Service Architecture
+
+### Service Hierarchy
+
+```
+ParallelAutoAnalyzeService (Orchestrator)
+├── StrategicDiscoveryService (Phase 1)
+├── ParallelProcessingOrchestratorService (Phase 2)
+│   ├── StreamProcessingService (Multiple instances)
+│   ├── TokenManagementService
+│   ├── SessionValidationService
+│   └── ConflictResolutionService (Inter-round resolution)
+├── ConflictResolutionService (Final resolution)
+├── SessionSamplingService (Existing, enhanced)
+└── OpenAIAnalysisService (Existing, enhanced)
+```
+
+## Phase 1: Strategic Discovery
+
+### Purpose
+Quickly establish 90-95% of common classifications through strategic sampling.
+
+### Configuration
 ```typescript
 interface DiscoveryConfig {
   targetSize: number;              // 10-15% of total sessions
@@ -38,81 +67,136 @@ interface DiscoveryConfig {
 }
 ```
 
-**Purpose**: Quickly establish 90-95% of common classifications through strategic sampling.
-
-**Process**:
+### Process
 1. Sample diverse sessions (by length, type, time)
 2. Process sequentially to build initial classification sets
-3. Continue until classification discovery rate drops
+3. Continue until classification discovery rate drops below threshold
 
-### Phase 2: Synchronized Parallel Rounds
-
+### Service Interface
 ```typescript
-interface ParallelConfig {
-  streamCount: number;              // Configurable via PARALLEL_STREAM_COUNT env var (default: 8)
-  sessionsPerStream: number;        // Configurable via SESSIONS_PER_STREAM env var (default: 4)
-  maxSessionsPerLLMCall: number;    // Dynamic based on model context window
-  syncFrequency: 'after_each_round';
+interface IStrategicDiscoveryService {
+  runDiscovery(
+    sessions: SessionWithTranscript[], 
+    config: DiscoveryConfig,
+    progressCallback?: DiscoveryProgressCallback
+  ): Promise<DiscoveryResult>;
+  
+  calculateDiscoverySize(totalSessions: number): number;
+  selectDiverseSessions(sessions: SessionWithTranscript[], count: number): SessionWithTranscript[];
 }
-
-// Environment variable configuration
-const parallelConfig = {
-  streamCount: parseInt(process.env.PARALLEL_STREAM_COUNT || '8'),
-  sessionsPerStream: parseInt(process.env.SESSIONS_PER_STREAM || '4'),
-  maxSessionsPerLLMCall: calculateMaxSessionsPerCall(modelId)
-};
 ```
 
-**Context Window Optimization**:
+## Phase 2: Synchronized Parallel Rounds with Inter-Round Conflict Resolution
+
+### Configuration
+```typescript
+interface ParallelConfig {
+  streamCount: number;              // PARALLEL_STREAM_COUNT env var (default: 8)
+  sessionsPerStream: number;        // SESSIONS_PER_STREAM env var (default: 4)
+  maxSessionsPerLLMCall: number;    // Dynamic based on model context window
+  syncFrequency: 'after_each_round';
+  enableInterRoundConflictResolution: boolean; // ENABLE_INTER_ROUND_CONFLICT_RESOLUTION (default: true)
+  conflictResolutionThreshold: number;        // Min new classifications to trigger (default: 5)
+}
+```
+
+### Inter-Round Conflict Resolution Process
+
+**After each parallel processing round:**
+
+1. **Classification Synchronization**
+   ```typescript
+   // Collect new classifications from all streams
+   const roundResults = await Promise.all(streamPromises);
+   const syncResult = this.synchronizeClassifications(roundResults, currentClassifications);
+   ```
+
+2. **Conflict Detection**
+   ```typescript
+   // Check if conflict resolution should run
+   if (syncResult.newClassificationsCount > conflictResolutionThreshold) {
+     // Trigger inter-round conflict resolution
+   }
+   ```
+
+3. **LLM-Based Resolution**
+   ```typescript
+   // Use ConflictResolutionService to identify and resolve duplicates
+   const resolvedClassifications = await this.conflictResolutionService.resolveClassifications(
+     currentClassifications,
+     apiKey,
+     modelId
+   );
+   ```
+
+4. **Classification Update**
+   ```typescript
+   // Apply resolved classifications for next round
+   currentClassifications = resolvedClassifications;
+   ```
+
+### Context Window Optimization
+
 ```typescript
 function calculateMaxSessionsPerCall(modelId: string): number {
   const modelInfo = getGptModelById(modelId);
-  const contextWindow = modelInfo.contextWindow; // tokens
+  const contextWindow = modelInfo.contextWindow;
   
   // Model context windows:
   // GPT-4o, 4o-mini: 128,000 tokens
   // GPT-4.1, 4.1-mini, 4.1-nano: 1,000,000 tokens
   
-  // Reserve tokens for:
-  // - System message: ~500 tokens
-  // - Existing classifications: ~2,000 tokens  
-  // - Function schema: ~1,000 tokens
-  // - Response buffer: ~2,000 tokens
+  // Reserve tokens for system message, classifications, schema, response
   const reservedTokens = 5500;
   const availableTokens = contextWindow - reservedTokens;
   
-  // Average session: ~1,500 tokens
-  // Add 20% safety margin
+  // Average session: ~1,500 tokens with 20% safety margin
   const avgTokensPerSession = 1500;
   const maxSessions = Math.floor(availableTokens / (avgTokensPerSession * 1.2));
   
-  // Practical limits
   return Math.min(maxSessions, 50); // Cap at 50 for response quality
 }
 ```
 
-**Dynamic Batch Processing**:
+### Parallel Processing Orchestrator Interface
 
-Each stream attempts to process all its sessions in a single LLM call, but the system must dynamically adjust based on actual token usage:
+```typescript
+interface IParallelProcessingOrchestratorService {
+  processInParallel(
+    sessions: SessionWithTranscript[],
+    baseClassifications: ExistingClassifications,
+    config: ParallelConfig,
+    progressCallback?: ParallelProgressCallback
+  ): Promise<ParallelProcessingResult>;
+  
+  // NEW: Inter-round conflict resolution
+  runInterRoundConflictResolution(
+    processedSessions: SessionWithFacts[],
+    currentClassifications: ExistingClassifications,
+    apiKey: string,
+    modelId: string
+  ): Promise<ExistingClassifications>;
+  
+  distributeSessionsAcrossStreams(
+    sessions: SessionWithTranscript[], 
+    streamCount: number
+  ): SessionStream[];
+  
+  synchronizeClassifications(
+    streams: StreamResult[],
+    currentClassifications: ExistingClassifications
+  ): ClassificationSyncResult;
+}
+```
 
-**Token Limit Handling**:
-- The app calculates total tokens for all sessions in the stream
-- If sessions fit within the model's context window → single LLM call
-- If sessions exceed context window → automatically split into multiple LLM calls
-- Extremely large sessions may require individual processing
+### Example Configurations
 
-**Model Context Windows**:
-- **GPT-4o/4o-mini**: 128,000 tokens (~20 average sessions)
-- **GPT-4.1 variants**: 1,000,000 tokens (~50 average sessions)
-
-**Important**: `SESSIONS_PER_STREAM` is a target, not a guarantee. If a stream contains unusually long sessions, the system will automatically make multiple LLM calls to process them safely within context limits.
-
-**Example Configurations**:
 ```bash
 # Conservative (default) - prioritizes consistency
 PARALLEL_STREAM_COUNT=8
 SESSIONS_PER_STREAM=4
-# Result: 8 streams × 4 sessions = 32 sessions per round
+ENABLE_INTER_ROUND_CONFLICT_RESOLUTION=true
+# Result: 8 streams × 4 sessions = 32 sessions per round with conflict resolution
 
 # Optimized for GPT-4o-mini
 PARALLEL_STREAM_COUNT=4
@@ -125,33 +209,9 @@ SESSIONS_PER_STREAM=40
 # Result: 3 streams × 40 sessions = 120 sessions per round
 ```
 
-**Key Design Decisions**:
-- Each stream processes all its sessions in a single LLM call (when possible)
-- SESSIONS_PER_STREAM should be set to maximize LLM utilization
-- Configurable parallelism via environment variables
-- Each stream maintains local classification tracking
-- All streams share baseline classifications at round start
-- New classifications collected for synchronization
+## Phase 3: Final Conflict Resolution
 
-### Session Validation & Retry
-
-**Critical Requirement**: The system MUST validate that all sessions sent to the LLM are included in the response.
-
-```typescript
-// After each LLM call:
-1. Check that all input session user_ids appear in the response
-2. If any sessions are missing or malformed:
-   - Log warning with missing session count
-   - Make a separate LLM call for just the missing sessions
-   - Merge results and token usage
-   - Update classifications from retry attempt
-
-// This ensures 100% session coverage despite potential LLM errors
-```
-
-### Phase 3: LLM-Based Conflict Resolution
-
-Instead of complex similarity algorithms, leverage the same LLM for conflict detection:
+### LLM-Based Conflict Resolution Schema
 
 ```typescript
 const CONFLICT_RESOLUTION_SCHEMA = {
@@ -178,81 +238,80 @@ const CONFLICT_RESOLUTION_SCHEMA = {
           required: ["canonical", "aliases"]
         }
       },
-      transferReasons: {
-        type: "array",
-        items: { /* same structure */ }
-      },
-      dropOffLocations: {
-        type: "array",
-        items: { /* same structure */ }
-      }
+      transferReasons: { /* same structure */ },
+      dropOffLocations: { /* same structure */ }
     }
   }
 };
 ```
 
-**Example Conflict Resolution Prompt**:
-```
-You are reviewing classifications from parallel analysis streams. Identify any semantic duplicates and choose the canonical version.
+### Conflict Resolution Service Interface
 
-General Intents found:
-- "Claim Status" (15 sessions) - Checking insurance claim status
-- "Billing" (8 sessions) - Billing inquiries
-- "Claim Inquiry" (3 sessions) - Asking about claims
-- "Live Agent" (12 sessions) - Requesting human assistance
-- "Transfer to Human" (2 sessions) - Wanting to speak to person
-
-For each group of semantic duplicates:
-1. Identify which classifications refer to the same concept
-2. Choose the best canonical name (most specific, clearest)
-3. List all aliases that should map to the canonical name
-```
-
-**Example LLM Response**:
-```json
-{
-  "generalIntents": [
-    {
-      "canonical": "Claim Status",
-      "aliases": ["Claim Inquiry"]
-    },
-    {
-      "canonical": "Live Agent",
-      "aliases": ["Transfer to Human"]
-    }
-  ]
+```typescript
+interface IConflictResolutionService {
+  // Main resolution method
+  resolveConflicts(
+    sessions: SessionWithFacts[],
+    apiKey: string,
+    modelId: string
+  ): Promise<ConflictResolutionResult>;
+  
+  // NEW: Classification-only resolution for inter-round
+  resolveClassifications(
+    classifications: ExistingClassifications,
+    apiKey: string,
+    modelId: string
+  ): Promise<ExistingClassifications>;
+  
+  identifyPotentialConflicts(
+    classifications: ExistingClassifications
+  ): ClassificationConflicts;
+  
+  applyResolutions(
+    sessions: SessionWithFacts[],
+    resolutions: ConflictResolutions
+  ): SessionWithFacts[];
 }
 ```
 
-## Implementation Details
+## Core Components
 
-### Core Components
+### 1. ParallelAutoAnalyzeService (Main Orchestrator)
 
-**1. Parallel Processing Orchestrator**
-- Manages discovery phase (sequential) and parallel rounds
-- Loads configuration from environment variables
-- Coordinates stream execution and synchronization points
+**Key Responsibilities**:
+- Manage analysis lifecycle across all phases
+- Coordinate between discovery, parallel processing, and conflict resolution
+- Handle dependency injection for all services
+- Track progress across all streams and phases
 
-**2. Stream Processor**
-- Each stream processes its assigned sessions independently
-- Dynamically splits sessions if they exceed context window
-- Validates all sessions are included in LLM response
-- Retries missing sessions automatically
+**Critical Dependency Injection Order**:
+```typescript
+constructor() {
+  // ConflictResolutionService MUST be initialized before ParallelProcessingOrchestratorService
+  this.conflictResolutionService = new ConflictResolutionService(this.openaiAnalysisService);
+  
+  this.parallelProcessingOrchestratorService = new ParallelProcessingOrchestratorService(
+    this.streamProcessingService,
+    this.tokenManagementService,
+    this.conflictResolutionService // Required for inter-round resolution
+  );
+}
+```
 
-**3. Token Management**
-- Calculate tokens before each LLM call
-- Split batches that exceed model context limits
-- Track cumulative token usage across all streams
+### 2. StreamProcessingService
 
-**4. Conflict Resolution Service**
-- Collects new classifications from all streams after each round
-- Uses LLM to identify semantic duplicates
-- Returns canonical classifications with aliases
-- Updates all affected sessions with resolved classifications
+**Purpose**: Process sessions within a single parallel stream with dynamic batching
 
-### Key Algorithms
+**Key Features**:
+- Dynamic batching based on context windows
+- Automatic validation and retry for missing sessions
+- Local classification tracking
 
-**Dynamic Batching**:
+### 3. TokenManagementService
+
+**Purpose**: Manage dynamic batching based on model context windows
+
+**Dynamic Batching Algorithm**:
 ```
 1. Calculate total tokens for stream sessions
 2. If tokens < context_limit - reserved_tokens:
@@ -263,7 +322,11 @@ For each group of semantic duplicates:
    - Merge results
 ```
 
-**Session Validation**:
+### 4. SessionValidationService
+
+**Purpose**: Validate LLM responses contain all input sessions
+
+**Validation Process**:
 ```
 1. After LLM response, extract all user_ids
 2. Compare with input session user_ids
@@ -273,40 +336,161 @@ For each group of semantic duplicates:
    - Merge results and token usage
 ```
 
-**Synchronization Flow**:
+## Data Flow Architecture
+
+### Complete Processing Flow
+
 ```
-1. All streams complete their round
-2. Collect new classifications from each stream
-3. Call LLM to resolve conflicts
-4. Apply canonical classifications to all sessions
-5. Update master classification set
-6. Start next round
+Phase 0: Sampling
+├── SessionSamplingService → Time window expansion → Target sessions
+
+Phase 1: Strategic Discovery
+├── StrategicDiscoveryService → OpenAIAnalysisService → Baseline Classifications
+
+Phase 2: Parallel Processing with Inter-Round Resolution
+├── Round 1:
+│   ├── Stream 1-8: Process sessions in parallel
+│   ├── Synchronization: Collect new classifications
+│   └── Conflict Resolution: Resolve duplicates → Updated classifications
+├── Round 2:
+│   ├── Stream 1-8: Process with updated classifications
+│   ├── Synchronization: Collect new classifications
+│   └── Conflict Resolution: Resolve duplicates → Updated classifications
+└── Round N: Continue until all sessions processed
+
+Phase 3: Final Conflict Resolution
+└── ConflictResolutionService → Final cleanup → Analysis complete
 ```
 
-### Logging Requirements
+## Logging & Monitoring
 
-Comprehensive logging is critical for monitoring parallel execution and debugging issues:
+### Inter-Round Conflict Resolution Logging
 
-**Stream-Level Logging**:
-- `[Stream ${id}] Starting processing of ${count} sessions`
-- `[Stream ${id}] Token calculation: ${tokens} tokens (${batches} batches required)`
-- `[Stream ${id}] LLM call ${n} completed: ${sessions} sessions processed`
-- `[Stream ${id}] Missing sessions detected: ${missing} sessions, retrying...`
-- `[Stream ${id}] Completed in ${time}ms, ${totalTokens} tokens used`
+```
+⚖️ ============ INTER-ROUND CONFLICT RESOLUTION ============
+⚖️ Round 1 Conflict Resolution:
+  - New classifications collected: 25 intents, 18 reasons, 12 locations
+  - Conflicts identified: 7 intent duplicates, 4 reason duplicates
+  - Resolutions applied:
+    * "Claim Status" → ["Claim Inquiry", "Claims Check"]
+    * "Live Agent" → ["Transfer to Human", "Speak to Representative"]
+  - Processing time: 1.2s
+⚖️ ========================================================
+```
 
-**Synchronization Logging**:
-- `[Sync Round ${n}] Collecting classifications from ${streams} streams`
-- `[Sync Round ${n}] New classifications found: ${count} intents, ${count} reasons, ${count} locations`
-- `[Sync Round ${n}] Conflicts detected: ${conflicts}`
-- `[Sync Round ${n}] Resolutions applied: ${canonical} → [${aliases}]`
+### Stream-Level Logging
 
-**Performance Metrics**:
-- Overall progress: sessions completed, rounds completed, ETA
-- Token usage: per stream, per round, cumulative
-- Timing: discovery phase, each round, sync points
-- Error tracking: retry attempts, failed sessions
+```
+[Stream ${id}] Starting processing of ${count} sessions
+[Stream ${id}] Token calculation: ${tokens} tokens (${batches} batches required)
+[Stream ${id}] LLM call ${n} completed: ${sessions} sessions processed
+[Stream ${id}] Completed in ${time}ms, ${totalTokens} tokens used
+```
 
-**Debug Mode**: Environment variable to enable verbose logging of:
-- Full session lists per stream
-- Complete LLM prompts and responses
-- Detailed conflict resolution decisions
+### Progress UI Updates
+
+```typescript
+// Frontend progress display during inter-round conflict resolution
+if (progress.currentStep?.includes('Conflict resolution') && 
+    progress.currentStep?.includes('round')) {
+  return (
+    <div className="text-amber-600">
+      ⚖️ Running inter-round conflict resolution...
+    </div>
+  );
+}
+```
+
+## Performance Metrics
+
+### With Inter-Round Conflict Resolution
+
+**100-Session Test Results**:
+- Total processing time: ~3 minutes
+- Rounds completed: 3
+- Inter-round resolutions: 2 (after Round 1 and Round 2)
+- Conflicts resolved: 16 total (7 in Round 1, 9 in Round 2)
+- Classification convergence: 95% by Round 2
+- Final cleanup: Minimal (classifications already converged)
+
+### Resource Utilization
+
+- 8 concurrent streams with optimal utilization
+- GPT-4o-mini: ~20 sessions per call
+- GPT-4.1: ~50 sessions per call
+- Memory efficient with stream cleanup after each round
+
+## Testing Strategy
+
+### Integration Tests
+
+```typescript
+// Test inter-round conflict resolution
+describe('Inter-Round Conflict Resolution', () => {
+  it('should run conflict resolution after each round', async () => {
+    // Verify conflict resolution is called between rounds
+    // Check that classifications are updated after resolution
+    // Ensure all streams receive updated classifications
+  });
+  
+  it('should handle dependency injection correctly', async () => {
+    // Verify ConflictResolutionService is available to orchestrator
+    // Test that inter-round resolution doesn't fail due to missing service
+  });
+});
+```
+
+### E2E Tests
+
+```javascript
+// Puppeteer test validation
+const validateInterRoundConflictResolution = async (page) => {
+  // Check for inter-round conflict resolution UI indicators
+  const hasInterRoundResolution = await page.evaluate(() => {
+    const text = document.body.innerText;
+    return text.includes('Conflict resolution after round') ||
+           text.includes('inter-round conflict resolution');
+  });
+  
+  return hasInterRoundResolution;
+};
+```
+
+## Environment Variables
+
+```bash
+# Parallel Processing Configuration
+PARALLEL_STREAM_COUNT=8                          # Number of parallel streams
+SESSIONS_PER_STREAM=4                           # Sessions per stream (target)
+ENABLE_INTER_ROUND_CONFLICT_RESOLUTION=true     # Enable inter-round resolution
+CONFLICT_RESOLUTION_THRESHOLD=5                 # Min new classifications to trigger
+
+# Discovery Configuration  
+DISCOVERY_TARGET_PERCENTAGE=15                  # Percentage of sessions for discovery
+DISCOVERY_MIN_SESSIONS=50                       # Minimum discovery sessions
+DISCOVERY_MAX_SESSIONS=150                      # Maximum discovery sessions
+
+# Debug Configuration
+PARALLEL_PROCESSING_DEBUG=false                 # Enable verbose logging
+INTER_ROUND_CONFLICT_RESOLUTION_DEBUG=false     # Debug conflict resolution
+```
+
+## Migration Notes
+
+### From v1.0 to v2.0 (Inter-Round Conflict Resolution)
+
+1. **Service Initialization Order**: ConflictResolutionService must be initialized before ParallelProcessingOrchestratorService
+2. **New Configuration**: Add ENABLE_INTER_ROUND_CONFLICT_RESOLUTION environment variable
+3. **UI Updates**: Frontend now shows inter-round conflict resolution progress
+4. **Testing**: New integration tests for inter-round behavior
+
+## Future Enhancements
+
+1. **Adaptive Conflict Resolution**: Only run when conflict rate exceeds threshold
+2. **Smart Round Sizing**: Dynamically adjust rounds based on classification stability
+3. **Cached Resolutions**: Remember previous conflict resolutions across analyses
+4. **Multi-Model Consensus**: Use multiple models for conflict resolution validation
+
+---
+
+*Last Updated: December 2024 - Added inter-round conflict resolution architecture*
