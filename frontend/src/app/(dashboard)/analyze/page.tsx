@@ -24,6 +24,7 @@ import {
 import { autoAnalyze } from '../../../lib/api';
 import { AnalyzedSessionDetailsDialog } from '../../../components/AnalyzedSessionDetailsDialog';
 import { AnalysisReportView } from '../../../components/AnalysisReportView';
+import { getSimplifiedStatusText, calculateProgressPercentage, getPhaseLabel } from './progressUtils';
 
 /**
  * Load mock analysis results for testing
@@ -401,19 +402,6 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
   const [progress, setProgress] = useState<AnalysisProgress | null>(null);
   const [error, setError] = useState<string>('');
 
-  const getPhaseLabel = (phase: string): string => {
-    switch (phase) {
-      case 'sampling': return 'Sampling Sessions';
-      case 'discovery': return 'Strategic Discovery';
-      case 'parallel_processing': return 'Parallel Processing';
-      case 'conflict_resolution': return 'Conflict Resolution';
-      case 'analyzing': return 'Analyzing'; // Legacy phase
-      case 'generating_summary': return 'Generating Summary';
-      case 'complete': return 'Complete';
-      case 'error': return 'Error';
-      default: return phase.charAt(0).toUpperCase() + phase.slice(1);
-    }
-  };
 
   React.useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -466,137 +454,15 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
     return <div>Loading...</div>;
   }
 
-  const progressPercentage = (() => {
-    // New parallel processing workflow: sampling → discovery → parallel processing → conflict resolution → summary
-    const phaseWeights = {
-      sampling: 15,           // 15%
-      discovery: 20,          // 20% 
-      parallel_processing: 50, // 50%
-      conflict_resolution: 10, // 10%
-      generating_summary: 5   // 5%
-    };
-    
-    let baseProgress = 0;
-    
-    if (progress.phase === 'sampling') {
-      // Enhanced progress calculation for sampling phase with message retrieval
-      if ((progress as any).messageProgress) {
-        // When message retrieval is happening, show more detailed progress
-        const sessionDiscoveryWeight = 0.4; // 40% for finding sessions
-        const messageRetrievalWeight = 0.6;  // 60% for retrieving message details
-        
-        // Session discovery progress
-        const sessionDiscoveryProgress = progress.samplingProgress ? 
-          Math.min(progress.sessionsFound / progress.samplingProgress.targetSessionCount, 1) : 1;
-        
-        // Message retrieval progress
-        const messageRetrievalProgress = (progress as any).messageProgress.totalSessions > 0 ?
-          (progress as any).messageProgress.sessionsWithMessages / (progress as any).messageProgress.totalSessions : 0;
-        
-        const totalSamplingProgress = 
-          (sessionDiscoveryProgress * sessionDiscoveryWeight) + 
-          (messageRetrievalProgress * messageRetrievalWeight);
-        
-        return Math.min(totalSamplingProgress * phaseWeights.sampling, phaseWeights.sampling);
-      } else if (progress.samplingProgress) {
-        // Original logic for session discovery without message retrieval
-        const windowProgressWeight = 0.6;
-        const sessionProgressWeight = 0.4;
-        
-        const windowProgress = (progress.samplingProgress.currentWindowIndex / progress.samplingProgress.totalWindows);
-        const sessionProgress = Math.min(progress.sessionsFound / progress.samplingProgress.targetSessionCount, 1);
-        
-        const samplingProgress = (windowProgress * windowProgressWeight) + (sessionProgress * sessionProgressWeight);
-        return Math.min(samplingProgress * phaseWeights.sampling, phaseWeights.sampling);
-      }
-      
-      // Fallback progress for sampling phase when detailed progress isn't available
-      // Show some progress based on the fact that we're in sampling phase
-      if (progress.sessionsFound > 0) {
-        // If we found sessions, show at least 5% progress
-        const basicSamplingProgress = Math.min(progress.sessionsFound / 100, 0.5); // Cap at 50% of sampling phase
-        console.log(`📊 Frontend sampling fallback: sessionsFound=${progress.sessionsFound}, basicProgress=${basicSamplingProgress}, weighted=${basicSamplingProgress * phaseWeights.sampling}`);
-        return basicSamplingProgress * phaseWeights.sampling;
-      }
-      
-      console.log(`📊 Frontend sampling fallback: No sessions found, showing minimal progress (2%)`);
-      // If we're in sampling phase but have no detailed data, show minimal progress (2%)
-      return 2;
-    }
-    
-    // Add completed phases
-    if (['discovery', 'parallel_processing', 'conflict_resolution', 'generating_summary', 'complete'].includes(progress.phase)) {
-      baseProgress += phaseWeights.sampling;
-    }
-    
-    if (progress.phase === 'discovery') {
-      // Discovery phase progress
-      const discoveryProgress = (progress as any).discoveryStats ? 
-        Math.min((progress as any).discoveryStats.discoveryRate || 0, 1) : 0;
-      return baseProgress + (discoveryProgress * phaseWeights.discovery);
-    }
-    
-    if (['parallel_processing', 'conflict_resolution', 'generating_summary', 'complete'].includes(progress.phase)) {
-      baseProgress += phaseWeights.discovery;
-    }
-    
-    if (progress.phase === 'parallel_processing') {
-      // Parallel processing progress based on rounds and sessions
-      const roundProgress = (progress as any).totalRounds > 0 ? 
-        ((progress as any).roundsCompleted || 0) / (progress as any).totalRounds : 0;
-      const sessionProgress = progress.totalSessions > 0 ? 
-        progress.sessionsProcessed / progress.totalSessions : 0;
-      
-      // Use the higher of round progress or session progress
-      const parallelProgress = Math.max(roundProgress, sessionProgress);
-      return baseProgress + (parallelProgress * phaseWeights.parallel_processing);
-    }
-    
-    if (['conflict_resolution', 'generating_summary', 'complete'].includes(progress.phase)) {
-      baseProgress += phaseWeights.parallel_processing;
-    }
-    
-    if (progress.phase === 'conflict_resolution') {
-      // Conflict resolution progress - assume 50% when in progress
-      const conflictProgress = (progress as any).conflictStats ? 0.5 : 0;
-      return baseProgress + (conflictProgress * phaseWeights.conflict_resolution);
-    }
-    
-    if (['generating_summary', 'complete'].includes(progress.phase)) {
-      baseProgress += phaseWeights.conflict_resolution;
-    }
-    
-    if (progress.phase === 'generating_summary') {
-      // Summary generation - assume 50% when in progress
-      return baseProgress + (0.5 * phaseWeights.generating_summary);
-    }
-    
-    if (progress.phase === 'complete') {
-      return 100;
-    }
-    
-    // Legacy support for 'analyzing' phase (old sequential processing)
-    if (progress.phase === 'analyzing') {
-      const sessionProgress = progress.totalSessions > 0 ? 
-        progress.sessionsProcessed / progress.totalSessions : 0;
-      return phaseWeights.sampling + phaseWeights.discovery + (sessionProgress * phaseWeights.parallel_processing);
-    }
-    
-    // Fallback for unknown or incomplete progress states
-    // If we have any kind of progress data, show minimal progress
-    if (progress.phase && progress.phase !== 'complete') {
-      return Math.max(baseProgress, 1); // At least 1% if analysis is running
-    }
-    
-    return baseProgress;
-  })();
+  // Use the new improved progress calculation
+  const progressPercentage = calculateProgressPercentage(progress);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Analysis in Progress</h1>
         <p className="mt-2 text-gray-600">
-          Your session analysis is running. This may take a few minutes depending on the number of sessions.
+          Your session analysis is running. This may take a minute or so.
         </p>
       </div>
 
@@ -611,151 +477,11 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>{progress.currentStep}</span>
-              <span>
-                {progress.phase === 'sampling' && (progress as any).messageProgress
-                  ? `Retrieving details: ${(progress as any).messageProgress.sessionsWithMessages} / ${(progress as any).messageProgress.totalSessions} sessions${(progress as any).messageProgress.currentBatch ? ` • Batch ${(progress as any).messageProgress.currentBatch}/${(progress as any).messageProgress.totalBatches}` : ''}`
-                  : progress.phase === 'sampling' && progress.samplingProgress
-                    ? `${progress.sessionsFound} / ${progress.samplingProgress.targetSessionCount} sessions • Window ${progress.samplingProgress.currentWindowIndex + 1} / ${progress.samplingProgress.totalWindows}`
-                    : progress.phase === 'sampling' 
-                      ? `${progress.sessionsFound} sessions found`
-                    : progress.phase === 'discovery' && (progress as any).discoveryStats
-                      ? `Discovery: ${(progress as any).discoveryStats.discoveredIntents + (progress as any).discoveryStats.discoveredReasons + (progress as any).discoveryStats.discoveredLocations} classifications`
-                      : progress.phase === 'parallel_processing' && (progress as any).streamsActive
-                        ? `${(progress as any).streamsActive} streams • Round ${((progress as any).roundsCompleted || 0) + 1} / ${(progress as any).totalRounds || 1}`
-                      : progress.currentStep?.includes('Conflict resolution') && progress.currentStep?.includes('round')
-                        ? progress.currentStep.replace('Conflict resolution', 'Resolving conflicts')
-                        : progress.phase === 'conflict_resolution' && (progress as any).conflictStats
-                          ? `${(progress as any).conflictStats.conflictsFound} conflicts • ${(progress as any).conflictStats.canonicalMappings} mappings`
-                          : progress.phase === 'analyzing'
-                            ? `Batch ${progress.batchesCompleted + 1} / ${progress.totalBatches} • ${progress.sessionsProcessed} / ${progress.totalSessions} sessions`
-                            : progress.phase === 'generating_summary'
-                              ? 'Generating analysis summary...'
-                              : `${progress.sessionsProcessed} / ${progress.totalSessions} sessions`
-                }
-              </span>
+            <div className="text-sm text-gray-600 mb-2">
+              {getSimplifiedStatusText(progress.currentStep)}
             </div>
             <Progress value={progressPercentage} className="w-full" />
-            {progress.phase === 'sampling' && progress.samplingProgress && (
-              <div className="text-xs text-gray-500 mt-1">
-                Current window: {progress.samplingProgress.currentWindowLabel}
-              </div>
-            )}
-            {progress.phase === 'sampling' && (progress as any).messageProgress && (
-              <div className="text-xs text-gray-500 mt-1">
-                Session Details: Retrieved {(progress as any).messageProgress.sessionsWithMessages}/{(progress as any).messageProgress.totalSessions} sessions
-                {(progress as any).messageProgress.currentBatch && (progress as any).messageProgress.totalBatches && (
-                  <span> • Batch {(progress as any).messageProgress.currentBatch}/{(progress as any).messageProgress.totalBatches}</span>
-                )}
-              </div>
-            )}
-            {progress.phase === 'discovery' && (progress as any).discoveryStats && (
-              <div className="text-xs text-gray-500 mt-1">
-                Discovered: {(progress as any).discoveryStats.discoveredIntents} intents, {(progress as any).discoveryStats.discoveredReasons} reasons, {(progress as any).discoveryStats.discoveredLocations} locations
-              </div>
-            )}
-            {progress.phase === 'parallel_processing' && (
-              <div className="text-xs text-gray-500 mt-1">
-                {(progress as any).streamsActive > 0 && (
-                  <>Parallel processing: {(progress as any).streamsActive} streams active, round {((progress as any).roundsCompleted || 0) + 1} of {(progress as any).totalRounds || 0}</>
-                )}
-              </div>
-            )}
-            {progress.currentStep?.includes('Conflict resolution') && progress.currentStep?.includes('round') && (
-              <div className="text-xs text-amber-600 mt-1 font-medium">
-                ⚖️ {progress.currentStep.includes('complete') ? 'Completed' : 'Running'} inter-round conflict resolution
-              </div>
-            )}
-            {progress.phase === 'conflict_resolution' && (progress as any).conflictStats && (
-              <div className="text-xs text-gray-500 mt-1">
-                Resolving {(progress as any).conflictStats.conflictsFound} classification conflicts
-              </div>
-            )}
-            {progress.totalBatches > 0 && ['analyzing', 'generating_summary'].includes(progress.phase) && (
-              <div className="text-xs text-gray-500 mt-1">
-                Workflow: Session Collection → {progress.totalBatches} Analysis Batch{progress.totalBatches !== 1 ? 'es' : ''} → Summary Generation
-              </div>
-            )}
-            {['discovery', 'parallel_processing', 'conflict_resolution', 'generating_summary'].includes(progress.phase) && (
-              <div className="text-xs text-gray-500 mt-1">
-                Parallel Workflow: Sampling → Strategic Discovery → Parallel Processing → Conflict Resolution → Summary
-              </div>
-            )}
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{progress.sessionsFound}</div>
-              <div className="text-sm text-gray-500">Sessions Found</div>
-            </div>
-            
-            {/* Show parallel processing metrics when in parallel phase */}
-            {(['parallel_processing', 'conflict_resolution'].includes(progress.phase) && (progress as any).streamsActive) ? (
-              <>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{(progress as any).streamsActive}</div>
-                  <div className="text-sm text-gray-500">Active Streams</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-indigo-600">
-                    {((progress as any).roundsCompleted || 0)} / {(progress as any).totalRounds || 0}
-                  </div>
-                  <div className="text-sm text-gray-500">Rounds</div>
-                </div>
-              </>
-            ) : progress.phase === 'discovery' && (progress as any).discoveryStats ? (
-              <>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    {(progress as any).discoveryStats.discoveredIntents + (progress as any).discoveryStats.discoveredReasons + (progress as any).discoveryStats.discoveredLocations}
-                  </div>
-                  <div className="text-sm text-gray-500">Classifications</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-indigo-600">
-                    {Math.round(((progress as any).discoveryStats.discoveryRate || 0) * 100)}%
-                  </div>
-                  <div className="text-sm text-gray-500">Discovery Rate</div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{progress.batchesCompleted}</div>
-                  <div className="text-sm text-gray-500">Batches Completed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-indigo-600">{progress.sessionsProcessed}</div>
-                  <div className="text-sm text-gray-500">Sessions Processed</div>
-                </div>
-              </>
-            )}
-            
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{progress.tokensUsed.toLocaleString()}</div>
-              <div className="text-sm text-gray-500">Tokens Used</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">${progress.estimatedCost.toFixed(4)}</div>
-              <div className="text-sm text-gray-500">Estimated Cost</div>
-            </div>
-          </div>
-          
-          
-          {/* Model info */}
-          <div className="text-center">
-            <div className="text-lg font-bold text-gray-700">
-              {progress.modelId ? getGptModelById(progress.modelId)?.name || progress.modelId : 'N/A'}
-            </div>
-            <div className="text-sm text-gray-500">GPT Model</div>
-          </div>
-
-          {progress.eta && progress.eta > 0 && (
-            <div className="text-center text-sm text-gray-500">
-              Estimated time remaining: {Math.ceil(progress.eta / 60)} minute{Math.ceil(progress.eta / 60) !== 1 ? 's' : ''}
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>
