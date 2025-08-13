@@ -167,9 +167,9 @@ class ApiClient {
     });
   }
 
-  // Auto-Analyze API
+  // Auto-Analyze API (uses parallel processing by default)
   async startAutoAnalysis(config: AnalysisConfig): Promise<ApiResponse<{ analysisId: string }>> {
-    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/start`, {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/parallel/start`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ class ApiClient {
   }
 
   async getAutoAnalysisProgress(analysisId: string): Promise<ApiResponse<AnalysisProgress>> {
-    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/progress/${analysisId}`, {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/parallel/progress/${analysisId}`, {
       headers: {
         'Content-Type': 'application/json',
         ...this.getCredentialHeaders(),
@@ -193,7 +193,7 @@ class ApiClient {
   }
 
   async getAutoAnalysisResults(analysisId: string): Promise<ApiResponse<AnalysisResults>> {
-    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/results/${analysisId}`, {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/parallel/results/${analysisId}`, {
       headers: {
         'Content-Type': 'application/json',
         ...this.getCredentialHeaders(),
@@ -204,7 +204,7 @@ class ApiClient {
   }
 
   async cancelAutoAnalysis(analysisId: string): Promise<ApiResponse<{ cancelled: boolean }>> {
-    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/${analysisId}`, {
+    const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/parallel/${analysisId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

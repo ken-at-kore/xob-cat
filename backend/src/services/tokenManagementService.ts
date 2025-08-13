@@ -37,18 +37,47 @@ export class TokenManagementService {
   }
 
   estimateTokenUsage(sessions: SessionWithTranscript[], modelId: string): number {
+    const startTime = Date.now();
     let totalTokens = 0;
+    let sessionTokenDetails: { sessionId: string; tokens: number }[] = [];
     
     // Calculate tokens for each session
     for (const session of sessions) {
+      const sessionStartTime = Date.now();
       const sessionTokens = this.estimateSessionTokens(session);
+      const sessionDuration = Date.now() - sessionStartTime;
+      
       totalTokens += sessionTokens;
+      sessionTokenDetails.push({
+        sessionId: session.session_id,
+        tokens: sessionTokens
+      });
+      
+      if (sessionDuration > 10) { // Only log slow sessions
+        console.log(`⏱️  Session ${session.session_id} token estimation: ${sessionDuration}ms (${sessionTokens} tokens)`);
+      }
     }
     
     // Add reserved tokens for system components
     totalTokens += this.RESERVED_TOKENS;
+    const estimationDuration = Date.now() - startTime;
     
-    console.log(`[TokenManagementService] Estimated tokens for ${sessions.length} sessions: ${totalTokens}`);
+    console.log(`📊 Token Usage Estimation Results:`);
+    console.log(`   • Sessions Processed: ${sessions.length}`);
+    console.log(`   • Session Tokens: ${totalTokens - this.RESERVED_TOKENS}`);
+    console.log(`   • Reserved Tokens: ${this.RESERVED_TOKENS}`);
+    console.log(`   • Total Tokens: ${totalTokens}`);
+    console.log(`   • Avg Per Session: ${Math.round((totalTokens - this.RESERVED_TOKENS) / sessions.length)} tokens`);
+    console.log(`   • Estimation Time: ${estimationDuration}ms`);
+    
+    // Show token distribution if debug logging enabled
+    if (process.env.PARALLEL_PROCESSING_DEBUG === 'true') {
+      const tokenCounts = sessionTokenDetails.map(s => s.tokens).sort((a, b) => b - a);
+      console.log(`[DEBUG] Token Distribution:`);
+      console.log(`   • Min: ${Math.min(...tokenCounts)} tokens`);
+      console.log(`   • Max: ${Math.max(...tokenCounts)} tokens`);
+      console.log(`   • Median: ${tokenCounts[Math.floor(tokenCounts.length/2)]} tokens`);
+    }
     
     return totalTokens;
   }
@@ -57,9 +86,16 @@ export class TokenManagementService {
     sessions: SessionWithTranscript[], 
     maxSessionsPerCall: number
   ): SessionWithTranscript[][] {
+    const startTime = Date.now();
+    
     if (sessions.length === 0) {
       return [];
     }
+    
+    console.log(`\n🔄 ===== BATCH SPLITTING =====`);
+    console.log(`⏱️  Split Start: ${new Date().toISOString()}`);
+    console.log(`📊 Total Sessions: ${sessions.length}`);
+    console.log(`📦 Max Per Batch: ${maxSessionsPerCall}`);
     
     const batches: SessionWithTranscript[][] = [];
     
@@ -68,7 +104,13 @@ export class TokenManagementService {
       batches.push(batch);
     }
     
-    console.log(`[TokenManagementService] Split ${sessions.length} sessions into ${batches.length} batches (max ${maxSessionsPerCall} per batch)`);
+    const splitDuration = Date.now() - startTime;
+    
+    console.log(`\n✅ ===== BATCH SPLITTING COMPLETE =====`);
+    console.log(`⏱️  Split Time: ${splitDuration}ms`);
+    console.log(`📦 Batches Created: ${batches.length}`);
+    console.log(`📊 Batch Sizes: ${batches.map(b => b.length).join(', ')}`);
+    console.log(`📊 Avg Batch Size: ${(sessions.length / batches.length).toFixed(1)}`);
     
     return batches;
   }
@@ -77,10 +119,38 @@ export class TokenManagementService {
     sessions: SessionWithTranscript[], 
     modelId: string
   ): TokenEstimation {
+    const estimationStartTime = Date.now();
+    console.log(`\n🧠 ===== TOKEN ESTIMATION =====`);
+    console.log(`⏱️  Estimation Start: ${new Date().toISOString()}`);
+    console.log(`📊 Sessions to Estimate: ${sessions.length}`);
+    console.log(`🧠 Model: ${modelId}`);
+    
+    const tokenUsageStartTime = Date.now();
     const estimatedTokens = this.estimateTokenUsage(sessions, modelId);
+    const tokenUsageDuration = Date.now() - tokenUsageStartTime;
+    
+    const maxSessionsStartTime = Date.now();
     const maxSessionsPerCall = this.calculateMaxSessionsPerCall(modelId);
-    const requiresSplitting = sessions.length > maxSessionsPerCall;
+    const maxSessionsDuration = Date.now() - maxSessionsStartTime;
+    
+    const costEstimateStartTime = Date.now();
     const costEstimate = this.calculateCostEstimate(estimatedTokens, modelId);
+    const costEstimateDuration = Date.now() - costEstimateStartTime;
+    
+    const requiresSplitting = sessions.length > maxSessionsPerCall;
+    const estimationDuration = Date.now() - estimationStartTime;
+    
+    console.log(`\n✅ ===== TOKEN ESTIMATION COMPLETE =====`);
+    console.log(`⏱️  Total Estimation Time: ${estimationDuration}ms`);
+    console.log(`📊 Estimated Tokens: ${estimatedTokens}`);
+    console.log(`📦 Max Sessions Per Call: ${maxSessionsPerCall}`);
+    console.log(`🔄 Requires Splitting: ${requiresSplitting}`);
+    console.log(`💰 Cost Estimate: $${costEstimate.toFixed(4)}`);
+    console.log(`📊 Recommended Batch Size: ${Math.min(sessions.length, maxSessionsPerCall)}`);
+    console.log(`\n⏱️  Timing Breakdown:`);
+    console.log(`   • Token Usage Calculation: ${tokenUsageDuration}ms`);
+    console.log(`   • Max Sessions Calculation: ${maxSessionsDuration}ms`);
+    console.log(`   • Cost Estimation: ${costEstimateDuration}ms`);
     
     return {
       estimatedTokens,
@@ -156,8 +226,15 @@ export class TokenManagementService {
     contextWindow: number;
     recommendedStreamCount: number;
   } {
+    const configStartTime = Date.now();
+    console.log(`\n⚙️  ===== OPTIMAL BATCH CONFIG =====`);
+    console.log(`⏱️  Config Start: ${new Date().toISOString()}`);
+    console.log(`🧠 Model: ${modelId}`);
+    
     const modelInfo = getGptModelById(modelId);
+    const maxSessionsStartTime = Date.now();
     const maxSessionsPerCall = this.calculateMaxSessionsPerCall(modelId);
+    const maxSessionsDuration = Date.now() - maxSessionsStartTime;
     
     // Recommend fewer streams for models with larger context windows
     let recommendedStreamCount = 8; // Default
@@ -167,11 +244,23 @@ export class TokenManagementService {
       recommendedStreamCount = 4; // GPT-4o variants
     }
     
-    return {
+    const configDuration = Date.now() - configStartTime;
+    
+    const config = {
       maxSessionsPerCall,
       contextWindow: modelInfo?.contextWindow || 8192,
       recommendedStreamCount
     };
+    
+    console.log(`\n✅ ===== OPTIMAL BATCH CONFIG COMPLETE =====`);
+    console.log(`⏱️  Config Time: ${configDuration}ms`);
+    console.log(`📦 Max Sessions Per Call: ${config.maxSessionsPerCall}`);
+    console.log(`🕰️ Context Window: ${config.contextWindow.toLocaleString()} tokens`);
+    console.log(`🌊 Recommended Streams: ${config.recommendedStreamCount}`);
+    console.log(`⏱️  Timing:`);
+    console.log(`   • Max Sessions Calculation: ${maxSessionsDuration}ms`);
+    
+    return config;
   }
 
   // Debug method to log detailed token analysis

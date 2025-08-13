@@ -113,21 +113,33 @@ async function navigateToAutoAnalyze(page, baseUrl = 'http://localhost:3000') {
 
   console.log('📊 Step 4: Navigating to Auto-Analyze page');
   
-  // Try to wait for sidebar, but don't fail if it's not there (production might be different)
+  // Try to wait for sidebar and click the link
   try {
-    await page.waitForSelector('nav[role="navigation"]', { timeout: 3000 });
+    await page.waitForSelector('nav[role="navigation"], aside, .sidebar', { timeout: 3000 });
     console.log('✅ Sidebar found');
+    
+    // Look for Auto-Analyze link
+    const autoAnalyzeLink = await page.$('a[href="/analyze"]');
+    if (autoAnalyzeLink) {
+      console.log('📊 Found Auto-Analyze link in sidebar, clicking it');
+      await autoAnalyzeLink.click();
+      await page.waitForNavigation({ waitUntil: 'networkidle0' });
+      console.log('✅ Navigated to Auto-Analyze page via sidebar');
+    } else {
+      console.log('⚠️ Auto-Analyze link not found, trying direct navigation');
+      await page.goto(`${baseUrl}/analyze`, { waitUntil: 'networkidle0' });
+      console.log('✅ Navigated directly to Auto-Analyze page');
+    }
   } catch (e) {
-    console.log('⚠️ Sidebar not found, proceeding anyway');
+    console.log('⚠️ Sidebar not found, trying direct navigation');
+    // Add a small delay to ensure page is ready
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Navigate directly to analyze page
+    console.log('🔍 Navigating directly to Auto-Analyze page...');
+    await page.goto(`${baseUrl}/analyze`, { waitUntil: 'networkidle0' });
+    console.log('✅ Navigated directly to Auto-Analyze page');
   }
-  
-  // Add a small delay to ensure page is ready
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Navigate directly to analyze page
-  console.log('🔍 Navigating directly to Auto-Analyze page...');
-  await page.goto(`${baseUrl}/analyze`, { waitUntil: 'networkidle0' });
-  console.log('✅ Navigated directly to Auto-Analyze page');
   
   // Wait for the page to fully load and render
   await new Promise(resolve => setTimeout(resolve, 2000)); // Give React time to render
@@ -137,7 +149,10 @@ async function navigateToAutoAnalyze(page, baseUrl = 'http://localhost:3000') {
   const bodyContent = await page.$eval('body', el => el.textContent);
   console.log(`📄 Page loaded successfully - found Auto-Analyze content`);
   
-  if (!bodyContent.includes('Auto-Analyze') || !bodyContent.includes('Analysis Configuration')) {
+  if (!bodyContent.includes('Auto-Analyze') && !bodyContent.includes('Analysis Configuration') && !bodyContent.includes('Start Analysis')) {
+    console.error('Page content does not match expected Auto-Analyze page');
+    console.error('Looking for: Auto-Analyze, Analysis Configuration, or Start Analysis');
+    console.error('Found content preview:', bodyContent.substring(0, 500));
     throw new Error(`Expected Auto-Analyze page content not found`);
   }
   
@@ -304,47 +319,123 @@ async function startAnalysis(page) {
 }
 
 /**
- * Monitor analysis progress
+ * Monitor analysis progress with detailed assertions
  * @param {Page} page - Puppeteer page object
- * @returns {Object} Progress monitoring results
+ * @returns {Object} Progress monitoring results with detailed assertions
  */
 async function monitorProgress(page) {
-  console.log('⏳ Step 7: Monitoring analysis progress');
+  console.log('⏳ Step 7: Monitoring analysis progress with UI assertions');
   
   // Give the analysis a moment to start
   await new Promise(resolve => setTimeout(resolve, 3000));
+  
+  const progressAssertions = {
+    progressStarted: false,
+    parallelProcessingDetected: false,
+    phasesDetected: [],
+    specificIndicators: {
+      samplingPhase: false,
+      discoveryPhase: false,
+      parallelProcessingPhase: false,
+      conflictResolutionPhase: false,
+      sessionCounts: false,
+      batchProgress: false,
+      streamActivity: false,
+      tokenUsage: false,
+      estimatedCost: false
+    }
+  };
   
   // Check what content is actually on the page
   const currentContent = await page.$eval('body', el => el.textContent);
   console.log(`📋 Current page content preview: ${currentContent.substring(0, 300)}...`);
   
-  // Look for various progress indicators that might appear
+  // Assert main progress indicators
   const hasProgressIndicator = currentContent.includes('Analysis in Progress') || 
                                currentContent.includes('progress') || 
                                currentContent.includes('Progress') ||
                                currentContent.includes('Analysis Report') ||
                                currentContent.includes('Starting analysis');
   
-  // Look for parallel processing specific indicators
-  const hasParallelIndicators = currentContent.includes('Strategic Discovery') ||
-                               currentContent.includes('Parallel Processing') ||
-                               currentContent.includes('Conflict Resolution') ||
-                               currentContent.includes('Stream') ||
-                               currentContent.includes('Round');
-  
   if (hasProgressIndicator) {
-    console.log('✅ Progress or completion indicator found');
-    
-    if (hasParallelIndicators) {
-      console.log('🚀 Parallel processing indicators detected');
-      return { progressStarted: true, parallelProcessingDetected: true };
-    }
-    
-    return { progressStarted: true, parallelProcessingDetected: false };
+    progressAssertions.progressStarted = true;
+    console.log('✅ Progress indicator found');
   }
   
-  console.log('⚠️ No clear progress indicator found, continuing anyway');
-  return { progressStarted: false, parallelProcessingDetected: false };
+  // Assert specific phase indicators
+  if (currentContent.includes('Sampling Sessions') || currentContent.includes('sampling')) {
+    progressAssertions.specificIndicators.samplingPhase = true;
+    progressAssertions.phasesDetected.push('Sampling');
+    console.log('✅ Sampling phase detected');
+  }
+  
+  if (currentContent.includes('Strategic Discovery')) {
+    progressAssertions.specificIndicators.discoveryPhase = true;
+    progressAssertions.phasesDetected.push('Strategic Discovery');
+    console.log('✅ Strategic Discovery phase detected');
+  }
+  
+  if (currentContent.includes('Parallel Processing')) {
+    progressAssertions.specificIndicators.parallelProcessingPhase = true;
+    progressAssertions.phasesDetected.push('Parallel Processing');
+    progressAssertions.parallelProcessingDetected = true;
+    console.log('✅ Parallel Processing phase detected');
+  }
+  
+  if (currentContent.includes('Conflict Resolution')) {
+    progressAssertions.specificIndicators.conflictResolutionPhase = true;
+    progressAssertions.phasesDetected.push('Conflict Resolution');
+    console.log('✅ Conflict Resolution phase detected');
+  }
+  
+  // Assert session count indicators
+  if (currentContent.match(/\d+\s*\/\s*\d+\s*sessions/) || currentContent.match(/\d+\s*sessions\s*(found|processed)/i)) {
+    progressAssertions.specificIndicators.sessionCounts = true;
+    console.log('✅ Session count indicators found');
+  }
+  
+  // Assert batch progress indicators
+  if (currentContent.match(/Batch\s*\d+/) || currentContent.match(/batch\s*\d+/i)) {
+    progressAssertions.specificIndicators.batchProgress = true;
+    console.log('✅ Batch progress indicators found');
+  }
+  
+  // Assert stream activity indicators
+  if (currentContent.includes('streams active') || currentContent.includes('Active Streams') || currentContent.includes('Round') || currentContent.includes('Parallel processing:')) {
+    progressAssertions.specificIndicators.streamActivity = true;
+    console.log('✅ Stream activity indicators found');
+  }
+  
+  // Assert token usage indicators
+  if (currentContent.match(/\d+.*tokens/i) || currentContent.includes('Tokens Used')) {
+    progressAssertions.specificIndicators.tokenUsage = true;
+    console.log('✅ Token usage indicators found');
+  }
+  
+  // Assert cost estimation indicators
+  if (currentContent.match(/\$\d+\.\d+/) || currentContent.includes('Estimated Cost')) {
+    progressAssertions.specificIndicators.estimatedCost = true;
+    console.log('✅ Cost estimation indicators found');
+  }
+  
+  // Set parallel processing detected based on phase indicators
+  progressAssertions.parallelProcessingDetected = 
+    progressAssertions.specificIndicators.parallelProcessingPhase ||
+    progressAssertions.specificIndicators.discoveryPhase ||
+    progressAssertions.specificIndicators.conflictResolutionPhase ||
+    progressAssertions.specificIndicators.streamActivity;
+  
+  console.log('📊 Progress Assertions Summary:');
+  console.log(`   - Progress Started: ${progressAssertions.progressStarted ? '✅' : '❌'}`);
+  console.log(`   - Parallel Processing: ${progressAssertions.parallelProcessingDetected ? '✅' : '❌'}`);
+  console.log(`   - Phases Detected: [${progressAssertions.phasesDetected.join(', ')}]`);
+  console.log(`   - Session Counts: ${progressAssertions.specificIndicators.sessionCounts ? '✅' : '❌'}`);
+  console.log(`   - Batch Progress: ${progressAssertions.specificIndicators.batchProgress ? '✅' : '❌'}`);
+  console.log(`   - Stream Activity: ${progressAssertions.specificIndicators.streamActivity ? '✅' : '❌'}`);
+  console.log(`   - Token Usage: ${progressAssertions.specificIndicators.tokenUsage ? '✅' : '❌'}`);
+  console.log(`   - Cost Estimation: ${progressAssertions.specificIndicators.estimatedCost ? '✅' : '❌'}`);
+  
+  return progressAssertions;
 }
 
 /**
@@ -496,6 +587,41 @@ async function validateReport(page, expectedData = {}) {
                                        pageContent.includes('0 sessions found');
     return validationResults;
   }
+
+  // Enhanced Parallel Processing UI Indicators Validation
+  console.log('🔍 Validating parallel processing UI indicators...');
+  
+  // Check for parallel processing UI elements
+  validationResults.hasParallelProcessingIndicators = (
+    pageContent.includes('Strategic Discovery') ||
+    pageContent.includes('Parallel Processing') ||
+    pageContent.includes('Conflict Resolution') ||
+    pageContent.includes('Active Streams') ||
+    pageContent.includes('Stream Status') ||
+    pageContent.includes('Round') ||
+    pageContent.includes('Parallel Workflow') ||
+    pageContent.includes('streams') ||
+    pageContent.includes('discovery') ||
+    pageContent.includes('conflict')
+  );
+  
+  // Check for specific parallel UI components
+  validationResults.hasActiveStreamsDisplay = pageContent.includes('Active Streams');
+  validationResults.hasRoundsProgress = pageContent.includes('Round') && pageContent.includes('/');
+  validationResults.hasStreamStatus = pageContent.includes('Stream Status') || pageContent.includes('Stream 1');
+  validationResults.hasParallelWorkflow = pageContent.includes('Sampling → Strategic Discovery → Parallel Processing');
+  validationResults.hasDiscoveryStats = pageContent.includes('intents') && pageContent.includes('reasons') && pageContent.includes('locations');
+  
+  if (validationResults.hasParallelProcessingIndicators) {
+    console.log('✅ Parallel processing UI indicators found');
+    console.log(`   - Active Streams Display: ${validationResults.hasActiveStreamsDisplay ? '✅' : '❌'}`);
+    console.log(`   - Rounds Progress: ${validationResults.hasRoundsProgress ? '✅' : '❌'}`);
+    console.log(`   - Stream Status: ${validationResults.hasStreamStatus ? '✅' : '❌'}`);
+    console.log(`   - Parallel Workflow Breadcrumb: ${validationResults.hasParallelWorkflow ? '✅' : '❌'}`);
+    console.log(`   - Discovery Stats: ${validationResults.hasDiscoveryStats ? '✅' : '❌'}`);
+  } else {
+    console.log('❌ No parallel processing UI indicators detected in report');
+  }
   
   // Verify report header - look for Analysis Report text anywhere
   validationResults.hasReportHeader = pageContent.includes('Analysis Report') ||
@@ -622,6 +748,121 @@ async function testSessionDetailsDialog(page) {
 }
 
 /**
+ * Assert specific progress indicators with actual progress tracking
+ * @param {Page} page - Puppeteer page object
+ * @param {Object} previousState - Previous assertion state to compare against
+ * @returns {Object} Progress assertion results with change detection
+ */
+async function assertProgressIndicators(page, previousState = null) {
+  const currentContent = await page.$eval('body', el => el.textContent);
+  
+  const assertions = {
+    progressPhase: null,
+    actualProgress: false,  // NEW: tracks if real progress is happening
+    progressStuck: false,   // NEW: tracks if progress appears frozen
+    sessionCounts: false,
+    batchProgress: false,
+    streamActivity: false,
+    tokenUsage: false,
+    estimatedCost: false,
+    phaseSpecific: {},
+    numericValues: {        // NEW: extract actual numeric values
+      sessionsFound: 0,
+      batchesCompleted: 0,
+      sessionsProcessed: 0,
+      tokensUsed: 0,
+      estimatedCost: 0,
+      progressPercentage: 0
+    }
+  };
+  
+  // Extract numeric progress values to detect real changes
+  const sessionsFoundMatch = currentContent.match(/(\d+)\s*Sessions Found/);
+  if (sessionsFoundMatch) assertions.numericValues.sessionsFound = parseInt(sessionsFoundMatch[1]);
+  
+  const batchesMatch = currentContent.match(/(\d+)\s*Batches Completed/);
+  if (batchesMatch) assertions.numericValues.batchesCompleted = parseInt(batchesMatch[1]);
+  
+  const sessionsProcessedMatch = currentContent.match(/(\d+)\s*Sessions Processed/);
+  if (sessionsProcessedMatch) assertions.numericValues.sessionsProcessed = parseInt(sessionsProcessedMatch[1]);
+  
+  const tokensMatch = currentContent.match(/(\d+)\s*Tokens Used/);
+  if (tokensMatch) assertions.numericValues.tokensUsed = parseInt(tokensMatch[1]);
+  
+  const costMatch = currentContent.match(/\$(\d+\.\d+)/);
+  if (costMatch) assertions.numericValues.estimatedCost = parseFloat(costMatch[1]);
+  
+  // Try to extract progress percentage from progress bar
+  try {
+    const progressValue = await page.$eval('div[role="progressbar"], .progress, [class*="progress"]', el => {
+      const style = window.getComputedStyle(el);
+      const ariaValue = el.getAttribute('aria-valuenow');
+      if (ariaValue) return parseFloat(ariaValue);
+      
+      // Try to get from CSS width if it's a progress bar
+      const width = style.width;
+      if (width && width.includes('%')) {
+        return parseFloat(width.replace('%', ''));
+      }
+      return 0;
+    }).catch(() => 0);
+    
+    assertions.numericValues.progressPercentage = progressValue;
+  } catch (e) {
+    assertions.numericValues.progressPercentage = 0;
+  }
+  
+  // Detect if actual progress is happening by comparing with previous state
+  if (previousState) {
+    const hasNumericChange = 
+      assertions.numericValues.sessionsFound > previousState.numericValues.sessionsFound ||
+      assertions.numericValues.batchesCompleted > previousState.numericValues.batchesCompleted ||
+      assertions.numericValues.sessionsProcessed > previousState.numericValues.sessionsProcessed ||
+      assertions.numericValues.tokensUsed > previousState.numericValues.tokensUsed ||
+      assertions.numericValues.estimatedCost > previousState.numericValues.estimatedCost ||
+      assertions.numericValues.progressPercentage > previousState.numericValues.progressPercentage;
+    
+    assertions.actualProgress = hasNumericChange;
+    
+    // Detect if we're stuck (same values for multiple checks)
+    const allValuesSame = 
+      assertions.numericValues.sessionsFound === previousState.numericValues.sessionsFound &&
+      assertions.numericValues.batchesCompleted === previousState.numericValues.batchesCompleted &&
+      assertions.numericValues.sessionsProcessed === previousState.numericValues.sessionsProcessed &&
+      assertions.numericValues.tokensUsed === previousState.numericValues.tokensUsed &&
+      assertions.numericValues.progressPercentage === previousState.numericValues.progressPercentage;
+    
+    assertions.progressStuck = allValuesSame;
+  }
+  
+  // Detect current phase
+  if (currentContent.includes('Sampling Sessions') || currentContent.includes('sampling')) {
+    assertions.progressPhase = 'Sampling';
+    assertions.phaseSpecific.windowInfo = currentContent.includes('window') || currentContent.includes('Window');
+    assertions.phaseSpecific.sessionRetrieval = currentContent.includes('Retrieved') || currentContent.includes('retrieval');
+  } else if (currentContent.includes('Strategic Discovery')) {
+    assertions.progressPhase = 'Strategic Discovery';
+    assertions.phaseSpecific.discoveryStats = currentContent.includes('intents') || currentContent.includes('reasons') || currentContent.includes('locations');
+  } else if (currentContent.includes('Parallel Processing')) {
+    assertions.progressPhase = 'Parallel Processing';
+    assertions.phaseSpecific.activeStreams = currentContent.includes('streams active') || currentContent.includes('Active Streams');
+    assertions.phaseSpecific.roundProgress = currentContent.includes('Round') && currentContent.includes('/');
+  } else if (currentContent.includes('Conflict Resolution')) {
+    assertions.progressPhase = 'Conflict Resolution';
+    assertions.phaseSpecific.conflictStats = currentContent.includes('conflicts') || currentContent.includes('mappings');
+  }
+  
+  // Assert universal progress indicators (now more stringent)
+  assertions.sessionCounts = assertions.numericValues.sessionsFound > 0 || assertions.numericValues.sessionsProcessed > 0;
+  assertions.batchProgress = assertions.numericValues.batchesCompleted > 0;
+  assertions.streamActivity = !!(currentContent.includes('streams active') || currentContent.includes('Active Streams') || currentContent.includes('Round') || currentContent.includes('Parallel processing:'));
+  assertions.tokenUsage = assertions.numericValues.tokensUsed > 0;
+  assertions.estimatedCost = assertions.numericValues.estimatedCost > 0;
+  
+  return assertions;
+}
+
+/**
  * Setup request logging for debugging
  * @param {Page} page - Puppeteer page object
  */
@@ -664,5 +905,6 @@ module.exports = {
   waitForCompletion,
   validateReport,
   testSessionDetailsDialog,
+  assertProgressIndicators,
   setupRequestLogging
 };

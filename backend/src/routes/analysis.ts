@@ -6,6 +6,7 @@ import { loadKoreCredentials, getKoreCredentials } from '../middleware/credentia
 import { successResponse, validationErrorResponse, internalServerErrorResponse } from '../utils/apiResponse';
 import { asyncHandler } from '../middleware/errorHandler';
 import { autoAnalyzeRouter } from './autoAnalyze';
+import { parallelAutoAnalyzeRouter } from './parallelAutoAnalyze';
 
 const router = Router();
 
@@ -255,5 +256,6 @@ router.get('/debug/service-comparison', loadKoreCredentials, asyncHandler(async 
 
 // Mount auto-analyze routes
 router.use('/auto-analyze', autoAnalyzeRouter);
+router.use('/auto-analyze/parallel', parallelAutoAnalyzeRouter);
 
 export { router as analysisRouter }; 

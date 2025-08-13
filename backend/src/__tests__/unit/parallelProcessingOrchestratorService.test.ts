@@ -6,21 +6,30 @@ import {
   ExistingClassifications, 
   ParallelConfig, 
   StreamResult,
-  SessionStream
+  SessionStream,
+  StreamConfig
 } from '../../../../shared/types';
 
 // Mock dependencies
 const mockStreamProcessingService = {
-  processStream: jest.fn()
-} as jest.Mocked<StreamProcessingService>;
+  processStream: jest.fn(),
+  logStreamAnalysis: jest.fn()
+} as any;
 
 const mockTokenManagementService = {
   getOptimalBatchConfig: jest.fn().mockReturnValue({
     maxSessionsPerCall: 20,
     contextWindow: 128000,
-    recommendedStreamCount: 4
-  })
-} as jest.Mocked<TokenManagementService>;
+    recommendedStreamCount: 8 // Updated to match design
+  }),
+  calculateMaxSessionsPerCall: jest.fn().mockReturnValue(20),
+  estimateTokenUsage: jest.fn().mockReturnValue(1500),
+  splitSessionsIntoBatches: jest.fn(),
+  calculateTokenEstimation: jest.fn(),
+  logTokenAnalysis: jest.fn(),
+  calculateCostEstimate: jest.fn(),
+  canProcessInSingleCall: jest.fn().mockReturnValue(true)
+} as any;
 
 describe('ParallelProcessingOrchestratorService', () => {
   let orchestratorService: ParallelProcessingOrchestratorService;
@@ -30,9 +39,17 @@ describe('ParallelProcessingOrchestratorService', () => {
     session_id: `session${i + 1}`,
     start_time: '2024-01-01T10:00:00Z',
     end_time: '2024-01-01T10:30:00Z',
+    containment_type: 'agent',
+    tags: [],
+    metrics: {},
+    message_count: 2,
+    total_messages: 2,
+    user_message_count: 1,
+    bot_message_count: 1,
+    message_types: { user: 1, bot: 1 },
     messages: [
-      { from: 'user', message: `Message ${i + 1}` },
-      { from: 'bot', message: 'I can help with that' }
+      { from: 'user', message: `Message ${i + 1}`, timestamp: '2024-01-01T10:00:00Z', message_type: 'user' },
+      { from: 'bot', message: 'I can help with that', timestamp: '2024-01-01T10:01:00Z', message_type: 'bot' }
     ]
   }));
 
@@ -89,8 +106,33 @@ describe('ParallelProcessingOrchestratorService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Setup default mock responses
-    mockStreamProcessingService.processStream.mockResolvedValue(mockStreamResult);
+    // Setup default mock responses - IMPORTANT: Return sessions that were processed
+    mockStreamProcessingService.processStream.mockImplementation((streamConfig: StreamConfig) => {
+      // Return processed sessions based on what was sent to the stream
+      const processedSessions = streamConfig.sessions.map((session: SessionWithTranscript) => ({
+        ...session,
+        facts: {
+          generalIntent: 'Claim Status',
+          sessionOutcome: 'Contained' as any,
+          transferReason: '',
+          dropOffLocation: '',
+          notes: 'Test'
+        },
+        analysisMetadata: {
+          tokensUsed: 100,
+          processingTime: 1000,
+          batchNumber: 1,
+          timestamp: '2024-01-01T12:00:00Z',
+          model: 'gpt-4o-mini'
+        }
+      }));
+      
+      return Promise.resolve({
+        ...mockStreamResult,
+        streamId: streamConfig.streamId,
+        processedSessions
+      });
+    });
     
     orchestratorService = new ParallelProcessingOrchestratorService(
       mockStreamProcessingService,
@@ -99,6 +141,28 @@ describe('ParallelProcessingOrchestratorService', () => {
   });
 
   describe('distributeSessionsAcrossStreams', () => {
+    it('should follow design specification: 8 streams × 4 sessions per round', () => {
+      const streams = orchestratorService.distributeSessionsAcrossStreams(
+        mockSessions, // 50 sessions available
+        8, // Design: 8 streams
+        4  // Design: 4 sessions per stream
+      );
+
+      // Should create 8 streams
+      expect(streams).toHaveLength(8);
+      
+      // Each stream should have 4 sessions (32 total processed in this round)
+      streams.forEach((stream) => {
+        expect(stream.sessions).toHaveLength(4);
+        expect(stream.streamId).toBeGreaterThan(0);
+        expect(stream.streamId).toBeLessThanOrEqual(8);
+      });
+      
+      // Should process exactly 32 sessions per round (not all 50)
+      const totalSessionsThisRound = streams.reduce((total, stream) => total + stream.sessions.length, 0);
+      expect(totalSessionsThisRound).toBe(32);
+    });
+
     it('should distribute sessions evenly across streams', () => {
       const streams = orchestratorService.distributeSessionsAcrossStreams(
         mockSessions,
@@ -142,6 +206,48 @@ describe('ParallelProcessingOrchestratorService', () => {
     it('should handle empty sessions array', () => {
       const streams = orchestratorService.distributeSessionsAcrossStreams([], 4, 10);
       expect(streams).toHaveLength(0);
+    });
+
+    it('should handle final round with remaining sessions (real-world scenario)', () => {
+      // Simulate final round: 21 sessions remaining (like in our 100-session test)
+      const remainingSessions: SessionWithTranscript[] = Array.from({ length: 21 }, (_, i) => ({
+        user_id: `user${i + 65}`, // Sessions 65-85
+        session_id: `session${i + 65}`,
+        start_time: '2024-01-01T10:00:00Z',
+        end_time: '2024-01-01T10:30:00Z',
+        containment_type: 'agent',
+        tags: [],
+        metrics: {},
+        message_count: 1,
+        total_messages: 1,
+        user_message_count: 1,
+        bot_message_count: 0,
+        message_types: { user: 1, bot: 0 },
+        messages: [{ from: 'user', message: `Message ${i + 65}`, timestamp: '2024-01-01T10:00:00Z', message_type: 'user' }]
+      }));
+
+      const streams = orchestratorService.distributeSessionsAcrossStreams(
+        remainingSessions,
+        8, // Design: 8 streams
+        4  // Design: 4 sessions per stream
+      );
+
+      // Should create fewer streams for remaining sessions (21 sessions = 6 streams max)
+      expect(streams.length).toBeLessThanOrEqual(6);
+      
+      // First 5 streams should have 4 sessions, last stream should have 1 session
+      let totalSessions = 0;
+      streams.forEach((stream, index) => {
+        if (index < 5) {
+          expect(stream.sessions).toHaveLength(4);
+        } else {
+          expect(stream.sessions).toHaveLength(1); // Final partial stream
+        }
+        totalSessions += stream.sessions.length;
+      });
+      
+      // Should process all 21 remaining sessions
+      expect(totalSessions).toBe(21);
     });
 
     it('should not create empty streams', () => {
@@ -333,14 +439,37 @@ describe('ParallelProcessingOrchestratorService', () => {
   });
 
   describe('getOptimalConfiguration', () => {
-    it('should return optimal config for given parameters', () => {
+    it('should follow design specification for typical session counts', () => {
       const config = orchestratorService.getOptimalConfiguration(100, 'gpt-4o-mini');
 
-      expect(config.streamCount).toBeGreaterThan(0);
-      expect(config.sessionsPerStream).toBeGreaterThan(0);
-      expect(config.maxSessionsPerLLMCall).toBe(20);
+      // Design specification: 8 streams × 4 sessions per stream = 32 sessions per round
+      expect(config.streamCount).toBe(8);
+      expect(config.sessionsPerStream).toBe(4);
       expect(config.syncFrequency).toBe('after_each_round');
       expect(config.retryAttempts).toBe(3);
+    });
+
+    it('should enforce design-compliant multi-round processing', () => {
+      const config = orchestratorService.getOptimalConfiguration(100, 'gpt-4o-mini');
+      
+      const sessionsPerRound = config.streamCount * config.sessionsPerStream;
+      const expectedRounds = Math.ceil(100 / sessionsPerRound);
+      
+      // Should create multiple rounds as per design
+      expect(sessionsPerRound).toBe(32);
+      expect(expectedRounds).toBe(4); // 100 ÷ 32 = 3.125, rounded up to 4
+    });
+
+    it('should handle post-discovery session counts correctly', () => {
+      // After discovery phase: 100 sessions - 15% discovery = ~85 remaining sessions
+      const remainingSessions = 85;
+      const config = orchestratorService.getOptimalConfiguration(remainingSessions, 'gpt-4o-mini');
+      
+      const sessionsPerRound = config.streamCount * config.sessionsPerStream;
+      const expectedRounds = Math.ceil(remainingSessions / sessionsPerRound);
+      
+      expect(sessionsPerRound).toBe(32);
+      expect(expectedRounds).toBe(3); // 85 ÷ 32 = 2.66, rounded up to 3
     });
 
     it('should adjust stream count for small session counts', () => {
@@ -357,15 +486,18 @@ describe('ParallelProcessingOrchestratorService', () => {
       expect(config.sessionsPerStream).toBeGreaterThanOrEqual(2);
     });
 
-    it('should respect model-specific recommendations', () => {
+    it('should follow design specification even with different model recommendations', () => {
       mockTokenManagementService.getOptimalBatchConfig.mockReturnValue({
         maxSessionsPerCall: 50,
         contextWindow: 1000000,
-        recommendedStreamCount: 3
+        recommendedStreamCount: 3 // Different from design
       });
 
       const config = orchestratorService.getOptimalConfiguration(100, 'gpt-4.1');
 
+      // Should still follow design: 8 streams × 4 sessions regardless of model recommendation
+      expect(config.streamCount).toBe(8);
+      expect(config.sessionsPerStream).toBe(4);
       expect(config.maxSessionsPerLLMCall).toBe(50);
       expect(mockTokenManagementService.getOptimalBatchConfig).toHaveBeenCalledWith('gpt-4.1');
     });

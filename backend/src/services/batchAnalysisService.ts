@@ -34,13 +34,33 @@ export class BatchAnalysisService {
   ): Promise<BatchProcessingResult> {
     this.batchCounter++;
     const startTime = Date.now();
+    
+    console.log(`\n📦 ===== BATCH ${this.batchCounter} PROCESSING START =====`);
+    console.log(`⏱️  Batch Start: ${new Date().toISOString()}`);
+    console.log(`📊 Sessions in Batch: ${sessions.length}`);
+    console.log(`🧠 Model: ${modelId}`);
+    console.log(`🔧 Existing Classifications:`);
+    console.log(`   • Intents: ${existingClassifications.generalIntent.size}`);
+    console.log(`   • Reasons: ${existingClassifications.transferReason.size}`);
+    console.log(`   • Locations: ${existingClassifications.dropOffLocation.size}`);
 
     try {
       // Split sessions into regular and oversized
+      const splitStartTime = Date.now();
       const { regularSessions, oversizedSessions } = this.splitOversizedSessions(
         sessions, 
         this.MAX_SESSION_LENGTH
       );
+      const splitDuration = Date.now() - splitStartTime;
+      
+      console.log(`\n🔄 ===== SESSION SPLITTING =====`);
+      console.log(`⏱️  Split Time: ${splitDuration}ms`);
+      console.log(`📊 Regular Sessions: ${regularSessions.length}`);
+      console.log(`📊 Oversized Sessions: ${oversizedSessions.length}`);
+      if (oversizedSessions.length > 0) {
+        const oversizedSizes = oversizedSessions.map(s => this.calculateSessionLength(s));
+        console.log(`📊 Oversized Lengths: ${oversizedSizes.join(', ')} characters`);
+      }
 
       let allResults: SessionWithFacts[] = [];
       let updatedClassifications = this.cloneClassifications(existingClassifications);
@@ -54,12 +74,19 @@ export class BatchAnalysisService {
 
       // Process regular sessions in batch
       if (regularSessions.length > 0) {
+        console.log(`\n🚀 ===== PROCESSING REGULAR SESSIONS =====`);
+        const regularBatchStartTime = Date.now();
         const batchResult = await this.processBatch(
           regularSessions,
           updatedClassifications,
           openaiApiKey,
           modelId
         );
+        const regularBatchDuration = Date.now() - regularBatchStartTime;
+        
+        console.log(`⏱️  Regular Batch Time: ${regularBatchDuration}ms (${(regularBatchDuration/1000).toFixed(2)}s)`);
+        console.log(`📊 Regular Sessions Processed: ${batchResult.sessions.length}`);
+        console.log(`💰 Regular Tokens Used: ${batchResult.tokenUsage.totalTokens}`);
 
         allResults.push(...batchResult.sessions);
         updatedClassifications = this.updateClassifications(batchResult.sessions, updatedClassifications);
@@ -67,35 +94,66 @@ export class BatchAnalysisService {
       }
 
       // Process oversized sessions individually
-      for (const oversizedSession of oversizedSessions) {
-        try {
-          const individualResult = await this.processBatch(
-            [oversizedSession],
-            updatedClassifications,
-            openaiApiKey,
-            modelId
-          );
+      if (oversizedSessions.length > 0) {
+        console.log(`\n🔄 ===== PROCESSING OVERSIZED SESSIONS =====`);
+        const oversizedTotalStartTime = Date.now();
+        
+        for (let i = 0; i < oversizedSessions.length; i++) {
+          const oversizedSession = oversizedSessions[i]!;
+          const sessionStartTime = Date.now();
+          console.log(`\n📦 Processing oversized session ${i + 1}/${oversizedSessions.length}: ${oversizedSession.session_id}`);
+          
+          try {
+            const individualResult = await this.processBatch(
+              [oversizedSession],
+              updatedClassifications,
+              openaiApiKey,
+              modelId
+            );
+            const sessionDuration = Date.now() - sessionStartTime;
+            
+            console.log(`⏱️  Oversized Session Time: ${sessionDuration}ms`);
+            console.log(`💰 Oversized Session Tokens: ${individualResult.tokenUsage.totalTokens}`);
 
-          allResults.push(...individualResult.sessions);
-          updatedClassifications = this.updateClassifications(individualResult.sessions, updatedClassifications);
-          totalTokenUsage = this.accumulateTokenUsage(totalTokenUsage, individualResult.tokenUsage);
-        } catch (error) {
-          console.error(`Failed to process oversized session ${oversizedSession.session_id}:`, error);
-          // Add fallback result
-          allResults.push(this.createFallbackResult(oversizedSession, `Failed individual processing: ${error}`, modelId));
+            allResults.push(...individualResult.sessions);
+            updatedClassifications = this.updateClassifications(individualResult.sessions, updatedClassifications);
+            totalTokenUsage = this.accumulateTokenUsage(totalTokenUsage, individualResult.tokenUsage);
+          } catch (error) {
+            const sessionDuration = Date.now() - sessionStartTime;
+            console.log(`❌ Oversized session ${oversizedSession.session_id} failed after ${sessionDuration}ms:`, error);
+            // Add fallback result
+            allResults.push(this.createFallbackResult(oversizedSession, `Failed individual processing: ${error}`, modelId));
+          }
         }
+        
+        const oversizedTotalDuration = Date.now() - oversizedTotalStartTime;
+        console.log(`\n✅ ===== OVERSIZED SESSIONS COMPLETE =====`);
+        console.log(`⏱️  Total Oversized Time: ${oversizedTotalDuration}ms (${(oversizedTotalDuration/1000).toFixed(2)}s)`);
+        console.log(`📊 Oversized Sessions Processed: ${oversizedSessions.length}`);
+        console.log(`⚡ Avg Time Per Oversized: ${(oversizedTotalDuration / oversizedSessions.length).toFixed(2)}ms`);
       }
 
       // Add metadata to all results
+      const metadataStartTime = Date.now();
+      const batchProcessingTime = Date.now() - startTime;
       const resultsWithMetadata = allResults.map(result => ({
         ...result,
         analysisMetadata: {
           ...result.analysisMetadata,
-          processingTime: Date.now() - startTime,
+          processingTime: batchProcessingTime,
           batchNumber: this.batchCounter,
           timestamp: new Date().toISOString()
         }
       }));
+      const metadataDuration = Date.now() - metadataStartTime;
+      
+      console.log(`\n✅ ===== BATCH ${this.batchCounter} PROCESSING COMPLETE =====`);
+      console.log(`⏱️  Total Batch Time: ${batchProcessingTime}ms (${(batchProcessingTime/1000).toFixed(2)}s)`);
+      console.log(`📊 Sessions Processed: ${resultsWithMetadata.length}/${sessions.length}`);
+      console.log(`💰 Total Tokens: ${totalTokenUsage.totalTokens} ($${totalTokenUsage.cost.toFixed(4)})`);
+      console.log(`⚡ Performance: ${(resultsWithMetadata.length / (batchProcessingTime/1000)).toFixed(1)} sessions/sec`);
+      console.log(`⚡ Avg Time Per Session: ${(batchProcessingTime / resultsWithMetadata.length).toFixed(2)}ms`);
+      console.log(`⏱️  Metadata Processing: ${metadataDuration}ms`);
 
       return {
         results: resultsWithMetadata,
@@ -158,14 +216,27 @@ export class BatchAnalysisService {
     sessions: SessionWithFacts[];
     tokenUsage: BatchTokenUsage;
   }> {
+    const openaiCallStartTime = Date.now();
+    console.log(`\n🤖 ===== OPENAI SERVICE CALL =====`);
+    console.log(`⏱️  OpenAI Call Start: ${new Date().toISOString()}`);
+    console.log(`📊 Sessions to Analyze: ${sessions.length}`);
+    
     const analysisResult = await this.openaiService.analyzeBatch(
       sessions,
       existingClassifications,
       openaiApiKey,
       modelId
     );
+    
+    const openaiCallDuration = Date.now() - openaiCallStartTime;
+    console.log(`\n✅ ===== OPENAI SERVICE CALL COMPLETE =====`);
+    console.log(`⏱️  OpenAI Call Time: ${openaiCallDuration}ms (${(openaiCallDuration/1000).toFixed(2)}s)`);
+    console.log(`📊 Sessions Returned: ${analysisResult.sessions.length}`);
+    console.log(`💰 Tokens Used: ${analysisResult.totalTokens} ($${analysisResult.cost.toFixed(4)})`);
+    console.log(`⚡ Performance: ${(analysisResult.totalTokens / (openaiCallDuration/1000)).toFixed(1)} tokens/sec`);
 
     // Map OpenAI results back to SessionWithFacts
+    const mappingStartTime = Date.now();
     const sessionResults: SessionWithFacts[] = [];
     const sessionsById = new Map(sessions.map(s => [s.user_id, s]));
 
@@ -196,11 +267,17 @@ export class BatchAnalysisService {
 
     // Handle any missing sessions (partial failures)
     for (const [userId, session] of sessionsById) {
-      console.warn(`Session ${userId} missing from analysis results, creating fallback`);
+      console.log(`⚠️  Session ${userId} missing from analysis results, creating fallback`);
       sessionResults.push(
         this.createFallbackResult(session, 'Failed individual processing: Missing from batch response', modelId)
       );
     }
+    
+    const mappingDuration = Date.now() - mappingStartTime;
+    console.log(`\n🔄 ===== SESSION MAPPING COMPLETE =====`);
+    console.log(`⏱️  Mapping Time: ${mappingDuration}ms`);
+    console.log(`📊 Final Session Results: ${sessionResults.length}`);
+    console.log(`📊 Missing Sessions: ${sessionsById.size}`);
 
     return {
       sessions: sessionResults,
