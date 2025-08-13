@@ -71,6 +71,10 @@ backend/test-results/
 playwright-report/
 *.xml
 
+# E2E test screenshots
+frontend/e2e/*.png
+frontend/e2e/**/*.png
+
 # nyc test coverage
 .nyc_output
 
