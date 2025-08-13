@@ -16,7 +16,8 @@ export function getSimplifiedStatusText(currentStep: string): string {
     'Searching in 6-hour window': 'Searching for sessions',
     'Searching in 12-hour window': 'Searching for sessions',
     'Searching in 6-day window': 'Searching for sessions',
-    'Generating summary with AI': 'Generating analysis summary',
+    'Generating summary with AI': 'Generating analysis report',
+    'Generating analysis summary': 'Generating analysis report',
     'Analysis complete': 'Analysis complete',
     'Starting parallel analysis': 'Starting analysis',
   };
@@ -74,16 +75,26 @@ export function getSimplifiedStatusText(currentStep: string): string {
 
   // Generic summary generation
   if (currentStep.toLowerCase().includes('summary')) {
-    return 'Generating analysis summary';
+    return 'Generating analysis report';
   }
 
   // Default fallback - return a cleaned version of the original
   return currentStep;
 }
 
+// Global variable to track the maximum progress reached to prevent regression
+let maxProgressReached = 0;
+
+/**
+ * Resets the maximum progress tracker (used for new analysis sessions)
+ */
+export function resetProgressTracker(): void {
+  maxProgressReached = 0;
+}
+
 /**
  * Calculates progress percentage with improved accuracy for all phases
- * including inter-round conflict resolution
+ * including inter-round conflict resolution. Prevents progress bar from ever shrinking.
  */
 export function calculateProgressPercentage(progress: AnalysisProgress | ParallelAnalysisProgress): number {
   // Phase weights - must add up to 100
@@ -99,7 +110,7 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
 
   // Handle 'complete' phase
   if (progress.phase === 'complete') {
-    return 100;
+    return ensureProgressNeverDecreases(100);
   }
 
   // Handle error phase
@@ -108,8 +119,11 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
     return baseProgress;
   }
 
-  // Calculate sampling phase progress
+  // Calculate sampling phase progress - ensure it never goes backwards
   if (progress.phase === 'sampling') {
+    // Start with base 5% for being in sampling phase
+    let samplingProgress = 0.25; // 25% of sampling phase = 5% total
+    
     // Check for message retrieval progress (detailed sampling)
     if ('messageProgress' in progress && progress.messageProgress) {
       const messageProgress = progress.messageProgress;
@@ -120,31 +134,33 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
       // Sampling is 50% finding sessions, 50% retrieving messages
       const findProgress = progress.samplingProgress 
         ? Math.min(progress.sessionsFound / progress.samplingProgress.targetSessionCount, 1) * 0.5
-        : 0.5;
+        : 0.3; // Default to 30% if we have message progress
       
-      const totalSamplingProgress = findProgress + (retrievalProgress * 0.5);
-      return Math.round(totalSamplingProgress * phaseWeights.sampling);
+      samplingProgress = Math.max(samplingProgress, findProgress + (retrievalProgress * 0.5));
+      return ensureProgressNeverDecreases(Math.round(samplingProgress * phaseWeights.sampling));
     } 
     
-    // Original sampling logic
+    // Original sampling logic with minimum progress
     if (progress.samplingProgress) {
-      const windowProgressWeight = 0.6;
-      const sessionProgressWeight = 0.4;
+      const windowProgressWeight = 0.4;
+      const sessionProgressWeight = 0.6;
       
       const windowProgress = progress.samplingProgress.currentWindowIndex / progress.samplingProgress.totalWindows;
       const sessionProgress = Math.min(progress.sessionsFound / progress.samplingProgress.targetSessionCount, 1);
       
-      const samplingProgress = (windowProgress * windowProgressWeight) + (sessionProgress * sessionProgressWeight);
-      return Math.round(samplingProgress * phaseWeights.sampling);
+      const calculatedProgress = (windowProgress * windowProgressWeight) + (sessionProgress * sessionProgressWeight);
+      samplingProgress = Math.max(samplingProgress, calculatedProgress);
+      return ensureProgressNeverDecreases(Math.round(samplingProgress * phaseWeights.sampling));
     }
     
-    // Fallback for sampling
+    // Fallback for sampling - ensure minimum progress
     if (progress.sessionsFound > 0) {
-      const basicProgress = Math.min(progress.sessionsFound / 100, 0.5);
-      return Math.round(basicProgress * phaseWeights.sampling);
+      const basicProgress = Math.min(progress.sessionsFound / 100, 0.7);
+      samplingProgress = Math.max(samplingProgress, basicProgress);
+      return ensureProgressNeverDecreases(Math.round(samplingProgress * phaseWeights.sampling));
     }
     
-    return 2; // Minimal progress if in sampling
+    return ensureProgressNeverDecreases(Math.round(samplingProgress * phaseWeights.sampling)); // Minimum 5% for being in sampling
   }
 
   // Add completed sampling phase
@@ -158,7 +174,7 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
       ? Math.min(progress.discoveryStats.discoveryRate || 0, 1)
       : 0.3; // Default 30% if in discovery
     
-    return Math.round(baseProgress + (discoveryProgress * phaseWeights.discovery));
+    return ensureProgressNeverDecreases(Math.round(baseProgress + (discoveryProgress * phaseWeights.discovery)));
   }
 
   // Add completed discovery phase
@@ -170,33 +186,47 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
   if (progress.phase === 'parallel_processing') {
     const parallelProgress = progress as ParallelAnalysisProgress;
     
+    // Extract round information from current step for better progress tracking
+    let currentRound = 0;
+    const currentStepLower = progress.currentStep?.toLowerCase() || '';
+    
+    // Parse current round from step text
+    if (currentStepLower.includes('round')) {
+      const roundMatch = progress.currentStep?.match(/round (\d+)/i);
+      if (roundMatch) {
+        currentRound = parseInt(roundMatch[1], 10);
+      }
+    }
+    
+    // Calculate base progress using current round (more accurate than roundsCompleted)
+    const totalRounds = parallelProgress.totalRounds || 3;
+    
     // Check if we're in inter-round conflict resolution
     if (progress.currentStep?.includes('Conflict resolution') || 
         progress.currentStep?.includes('Consolidating classifications')) {
-      // During conflict resolution, add extra progress based on round completion
-      const roundProgress = parallelProgress.totalRounds > 0
-        ? (parallelProgress.roundsCompleted || 0) / parallelProgress.totalRounds
-        : 0;
+      // During conflict resolution, we're between rounds
+      // Use the current round to calculate progress (rounds start at 1)
+      const baseRoundProgress = Math.max(currentRound - 1, 0) / totalRounds;
       
-      // Add 5% bonus for being in conflict resolution
-      const conflictBonus = 0.05;
-      const totalProgress = Math.min(roundProgress + conflictBonus, 1);
+      // Add 10% bonus for being in conflict resolution (represents work done)
+      const conflictBonus = 0.1;
+      const totalProgress = Math.min(baseRoundProgress + conflictBonus, 1);
       
-      return Math.round(baseProgress + (totalProgress * phaseWeights.parallel_processing));
+      return ensureProgressNeverDecreases(Math.round(baseProgress + (totalProgress * phaseWeights.parallel_processing)));
     }
     
-    // Normal parallel processing
-    const roundProgress = parallelProgress.totalRounds > 0
-      ? (parallelProgress.roundsCompleted || 0) / parallelProgress.totalRounds
-      : 0;
+    // Normal parallel processing - use current round for progressive calculation
+    const roundProgress = currentRound > 0 
+      ? (currentRound - 0.5) / totalRounds  // -0.5 because we're in the middle of the round
+      : (parallelProgress.roundsCompleted || 0) / totalRounds;
     
     const sessionProgress = progress.totalSessions > 0
       ? progress.sessionsProcessed / progress.totalSessions
       : 0;
     
-    // Use the higher of round or session progress
-    const parallelProgressValue = Math.max(roundProgress, sessionProgress);
-    return Math.round(baseProgress + (parallelProgressValue * phaseWeights.parallel_processing));
+    // Use the higher of round or session progress, with minimum for being in processing
+    const parallelProgressValue = Math.max(roundProgress, sessionProgress, 0.1);
+    return ensureProgressNeverDecreases(Math.round(baseProgress + (parallelProgressValue * phaseWeights.parallel_processing)));
   }
 
   // Add completed parallel processing
@@ -210,7 +240,7 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
       ? 0.5 // 50% through conflict resolution when active
       : 0.3;
     
-    return Math.round(baseProgress + (conflictProgress * phaseWeights.conflict_resolution));
+    return ensureProgressNeverDecreases(Math.round(baseProgress + (conflictProgress * phaseWeights.conflict_resolution)));
   }
 
   // Add completed conflict resolution
@@ -220,7 +250,7 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
 
   // Calculate summary generation progress
   if (progress.phase === 'generating_summary') {
-    return Math.round(baseProgress + (0.5 * phaseWeights.generating_summary));
+    return ensureProgressNeverDecreases(Math.round(baseProgress + (0.5 * phaseWeights.generating_summary)));
   }
 
   // Legacy 'analyzing' phase support
@@ -229,15 +259,27 @@ export function calculateProgressPercentage(progress: AnalysisProgress | Paralle
       ? progress.sessionsProcessed / progress.totalSessions
       : 0;
     
-    return Math.round(
+    return ensureProgressNeverDecreases(Math.round(
       phaseWeights.sampling + 
       phaseWeights.discovery + 
       (sessionProgress * phaseWeights.parallel_processing)
-    );
+    ));
   }
 
   // Fallback - return at least 1% if analysis is running
-  return Math.max(Math.round(baseProgress), 1);
+  const calculatedProgress = Math.max(Math.round(baseProgress), 1);
+  
+  // Ensure progress never goes backwards by tracking maximum reached
+  maxProgressReached = Math.max(maxProgressReached, calculatedProgress);
+  return maxProgressReached;
+}
+
+/**
+ * Helper function to ensure progress never decreases
+ */
+function ensureProgressNeverDecreases(calculatedProgress: number): number {
+  maxProgressReached = Math.max(maxProgressReached, calculatedProgress);
+  return maxProgressReached;
 }
 
 /**
@@ -249,7 +291,7 @@ export function getPhaseLabel(phase: string): string {
     'discovery': 'Discovery',
     'parallel_processing': 'Processing',
     'conflict_resolution': 'Resolving',
-    'generating_summary': 'Summarizing',
+    'generating_summary': 'Writing report',
     'analyzing': 'Analyzing',
     'complete': 'Complete',
     'error': 'Error'

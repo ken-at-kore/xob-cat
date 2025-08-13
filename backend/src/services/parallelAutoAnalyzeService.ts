@@ -36,6 +36,11 @@ interface ParallelAnalysisSession {
   cancelled: boolean;
 }
 
+/**
+ * ✅ RECOMMENDED: Advanced parallel auto-analyze service with multi-phase processing.
+ * This is the preferred implementation over the deprecated sequential AutoAnalyzeService.
+ * Provides better performance, consistency, and scalability through intelligent parallel processing.
+ */
 export class ParallelAutoAnalyzeService {
   private activeSessions = new Map<string, ParallelAnalysisSession>();
   

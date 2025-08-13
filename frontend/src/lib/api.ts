@@ -167,7 +167,7 @@ class ApiClient {
     });
   }
 
-  // Auto-Analyze API (uses parallel processing by default)
+  // Auto-Analyze API (uses parallel processing by default - sequential is deprecated)
   async startAutoAnalysis(config: AnalysisConfig): Promise<ApiResponse<{ analysisId: string }>> {
     const response = await fetch(`${this.baseUrl}/api/analysis/auto-analyze/parallel/start`, {
       method: 'POST',

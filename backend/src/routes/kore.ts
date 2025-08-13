@@ -20,7 +20,8 @@ router.get('/test', asyncHandler(async (req: Request, res: Response) => {
   const dateFrom = new Date(Date.now() - 60 * 1000).toISOString();
   const dateTo = new Date().toISOString();
 
-  console.log('Testing Kore.ai API connectivity with optimized connection test...');
+  console.log(`Testing Kore.ai API connectivity for bot: ${botName.substring(0, 20)}...`);
+  console.log(`Connection test window: ${dateFrom} to ${dateTo}`);
   
   try {
     // OPTIMIZED: Use single API call with timeout for fastest connection testing
@@ -53,8 +54,37 @@ router.get('/test', asyncHandler(async (req: Request, res: Response) => {
       }
     }
     
-    // Other errors
-    return errorResponse(res, 'Failed to connect to Kore.ai API', 'Unable to establish connection with Kore.ai API', 500, {
+    // Log the specific error for debugging
+    console.error(`Connection test failed for bot ${botName}:`, {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      type: error?.constructor?.name || 'Unknown',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('timeout')) {
+        return errorResponse(res, 'Connection timeout', 'The Kore.ai API is not responding. Please try again in a few moments.', 408, {
+          details: error.message,
+          code: 'TIMEOUT'
+        });
+      }
+      if (error.message.includes('ECONNREFUSED')) {
+        return errorResponse(res, 'Connection refused', 'Unable to reach the Kore.ai API server. Please check your network connection.', 503, {
+          details: error.message,
+          code: 'CONNECTION_REFUSED'
+        });
+      }
+      if (error.message.includes('ENOTFOUND')) {
+        return errorResponse(res, 'DNS resolution failed', 'Unable to resolve Kore.ai API hostname. Please check your network configuration.', 503, {
+          details: error.message,
+          code: 'DNS_ERROR'
+        });
+      }
+    }
+    
+    // Generic connection failure
+    return errorResponse(res, 'Failed to connect to Kore.ai API', 'Unable to establish connection with Kore.ai API. Please verify your credentials and try again.', 500, {
       details: error instanceof Error ? error.message : 'Unknown error',
       code: 'CONNECTION_FAILED'
     });
