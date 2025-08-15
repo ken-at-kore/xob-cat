@@ -168,18 +168,18 @@ describe('ParallelAutoAnalyzeService', () => {
   };
 
   const mockAnalysisSummary = {
-    totalSessions: 50,
-    sessionOutcomes: {
-      contained: 25,
-      transferred: 25,
-      containmentRate: 50
-    },
-    topIntents: [{ intent: 'Intent1', count: 10, percentage: 20 }],
-    transferAnalysis: {
-      topReasons: [{ reason: 'Technical Issue', count: 5, percentage: 50 }],
-      topLocations: [{ location: 'Agent Queue', count: 5, percentage: 50 }]
-    },
-    summary: 'Test analysis summary'
+    overview: 'Test analysis overview',
+    summary: 'Test analysis summary',
+    containmentSuggestion: 'Improve bot training',
+    generatedAt: '2025-08-15T00:00:00Z',
+    sessionsAnalyzed: 50,
+    statistics: {
+      totalSessions: 50,
+      transferRate: 50,
+      containmentRate: 50,
+      averageSessionLength: 120,
+      averageMessagesPerSession: 8
+    }
   };
 
   beforeEach(() => {
@@ -615,7 +615,7 @@ describe('ParallelAutoAnalyzeService', () => {
   });
 
   describe('session cleanup', () => {
-    it('should cleanup session after timeout', async (done) => {
+    it('should cleanup session after timeout', async () => {
       const startResult = await parallelAutoAnalyzeService.startAnalysis(mockConfig);
       
       // Mock setTimeout to execute immediately
@@ -628,12 +628,13 @@ describe('ParallelAutoAnalyzeService', () => {
       // Simulate completion to trigger cleanup
       await parallelAutoAnalyzeService.runParallelAnalysis(startResult.analysisId);
       
+      // Wait for cleanup to trigger
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
       // Verify session is cleaned up
-      setTimeout(() => {
-        expect(() => parallelAutoAnalyzeService.getProgress(startResult.analysisId)).rejects.toThrow('Analysis not found');
-        global.setTimeout = originalSetTimeout;
-        done();
-      }, 0);
+      await expect(() => parallelAutoAnalyzeService.getProgress(startResult.analysisId)).rejects.toThrow('Analysis not found');
+      
+      global.setTimeout = originalSetTimeout;
     }, 10000);
   });
 

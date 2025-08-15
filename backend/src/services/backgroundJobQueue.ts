@@ -79,7 +79,7 @@ export class BackgroundJobQueue {
 
     // Clear any timers
     const timer = this.timers.get(id);
-    if (timer) {
+    if (timer && typeof clearTimeout !== 'undefined') {
       clearTimeout(timer);
       this.timers.delete(id);
     }
@@ -523,7 +523,7 @@ export class BackgroundJobQueue {
 
     // Clear any timers
     const timer = this.timers.get(jobId);
-    if (timer) {
+    if (timer && typeof clearTimeout !== 'undefined') {
       clearTimeout(timer);
       this.timers.delete(jobId);
     }
@@ -571,12 +571,12 @@ export class BackgroundJobQueue {
       const timer = this.timers.get(jobId);
       const timeoutTimer = this.timers.get(`${jobId}-timeout`);
       
-      if (timer) {
+      if (timer && typeof clearTimeout !== 'undefined') {
         clearTimeout(timer);
         this.timers.delete(jobId);
       }
       
-      if (timeoutTimer) {
+      if (timeoutTimer && typeof clearTimeout !== 'undefined') {
         clearTimeout(timeoutTimer);
         this.timers.delete(`${jobId}-timeout`);
       }
@@ -596,8 +596,10 @@ export class BackgroundJobQueue {
     }
 
     // Clear all timers
-    for (const timer of this.timers.values()) {
-      clearTimeout(timer);
+    if (typeof clearTimeout !== 'undefined') {
+      for (const timer of this.timers.values()) {
+        clearTimeout(timer);
+      }
     }
     this.timers.clear();
   }
