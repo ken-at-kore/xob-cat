@@ -38,7 +38,7 @@ const MOCK_CREDENTIALS = {
 
 // Analysis configuration for mock testing (NEW UI)
 const MOCK_ANALYSIS_CONFIG = {
-  startDate: '2025-07-01',  // Use July 1, 2025 (over a month ago)
+  startDate: '2024-08-01',  // Use August 1, 2024 to match mock data
   timeOfDay: 'morning',     // NEW: use timeOfDay instead of startTime
   startTime: '09:00',       // Backward compatibility - will be mapped to morning
   sessionCount: '10',       // Increased to 10 to potentially trigger parallel processing

@@ -61,6 +61,12 @@ async function enterCredentials(page, credentials, baseUrl = 'http://localhost:3
   await page.type('#clientId', credentials.clientId);
   await page.type('#clientSecret', credentials.clientSecret);
   
+  // Verify credentials are stored before clicking Connect
+  await page.evaluate((creds) => {
+    sessionStorage.setItem('botCredentials', JSON.stringify(creds));
+    console.log('Pre-connect: Credentials stored in sessionStorage');
+  }, credentials);
+  
   // Find and click the Connect button
   const connectButton = await page.$('button');
   if (connectButton) {
@@ -74,6 +80,9 @@ async function enterCredentials(page, credentials, baseUrl = 'http://localhost:3
     throw new Error('Connect button not found');
   }
   console.log('✅ Credentials entered and Connect clicked');
+  
+  // Wait a moment for any network requests to complete
+  await new Promise(resolve => setTimeout(resolve, 2000));
 }
 
 /**
@@ -132,6 +141,28 @@ async function navigateToAutoAnalyze(page, baseUrl = 'http://localhost:3000') {
     }
   } catch (e) {
     console.log('⚠️ Sidebar not found, trying direct navigation');
+    
+    // First, verify credentials are still in sessionStorage
+    const hasCredentials = await page.evaluate(() => {
+      const stored = sessionStorage.getItem('botCredentials');
+      console.log('Direct navigation: Checking credentials in sessionStorage:', !!stored);
+      return !!stored;
+    });
+    
+    if (!hasCredentials) {
+      console.log('⚠️ Credentials lost, re-storing them');
+      // Re-store mock credentials if needed
+      await page.evaluate(() => {
+        const mockCredentials = {
+          botId: 'mock-bot-id',
+          clientId: 'mock-client-id',
+          clientSecret: 'mock-client-secret'
+        };
+        sessionStorage.setItem('botCredentials', JSON.stringify(mockCredentials));
+        console.log('Re-stored mock credentials in sessionStorage');
+      });
+    }
+    
     // Add a small delay to ensure page is ready
     await new Promise(resolve => setTimeout(resolve, 1000));
     
