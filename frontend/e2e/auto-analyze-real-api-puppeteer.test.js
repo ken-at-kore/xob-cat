@@ -274,6 +274,88 @@ async function runAutoAnalyzeRealTest() {
       console.log('Dialog test results:', dialogResults);
     }
     
+    // Step 11: Test download functionality (if analysis completed)
+    let downloadResults = { downloadTested: false, downloadSuccess: false };
+    if (completionResults.analysisCompleted) {
+      try {
+        console.log('📥 Step 11: Testing download functionality');
+        
+        // Look for the Download Report Data button using proper Puppeteer selectors
+        const downloadButton = await page.evaluateHandle(() => {
+          // Find button containing "Download Report Data" text
+          const buttons = Array.from(document.querySelectorAll('button'));
+          return buttons.find(btn => 
+            btn.textContent?.includes('Download Report Data') || 
+            btn.textContent?.includes('Download') ||
+            btn.getAttribute('aria-label')?.includes('download')
+          );
+        });
+        
+        if (downloadButton && downloadButton.asElement()) {
+          console.log('✅ Download button found');
+          
+          // Setup download listening via response monitoring
+          const downloadPromise = new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error('Download timeout after 10 seconds')), 10000);
+            
+            page.on('response', async (response) => {
+              if (response.url().includes('/export/') && response.status() === 200) {
+                clearTimeout(timeout);
+                console.log(`✅ Download API call successful: ${response.url()}`);
+                
+                try {
+                  // Validate response headers
+                  const contentType = response.headers()['content-type'];
+                  const contentDisposition = response.headers()['content-disposition'];
+                  
+                  console.log(`📄 Content-Type: ${contentType}`);
+                  console.log(`📁 Content-Disposition: ${contentDisposition}`);
+                  
+                  if (contentType?.includes('application/json')) {
+                    console.log('✅ Valid JSON response for download');
+                    resolve({ success: true, contentType, contentDisposition });
+                  } else {
+                    reject(new Error(`Invalid content type: ${contentType}`));
+                  }
+                } catch (error) {
+                  reject(new Error(`Response validation failed: ${error.message}`));
+                }
+              } else if (response.url().includes('/export/') && response.status() !== 200) {
+                clearTimeout(timeout);
+                reject(new Error(`Download failed with status ${response.status()}: ${response.statusText()}`));
+              }
+            });
+          });
+          
+          await downloadButton.asElement().click();
+          console.log('🔽 Download button clicked');
+          
+          try {
+            const downloadResponse = await downloadPromise;
+            console.log('✅ Download completed successfully');
+            console.log(`📦 Download response: ${JSON.stringify(downloadResponse)}`);
+            downloadResults = { 
+              downloadTested: true, 
+              downloadSuccess: true, 
+              contentType: downloadResponse.contentType,
+              contentDisposition: downloadResponse.contentDisposition
+            };
+          } catch (downloadError) {
+            console.log(`⚠️ Download failed: ${downloadError.message}`);
+            downloadResults = { downloadTested: true, downloadSuccess: false, error: downloadError.message };
+          }
+        } else {
+          console.log('⚠️ Download button not found in report');
+          downloadResults = { downloadTested: false, reason: 'Download button not found' };
+        }
+      } catch (downloadTestError) {
+        console.log(`❌ Download test error: ${downloadTestError.message}`);
+        downloadResults = { downloadTested: false, error: downloadTestError.message };
+      }
+    } else {
+      console.log('⏭️ Skipping download test - analysis not completed');
+    }
+    
     // Take final screenshot for verification
     await page.screenshot({ path: 'auto-analyze-real-final.png' });
     
@@ -323,6 +405,21 @@ async function runAutoAnalyzeRealTest() {
         console.log(`⚠️ Test completed with issues: ${successCount}/${totalChecks} validations passed`);
         console.log('❓ Check console output above for specific validation failures');
         console.log('💡 Real APIs may have variable response times or data availability');
+      }
+      
+      // Log download test results
+      if (downloadResults.downloadTested) {
+        console.log(`📥 Download Test: ${downloadResults.downloadSuccess ? '✅ SUCCESS' : '❌ FAILED'}`);
+        if (downloadResults.downloadSuccess) {
+          console.log(`   📄 Content-Type: ${downloadResults.contentType}`);
+          console.log(`   📁 Content-Disposition: ${downloadResults.contentDisposition}`);
+          console.log(`   ✅ Download endpoint working correctly with parallel API`);
+        } else if (downloadResults.error) {
+          console.log(`   ❌ Error: ${downloadResults.error}`);
+        }
+      } else {
+        const reason = downloadResults.reason || downloadResults.error || 'Analysis not completed';
+        console.log(`📥 Download Test: ⏭️ SKIPPED (${reason})`);
       }
     }
     
@@ -381,6 +478,7 @@ async function runAutoAnalyzeRealTest() {
     console.log('✅ Progress tracking and completion monitoring');
     console.log('✅ Report generation validation');
     console.log('✅ Real API integration (Kore.ai + OpenAI)');
+    console.log(`📥 Download functionality: ${downloadResults.downloadTested ? (downloadResults.downloadSuccess ? '✅ TESTED & WORKING' : '❌ TESTED & FAILED') : '⏭️ SKIPPED'}`);
     
     // Additional parallel processing coverage
     if (completionResults && completionResults.parallelProcessingDetected) {

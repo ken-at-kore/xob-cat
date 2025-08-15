@@ -75,7 +75,7 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
       }
 
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${API_BASE_URL}/api/analysis/auto-analyze/export/${analysisId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/analysis/auto-analyze/parallel/export/${analysisId}`, {
         headers: {
           'x-jwt-token': localStorage.getItem('jwt-token') || 'default-token',
           ...credentialHeaders
