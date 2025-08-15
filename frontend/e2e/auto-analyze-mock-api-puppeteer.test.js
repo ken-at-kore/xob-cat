@@ -36,13 +36,14 @@ const MOCK_CREDENTIALS = {
   clientSecret: 'mock-client-secret'
 };
 
-// Analysis configuration for mock testing
+// Analysis configuration for mock testing (NEW UI)
 const MOCK_ANALYSIS_CONFIG = {
   startDate: '2025-07-01',  // Use July 1, 2025 (over a month ago)
-  startTime: '09:00',
-  sessionCount: '10',  // Increased to 10 to potentially trigger parallel processing
+  timeOfDay: 'morning',     // NEW: use timeOfDay instead of startTime
+  startTime: '09:00',       // Backward compatibility - will be mapped to morning
+  sessionCount: '10',       // Increased to 10 to potentially trigger parallel processing
   openaiApiKey: 'sk-mock-openai-key-for-testing',  // Use sk- prefix to pass validation
-  modelId: 'gpt-4.1-nano'  // Select the nano model for testing (correct ID)
+  modelId: 'gpt-4.1-nano'   // Select the nano model for testing (correct ID)
 };
 
 async function runAutoAnalyzeMockTest() {

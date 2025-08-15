@@ -129,7 +129,8 @@ async function runAutoAnalyzeRealTest() {
     const sessionCount = config.sessions || 10;  // Default to 10, configurable via --sessions=N
     const realAnalysisConfig = {
       startDate: '2025-08-01',  // Date with confirmed real session data
-      startTime: '09:00',       // 9 AM ET when data exists
+      timeOfDay: 'morning',     // NEW: use timeOfDay instead of startTime
+      startTime: '09:00',       // Backward compatibility - will be mapped to morning
       sessionCount: sessionCount.toString(),
       openaiApiKey: credentials.openaiApiKey,
       modelId: 'gpt-4.1-nano'   // Use nano model for testing (correct ID)

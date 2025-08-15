@@ -466,8 +466,15 @@ Environment-based service selection:
 - **Parallel Design**: `docs/Parallel Auto-Analyze Design.md`
 - **Debugging Guide**: `docs/Parallel Auto-Analyze Debugging Breakthroughs.md`
 
-### Auto-Analyze Feature
+### Auto-Analyze Feature (Redesigned August 2025)
 AI-powered bot performance analysis using configurable GPT models (GPT-4o-mini default) with time window expansion, batch processing, and interactive visualizations. Supports 5-1000 sessions with real-time progress tracking and cost estimation.
+
+**New UI Design Features:**
+- **Simplified Copy**: Rewritten page content to focus on "intelligent bot performance insights" with clearer value proposition
+- **Time of Day Dropdown**: Replaced time picker with simplified dropdown (Morning/Afternoon/Evening) for better UX
+- **Progressive Disclosure**: Advanced options (session count, GPT model) hidden behind collapsible "Advanced" section
+- **Cost Information**: Upfront cost estimate (~50 cents) displayed prominently before analysis
+- **Streamlined Form**: OpenAI API key moved to primary position, simplified field descriptions
 
 **Two Analysis Systems Available:**
 - **Sequential Analysis**: ⚠️ **DEPRECATED** - Original implementation, maintained for backward compatibility only

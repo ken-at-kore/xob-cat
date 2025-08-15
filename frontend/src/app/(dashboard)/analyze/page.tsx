@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Label } from '../../../components/ui/label';
@@ -73,13 +74,27 @@ async function loadMockResults(): Promise<AnalysisResults> {
   }
 }
 
+type TimeOfDay = 'morning' | 'afternoon' | 'evening';
+
 interface ConfigFormData {
   startDate: string;
-  startTime: string;
+  timeOfDay: TimeOfDay;
   sessionCount: number;
   openaiApiKey: string;
   modelId: string;
 }
+
+const TIME_MAPPINGS: Record<TimeOfDay, string> = {
+  morning: '09:00',
+  afternoon: '13:00',
+  evening: '18:00'
+};
+
+const TIME_DISPLAY_OPTIONS = [
+  { value: 'morning' as TimeOfDay, label: 'Morning (9:00 AM ET)' },
+  { value: 'afternoon' as TimeOfDay, label: 'Afternoon (1:00 PM ET)' },
+  { value: 'evening' as TimeOfDay, label: 'Evening (6:00 PM ET)' }
+];
 
 interface ValidationErrors {
   [key: string]: string;
@@ -100,16 +115,18 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
   const [formData, setFormData] = useState<ConfigFormData>(() => {
     // Set default values
     const defaultDate = new Date();
-    defaultDate.setDate(defaultDate.getDate() - 7); // 7 days ago
+    defaultDate.setDate(defaultDate.getDate() - 1); // Yesterday
     
     return {
       startDate: defaultDate.toISOString().split('T')[0],
-      startTime: '09:00',
+      timeOfDay: 'morning',
       sessionCount: 100,
       openaiApiKey: '',
       modelId: 'gpt-4.1' // Default to GPT-4.1 (base)
     };
   });
+
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -139,10 +156,7 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
       newErrors.startDate = 'Date must be in the past';
     }
 
-    // Validate time format
-    if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(formData.startTime)) {
-      newErrors.startTime = 'Invalid time format';
-    }
+    // Time of day validation not needed since it's a controlled dropdown
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -161,7 +175,7 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
     try {
       const config: AnalysisConfig = {
         startDate: formData.startDate,
-        startTime: formData.startTime,
+        startTime: TIME_MAPPINGS[formData.timeOfDay],
         sessionCount: formData.sessionCount,
         openaiApiKey: formData.openaiApiKey,
         modelId: formData.modelId
@@ -194,19 +208,24 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Auto-Analyze</h1>
-        <p className="mt-2 text-gray-600">
-          Comprehensive bot performance analysis with parallel processing architecture. Randomly samples sessions, 
-          uses strategic discovery to establish baseline classifications, then processes sessions in parallel streams 
-          with automatic conflict resolution to generate actionable insights 60% faster than sequential processing.
-        </p>
+        <div className="mt-2 text-gray-600">
+          <p className="mb-3">
+            Auto-Analyze provides intelligent bot performance insights by automatically analyzing customer service sessions.
+          </p>
+          <ul className="space-y-2 list-disc list-inside">
+            <li>The system uses smart session sampling (randomly selecting from available sessions in your specified timeframe)</li>
+            <li>Applies advanced AI to extract insights and classify intents</li>
+            <li>Generates comprehensive reports with actionable recommendations to help improve your bot's effectiveness and customer satisfaction</li>
+          </ul>
+        </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Analysis Configuration</CardTitle>
+          <CardTitle>Session Analysis Setup</CardTitle>
           <CardDescription>
-            Configure your automated session analysis. The system will intelligently expand time windows 
-            to find sufficient sessions and maintain classification consistency across batches.
+            Configure your AI-powered analysis. The AI will automatically sample sessions from your selected 
+            timeframe and provide detailed insights about user interactions and bot performance.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -217,8 +236,8 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
               </Alert>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
+            <div className="flex gap-4 items-start">
+              <div className="space-y-2 flex-shrink-0" style={{width: "200px"}}>
                 <Label htmlFor="startDate">Start Date</Label>
                 <Input
                   id="startDate"
@@ -232,90 +251,31 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
                   <p className="text-sm text-red-600">{errors.startDate}</p>
                 )}
                 <p className="text-xs text-gray-500">
-                  Date to start searching for sessions (defaults to 7 days ago)
+                  Date to start searching for sessions (defaults to yesterday)
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="startTime">Start Time (Eastern Time)</Label>
-                <Input
-                  id="startTime"
-                  name="startTime"
-                  type="time"
-                  value={formData.startTime}
-                  onChange={(e) => handleInputChange('startTime', e.target.value)}
-                  className={errors.startTime ? 'border-red-500' : ''}
-                />
-                {errors.startTime && (
-                  <p className="text-sm text-red-600">{errors.startTime}</p>
-                )}
+              <div className="space-y-2 flex-shrink-0" style={{width: "220px"}}>
+                <Label htmlFor="timeOfDay">Time of Day</Label>
+                <Select 
+                  value={formData.timeOfDay} 
+                  onValueChange={(value) => handleInputChange('timeOfDay', value as TimeOfDay)}
+                >
+                  <SelectTrigger id="timeOfDay">
+                    <SelectValue placeholder="Select time of day" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TIME_DISPLAY_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <p className="text-xs text-gray-500">
-                  Time to start searching (defaults to 9:00 AM ET)
+                  Time of day to start searching for sessions
                 </p>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="sessionCount">Number of Sessions</Label>
-              <Input
-                id="sessionCount"
-                name="sessionCount"
-                type="number"
-                min="5"
-                max="1000"
-                value={formData.sessionCount}
-                onChange={(e) => handleInputChange('sessionCount', parseInt(e.target.value) || 0)}
-                className={errors.sessionCount ? 'border-red-500' : ''}
-              />
-              {errors.sessionCount && (
-                <p className="text-sm text-red-600">{errors.sessionCount}</p>
-              )}
-              <p className="text-xs text-gray-500">
-                Number of sessions to analyze (5-1000). Analyzing more than 1000 sessions isn't allowed. 
-                If fewer than 5 sessions are found, the analysis won't proceed.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="modelId">GPT Model</Label>
-              <Select 
-                value={formData.modelId} 
-                onValueChange={(value) => handleInputChange('modelId', value)}
-              >
-                <SelectTrigger id="modelId">
-                  <SelectValue placeholder="Select a GPT model" />
-                </SelectTrigger>
-                <SelectContent>
-                  {GPT_MODELS.map((model) => (
-                    <SelectItem key={model.id} value={model.id}>
-                      {model.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-gray-500">
-                Choose the GPT model for analysis. GPT-4.1 (base) provides the best balance of cost and accuracy.
-              </p>
-              {(() => {
-                const selectedModel = getGptModelById(formData.modelId);
-                if (!selectedModel) return null;
-                
-                return (
-                  <div className="bg-gray-50 p-3 rounded-lg text-sm">
-                    <div className="font-medium text-gray-900 mb-2">{selectedModel.name} Pricing</div>
-                    <div className="space-y-1 text-gray-600">
-                      <div className="flex justify-between">
-                        <span>Input:</span>
-                        <span>${selectedModel.inputPricePerMillion.toFixed(2)}/1M tokens</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Output:</span>
-                        <span>${selectedModel.outputPricePerMillion.toFixed(2)}/1M tokens</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
             </div>
 
             <div className="space-y-2">
@@ -333,29 +293,84 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
                 <p className="text-sm text-red-600">{errors.openaiApiKey}</p>
               )}
               <p className="text-xs text-gray-500">
-                Your OpenAI API key for GPT-4o-mini analysis. This is not stored and only used for this analysis.
+                Your OpenAI API key for AI analysis. This is not stored and only used for this analysis. 
+                The cost can't be precisely determined in advance, but typically costs about 25 cents 
+                depending on the length of the sessions analyzed.
               </p>
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-medium text-blue-900 mb-2">How Parallel Auto-Analyze Works</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• <strong>Smart Session Sampling:</strong> Searches 3-hour initial window, expands to 6-hour → 12-hour → 6-day as needed</li>
-                <li>• <strong>Strategic Discovery:</strong> Processes 10-15% of sessions sequentially to establish baseline classifications</li>
-                <li>• <strong>Parallel Processing:</strong> Processes remaining sessions across 8 concurrent streams with periodic synchronization</li>
-                <li>• <strong>Automatic Conflict Resolution:</strong> Uses LLM to identify and resolve semantic duplicate classifications</li>
-                <li>• <strong>60% Performance Improvement:</strong> Parallel architecture delivers results faster while maintaining consistency</li>
-                <li>• <strong>Cost Efficient:</strong> Typically costs less than $2.00 for 100 sessions analyzed</li>
-              </ul>
+            {/* Advanced Options Progressive Disclosure */}
+            <div className="border-t pt-6">
+              <button
+                type="button"
+                onClick={() => setShowAdvanced(!showAdvanced)}
+                className="flex items-center gap-2 text-left w-full hover:text-gray-700 transition-colors"
+              >
+                <h4 className="font-medium text-gray-900">Advanced</h4>
+                {showAdvanced ? (
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-gray-500" />
+                )}
+              </button>
+              
+              {showAdvanced && (
+                <div className="mt-4 space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="sessionCount">Number of Sessions</Label>
+                    <Input
+                      id="sessionCount"
+                      name="sessionCount"
+                      type="number"
+                      min="5"
+                      max="1000"
+                      value={formData.sessionCount}
+                      onChange={(e) => handleInputChange('sessionCount', parseInt(e.target.value) || 0)}
+                      className={errors.sessionCount ? 'border-red-500' : ''}
+                    />
+                    {errors.sessionCount && (
+                      <p className="text-sm text-red-600">{errors.sessionCount}</p>
+                    )}
+                    <p className="text-xs text-gray-500">
+                      Number of sessions to analyze (5-1000).
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="modelId">GPT Model</Label>
+                    <Select 
+                      value={formData.modelId} 
+                      onValueChange={(value) => handleInputChange('modelId', value)}
+                    >
+                      <SelectTrigger id="modelId">
+                        <SelectValue placeholder="Select a GPT model" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {GPT_MODELS.map((model) => (
+                          <SelectItem key={model.id} value={model.id}>
+                            {model.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-gray-500">
+                      Choose the GPT model for analysis. GPT-4.1 (base) provides the best balance of cost and accuracy.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Starting Analysis...' : 'Start Analysis'}
-            </Button>
+            {/* Line separator */}
+            <div className="border-t pt-6">
+              <Button 
+                type="submit" 
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Starting Analysis...' : 'Start Analysis'}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

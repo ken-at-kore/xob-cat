@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Auto-Analyze page is a comprehensive bot performance analysis feature that automatically samples sessions from a specified time period, applies AI analysis to extract insights, and generates actionable reports for bot improvement.
+Auto-Analyze provides intelligent bot performance insights by automatically analyzing customer service sessions. Using advanced AI, it identifies patterns, classifies interactions, and generates actionable reports to help improve your bot's effectiveness and customer satisfaction.
 
 ## Core Functionality
 
@@ -26,18 +26,28 @@ The Auto-Analyze page is a comprehensive bot performance analysis feature that a
 **Location**: `/analyze` (accessed via sidebar)
 
 **Page Content**:
-- Feature explanation: Brief description of Auto-Analyze capabilities
-- Configuration form with the following fields:
-  - **Start Date**: Date picker (default: 7 days before current date)
-  - **Start Time**: Time input in ET timezone (default: 9:00 AM ET)
-  - **Number of Sessions**: Number input (default: 100, max: 1000, min: 10)
-  - **OpenAI API Key**: Secure text input for API key
+- **Feature explanation**: Bullet-point description of Auto-Analyze capabilities:
+  - Smart session sampling (randomly selecting from available sessions in specified timeframe)
+  - Advanced AI analysis for insights and intent classification
+  - Comprehensive reports with actionable recommendations
+- **Configuration form** with the following fields:
+  - **Start Date**: Date picker (default: yesterday, side-by-side with Time of Day)
+  - **Time of Day**: Dropdown selector (side-by-side with Start Date) with options:
+    - Morning (9:00 AM Eastern Time)
+    - Afternoon (1:00 PM Eastern Time) 
+    - Evening (6:00 PM Eastern Time)
+  - **OpenAI API Key**: Secure text input with cost information (~25 cents depending on session length)
+  - **Advanced Options** (Progressive Disclosure with chevron toggle):
+    - **Number of Sessions**: Number input (default: 100, max: 1000, min: 5)
+    - **GPT Model**: Model selection dropdown
+  - **Line separator** before submit button
 - **Submit Button**: "Start Analysis" - triggers the analysis process
 
 **Validation**:
-- Sessions count: 10 ≤ count ≤ 1000
-- OpenAI API Key: Required, non-empty
-- Date/Time: Must be in the past
+- OpenAI API Key: Required, non-empty, must start with 'sk-'
+- Date: Must be in the past
+- Sessions count: 5 ≤ count ≤ 1000 (when advanced options expanded)
+- GPT Model: Must be valid model selection (when advanced options expanded)
 
 ### Phase 2: Session Sampling
 **Process**: Intelligent time window expansion algorithm
@@ -141,11 +151,18 @@ interface SessionWithFacts extends SessionWithTranscript {
 ```typescript
 interface AnalysisConfig {
   startDate: string; // ISO date
-  startTime: string; // HH:MM format in ET
+  timeOfDay: 'morning' | 'afternoon' | 'evening'; // Time selection
   sessionCount: number; // 5-1000
   openaiApiKey: string;
   model?: string; // GPT model selection (default: gpt-4o-mini)
 }
+
+// Time mappings for Eastern Time
+const TIME_MAPPINGS = {
+  morning: '09:00',
+  afternoon: '13:00', 
+  evening: '18:00'
+};
 ```
 
 #### Analysis Progress

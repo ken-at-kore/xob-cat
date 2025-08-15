@@ -144,14 +144,21 @@ async function navigateToAutoAnalyze(page, baseUrl = 'http://localhost:3000') {
   // Wait for the page to fully load and render
   await new Promise(resolve => setTimeout(resolve, 2000)); // Give React time to render
   
-  // Verify Auto-Analyze page loaded by checking for the specific content
-  // The page is correctly loaded as we can see from the content
+  // Verify Auto-Analyze page loaded by checking for the specific content (NEW UI)
   const bodyContent = await page.$eval('body', el => el.textContent);
-  console.log(`📄 Page loaded successfully - found Auto-Analyze content`);
+  console.log(`📄 Page loaded successfully - checking for Auto-Analyze content (NEW UI)`);
   
-  if (!bodyContent.includes('Auto-Analyze') && !bodyContent.includes('Analysis Configuration') && !bodyContent.includes('Start Analysis')) {
+  // Update content checks for new UI copy (August 2025 redesign)
+  const hasCorrectContent = bodyContent.includes('Auto-Analyze') && 
+    (bodyContent.includes('Session Analysis Setup') || 
+     bodyContent.includes('Analysis Configuration') ||  // Backward compatibility
+     bodyContent.includes('intelligent bot performance insights') ||
+     bodyContent.includes('smart session sampling') ||
+     bodyContent.includes('Start Analysis'));
+  
+  if (!hasCorrectContent) {
     console.error('Page content does not match expected Auto-Analyze page');
-    console.error('Looking for: Auto-Analyze, Analysis Configuration, or Start Analysis');
+    console.error('Looking for: Auto-Analyze + (Session Analysis Setup OR intelligent bot performance insights OR smart session sampling OR Start Analysis)');
     console.error('Found content preview:', bodyContent.substring(0, 500));
     throw new Error(`Expected Auto-Analyze page content not found`);
   }
@@ -165,18 +172,27 @@ async function navigateToAutoAnalyze(page, baseUrl = 'http://localhost:3000') {
  * @param {Object} config - Analysis configuration
  */
 async function configureAnalysis(page, config) {
-  console.log('⚙️ Step 5: Configuring analysis settings');
+  console.log('⚙️ Step 5: Configuring analysis settings (NEW UI)');
   
   const {
     startDate = '2025-08-01',
-    startTime = '09:00', 
+    timeOfDay = 'morning',  // NEW: use timeOfDay instead of startTime
     sessionCount = '5',
     openaiApiKey = 'mock-openai-key'
   } = config;
 
-  console.log(`Using date: ${startDate} at ${startTime}, ${sessionCount} sessions`);
+  // Map old startTime to new timeOfDay if needed for backward compatibility
+  let finalTimeOfDay = timeOfDay;
+  if (config.startTime && !config.timeOfDay) {
+    if (config.startTime === '09:00') finalTimeOfDay = 'morning';
+    else if (config.startTime === '13:00') finalTimeOfDay = 'afternoon';
+    else if (config.startTime === '18:00') finalTimeOfDay = 'evening';
+    console.log(`🔄 Mapped startTime ${config.startTime} to timeOfDay: ${finalTimeOfDay}`);
+  }
+
+  console.log(`Using date: ${startDate} at ${finalTimeOfDay}, ${sessionCount} sessions`);
   
-  // Fill in date and time using a simpler approach
+  // Fill in date
   await page.waitForSelector('#startDate', { timeout: TIMEOUTS.default });
   
   // Set start date using JavaScript to avoid date input issues
@@ -190,60 +206,157 @@ async function configureAnalysis(page, config) {
   const dateValue = await page.$eval('#startDate', el => el.value);
   console.log(`📅 Date field value after setting: "${dateValue}" (expected: "${startDate}")`);
   
-  // Set start time
-  await page.evaluate((time) => {
-    const timeInput = document.querySelector('#startTime');
-    timeInput.value = time;
-    timeInput.dispatchEvent(new Event('change', { bubbles: true }));
-  }, startTime);
+  // NEW: Set time of day dropdown instead of time input
+  console.log(`🕐 Setting time of day: ${finalTimeOfDay}`);
+  await page.waitForSelector('#timeOfDay', { timeout: TIMEOUTS.default });
   
-  // Clear and fill session count
-  const sessionCountInput = await page.$('#sessionCount');
-  await sessionCountInput.click({ clickCount: 3 }); // Select all
-  await sessionCountInput.type(sessionCount);
-  
-  // Clear and fill OpenAI API key
-  const openaiKeyInput = await page.$('#openaiApiKey');
-  await openaiKeyInput.click({ clickCount: 3 }); // Select all
-  await openaiKeyInput.type(openaiApiKey);
-  
-  // Select GPT model if specified
-  if (config.modelId) {
-    console.log(`🤖 Selecting GPT model: ${config.modelId}`);
+  // Click the dropdown trigger
+  const timeOfDayDropdown = await page.$('#timeOfDay [role="combobox"]');
+  if (timeOfDayDropdown) {
+    await timeOfDayDropdown.click();
+    console.log('✅ Time of day dropdown opened');
     
-    // Click on the GPT Model dropdown
-    await page.waitForSelector('[role="combobox"]', { timeout: TIMEOUTS.default });
-    const selectTrigger = await page.$('[role="combobox"]');
-    await selectTrigger.click();
-    
-    // Wait for dropdown options to appear
+    // Wait for options and select the correct one
     await page.waitForSelector('[role="option"]', { timeout: TIMEOUTS.default });
     
-    // Find and click the desired model option
-    const options = await page.$$('[role="option"]');
-    let modelFound = false;
+    const timeOptions = await page.$$('[role="option"]');
+    let timeFound = false;
     
-    for (const option of options) {
+    for (const option of timeOptions) {
       const optionText = await page.evaluate(el => el.textContent, option);
-      if (optionText.includes(config.modelId) || 
-          (config.modelId === 'gpt-4.1-nano' && optionText.includes('GPT-4.1 nano')) ||
-          (config.modelId === 'gpt-4o-mini' && optionText.includes('GPT-4o mini'))) {
+      const lowerText = optionText.toLowerCase();
+      
+      if ((finalTimeOfDay === 'morning' && lowerText.includes('morning')) ||
+          (finalTimeOfDay === 'afternoon' && lowerText.includes('afternoon')) ||
+          (finalTimeOfDay === 'evening' && lowerText.includes('evening'))) {
         await option.click();
-        modelFound = true;
-        console.log(`✅ Selected model: ${optionText}`);
+        timeFound = true;
+        console.log(`✅ Selected time: ${optionText}`);
         break;
       }
     }
     
-    if (!modelFound) {
-      console.log(`⚠️ Model ${config.modelId} not found in dropdown, using default`);
+    if (!timeFound) {
+      console.log(`⚠️ Time of day ${finalTimeOfDay} not found in dropdown, using default`);
+    }
+  } else {
+    console.log('⚠️ Time of day dropdown trigger not found');
+  }
+  
+  // NEW: Fill OpenAI API key (now comes before advanced options)
+  console.log('🔑 Setting OpenAI API key');
+  const openaiKeyInput = await page.$('#openaiApiKey');
+  if (openaiKeyInput) {
+    await openaiKeyInput.click({ clickCount: 3 }); // Select all
+    await openaiKeyInput.type(openaiApiKey);
+    console.log('✅ OpenAI API key set');
+  } else {
+    console.log('⚠️ OpenAI API key input not found');
+  }
+  
+  // NEW: Handle advanced options (session count and GPT model are now behind progressive disclosure)
+  console.log('🔧 Opening advanced options for session count and model selection');
+  
+  // Look for the Advanced chevron button (now a button with "Advanced" text and chevron icon)
+  let advancedToggle = null;
+  
+  // Find button that contains "Advanced" text (the new chevron button)
+  const buttons = await page.$$('button');
+  for (const button of buttons) {
+    const buttonText = await page.evaluate(el => el.textContent, button);
+    if (buttonText.includes('Advanced') && !buttonText.includes('Show') && !buttonText.includes('Hide')) {
+      // Check if this button has a chevron (SVG icon)
+      const hasChevron = await page.evaluate(el => {
+        const svg = el.querySelector('svg');
+        return svg !== null;
+      }, button);
+      
+      if (hasChevron) {
+        advancedToggle = button;
+        console.log(`📋 Found advanced chevron toggle: "${buttonText}"`);
+        break;
+      }
     }
   }
   
-  console.log('✅ Analysis settings configured');
+  if (advancedToggle) {
+    await advancedToggle.click();
+    console.log('✅ Advanced options opened (chevron clicked)');
+    
+    // Wait a moment for the fields to appear
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Now set session count (only visible in advanced section)
+    console.log(`🔢 Setting session count: ${sessionCount}`);
+    const sessionCountInput = await page.$('#sessionCount');
+    if (sessionCountInput) {
+      await sessionCountInput.click({ clickCount: 3 }); // Select all
+      await sessionCountInput.type(sessionCount);
+      console.log('✅ Session count set');
+    } else {
+      console.log('⚠️ Session count input not found in advanced options');
+    }
+    
+    // Select GPT model if specified (only visible in advanced section)
+    if (config.modelId) {
+      console.log(`🤖 Selecting GPT model: ${config.modelId}`);
+      
+      // Look for GPT Model dropdown in advanced section
+      const modelDropdowns = await page.$$('[role="combobox"]');
+      let modelDropdown = null;
+      
+      // Find the model dropdown (should be the second one after time of day)
+      for (const dropdown of modelDropdowns) {
+        const dropdownParent = await page.evaluate(el => {
+          // Check if this dropdown is associated with model selection
+          const parent = el.closest('div').parentElement;
+          return parent && parent.textContent.includes('GPT Model');
+        }, dropdown);
+        
+        if (dropdownParent) {
+          modelDropdown = dropdown;
+          break;
+        }
+      }
+      
+      if (modelDropdown) {
+        await modelDropdown.click();
+        console.log('📋 GPT model dropdown opened');
+        
+        // Wait for dropdown options to appear
+        await page.waitForSelector('[role="option"]', { timeout: TIMEOUTS.default });
+        
+        // Find and click the desired model option
+        const options = await page.$$('[role="option"]');
+        let modelFound = false;
+        
+        for (const option of options) {
+          const optionText = await page.evaluate(el => el.textContent, option);
+          if (optionText.includes(config.modelId) || 
+              (config.modelId === 'gpt-4.1-nano' && optionText.includes('GPT-4.1 nano')) ||
+              (config.modelId === 'gpt-4o-mini' && optionText.includes('GPT-4o mini'))) {
+            await option.click();
+            modelFound = true;
+            console.log(`✅ Selected model: ${optionText}`);
+            break;
+          }
+        }
+        
+        if (!modelFound) {
+          console.log(`⚠️ Model ${config.modelId} not found in dropdown, using default`);
+        }
+      } else {
+        console.log('⚠️ GPT model dropdown not found in advanced options');
+      }
+    }
+  } else {
+    console.log('⚠️ Advanced options toggle not found - session count and model may not be set');
+  }
+  
+  console.log('✅ Analysis settings configured (NEW UI)');
   
   // Take a screenshot of the filled form
-  await page.screenshot({ path: 'filled-form.png' });
+  await page.screenshot({ path: 'filled-form-new-ui.png' });
 }
 
 /**
