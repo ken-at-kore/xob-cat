@@ -13,6 +13,7 @@ interface SessionTableProps {
   sessions: SessionWithTranscript[];
   loading?: boolean;
   error?: string | null;
+  hasLoadedOnce?: boolean;
   onRefresh?: () => void;
   filters: {
     startDate: string;
@@ -28,7 +29,7 @@ interface SessionTableProps {
 type SortField = 'session_id' | 'start_time' | 'duration_seconds' | 'containment_type';
 type SortDirection = 'asc' | 'desc';
 
-export function SessionTable({ sessions, loading = false, error = null, onRefresh, filters, setFilters, onApplyFilters, onRowClick }: SessionTableProps) {
+export function SessionTable({ sessions, loading = false, error = null, hasLoadedOnce = false, onRefresh, filters, setFilters, onApplyFilters, onRowClick }: SessionTableProps) {
   const [sortField, setSortField] = useState<SortField>('start_time');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [userSorted, setUserSorted] = useState(false);
@@ -257,7 +258,7 @@ export function SessionTable({ sessions, loading = false, error = null, onRefres
             </TableBody>
           </Table>
           
-          {sortedSessions.length === 0 && (
+          {sortedSessions.length === 0 && hasLoadedOnce && (
             <div className="text-center py-8">
               <p className="text-gray-600">No sessions found matching your filters.</p>
             </div>

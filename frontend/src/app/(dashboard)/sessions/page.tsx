@@ -18,6 +18,7 @@ export default function SessionsPage() {
   const [sessions, setSessions] = useState<SessionWithTranscript[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
@@ -54,12 +55,14 @@ export default function SessionsPage() {
       
       const sessions = await apiClient.getSessions(apiFilters);
       setSessions(sessions.slice(0, apiFilters.limit));
+      setHasLoadedOnce(true);
     } catch (err) {
       if (err instanceof ApiError) {
         setError(`${err.message} (${err.status})`);
       } else {
         setError(err instanceof Error ? err.message : 'Failed to load sessions');
       }
+      setHasLoadedOnce(true);
     } finally {
       setLoading(false);
     }
@@ -138,6 +141,7 @@ export default function SessionsPage() {
         sessions={sessions}
         loading={loading}
         error={error}
+        hasLoadedOnce={hasLoadedOnce}
         onRefresh={() => loadSessions()}
         filters={filters}
         setFilters={setFilters}
@@ -160,6 +164,7 @@ export default function SessionsPage() {
           sessions={sessions}
           loading={loading}
           error={error}
+          hasLoadedOnce={hasLoadedOnce}
           onRefresh={() => loadSessions()}
           filters={filters}
           setFilters={setFilters}
