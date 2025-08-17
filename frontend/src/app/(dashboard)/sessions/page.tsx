@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useResetOnBFCache } from '@/hooks/useResetOnBFCache';
 
 import { SessionWithTranscript } from '@/shared/types';
 import { apiClient, ApiError } from '@/lib/api';
@@ -26,45 +21,124 @@ export default function SessionsPage() {
     endTime: ''
   });
 
+  // Reset filters on bfcache restore (essential fix for back/forward navigation)
+  const resetFilters = () => {
+    setFilters({ startDate: '', endDate: '', startTime: '', endTime: '' });
+  };
+  useResetOnBFCache(resetFilters);
+
+
+
   // Dialog state for session details
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSessionIndex, setSelectedSessionIndex] = useState(0);
+
+  // Request cancellation support
+  const [currentRequest, setCurrentRequest] = useState<AbortController | null>(null);
+
+  // Log bfcache events for debugging
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      console.info('📄 pageshow event', { persisted: (e as any).persisted });
+    };
+    window.addEventListener('pageshow', handlePageShow as any);
+    return () => window.removeEventListener('pageshow', handlePageShow as any);
+  }, []);
 
   useEffect(() => {
     loadSessions();
   }, []);
 
+  // Cleanup effect to cancel ongoing requests when component unmounts
+  useEffect(() => {
+    return () => {
+      if (currentRequest) {
+        currentRequest.abort();
+      }
+    };
+  }, [currentRequest]);
+
+  /**
+   * Checks if any filter criteria are currently active
+   */
   const hasActiveFilters = (f: typeof filters) => {
-    return f.startDate || f.endDate || f.startTime || f.endTime;
+    return !!(f.startDate || f.endDate || f.startTime || f.endTime);
   };
 
+  /**
+   * Builds API query parameters from filter state, dropping empty values
+   */
+  const buildQuery = (f: typeof filters) => {
+    const params = new URLSearchParams();
+    if (f.startDate) params.set('start_date', f.startDate);
+    if (f.endDate) params.set('end_date', f.endDate);
+    if (f.startTime) params.set('start_time', f.startTime);
+    if (f.endTime) params.set('end_time', f.endTime);
+    
+    // Set limit based on whether we have active filters
+    const limit = hasActiveFilters(f) ? 1000 : 50;
+    params.set('limit', limit.toString());
+    
+    return params.toString();
+  };
+
+  /**
+   * Loads sessions from the API with request cancellation support.
+   * Cancels any previous in-flight requests before making a new one.
+   * Supports filter application to interrupt ongoing loads.
+   */
   const loadSessions = async (filterOverride?: typeof filters) => {
+    // Cancel any existing request
+    if (currentRequest) {
+      currentRequest.abort();
+    }
+
+    // Create new AbortController for this request
+    const abortController = new AbortController();
+    setCurrentRequest(abortController);
+
     try {
       setLoading(true);
       setError(null);
       const f = filterOverride || filters;
-      // Compose API filters
-      const apiFilters: any = {};
-      if (f.startDate) apiFilters.start_date = f.startDate;
-      if (f.endDate) apiFilters.end_date = f.endDate;
-      if (f.startTime) apiFilters.start_time = f.startTime;
-      if (f.endTime) apiFilters.end_time = f.endTime;
       
-      // Dynamic limit: 1000 when filtering, 50 for initial load
-      apiFilters.limit = hasActiveFilters(f) ? 1000 : 50;
+      // Build query using only state values, dropping empty strings
+      const queryString = buildQuery(f);
+      
+      // Use URLSearchParams to create clean filter object for API client
+      const params = new URLSearchParams(queryString);
+      const apiFilters: Record<string, string | number> = {};
+      params.forEach((value, key) => {
+        // Convert limit to number for proper typing
+        apiFilters[key] = key === 'limit' ? parseInt(value, 10) : value;
+      });
       
       const sessions = await apiClient.getSessions(apiFilters);
-      setSessions(sessions.slice(0, apiFilters.limit));
-      setHasLoadedOnce(true);
+      
+      // Only update state if request wasn't cancelled
+      if (!abortController.signal.aborted) {
+        setSessions(sessions.slice(0, apiFilters.limit as number));
+        setHasLoadedOnce(true);
+        setCurrentRequest(null);
+      }
     } catch (err) {
+      // Don't update error state if request was cancelled
+      if (abortController.signal.aborted) {
+        return;
+      }
+
       if (err instanceof ApiError) {
         setError(`${err.message} (${err.status})`);
       } else {
         setError(err instanceof Error ? err.message : 'Failed to load sessions');
       }
       setHasLoadedOnce(true);
+      setCurrentRequest(null);
     } finally {
-      setLoading(false);
+      // Only update loading state if request wasn't cancelled
+      if (!abortController.signal.aborted) {
+        setLoading(false);
+      }
     }
   };
 
@@ -134,22 +208,7 @@ export default function SessionsPage() {
     );
   };
 
-  if (loading || error) {
-    // Let SessionTable handle loading and error UI
-    return (
-      <SessionTable
-        sessions={sessions}
-        loading={loading}
-        error={error}
-        hasLoadedOnce={hasLoadedOnce}
-        onRefresh={() => loadSessions()}
-        filters={filters}
-        setFilters={setFilters}
-        onApplyFilters={onApplyFilters}
-        onRowClick={handleRowClick}
-      />
-    );
-  }
+  // Always render the complete page structure
 
   return (
     <ErrorBoundary>

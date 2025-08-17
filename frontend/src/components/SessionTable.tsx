@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { formatDuration, formatDateTime } from '@/lib/dateUtils';
 import { ContainmentBadge } from './ContainmentBadge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -29,10 +29,33 @@ interface SessionTableProps {
 type SortField = 'session_id' | 'start_time' | 'duration_seconds' | 'containment_type';
 type SortDirection = 'asc' | 'desc';
 
+/**
+ * Enhanced SessionTable component with always-visible filters and improved loading states.
+ * 
+ * Key Features:
+ * - Always displays filter controls regardless of loading state
+ * - Shows loading/error states only in session content area  
+ * - Supports filter interaction during loading
+ * - Maintains filter values across loading transitions
+ */
+// Custom hook to generate stable nonce for breaking browser form restoration
+function useNonce() {
+  const ref = useRef<string>('');
+  if (!ref.current) ref.current = Math.random().toString(36).slice(2);
+  return ref.current;
+}
+
 export function SessionTable({ sessions, loading = false, error = null, hasLoadedOnce = false, onRefresh, filters, setFilters, onApplyFilters, onRowClick }: SessionTableProps) {
   const [sortField, setSortField] = useState<SortField>('start_time');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [userSorted, setUserSorted] = useState(false);
+
+  // Solution A: Break browser's restore key with unique names
+  const section = useNonce(); // stable per mount, new each visit
+  
+  // Solution B: Two-pass hydration to override any browser-restored values
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // If filters change and user hasn't sorted, sort by start_time asc
   useEffect(() => {
@@ -55,8 +78,8 @@ export function SessionTable({ sessions, loading = false, error = null, hasLoade
   const sortedSessions = useMemo(() => {
     const sorted = [...sessions];
     sorted.sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
+      let aValue: string | number | Date;
+      let bValue: string | number | Date;
       switch (sortField) {
         case 'session_id':
           aValue = a.session_id;
@@ -75,12 +98,12 @@ export function SessionTable({ sessions, loading = false, error = null, hasLoade
             : (b.start_time && b.end_time ? (new Date(b.end_time).getTime() - new Date(b.start_time).getTime()) / 1000 : 0);
           break;
         case 'containment_type':
-          aValue = a.containment_type;
-          bValue = b.containment_type;
+          aValue = a.containment_type || '';
+          bValue = b.containment_type || '';
           break;
         default:
-          aValue = a[sortField];
-          bValue = b[sortField];
+          aValue = String(a[sortField] || '');
+          bValue = String(b[sortField] || '');
       }
       if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
       if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
@@ -105,101 +128,77 @@ export function SessionTable({ sessions, loading = false, error = null, hasLoade
     </Button>
   );
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Session Overview</h2>
-          <p className="text-gray-600">Loading sessions...</p>
-        </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+  /**
+   * Renders the session content area with appropriate loading, error, or data states.
+   * This function ensures that filter controls remain visible while only the content
+   * area changes based on the current state.
+   */
+  const renderSessionContent = () => {
+    if (loading && !hasLoadedOnce) {
+      return (
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-1">Overview</h2>
             <p className="text-gray-600">Loading sessions...</p>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Session Overview</h2>
-          <p className="text-gray-600">Error loading sessions</p>
-        </div>
-        <div className="text-center py-12">
-          <p className="text-red-600 mb-4">{error}</p>
-          {onRefresh && (
-            <Button onClick={onRefresh} className="bg-blue-600 hover:bg-blue-700 text-white">
-              Retry
-            </Button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Filter UI */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold mb-1">Filters</h3>
-          <p className="text-sm text-gray-600">
-            Filter sessions by date, time, and other criteria (Eastern Time)
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date</Label>
-              <Input
-                id="startDate"
-                type="date"
-                value={filters.startDate}
-                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="startTime">Start Time</Label>
-              <Input
-                id="startTime"
-                type="time"
-                value={filters.startTime}
-                onChange={(e) => setFilters({ ...filters, startTime: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="endDate">End Date</Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={filters.endDate}
-                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="endTime">End Time</Label>
-              <Input
-                id="endTime"
-                type="time"
-                value={filters.endTime}
-                onChange={(e) => setFilters({ ...filters, endTime: e.target.value })}
-              />
-            </div>
-            <div className="flex items-end">
-              <Button type="button" onClick={onApplyFilters}>
-                Filter
-              </Button>
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Searching for sessions...</p>
+              </div>
             </div>
           </div>
         </div>
+      );
+    }
 
-      {/* Sessions Table */}
+    if (loading && hasLoadedOnce) {
+      // Show loading during filter applications, but with existing session count
+      return (
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-1">Overview</h2>
+            <p className="text-gray-600">Applying filters...</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Searching for sessions...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-1">Overview</h2>
+            <p className="text-gray-600">Error loading sessions</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="text-center py-12">
+              <p className="text-red-600 mb-4">{error}</p>
+              {onRefresh && (
+                <Button onClick={onRefresh} className="bg-blue-600 hover:bg-blue-700 text-white">
+                  Retry
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Render normal session table
+    return (
       <div className="space-y-4">
         <div>
-          <h2 className="text-2xl font-bold mb-1">Session Overview</h2>
+          <h2 className="text-2xl font-bold mb-1">Overview</h2>
           <p className="text-gray-600">
             {sortedSessions.length} sessions found
           </p>
@@ -258,13 +257,85 @@ export function SessionTable({ sessions, loading = false, error = null, hasLoade
             </TableBody>
           </Table>
           
-          {sortedSessions.length === 0 && hasLoadedOnce && (
+          {sortedSessions.length === 0 && hasLoadedOnce && !loading && !error && (
             <div className="text-center py-8">
               <p className="text-gray-600">No sessions found matching your filters.</p>
             </div>
           )}
         </div>
       </div>
+    );
+  };
+
+  // Generate unique names to break browser Form Value Restoration
+  const startDateName = `startDate_${section}`;
+  const endDateName = `endDate_${section}`;
+  const startTimeName = `startTime_${section}`;
+  const endTimeName = `endTime_${section}`;
+
+  return (
+    <div className="space-y-6">
+      {/* Filter UI - Always Visible */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold mb-1">Filters</h3>
+          <p className="text-sm text-gray-600">
+            Filter sessions by date, time, and other criteria (Eastern Time)
+          </p>
+        </div>
+        <form autoComplete="off">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor={startDateName}>Start Date</Label>
+              <Input
+                id={startDateName}
+                type="date"
+                autoComplete={`section-${section} off`}
+                value={mounted ? filters.startDate : ''}
+                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={startTimeName}>Start Time</Label>
+              <Input
+                id={startTimeName}
+                type="time"
+                autoComplete={`section-${section} off`}
+                value={mounted ? filters.startTime : ''}
+                onChange={(e) => setFilters({ ...filters, startTime: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={endDateName}>End Date</Label>
+              <Input
+                id={endDateName}
+                type="date"
+                autoComplete={`section-${section} off`}
+                value={mounted ? filters.endDate : ''}
+                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={endTimeName}>End Time</Label>
+              <Input
+                id={endTimeName}
+                type="time"
+                autoComplete={`section-${section} off`}
+                value={mounted ? filters.endTime : ''}
+                onChange={(e) => setFilters({ ...filters, endTime: e.target.value })}
+              />
+            </div>
+            <div className="flex items-end">
+              <Button type="button" onClick={onApplyFilters}>
+                Filter
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* Session Content Area - Shows loading/error/data states */}
+      {renderSessionContent()}
     </div>
   );
 } 

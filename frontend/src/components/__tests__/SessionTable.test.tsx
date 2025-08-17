@@ -136,8 +136,8 @@ describe('SessionTable', () => {
     expect(allCells).toEqual(expect.arrayContaining(['5m 0s', '2m 30s']))
   })
 
-  it('renders empty state when no sessions', () => {
-    render(<SessionTable sessions={[]} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} />)
+  it('renders empty state when no sessions and has loaded once', () => {
+    render(<SessionTable sessions={[]} filters={defaultFilters} setFilters={noop} onApplyFilters={noop} hasLoadedOnce={true} />)
     expect(screen.getByText(/No sessions found/i)).toBeInTheDocument()
   })
 
@@ -289,5 +289,184 @@ describe('SessionTable', () => {
     const rows = screen.getAllByRole('row');
     await userEvent.click(rows[1]);
     // Should not throw or cause issues
+  });
+
+  // Enhanced Session Viewer Tests
+  describe('Enhanced Loading States', () => {
+    it('always renders filter controls even during loading', () => {
+      render(
+        <SessionTable 
+          sessions={[]} 
+          loading={true}
+          filters={defaultFilters} 
+          setFilters={noop} 
+          onApplyFilters={noop} 
+        />
+      );
+      
+      // Filter section should be visible
+      expect(screen.getByText('Filters')).toBeInTheDocument();
+      expect(screen.getByLabelText(/Start Date/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/End Date/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/Start Time/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/End Time/i)).toBeInTheDocument();
+      
+      // Filter button should be present and enabled
+      const filterButton = screen.getByRole('button', { name: /filter/i });
+      expect(filterButton).toBeInTheDocument();
+      expect(filterButton).toBeEnabled();
+    });
+
+    it('shows loading state only in session content area', () => {
+      render(
+        <SessionTable 
+          sessions={[]} 
+          loading={true}
+          filters={defaultFilters} 
+          setFilters={noop} 
+          onApplyFilters={noop} 
+        />
+      );
+      
+      // Should show loading message
+      expect(screen.getByText(/Loading sessions/i)).toBeInTheDocument();
+      
+      // But filters should still be visible
+      expect(screen.getByText('Filters')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /filter/i })).toBeEnabled();
+    });
+
+    it('displays session overview header during loading', () => {
+      render(
+        <SessionTable 
+          sessions={[]} 
+          loading={true}
+          filters={defaultFilters} 
+          setFilters={noop} 
+          onApplyFilters={noop} 
+        />
+      );
+      
+      expect(screen.getByText('Overview')).toBeInTheDocument();
+      expect(screen.getByText('Loading sessions...')).toBeInTheDocument();
+    });
+
+    it('shows error state only in session content area while keeping filters visible', () => {
+      const onRefresh = jest.fn();
+      render(
+        <SessionTable 
+          sessions={[]} 
+          loading={false}
+          error="Failed to load sessions"
+          filters={defaultFilters} 
+          setFilters={noop} 
+          onApplyFilters={noop}
+          onRefresh={onRefresh}
+        />
+      );
+      
+      // Error should be displayed
+      expect(screen.getByText('Failed to load sessions')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /retry/i })).toBeInTheDocument();
+      
+      // But filters should still be visible and functional
+      expect(screen.getByText('Filters')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /filter/i })).toBeEnabled();
+    });
+
+    it('calls onApplyFilters when filter button is clicked during loading', async () => {
+      const onApplyFilters = jest.fn();
+      render(
+        <SessionTable 
+          sessions={[]} 
+          loading={true}
+          filters={defaultFilters} 
+          setFilters={noop} 
+          onApplyFilters={onApplyFilters} 
+        />
+      );
+      
+      const filterButton = screen.getByRole('button', { name: /filter/i });
+      await userEvent.click(filterButton);
+      
+      expect(onApplyFilters).toHaveBeenCalled();
+    });
+
+    it('updates filter values even during loading state', async () => {
+      const setFilters = jest.fn();
+      render(
+        <SessionTable 
+          sessions={[]} 
+          loading={true}
+          filters={defaultFilters} 
+          setFilters={setFilters} 
+          onApplyFilters={noop} 
+        />
+      );
+      
+      const startDateInput = screen.getByLabelText(/Start Date/i);
+      await userEvent.type(startDateInput, '2025-08-15');
+      
+      expect(setFilters).toHaveBeenCalled();
+    });
+  });
+
+  describe('Filter Interactivity', () => {
+    it('displays current filter values in form controls', () => {
+      const filtersWithValues = {
+        startDate: '2025-08-15',
+        endDate: '2025-08-16',
+        startTime: '09:00',
+        endTime: '17:00'
+      };
+      
+      render(
+        <SessionTable 
+          sessions={mockSessions} 
+          filters={filtersWithValues} 
+          setFilters={noop} 
+          onApplyFilters={noop} 
+        />
+      );
+      
+      expect(screen.getByDisplayValue('2025-08-15')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('2025-08-16')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('09:00')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('17:00')).toBeInTheDocument();
+    });
+
+    it('calls setFilters when filter values change', async () => {
+      const setFilters = jest.fn();
+      render(
+        <SessionTable 
+          sessions={mockSessions} 
+          filters={defaultFilters} 
+          setFilters={setFilters} 
+          onApplyFilters={noop} 
+        />
+      );
+      
+      const startDateInput = screen.getByLabelText(/Start Date/i);
+      await userEvent.clear(startDateInput);
+      await userEvent.type(startDateInput, '2025-08-15');
+      
+      expect(setFilters).toHaveBeenCalledWith(
+        expect.objectContaining({ startDate: '2025-08-15' })
+      );
+    });
+
+    it('filter button always shows "Filter" text', () => {
+      render(
+        <SessionTable 
+          sessions={mockSessions} 
+          filters={defaultFilters} 
+          setFilters={noop} 
+          onApplyFilters={noop} 
+        />
+      );
+      
+      const filterButton = screen.getByRole('button', { name: /filter/i });
+      expect(filterButton).toHaveTextContent('Filter');
+    });
   });
 }) 

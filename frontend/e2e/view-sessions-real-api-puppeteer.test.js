@@ -107,6 +107,46 @@ async function expandDateRangeIfNeeded(page) {
   await new Promise(resolve => setTimeout(resolve, 5000));
 }
 
+function validateSessionRecency(sessionRowText) {
+  console.log(`🕐 Parsing session time from: ${sessionRowText}`);
+  
+  // Extract date and time from session row text
+  // Format: "68a06dfc1cf7bdce6066787108/16/2025, 07:39:40 AM ET42sDrop Off..."
+  const timeMatch = sessionRowText.match(/(\d{2}\/\d{2}\/\d{4}),\s+(\d{1,2}:\d{2}:\d{2})\s+(AM|PM)\s+ET/);
+  
+  if (!timeMatch) {
+    console.log('⚠️ Could not parse session time format');
+    return { isRecent: false, ageMinutes: 9999, sessionTime: 'unparseable', currentTime: new Date().toLocaleString() };
+  }
+  
+  const [, dateStr, timeStr, amPm] = timeMatch;
+  console.log(`📅 Parsed: Date=${dateStr}, Time=${timeStr} ${amPm}`);
+  
+  // Parse the session time (Eastern Time)
+  const sessionDateTime = new Date(`${dateStr} ${timeStr} ${amPm} EDT`);
+  console.log(`📅 Session DateTime object: ${sessionDateTime}`);
+  
+  // Get current Eastern Time
+  const currentTime = new Date();
+  const currentET = new Date(currentTime.toLocaleString("en-US", {timeZone: "America/New_York"}));
+  
+  console.log(`📅 Current ET: ${currentET}`);
+  console.log(`📅 Session time: ${sessionDateTime}`);
+  
+  // Calculate age in minutes
+  const ageMs = currentET.getTime() - sessionDateTime.getTime();
+  const ageMinutes = Math.floor(ageMs / (1000 * 60));
+  
+  console.log(`⏰ Age calculation: ${ageMs}ms = ${ageMinutes} minutes`);
+  
+  return {
+    isRecent: ageMinutes <= 60,  // Within 1 hour
+    ageMinutes,
+    sessionTime: sessionDateTime.toLocaleString(),
+    currentTime: currentET.toLocaleString()
+  };
+}
+
 async function runTest() {
   // Parse command line arguments
   const args = process.argv.slice(2);
@@ -167,8 +207,10 @@ async function runTest() {
     console.log(`📋 Page title: ${await page.title()}`);
     console.log(`📋 Current URL: ${page.url()}`);
     
-    // Check if we have a successful API connection but no data
-    if (hasNoSessions || sessionRows.length === 0) {
+    // Check if we have actual sessions or a valid "no sessions" message
+    if (sessionRows.length > 0) {
+      console.log(`🎉 SUCCESS! Found ${sessionRows.length} real sessions from Kore.ai API`);
+    } else if (hasNoSessions) {
       const pageText = await page.$eval('body', el => el.textContent);
       
       if (pageText.includes('0 sessions found') || pageText.includes('No sessions found')) {
@@ -184,6 +226,8 @@ async function runTest() {
       }
       
       throw new Error('Unexpected state - neither sessions nor expected "no sessions" message');
+    } else {
+      throw new Error('No sessions found and no clear "no sessions" message');
     }
     
     console.log(`Found ${sessionRows.length} real sessions from Kore.ai API`);
@@ -197,6 +241,21 @@ async function runTest() {
       throw new Error('Seeing mock data instead of real API data');
     }
     console.log('✅ Real API data confirmed (no mock_session IDs)');
+    
+    // NEW: Validate session recency - most recent session should be within 1 hour
+    console.log('\n🕐 Step 4.5: CRITICAL - Validating session recency');
+    const sessionRecencyValidation = validateSessionRecency(firstRowText);
+    
+    if (!sessionRecencyValidation.isRecent) {
+      console.log('❌ RECENCY FAILURE: Most recent session is older than 1 hour');
+      console.log(`📋 Session time: ${sessionRecencyValidation.sessionTime}`);
+      console.log(`📋 Current ET time: ${sessionRecencyValidation.currentTime}`);
+      console.log(`📋 Age: ${sessionRecencyValidation.ageMinutes} minutes`);
+      console.log(`📋 Raw session text: ${firstRowText}`);
+      throw new Error(`Most recent session is ${sessionRecencyValidation.ageMinutes} minutes old (should be < 60 minutes)`);
+    }
+    
+    console.log(`✅ Session recency validated: ${sessionRecencyValidation.ageMinutes} minutes old`);
     
     // Step 5: Find a clickable session row
     console.log('📋 Step 5: Finding clickable session row');

@@ -30,7 +30,7 @@ test.describe('Sessions Page', () => {
     });
     await page.goto('http://localhost:3000/dashboard/sessions');
     // Check that loading state is visible
-    await expect(page.getByText('Session Overview')).toBeVisible();
+    await expect(page.getByText('Overview')).toBeVisible();
     // Use first() to avoid strict mode violation
     await expect(page.getByText('Loading sessions...').first()).toBeVisible();
   });
@@ -97,7 +97,7 @@ test.describe('Sessions Page', () => {
     await page.goto('http://localhost:3000/dashboard/sessions');
 
     // Wait for error to be displayed (SessionTable error state)
-    await expect(page.getByText('Session Overview')).toBeVisible();
+    await expect(page.getByText('Overview')).toBeVisible();
     await expect(page.getByText('Error loading sessions')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
   });

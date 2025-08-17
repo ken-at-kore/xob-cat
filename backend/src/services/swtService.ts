@@ -247,8 +247,8 @@ export class SWTService {
       finalSWTs = swts;
     }
     
-    // Sort SWTs by start time
-    finalSWTs.sort((a, b) => a.start_time.localeCompare(b.start_time));
+    // Sort SWTs by start time (most recent first)
+    finalSWTs.sort((a, b) => b.start_time.localeCompare(a.start_time));
     
     // Calculate statistics
     const totalMessages = finalSWTs.reduce((sum, swt) => sum + swt.message_count, 0);

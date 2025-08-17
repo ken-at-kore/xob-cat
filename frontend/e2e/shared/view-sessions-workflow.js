@@ -127,32 +127,77 @@ async function waitForSessionsPage(page) {
 async function waitForSessions(page) {
   console.log('📊 Step 4: Waiting for sessions to load');
   
-  // Wait for sessions table to appear (like the working test does)
-  try {
-    await page.waitForSelector('table', { timeout: TIMEOUTS.shortWait });
-    console.log('✅ Sessions table appeared');
-  } catch (error) {
-    console.log('⚠️ Sessions table timeout - checking page content');
-    const content = await page.content();
-    console.log('Page content preview:', content.substring(0, 200));
-    await page.screenshot({ path: 'sessions-table-timeout.png' });
+  // First, wait for the loading state to complete
+  console.log('🔄 Waiting for loading state to finish...');
+  
+  // Wait for either the table to appear OR a "no sessions" message
+  let tableFound = false;
+  let hasNoSessions = false;
+  
+  // Try multiple approaches to wait for content
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    console.log(`📊 Attempt ${attempt}: Looking for sessions table or content`);
     
-    // Return no sessions found instead of throwing error
-    // This allows the caller to handle no-data scenarios appropriately
-    return { sessionRows: [], hasNoSessions: true, noTable: true };
+    try {
+      // Wait for loading to finish first
+      await page.waitForFunction(
+        () => {
+          const loadingText = document.body.textContent;
+          return !loadingText.includes('Searching for sessions') && !loadingText.includes('Loading sessions');
+        },
+        { timeout: 15000 }
+      );
+      console.log('✅ Loading completed');
+      
+      // Now check for table or no-sessions message
+      const pageText = await page.$eval('body', el => el.textContent);
+      
+      // Check for any sessions found text (like "50 sessions found")
+      const sessionsFoundMatch = pageText.match(/(\d+) sessions found/);
+      if (sessionsFoundMatch && parseInt(sessionsFoundMatch[1]) > 0) {
+        // Sessions found, wait for table
+        try {
+          await page.waitForSelector('table tbody tr', { timeout: 10000 });
+          tableFound = true;
+          console.log(`✅ Sessions table with ${sessionsFoundMatch[1]} sessions found`);
+          break;
+        } catch (tableError) {
+          console.log('⚠️ Sessions found message but table not ready, retrying...');
+          // Continue to next attempt
+        }
+      } else if (pageText.includes('0 sessions found') || pageText.includes('No sessions found')) {
+        hasNoSessions = true;
+        console.log('✅ No sessions message found');
+        break;
+      } else {
+        console.log(`⚠️ Attempt ${attempt}: Still waiting for content to stabilize`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    } catch (error) {
+      console.log(`⚠️ Attempt ${attempt} failed: ${error.message}`);
+      if (attempt === 3) {
+        console.log('⚠️ Final attempt - checking page state');
+        const content = await page.content();
+        console.log('Page content preview:', content.substring(0, 200));
+        await page.screenshot({ path: 'sessions-table-timeout.png' });
+      }
+    }
   }
   
-  // Get session rows (following the exact pattern from working test)
+  if (hasNoSessions) {
+    return { sessionRows: [], hasNoSessions: true, noTable: false };
+  }
+  
+  if (!tableFound) {
+    return { sessionRows: [], hasNoSessions: false, noTable: true };
+  }
+  
+  // Get session rows
   const sessionRows = await page.$$('table tbody tr');
   const sessionCount = sessionRows.length;
-  console.log(`Found ${sessionCount} sessions`);
+  console.log(`Found ${sessionCount} session rows in table`);
   
-  if (sessionCount === 0) {
-    console.log('⚠️ No sessions found - may need to check mock services');
-    return { sessionRows: [], hasNoSessions: true };
-  }
-  
-  return { sessionRows, foundSelector: 'table tbody tr', hasNoSessions: false };
+  return { sessionRows, foundSelector: 'table tbody tr', hasNoSessions: false, noTable: false };
 }
 
 /**
@@ -256,8 +301,10 @@ async function setupRequestLogging(page) {
   
   // Log console messages from the page
   page.on('console', msg => {
-    if (msg.text().includes('🧪 Mock') || msg.text().includes('Real') || msg.text().includes('service')) {
-      console.log(`🌐 Browser: ${msg.text()}`);
+    const text = msg.text();
+    if (text.includes('🧪 Mock') || text.includes('Real') || text.includes('service') || 
+        text.includes('🔍') || text.includes('🚨') || text.includes('filter')) {
+      console.log(`🌐 Browser: ${text}`);
     }
   });
 }

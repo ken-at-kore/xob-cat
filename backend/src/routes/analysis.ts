@@ -71,8 +71,8 @@ router.get('/sessions', asyncHandler(async (req: Request, res: Response) => {
     // Handle both ISO string and date-only formats
     dateFrom = startDate.includes('T') ? startDate : new Date(startDate + 'T00:00:00').toISOString();
   } else {
-    // Use default (last 7 days) if no start date provided  
-    dateFrom = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    // Use default (last 24 hours) if no start date provided  
+    dateFrom = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   }
   
   if (endDate && endTime) {
