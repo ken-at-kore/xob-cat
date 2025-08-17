@@ -297,6 +297,57 @@ async function runTest() {
     console.log(`Has rich content: ${hasRichContent}`);
     console.log(`Has conversation section: ${hasConversationSection}`);
     
+    // Step 7.5: CRITICAL - Validate duration is not zero
+    console.log('\n⏱️ Step 7.5: CRITICAL - Validating session duration display');
+    
+    // Get the duration from the dialog
+    const durationInfo = await page.evaluate(() => {
+      const dialog = document.querySelector('[role="dialog"]');
+      if (!dialog) return null;
+      
+      // Look for dt/dd pairs in the session info section
+      const dtElements = dialog.querySelectorAll('dt');
+      let durationValue = null;
+      
+      dtElements.forEach(dt => {
+        if (dt.textContent === 'Duration') {
+          const dd = dt.nextElementSibling;
+          if (dd && dd.tagName === 'DD') {
+            durationValue = dd.textContent.trim();
+          }
+        }
+      });
+      
+      return durationValue;
+    });
+    
+    console.log(`📋 Duration value in dialog: "${durationInfo}"`);
+    
+    // Validate duration is not "0s" or empty
+    if (!durationInfo || durationInfo === '0s' || durationInfo === '0' || durationInfo === '') {
+      console.log('❌ DURATION FAILURE: Session duration showing as zero or empty');
+      console.log(`📋 Expected: A non-zero duration (e.g., "1m 33s", "42s")`);
+      console.log(`📋 Actual: "${durationInfo}"`);
+      
+      // Get the duration from the table row for comparison
+      const rowDuration = await page.evaluate(el => {
+        const cells = el.querySelectorAll('td');
+        return cells.length > 2 ? cells[2].textContent.trim() : null;
+      }, sessionRowToClick);
+      
+      console.log(`📋 Duration in table row: "${rowDuration}"`);
+      
+      throw new Error(`Session duration showing as "${durationInfo}" in dialog, but "${rowDuration}" in table`);
+    }
+    
+    console.log(`✅ Duration validation passed: "${durationInfo}"`);
+    
+    // Also verify it matches a reasonable format (e.g., "1m 33s", "42s", "2h 15m")
+    const durationPattern = /^(\d+h\s*)?(\d+m\s*)?(\d+s)?$/;
+    if (!durationPattern.test(durationInfo)) {
+      console.log(`⚠️ Warning: Duration format unexpected: "${durationInfo}"`);
+    }
+    
     // Step 8: Validate sanitization with real data
     console.log('\n🧼 Step 8: CRITICAL - Validating real data sanitization');
     

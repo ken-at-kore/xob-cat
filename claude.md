@@ -8,7 +8,7 @@ This file (`claude.md` in the project root) provides guidance to Claude Code whe
 
 ```javascript
 // ❌ WRONG
-const botId = '***REMOVED***';
+const botId = 'st-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
 
 // ✅ CORRECT  
 const botId = process.env.TEST_BOT_ID;
