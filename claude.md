@@ -398,6 +398,7 @@ Environment-based service selection:
 - **🔐 SECURITY**: **NEVER** hardcode credentials - always use environment variables
 - **Credential Check**: Run `git grep -E "(st-[a-f0-9\-]{36}|cs-[a-f0-9\-]{36}|sk-[A-Za-z0-9]{20,})" -- ':(exclude).env.local'` before committing
 - **Update claude.md**: When workflows, scripts, or structure changes
+- **🔄 Frontend Debugging**: When component changes don't appear, restart frontend server first (`npm run stop:frontend && npm run start:frontend`). Next.js HMR can fail with complex components or browser caching.
 
 ### Recent Quality Improvements (August 2025)
 - **Type Safety**: Replaced `any` types, added structured logging, documented technical debt

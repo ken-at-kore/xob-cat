@@ -136,7 +136,7 @@ export function SessionDetailsDialog({
                 <span className="font-medium text-muted-foreground">Duration</span>
               </div>
               <div>{formatDuration(
-                typeof currentSession.duration_seconds === 'number' && currentSession.duration_seconds >= 0
+                typeof currentSession.duration_seconds === 'number' && currentSession.duration_seconds > 0
                   ? currentSession.duration_seconds
                   : (currentSession.start_time && currentSession.end_time
                       ? (new Date(currentSession.end_time).getTime() - new Date(currentSession.start_time).getTime()) / 1000

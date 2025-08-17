@@ -181,6 +181,13 @@ async function runTest() {
     // Setup request logging
     await setupRequestLogging(page);
     
+    // Capture console logs for debugging
+    page.on('console', msg => {
+      if (msg.text().includes('Duration debug') || msg.text().includes('Calculated duration') || msg.text().includes('Using duration_seconds')) {
+        console.log('🔍 Console:', msg.text());
+      }
+    });
+    
     // Step 1-2: Enter credentials
     await enterCredentials(page, credentials, config.baseUrl);
     
@@ -303,31 +310,45 @@ async function runTest() {
     // Get the duration from the dialog
     const durationInfo = await page.evaluate(() => {
       const dialog = document.querySelector('[role="dialog"]');
-      if (!dialog) return null;
+      if (!dialog) return { error: 'No dialog found' };
       
-      // Look for dt/dd pairs in the session info section
-      const dtElements = dialog.querySelectorAll('dt');
-      let durationValue = null;
+      // Debug: Get all elements and their text
+      const allElements = Array.from(dialog.querySelectorAll('*'));
+      const debugElements = allElements.map(el => ({
+        tagName: el.tagName,
+        textContent: el.textContent?.substring(0, 50),
+        classList: Array.from(el.classList)
+      }));
       
-      dtElements.forEach(dt => {
-        if (dt.textContent === 'Duration') {
-          const dd = dt.nextElementSibling;
-          if (dd && dd.tagName === 'DD') {
-            durationValue = dd.textContent.trim();
+      // Look for "Duration" text and get the next element's content
+      for (let i = 0; i < allElements.length; i++) {
+        const element = allElements[i];
+        if (element.textContent === 'Duration' && element.classList.contains('text-muted-foreground')) {
+          // Found the Duration label, get the next div in the grid
+          const nextElement = allElements[i + 1];
+          if (nextElement) {
+            return {
+              duration: nextElement.textContent.trim(),
+              foundAt: i,
+              nextElementTag: nextElement.tagName,
+              nextElementClasses: Array.from(nextElement.classList)
+            };
           }
         }
-      });
+      }
       
-      return durationValue;
+      return { error: 'Duration label not found', debug: debugElements.slice(0, 20) };
     });
     
-    console.log(`📋 Duration value in dialog: "${durationInfo}"`);
+    console.log(`📋 Duration extraction result:`, JSON.stringify(durationInfo, null, 2));
+    
+    const actualDuration = durationInfo?.duration || durationInfo;
     
     // Validate duration is not "0s" or empty
-    if (!durationInfo || durationInfo === '0s' || durationInfo === '0' || durationInfo === '') {
+    if (!actualDuration || actualDuration === '0s' || actualDuration === '0' || actualDuration === '') {
       console.log('❌ DURATION FAILURE: Session duration showing as zero or empty');
       console.log(`📋 Expected: A non-zero duration (e.g., "1m 33s", "42s")`);
-      console.log(`📋 Actual: "${durationInfo}"`);
+      console.log(`📋 Actual: "${actualDuration}"`);
       
       // Get the duration from the table row for comparison
       const rowDuration = await page.evaluate(el => {
@@ -337,15 +358,15 @@ async function runTest() {
       
       console.log(`📋 Duration in table row: "${rowDuration}"`);
       
-      throw new Error(`Session duration showing as "${durationInfo}" in dialog, but "${rowDuration}" in table`);
+      throw new Error(`Session duration showing as "${actualDuration}" in dialog, but "${rowDuration}" in table`);
     }
     
-    console.log(`✅ Duration validation passed: "${durationInfo}"`);
+    console.log(`✅ Duration validation passed: "${actualDuration}"`);
     
     // Also verify it matches a reasonable format (e.g., "1m 33s", "42s", "2h 15m")
     const durationPattern = /^(\d+h\s*)?(\d+m\s*)?(\d+s)?$/;
-    if (!durationPattern.test(durationInfo)) {
-      console.log(`⚠️ Warning: Duration format unexpected: "${durationInfo}"`);
+    if (!durationPattern.test(actualDuration)) {
+      console.log(`⚠️ Warning: Duration format unexpected: "${actualDuration}"`);
     }
     
     // Step 8: Validate sanitization with real data
