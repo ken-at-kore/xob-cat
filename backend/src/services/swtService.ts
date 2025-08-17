@@ -134,9 +134,13 @@ export class SWTService {
           .map(msg => this.convertKoreMessageToSWTMessage(msg))
           .filter(msg => msg !== null);
         
+        // Recalculate computed fields based on actual messages
+        const computedFields = this.calculateComputedFields(swt, sanitizedMessages);
+        
         return {
           ...swt,
-          messages: sanitizedMessages
+          messages: sanitizedMessages,
+          ...computedFields
         };
       }
       return swt; // Return unchanged if not in target list
@@ -144,6 +148,32 @@ export class SWTService {
     
     console.log(`Populated messages for ${targetSessionIds.length} SWT objects`);
     return populatedSWTs;
+  }
+
+  /**
+   * Calculate computed fields (duration, message counts) based on actual messages
+   */
+  private calculateComputedFields(swt: SessionWithTranscript, messages: any[]): Partial<SessionWithTranscript> {
+    // Calculate message counts
+    const userMessages = messages.filter(msg => msg.message_type === 'user');
+    const botMessages = messages.filter(msg => msg.message_type === 'bot');
+    
+    // Calculate duration from start/end times if available
+    let duration_seconds = swt.duration_seconds;
+    if (swt.start_time && swt.end_time) {
+      const startTime = new Date(swt.start_time);
+      const endTime = new Date(swt.end_time);
+      if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
+        duration_seconds = Math.max(0, Math.floor((endTime.getTime() - startTime.getTime()) / 1000));
+      }
+    }
+    
+    return {
+      duration_seconds,
+      message_count: messages.length,
+      user_message_count: userMessages.length,
+      bot_message_count: botMessages.length
+    };
   }
 
   /**

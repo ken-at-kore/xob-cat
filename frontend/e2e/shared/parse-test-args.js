@@ -44,6 +44,7 @@ function parseTestArgs(args = []) {
   const headless = args.some(arg => arg === '--headless');
   const screenshot = args.some(arg => arg === '--screenshot');
   const verbose = args.some(arg => arg === '--verbose');
+  const testDownload = args.some(arg => arg === '--test-download');
   
   return {
     baseUrl,
@@ -51,7 +52,8 @@ function parseTestArgs(args = []) {
     sessions, // Number of sessions to test with (undefined = use test default)
     headless,
     screenshot,
-    verbose
+    verbose,
+    testDownload // Enable download functionality testing (disabled by default)
   };
 }
 
@@ -69,6 +71,7 @@ Puppeteer Test Command Line Options:
   --headless            Run browser in headless mode
   --screenshot          Take screenshots on failures
   --verbose             Enable verbose logging
+  --test-download       Enable download functionality testing (disabled by default)
   --help                Show this help message
 
 Environment Variables:

@@ -859,11 +859,56 @@ async function testSessionDetailsDialog(page) {
   
   // Verify dialog content
   const dialogContent = await page.content();
+  
+  // Check for session details fields that should NOT be zero
+  const durationText = await page.evaluate(() => {
+    // Find the Duration label in a span with specific text
+    const spans = Array.from(document.querySelectorAll('span'));
+    const durationSpan = spans.find(span => 
+      span.textContent && span.textContent.trim() === 'Duration'
+    );
+    if (durationSpan) {
+      // The value is in the next div sibling of the parent div
+      const parentDiv = durationSpan.closest('div');
+      if (parentDiv && parentDiv.nextElementSibling) {
+        return parentDiv.nextElementSibling.textContent.trim();
+      }
+    }
+    return '';
+  });
+  
+  const messageCountText = await page.evaluate(() => {
+    // Find the Message Count label in a span with specific text
+    const spans = Array.from(document.querySelectorAll('span'));
+    const messageSpan = spans.find(span => 
+      span.textContent && span.textContent.trim() === 'Message Count'
+    );
+    if (messageSpan) {
+      // The value is in the next div sibling of the parent div
+      const parentDiv = messageSpan.closest('div');
+      if (parentDiv && parentDiv.nextElementSibling) {
+        return parentDiv.nextElementSibling.textContent.trim();
+      }
+    }
+    return '';
+  });
+  
   const dialogResults = {
     hasAIFacts: dialogContent.includes('AI-Extracted Facts'),
     hasGeneralIntent: dialogContent.includes('General Intent'),
-    hasSessionOutcome: dialogContent.includes('Session Outcome')
+    hasSessionOutcome: dialogContent.includes('Session Outcome'),
+    // New assertions for the bug fix
+    durationNotZero: durationText !== '0s' && durationText !== '' && !durationText.includes('0s'),
+    messageCountNotZero: messageCountText !== '0 messages (0 user, 0 bot)' && messageCountText !== '' && !messageCountText.includes('0 messages'),
+    durationText: durationText,
+    messageCountText: messageCountText
   };
+  
+  // Log the results for debugging
+  console.log(`📊 Duration found: "${durationText}"`);
+  console.log(`📊 Message count found: "${messageCountText}"`);
+  console.log(`✅ Duration not zero: ${dialogResults.durationNotZero}`);
+  console.log(`✅ Message count not zero: ${dialogResults.messageCountNotZero}`);
   
   // Close dialog - find Close button by text
   const buttons = await page.$$('button');

@@ -21,6 +21,7 @@
  *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
  *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=100
  *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=50 --url=https://www.koreai-xobcat.com
+ *   node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --test-download  # Enable download testing
  */
 
 const puppeteer = require('puppeteer');
@@ -274,9 +275,9 @@ async function runAutoAnalyzeRealTest() {
       console.log('Dialog test results:', dialogResults);
     }
     
-    // Step 11: Test download functionality (if analysis completed)
+    // Step 11: Test download functionality (if analysis completed and enabled)
     let downloadResults = { downloadTested: false, downloadSuccess: false };
-    if (completionResults.analysisCompleted) {
+    if (completionResults.analysisCompleted && config.testDownload) {
       try {
         console.log('📥 Step 11: Testing download functionality');
         
@@ -352,6 +353,8 @@ async function runAutoAnalyzeRealTest() {
         console.log(`❌ Download test error: ${downloadTestError.message}`);
         downloadResults = { downloadTested: false, error: downloadTestError.message };
       }
+    } else if (!config.testDownload) {
+      console.log('⏭️ Skipping download test - disabled by default (use --test-download to enable)');
     } else {
       console.log('⏭️ Skipping download test - analysis not completed');
     }
@@ -479,6 +482,18 @@ async function runAutoAnalyzeRealTest() {
     console.log('✅ Report generation validation');
     console.log('✅ Real API integration (Kore.ai + OpenAI)');
     console.log(`📥 Download functionality: ${downloadResults.downloadTested ? (downloadResults.downloadSuccess ? '✅ TESTED & WORKING' : '❌ TESTED & FAILED') : '⏭️ SKIPPED'}`);
+    
+    // Bug fix validation results
+    if (dialogResults.dialogTested) {
+      console.log('🐛 Session Details Bug Fix Validation:');
+      console.log(`   📊 Duration field: ${dialogResults.durationNotZero ? '✅ FIXED' : '❌ STILL BROKEN'} (shows: "${dialogResults.durationText}")`);
+      console.log(`   📨 Message count: ${dialogResults.messageCountNotZero ? '✅ FIXED' : '❌ STILL BROKEN'} (shows: "${dialogResults.messageCountText}")`);
+      if (dialogResults.durationNotZero && dialogResults.messageCountNotZero) {
+        console.log('   🎉 Bug fix successful - session details now show correct values!');
+      } else {
+        console.log('   ⚠️ Bug fix incomplete - some fields still showing zero values');
+      }
+    }
     
     // Additional parallel processing coverage
     if (completionResults && completionResults.parallelProcessingDetected) {
