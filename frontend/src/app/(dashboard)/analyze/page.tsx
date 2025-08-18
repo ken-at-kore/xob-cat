@@ -25,7 +25,8 @@ import {
 import { autoAnalyze } from '../../../lib/api';
 import { AnalyzedSessionDetailsDialog } from '../../../components/AnalyzedSessionDetailsDialog';
 import { AnalysisReportView } from '../../../components/AnalysisReportView';
-import { getSimplifiedStatusText, calculateProgressPercentage, getPhaseLabel, resetProgressTracker } from './progressUtils';
+import { calculateProgressPercentage, getPhaseLabel, resetProgressTracker } from './progressUtils';
+import { transformProgressText, enableProgressDebug } from './ProgressTextProcessor';
 
 /**
  * Load mock analysis results for testing
@@ -112,6 +113,13 @@ interface AutoAnalyzeConfigProps {
 }
 
 export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadingMock = false, showDevFeatures = false }: AutoAnalyzeConfigProps) {
+  // Enable progress text debug logging only when explicitly requested
+  React.useEffect(() => {
+    if (process.env.NEXT_PUBLIC_PROGRESS_DEBUG === 'true') {
+      enableProgressDebug();
+    }
+  }, []);
+
   const [formData, setFormData] = useState<ConfigFormData>(() => {
     // Set default values
     const defaultDate = new Date();
@@ -493,7 +501,12 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
         <CardContent className="pt-2">
           <div className="space-y-2">
             <div className="text-sm text-gray-600">
-              {getSimplifiedStatusText(progress.currentStep)}
+              {transformProgressText(progress.currentStep, 'UI-AutoAnalyze-Progress')}
+              {process.env.NEXT_PUBLIC_PROGRESS_DEBUG === 'true' && (
+                <div className="text-xs text-red-500 mt-1">
+                  [DEBUG] Raw: {progress.currentStep}
+                </div>
+              )}
             </div>
             <Progress value={progressPercentage} className="w-full" />
           </div>

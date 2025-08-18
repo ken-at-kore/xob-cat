@@ -10,6 +10,7 @@ export function getSimplifiedStatusText(currentStep: string): string {
   // Direct mappings for common statuses
   const mappings: Record<string, string> = {
     'Initializing parallel analysis': 'Initializing analysis',
+    'Initializing parallel analysis...': 'Initializing',
     'Initializing analysis': 'Initializing analysis',
     'Searching in Initial 3-hour window': 'Searching for sessions',
     'Searching in Initial 3 hour window': 'Searching for sessions',

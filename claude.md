@@ -870,6 +870,7 @@ FRONTEND_URL=http://localhost:3000
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_ENABLE_DEV_FEATURES=true    # Controls mock reports and testing tools
+NEXT_PUBLIC_PROGRESS_DEBUG=true         # Enable progress text transformation debug logging
 
 # Real API Testing Credentials (Optional)
 # Required only for running real API E2E tests

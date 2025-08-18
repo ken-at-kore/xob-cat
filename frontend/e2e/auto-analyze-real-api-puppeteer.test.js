@@ -171,6 +171,74 @@ async function runAutoAnalyzeRealTest() {
     // Step 6: Start analysis
     await startAnalysis(page);
     
+    // Step 6.5: Check initial status message (should be "Initializing", NOT "Analyzing sessions")
+    console.log('🔍 Step 6.5: Checking initial status message order');
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for initial status
+    
+    const initialStatus = await page.evaluate(() => {
+      // Look for the progress status text
+      const progressElements = document.querySelectorAll('*');
+      for (let element of progressElements) {
+        const text = element.textContent;
+        if (text && text.includes('Progress') && element.nextElementSibling) {
+          const statusElement = element.nextElementSibling.textContent;
+          if (statusElement && (statusElement.includes('Initializing') || statusElement.includes('Analyzing sessions'))) {
+            return statusElement.trim();
+          }
+        }
+        // Also check for direct status text
+        if (text && (text.includes('Status:') || text.includes('Progress:'))) {
+          return text.trim();
+        }
+      }
+      return document.body.textContent; // Fallback to body content
+    });
+    
+    console.log(`📊 Initial status detected: "${initialStatus}"`);
+    
+    // Assert that initial status is "Initializing" and NOT "Analyzing sessions"
+    if (initialStatus.includes('Analyzing sessions') && !initialStatus.includes('Initializing')) {
+      console.log('❌ BUG CONFIRMED: Initial status shows "Analyzing sessions" instead of "Initializing"');
+      console.log('🔧 This confirms the reported issue - initial status should be "Initializing"');
+      throw new Error('Initial status bug detected: Shows "Analyzing sessions" before "Searching for sessions"');
+    } else if (initialStatus.includes('Initializing')) {
+      console.log('✅ CORRECT: Initial status shows "Initializing" as expected');
+    } else {
+      console.log(`⚠️ Initial status unclear: "${initialStatus}"`);
+    }
+    
+    // Step 6.75: Wait for discovery phase and check its status message
+    console.log('🔍 Step 6.75: Waiting for discovery phase to check its status message');
+    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for discovery phase
+    
+    const discoveryStatus = await page.evaluate(() => {
+      // Look for the progress status text during discovery phase
+      const progressElements = document.querySelectorAll('*');
+      for (let element of progressElements) {
+        const text = element.textContent;
+        if (text && text.includes('Progress') && element.nextElementSibling) {
+          const statusElement = element.nextElementSibling.textContent;
+          if (statusElement && (statusElement.includes('Analyzing initial sessions') || statusElement.includes('Initializing ('))) {
+            return statusElement.trim();
+          }
+        }
+      }
+      return document.body.textContent; // Fallback to body content
+    });
+    
+    console.log(`📊 Discovery phase status detected: "${discoveryStatus}"`);
+    
+    // Assert that discovery phase shows "Analyzing initial sessions" and NOT "Initializing"
+    if (discoveryStatus.includes('Initializing (') && discoveryStatus.includes('/')) {
+      console.log('❌ DISCOVERY PHASE BUG: Shows "Initializing (X/Y)" instead of "Analyzing initial sessions (X/Y)"');
+      console.log('🔧 Discovery phase should show "Analyzing initial sessions" not "Initializing"');
+      throw new Error('Discovery phase bug detected: Shows "Initializing (X/Y)" instead of "Analyzing initial sessions (X/Y)"');
+    } else if (discoveryStatus.includes('Analyzing initial sessions')) {
+      console.log('✅ CORRECT: Discovery phase shows "Analyzing initial sessions" as expected');
+    } else {
+      console.log(`⚠️ Discovery phase status unclear: "${discoveryStatus}"`);
+    }
+    
     // Step 7: Monitor progress (real APIs take longer)
     const progressResults = await monitorProgress(page);
     console.log('Progress monitoring results:', progressResults);
