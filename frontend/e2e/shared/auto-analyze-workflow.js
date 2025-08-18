@@ -1048,6 +1048,36 @@ async function assertProgressIndicators(page, previousState = null) {
   assertions.tokenUsage = assertions.numericValues.tokensUsed > 0;
   assertions.estimatedCost = assertions.numericValues.estimatedCost > 0;
   
+  // NEW: Check for progress bar animation (shimmer effect)
+  try {
+    assertions.hasProgressBarAnimation = await page.evaluate(() => {
+      // Look for progress bar with animated attribute
+      const progressBars = document.querySelectorAll('[role="progressbar"], .progress, [class*="progress"]');
+      for (const bar of progressBars) {
+        // Check if the progress bar has animation styles
+        const shimmerElements = bar.querySelectorAll('div');
+        for (const shimmer of shimmerElements) {
+          const style = window.getComputedStyle(shimmer);
+          // Check for shimmer animation (either inline style or computed)
+          if (shimmer.style.animation && shimmer.style.animation.includes('shimmer')) {
+            return true;
+          }
+          // Check for computed animation
+          if (style.animation && style.animation.includes('shimmer')) {
+            return true;
+          }
+          // Check for animate-pulse class (fallback animation)
+          if (shimmer.className && shimmer.className.includes('animate-pulse')) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+  } catch (e) {
+    assertions.hasProgressBarAnimation = false;
+  }
+  
   return assertions;
 }
 

@@ -56,6 +56,9 @@ HYBRID_SUMMARY_MODEL="gpt-4.1" HYBRID_SUMMARY_DEBUG=true npm test -- --testPathP
 
 # Puppeteer standalone (recommended)
 node frontend/e2e/run-puppeteer-test.js
+
+# Progress bar animation testing
+node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=10  # Validates blue animated progress
 ```
 
 ### Build & Quality
@@ -87,6 +90,7 @@ components/
 ├── AnalyzedSessionDetailsDialog.tsx # AI-analyzed details
 ├── AnalysisCharts.tsx      # Recharts visualizations
 └── ui/                     # shadcn/ui components
+    └── progress.tsx        # Blue animated progress bars (#2970FF)
 ```
 
 ### Backend (`backend/src/`)
@@ -256,5 +260,9 @@ TEST_OPENAI_API_KEY=sk-your-openai-key
 - `docs/Auto-Analyze Technical Design.md`
 - `docs/Parallel Auto-Analyze Design.md`
 - `docs/Parallel Auto-Analyze Debugging Breakthroughs.md`
+
+## Testing
+- **Progress Bar Animation Test**: `/test-progress` - Test blue animated progress bars with validation
+- **E2E Tests**: Puppeteer tests validate progress bar animation in real auto-analyze workflows
 
 Always follow shared types, monorepo structure, run tests before committing.

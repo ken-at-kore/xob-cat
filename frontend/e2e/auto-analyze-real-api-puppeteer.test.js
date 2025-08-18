@@ -305,6 +305,7 @@ async function runAutoAnalyzeRealTest() {
           console.log(`     - Stream Activity: ${assertions.streamActivity ? '✅' : '❌'}`);
           console.log(`     - Token Usage: ${assertions.tokenUsage ? '✅' : '❌'}`);
           console.log(`     - Estimated Cost: ${assertions.estimatedCost ? '✅' : '❌'}`);
+          console.log(`     - Progress Bar Animation: ${assertions.hasProgressBarAnimation ? '✅ SHIMMER DETECTED' : '❌ NO ANIMATION'}`);
           
           progressAssertionResults.push(assertions);
           previousAssertion = assertions;
@@ -509,7 +510,8 @@ async function runAutoAnalyzeRealTest() {
         batchProgress: progressAssertionResults.filter(r => r.batchProgress).length,
         streamActivity: progressAssertionResults.filter(r => r.streamActivity).length,
         tokenUsage: progressAssertionResults.filter(r => r.tokenUsage).length,
-        estimatedCost: progressAssertionResults.filter(r => r.estimatedCost).length
+        estimatedCost: progressAssertionResults.filter(r => r.estimatedCost).length,
+        hasProgressBarAnimation: progressAssertionResults.filter(r => r.hasProgressBarAnimation).length
       };
       
       console.log('\n🚨 PROGRESS ANALYSIS:');
@@ -519,7 +521,8 @@ async function runAutoAnalyzeRealTest() {
       console.log('\n📊 Indicator Detection Rates:');
       Object.entries(progressCounts).forEach(([indicator, count]) => {
         if (indicator !== 'actualProgress' && indicator !== 'progressStuck') {
-          console.log(`   - ${indicator}: ${count}/${progressAssertionResults.length} times detected (${((count/progressAssertionResults.length)*100).toFixed(1)}%)`);
+          const displayName = indicator === 'hasProgressBarAnimation' ? 'Progress Bar Animation (Shimmer)' : indicator;
+          console.log(`   - ${displayName}: ${count}/${progressAssertionResults.length} times detected (${((count/progressAssertionResults.length)*100).toFixed(1)}%)`);
         }
       });
       
@@ -538,6 +541,14 @@ async function runAutoAnalyzeRealTest() {
       // Overall progress assessment
       const overallProgressWorking = progressCounts.actualProgress > 0 && progressCounts.progressStuck < progressAssertionResults.length * 0.8;
       console.log(`\n🎯 OVERALL PROGRESS ASSESSMENT: ${overallProgressWorking ? '✅ WORKING' : '❌ STUCK/BROKEN'}`);
+      
+      // Animation assessment
+      const animationWorking = progressCounts.hasProgressBarAnimation > 0;
+      console.log(`🎨 PROGRESS BAR ANIMATION: ${animationWorking ? '✅ SHIMMER DETECTED' : '❌ NO ANIMATION DETECTED'}`);
+      if (animationWorking) {
+        const animationPercentage = ((progressCounts.hasProgressBarAnimation/progressAssertionResults.length)*100).toFixed(1);
+        console.log(`   🌟 Shimmer animation was visible during ${animationPercentage}% of progress checks`);
+      }
     }
     
     // Summary of what was tested

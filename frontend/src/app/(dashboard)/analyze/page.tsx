@@ -508,7 +508,7 @@ export function ProgressView({ analysisId, onComplete }: ProgressViewProps) {
                 </div>
               )}
             </div>
-            <Progress value={progressPercentage} className="w-full" />
+            <Progress value={progressPercentage} className="w-full" animated />
           </div>
         </CardContent>
       </Card>
