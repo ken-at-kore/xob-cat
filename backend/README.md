@@ -188,6 +188,10 @@ npm test -- --coverage
 # Hybrid tests (Mock Kore + Real OpenAI)
 npm test -- --testPathPattern="perSessionAnalysis.hybrid"
 
+# Analysis Summary hybrid test (Mock session data + Real OpenAI)
+npm test -- --testPathPattern="analysisSummary.hybrid"
+HYBRID_SUMMARY_MODEL="gpt-4.1" HYBRID_SUMMARY_DEBUG=true npm test -- --testPathPattern="analysisSummary.hybrid"
+
 # Hybrid test with production data and custom model
 HYBRID_INPUT_FILE="../data/agent-july30-data.json" HYBRID_MODEL="gpt-4.1" HYBRID_OUTPUT_TEXT="analysis.txt" npm test -- --testPathPattern="perSessionAnalysis.hybrid"
 ```

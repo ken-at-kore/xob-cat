@@ -50,6 +50,10 @@ REAL_API_TEST_MODE=basic|all|workflow|errors|validation npm test -- --testPathPa
 # Hybrid tests (Production data + OpenAI)
 HYBRID_TEST_MODE=main HYBRID_MODEL="gpt-4.1" npm test -- --testPathPattern="perSessionAnalysis.hybrid"
 
+# Analysis Summary tests (Mock session data + Real OpenAI)
+HYBRID_SUMMARY_TEST_MODE=main npm test -- --testPathPattern="analysisSummary.hybrid"
+HYBRID_SUMMARY_MODEL="gpt-4.1" HYBRID_SUMMARY_DEBUG=true npm test -- --testPathPattern="analysisSummary.hybrid"
+
 # Puppeteer standalone (recommended)
 node frontend/e2e/run-puppeteer-test.js
 ```
@@ -130,6 +134,20 @@ DELETE /api/analysis/auto-analyze/:id
 ```
 
 **Config:** `PARALLEL_STREAM_COUNT=4`, `PARALLEL_BATCH_SIZE=3`, `ENABLE_CONFLICT_RESOLUTION=true`
+
+### Analysis Summary Generation
+Macro-level analysis that generates comprehensive reports from per-session analysis results using `analysis-prompts.ts`.
+
+**Integration Test:** `analysisSummaryService.hybrid.integration.test.ts`
+- **Input**: Pre-analyzed sessions from `data/mock-analysis-results.json`
+- **API**: Real OpenAI API for summary generation
+- **Output**: Analysis overview, detailed summary, containment suggestions
+
+**Environment Variables:**
+- `HYBRID_SUMMARY_TEST_MODE`: `main`|`all` (controls test scope)
+- `HYBRID_SUMMARY_MODEL`: `gpt-4.1-nano`|`gpt-4.1` (OpenAI model)
+- `HYBRID_SUMMARY_DEBUG`: `true`|`false` (show prompts/responses)
+- `HYBRID_SUMMARY_SESSION_LIMIT`: Number (limit sessions for cost control)
 
 ### Session Viewer (Enhanced)
 - **Always-visible filters**: Interruptible loading

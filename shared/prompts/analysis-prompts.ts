@@ -198,7 +198,7 @@ ${aggregation.sampleTranscripts.map((transcript, index) => `
 **Session ID:** ${transcript.sessionId}
 
 ${transcript.messages.map(msg => 
-  `**${msg.message_type === 'user' ? 'User' : 'XO Bot'}**: ${msg.message}`
+  `**${msg.message_type === 'user' ? 'User' : 'Bot'}**: ${msg.message}`
 ).join('\n')}
 `).join('\n')}
 

@@ -119,6 +119,21 @@ export class LLMInferenceService {
     // Create prompt using centralized prompt engineering
     const prompt = createAnalysisPrompt(aggregation, sessions);
     
+    // Debug logging if enabled
+    if (process.env.HYBRID_SUMMARY_DEBUG === 'true') {
+      console.log('\n🔍 [DEBUG] OpenAI API Request Details:');
+      console.log('─'.repeat(80));
+      console.log('Model:', modelId);
+      console.log('Temperature:', 0.7);
+      console.log('Max Tokens:', 2000);
+      console.log('Prompt Length:', prompt.length, 'characters');
+      console.log('\n📝 [DEBUG] Full Prompt Being Sent to OpenAI:');
+      console.log('─'.repeat(80));
+      console.log(prompt);
+      console.log('─'.repeat(80));
+      console.log('\n');
+    }
+    
     try {
       const completion = await this.openai.chat.completions.create({
         model: modelId,
@@ -135,6 +150,19 @@ export class LLMInferenceService {
       const response = completion.choices[0]?.message?.content;
       if (!response) {
         throw new Error('No response from OpenAI');
+      }
+
+      // Debug logging for response if enabled
+      if (process.env.HYBRID_SUMMARY_DEBUG === 'true') {
+        console.log('\n✅ [DEBUG] OpenAI API Response Received:');
+        console.log('─'.repeat(80));
+        console.log('Response Length:', response.length, 'characters');
+        console.log('Tokens Used:', completion.usage?.total_tokens);
+        console.log('\n📄 [DEBUG] Full Response from OpenAI:');
+        console.log('─'.repeat(80));
+        console.log(response);
+        console.log('─'.repeat(80));
+        console.log('\n');
       }
 
       // Parse the response into sections
@@ -157,11 +185,19 @@ export class LLMInferenceService {
    */
   private parseAnalysisResponse(response: string): Omit<LLMAnalysisResponse, 'tokensUsed' | 'cost'> {
     // Parse the response into overview, summary, and containment suggestion sections
-    const overviewMatch = response.match(/# ANALYSIS_OVERVIEW\s*([\s\S]*?)(?=# ANALYSIS_SUMMARY|# CONTAINMENT_SUGGESTION|$)/);
-    const summaryMatch = response.match(/# ANALYSIS_SUMMARY\s*([\s\S]*?)(?=# CONTAINMENT_SUGGESTION|$)/);
-    const containmentMatch = response.match(/# CONTAINMENT_SUGGESTION\s*([\s\S]*?)$/);
+    // Be flexible with section headers to handle variations in GPT responses
+    const overviewMatch = response.match(/#+ ANALYSIS[_\s]OVERVIEW\s*([\s\S]*?)(?=#+ ANALYSIS[_\s]SUMMARY|#+ CONTAINMENT[_\s]SUGGESTION|$)/i);
+    const summaryMatch = response.match(/#+ ANALYSIS[_\s]SUMMARY\s*([\s\S]*?)(?=#+ CONTAINMENT[_\s]SUGGESTION|$)/i);
+    const containmentMatch = response.match(/#+ CONTAINMENT[_\s]SUGGESTION\s*([\s\S]*?)$/i);
 
     if (!overviewMatch || !summaryMatch || !containmentMatch) {
+      // Log debug info if parsing fails
+      if (process.env.HYBRID_SUMMARY_DEBUG === 'true') {
+        console.error('Failed to parse response. Looking for sections:');
+        console.error('- ANALYSIS_OVERVIEW:', !!overviewMatch);
+        console.error('- ANALYSIS_SUMMARY:', !!summaryMatch);
+        console.error('- CONTAINMENT_SUGGESTION:', !!containmentMatch);
+      }
       throw new Error('Could not parse OpenAI response into required sections');
     }
 
