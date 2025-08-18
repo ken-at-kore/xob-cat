@@ -101,10 +101,10 @@ cd backend
 npm test -- --testPathPattern="integration"
 
 # Run mock API integration tests (fast, no cost)
-npm test -- --testPathPattern="autoAnalyzeWorkflow.mock.integration.test.ts"
+npm test -- --testPathPattern="autoAnalyzeWorkflow.mock"
 
 # Run real API integration tests (requires credentials, incurs OpenAI costs)
-npm test -- --testPathPattern="autoAnalyzeWorkflow.real.integration.test.ts"
+npm test -- --testPathPattern="autoAnalyzeWorkflow.real"
 
 # Run specific test by name
 npm test -- --testPathPattern="integration" --testNamePattern="should complete full auto-analysis workflow"
@@ -186,15 +186,15 @@ node e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobca
 ### Backend Integration Tests (NEW - December 2024)
 **Purpose**: Test complete backend workflows without UI, validating service integration and data flow.
 
-**Auto-Analyze Workflow Integration Tests**:
+**Auto-Analyze Workflow Integration Tests** (Parallel Processing):
 - **Mock API Version**: `autoAnalyzeWorkflow.mock.integration.test.ts`
   - Uses pure mock services (no external API calls)
-  - Validates complete auto-analysis workflow
+  - Validates complete auto-analysis workflow with parallel processing
   - Zero cost, deterministic results
-  - 8 comprehensive test cases
+  - Tests parallel processing architecture
   
 - **Real API Version**: `autoAnalyzeWorkflow.real.integration.test.ts`  
-  - Uses real Kore.ai and OpenAI APIs
+  - Uses real Kore.ai and OpenAI APIs with parallel processing
   - Requires credentials in `.env.local`
   - Tests production integration
   - Validates actual API responses

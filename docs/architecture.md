@@ -434,8 +434,8 @@ After successful implementation, key architectural insights emerged:
 ```
 backend/src/__tests__/integration/
 ├── autoAnalyzeWorkflow.shared.ts       # Shared utilities
-├── autoAnalyzeWorkflow.mock.integration.test.ts    # Mock tests
-└── autoAnalyzeWorkflow.real.integration.test.ts    # Real API tests
+├── autoAnalyzeWorkflow.mock.integration.test.ts    # Mock tests (parallel processing)
+└── autoAnalyzeWorkflow.real.integration.test.ts    # Real API tests (parallel processing)
 
 Key Features:
 • Background Job Queue validation
