@@ -12,6 +12,7 @@
  * 4. Hangup Command Messages - Filters out JSON bot messages containing hangup commands
  * 5. HTML Entity Decoding - Converts HTML entities like &quot; to actual characters
  * 6. MAX_NO_INPUT Replacement - Replaces "MAX_NO_INPUT" with "<User is silent>"
+ * 7. Closing Message Filtering - Filters out bot closing messages that occur >8s after previous message
  * 
  * @module transcriptSanitizationService
  */
@@ -23,6 +24,9 @@ export interface SanitizationResult {
 }
 
 export class TranscriptSanitizationService {
+  // Pattern 7: Closing message text
+  private static readonly CLOSING_MESSAGE = 'I am closing our current conversation as I have not received any input from you. We can start over when you need.';
+  private static readonly CLOSING_MESSAGE_THRESHOLD_MS = 8000; // 8 seconds
   /**
    * Main entry point for sanitizing message text
    * @param text - The raw message text to sanitize
@@ -292,6 +296,29 @@ export class TranscriptSanitizationService {
   }
 
   /**
+   * Check if text is the closing conversation message
+   */
+  private static isClosingMessage(text: string): boolean {
+    return text.trim() === this.CLOSING_MESSAGE;
+  }
+
+  /**
+   * Calculate time difference in milliseconds between two timestamps
+   */
+  private static getTimeDifferenceMs(timestamp1: string, timestamp2: string): number | null {
+    try {
+      const time1 = new Date(timestamp1).getTime();
+      const time2 = new Date(timestamp2).getTime();
+      if (isNaN(time1) || isNaN(time2)) {
+        return null;
+      }
+      return Math.abs(time2 - time1);
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Batch sanitize an array of messages
    */
   static sanitizeMessages(messages: Array<{ message: string; message_type: 'user' | 'bot' }>): Array<{ 
@@ -313,5 +340,62 @@ export class TranscriptSanitizationService {
         };
       })
       .filter((msg): msg is NonNullable<typeof msg> => msg !== null);
+  }
+
+  /**
+   * Batch sanitize an array of messages with timestamp-aware filtering
+   * Pattern 7: Filters out closing messages that are last and occur >8s after previous
+   */
+  static sanitizeMessagesWithTimestamps(messages: Array<{ 
+    message: string; 
+    message_type: 'user' | 'bot';
+    timestamp?: string;
+  }>): Array<{ 
+    message: string; 
+    message_type: 'user' | 'bot';
+    timestamp?: string;
+    sanitized?: boolean;
+  }> {
+    // First pass: Apply all individual message sanitization
+    const sanitized = messages
+      .map(msg => {
+        const result = this.sanitizeMessage(msg.message, msg.message_type);
+        if (result.text === null) {
+          // Filter out messages with null text
+          return null;
+        }
+        return {
+          ...msg,
+          message: result.text,
+          sanitized: result.sanitized
+        };
+      })
+      .filter((msg): msg is NonNullable<typeof msg> => msg !== null);
+
+    // Second pass: Check for closing message pattern
+    if (sanitized.length >= 2) {
+      const lastMessage = sanitized[sanitized.length - 1];
+      const secondToLastMessage = sanitized[sanitized.length - 2];
+
+      // Check if last message is the closing message from bot
+      if (
+        lastMessage &&
+        secondToLastMessage &&
+        lastMessage.message_type === 'bot' &&
+        this.isClosingMessage(lastMessage.message) &&
+        lastMessage.timestamp &&
+        secondToLastMessage.timestamp
+      ) {
+        // Calculate time difference
+        const timeDiff = this.getTimeDifferenceMs(secondToLastMessage.timestamp, lastMessage.timestamp);
+        
+        // Filter out if > 8 seconds
+        if (timeDiff !== null && timeDiff > this.CLOSING_MESSAGE_THRESHOLD_MS) {
+          return sanitized.slice(0, -1); // Remove last message
+        }
+      }
+    }
+
+    return sanitized;
   }
 }

@@ -95,10 +95,33 @@ export class SWTBuilder {
    * Create a SessionWithTranscript object from session data and messages
    */
   static createSWT(session: any, messages: any[]): SessionWithTranscript {
-    // Convert messages to Message objects and filter out nulls
-    const messageObjects = messages
-      .map(msg => this.createMessage(msg))
-      .filter((msg): msg is Message => msg !== null);
+    // First, prepare messages with timestamps for sanitization
+    const messagesWithTimestamps = messages.map(msg => {
+      // Handle already converted messages
+      if (msg.message && msg.timestamp && msg.message_type) {
+        return msg;
+      }
+      
+      // Handle raw Kore.ai messages
+      const messageText = this.extractMessageText(msg);
+      if (!messageText) return null;
+      
+      return {
+        message: messageText,
+        message_type: msg.type === 'incoming' ? 'user' as const : 'bot' as const,
+        timestamp: msg.createdOn || msg.timestamp || ''
+      };
+    }).filter(Boolean);
+
+    // Apply timestamp-aware sanitization
+    const sanitizedMessages = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messagesWithTimestamps);
+    
+    // Convert to Message objects
+    const messageObjects: Message[] = sanitizedMessages.map(msg => ({
+      timestamp: msg.timestamp || '',
+      message_type: msg.message_type,
+      message: msg.message
+    }));
 
     // Sort messages by timestamp
     messageObjects.sort((a, b) => a.timestamp.localeCompare(b.timestamp));

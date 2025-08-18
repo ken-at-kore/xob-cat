@@ -586,6 +586,144 @@ describe('TranscriptSanitizationService', () => {
     });
   });
 
+  describe('Pattern 7: Closing Message Filtering', () => {
+    const closingMessage = 'I am closing our current conversation as I have not received any input from you. We can start over when you need.';
+    
+    it('should filter closing message when it is the last message and occurs >8s after previous', () => {
+      const messages = [
+        { message: 'How can I help you?', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00Z' },
+        { message: 'I need help with my account', message_type: 'user' as const, timestamp: '2025-01-01T10:00:05Z' },
+        { message: 'I can help with that', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:10Z' },
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:19Z' } // 9s after previous
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(3); // Closing message filtered out
+      expect(results[results.length - 1]?.message).toBe('I can help with that');
+    });
+
+    it('should NOT filter closing message if it occurs <=8s after previous', () => {
+      const messages = [
+        { message: 'How can I help you?', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00Z' },
+        { message: 'I need help', message_type: 'user' as const, timestamp: '2025-01-01T10:00:05Z' },
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:13Z' } // 8s after previous
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(3); // Closing message NOT filtered
+      expect(results[results.length - 1]?.message).toBe(closingMessage);
+    });
+
+    it('should NOT filter closing message if it is not the last message', () => {
+      const messages = [
+        { message: 'How can I help you?', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00Z' },
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:10Z' }, // 10s after but not last
+        { message: 'Actually, wait...', message_type: 'user' as const, timestamp: '2025-01-01T10:00:12Z' }
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(3); // Closing message NOT filtered
+      expect(results[1]?.message).toBe(closingMessage);
+    });
+
+    it('should filter closing message with extra whitespace when last and >8s', () => {
+      const messages = [
+        { message: 'Hello', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00Z' },
+        { message: '  I am closing our current conversation as I have not received any input from you. We can start over when you need.  ', 
+          message_type: 'bot' as const, timestamp: '2025-01-01T10:00:10Z' } // 10s after, with whitespace
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(1); // Closing message filtered out
+      expect(results[0]?.message).toBe('Hello');
+    });
+
+    it('should handle closing message as only message in session', () => {
+      const messages = [
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00Z' }
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(1); // Not filtered when it's the only message
+      expect(results[0]?.message).toBe(closingMessage);
+    });
+
+    it('should handle messages without timestamps gracefully', () => {
+      const messages = [
+        { message: 'Hello', message_type: 'bot' as const },
+        { message: closingMessage, message_type: 'bot' as const }
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(2); // Not filtered when timestamps missing
+    });
+
+    it('should handle malformed timestamps gracefully', () => {
+      const messages = [
+        { message: 'Hello', message_type: 'bot' as const, timestamp: 'invalid-timestamp' },
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:10Z' }
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(2); // Not filtered when timestamps invalid
+    });
+
+    it('should NOT filter if closing message is from user', () => {
+      const messages = [
+        { message: 'Hello', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00Z' },
+        { message: closingMessage, message_type: 'user' as const, timestamp: '2025-01-01T10:00:10Z' } // User said it
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(2); // Not filtered for user messages
+    });
+
+    it('should handle combined with other sanitization patterns', () => {
+      const messages = [
+        { message: 'Welcome Task', message_type: 'user' as const, timestamp: '2025-01-01T10:00:00Z' },
+        { message: '<speak>Hello</speak>', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:01Z' },
+        { message: 'MAX_NO_INPUT', message_type: 'user' as const, timestamp: '2025-01-01T10:00:05Z' },
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:15Z' } // 10s after MAX_NO_INPUT
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(2); // Welcome Task and closing message filtered, MAX_NO_INPUT replaced
+      expect(results[0]?.message).toBe('Hello');
+      expect(results[1]?.message).toBe('<User is silent>');
+    });
+
+    it('should handle exactly 8 seconds difference (boundary test)', () => {
+      const messages = [
+        { message: 'Hello', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00.000Z' },
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:08.000Z' } // Exactly 8s
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(2); // NOT filtered at exactly 8s
+    });
+
+    it('should handle 8.001 seconds difference (just over boundary)', () => {
+      const messages = [
+        { message: 'Hello', message_type: 'bot' as const, timestamp: '2025-01-01T10:00:00.000Z' },
+        { message: closingMessage, message_type: 'bot' as const, timestamp: '2025-01-01T10:00:08.001Z' } // 8.001s
+      ];
+
+      const results = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      expect(results).toHaveLength(1); // Filtered at 8.001s
+    });
+  });
+
   describe('sanitizeMessages (batch processing)', () => {
     it('should sanitize multiple messages', () => {
       const messages = [

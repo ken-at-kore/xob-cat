@@ -1,5 +1,6 @@
 import { KoreApiService } from '../../services/koreApiService';
 import { SWTBuilder } from '../../models/swtModels';
+import { TranscriptSanitizationService } from '../../services/transcriptSanitizationService';
 
 describe('Transcript Sanitization Integration', () => {
   describe('KoreApiService integration', () => {
@@ -273,6 +274,114 @@ describe('Transcript Sanitization Integration', () => {
         message_type: 'bot',
         message: 'Welcome to our service!'
       });
+    });
+  });
+
+  describe('Closing message filtering', () => {
+    const closingMessage = 'I am closing our current conversation as I have not received any input from you. We can start over when you need.';
+
+    it('should handle closing message in timestamp-aware sanitization', () => {
+      // Test that timestamp-aware sanitization works with messages from KoreApiService format
+      const messages = [
+        {
+          message: 'How can I help you today?',
+          timestamp: '2025-01-01T10:00:00Z',
+          message_type: 'bot' as const
+        },
+        {
+          message: 'I need help',
+          timestamp: '2025-01-01T10:00:05Z',
+          message_type: 'user' as const
+        },
+        {
+          message: closingMessage,
+          timestamp: '2025-01-01T10:00:20Z', // 15s after previous
+          message_type: 'bot' as const
+        }
+      ];
+
+      const sanitizedMessages = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messages);
+      
+      // Should have filtered out the closing message
+      expect(sanitizedMessages).toHaveLength(2);
+      expect(sanitizedMessages[sanitizedMessages.length - 1]?.message).toBe('I need help');
+    });
+
+    it('should NOT filter closing message when <=8s after previous in SWTBuilder', () => {
+      const session = {
+        session_id: 'test-session',
+        user_id: 'test-user',
+        start_time: '2025-01-01T10:00:00Z',
+        end_time: '2025-01-01T10:00:15Z',
+        containment_type: 'selfService' as const
+      };
+
+      const messages = [
+        {
+          message: 'How can I help?',
+          timestamp: '2025-01-01T10:00:00Z',
+          message_type: 'bot' as const
+        },
+        {
+          message: 'I need assistance',
+          timestamp: '2025-01-01T10:00:05Z',
+          message_type: 'user' as const
+        },
+        {
+          message: closingMessage,
+          timestamp: '2025-01-01T10:00:13Z', // 8s after previous
+          message_type: 'bot' as const
+        }
+      ];
+
+      const swt = SWTBuilder.createSWT(session, messages);
+
+      // Should NOT filter when <= 8s
+      expect(swt.messages).toHaveLength(3);
+      expect(swt.messages[2]?.message).toBe(closingMessage);
+    });
+
+    it('should filter closing message combined with other sanitization patterns', () => {
+      const session = {
+        session_id: 'test-session',
+        user_id: 'test-user',
+        start_time: '2025-01-01T10:00:00Z',
+        end_time: '2025-01-01T10:00:30Z',
+        containment_type: 'dropOff' as const
+      };
+
+      const messages = [
+        {
+          message: 'Welcome Task',
+          timestamp: '2025-01-01T10:00:00Z',
+          message_type: 'user' as const
+        },
+        {
+          message: '<speak>Hello, how can I help?</speak>',
+          timestamp: '2025-01-01T10:00:01Z',
+          message_type: 'bot' as const
+        },
+        {
+          message: 'MAX_NO_INPUT',
+          timestamp: '2025-01-01T10:00:10Z',
+          message_type: 'user' as const
+        },
+        {
+          message: closingMessage,
+          timestamp: '2025-01-01T10:00:25Z', // 15s after MAX_NO_INPUT
+          message_type: 'bot' as const
+        }
+      ];
+
+      const swt = SWTBuilder.createSWT(session, messages);
+
+      // Should have filtered out Welcome Task and closing message, sanitized SSML and MAX_NO_INPUT
+      expect(swt.messages).toHaveLength(2);
+      expect(swt.messages[0]?.message).toBe('Hello, how can I help?');
+      expect(swt.messages[1]?.message).toBe('<User is silent>');
+      expect(swt.message_count).toBe(2);
+      expect(swt.user_message_count).toBe(1);
+      expect(swt.bot_message_count).toBe(1);
     });
   });
 

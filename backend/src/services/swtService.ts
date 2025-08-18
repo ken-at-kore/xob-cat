@@ -129,17 +129,43 @@ export class SWTService {
     const populatedSWTs = swts.map(swt => {
       if (targetSessionIds.includes(swt.session_id)) {
         const sessionMessages = messagesBySession[swt.session_id] || [];
-        // Apply sanitization and filter out null results
-        const sanitizedMessages = sessionMessages
-          .map(msg => this.convertKoreMessageToSWTMessage(msg))
-          .filter(msg => msg !== null);
+        
+        // First convert messages to a format suitable for timestamp-aware sanitization
+        const messagesWithTimestamps = sessionMessages.map(msg => {
+          // Extract text from components
+          let messageText = '';
+          for (const component of msg.components || []) {
+            if (component.cT === 'text' && component.data?.text) {
+              messageText = component.data.text;
+              break;
+            }
+          }
+          
+          return {
+            message: messageText,
+            message_type: msg.type === 'incoming' ? 'user' as const : 'bot' as const,
+            timestamp: msg.createdOn
+          };
+        });
+        
+        // Apply timestamp-aware sanitization (includes closing message filtering)
+        const sanitizedMessages = TranscriptSanitizationService.sanitizeMessagesWithTimestamps(messagesWithTimestamps);
+        
+        // Convert to final message format
+        const finalMessages = sanitizedMessages.map((msg, index) => ({
+          messageId: `${swt.session_id}_${Date.now()}_${index}`,
+          message: msg.message,
+          message_type: msg.message_type,
+          timestamp: msg.timestamp || '',
+          createdOn: msg.timestamp || ''
+        }));
         
         // Recalculate computed fields based on actual messages
-        const computedFields = this.calculateComputedFields(swt, sanitizedMessages);
+        const computedFields = this.calculateComputedFields(swt, finalMessages);
         
         return {
           ...swt,
-          messages: sanitizedMessages,
+          messages: finalMessages,
           ...computedFields
         };
       }
