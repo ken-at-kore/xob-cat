@@ -1,0 +1,1 @@
+deploy to production. read '/xobcat/DEPLOYMENT.md'. read the doc to determine how to deploy the frontend and the backend. then read the production testing & smoke tests section and do the smoke test workflow.
