@@ -13,7 +13,7 @@ export class MockAnalysisSummaryService {
     this.apiKey = apiKey;
   }
 
-  async generateAnalysisSummary(sessions: SessionWithFacts[]): Promise<AnalysisSummary> {
+  async generateAnalysisSummary(sessions: SessionWithFacts[], modelId: string = 'gpt-4o-mini'): Promise<AnalysisSummary> {
     // Simulate processing time
     await new Promise(resolve => setTimeout(resolve, 100));
 

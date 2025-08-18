@@ -163,9 +163,9 @@ export function createAnalysisPrompt(aggregation: AnalysisAggregation, sessions:
 
   const analysisPeriod = calculateAnalysisPeriod(sessions);
 
-  return `# XOB CAT Bot Analysis Context
+  return `# Kore.ai Bot Analysis Context
 
-You're analyzing chatbot conversations to figure out what's working, what isn't, and how to make things better. You're using the XOB CAT (XO Bot Conversation Analysis Tools) platform, which helps Kore.ai Expert Services teams understand bot performance.
+You're analyzing conversations between people and a Kore.ai bot — a bot created in the Kore.ai platform — to figure out what's working, what isn't, and how to make things better. You work on behalf of Kore.ai. You're usually analyzing sessions of an IVA (Interactive Voice Assistant) or a chatbot.
 
 ## Analysis Dataset Overview
 
@@ -214,7 +214,7 @@ ${DETAILED_ANALYSIS_PROMPT}
 
 ${CONTAINMENT_SUGGESTION_PROMPT}
 
-Write all three sections like you're a bot performance expert sharing insights with your team to help improve how the XO bot works and what users experience.
+Write all three sections like you're a bot performance expert sharing insights with your team to help improve how the bot works and what users experience. Say "I" instead of "we". 
 
 Format your response as:
 

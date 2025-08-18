@@ -395,7 +395,7 @@ export class AutoAnalyzeService {
 
       try {
         const analysisSummaryService = new AnalysisSummaryService(session.config.openaiApiKey);
-        const analysisSummary = await analysisSummaryService.generateAnalysisSummary(allResults);
+        const analysisSummary = await analysisSummaryService.generateAnalysisSummary(allResults, session.config.modelId);
         session.analysisSummary = analysisSummary;
 
         // Update token usage to include summary generation

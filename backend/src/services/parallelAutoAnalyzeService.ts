@@ -482,11 +482,11 @@ export class ParallelAutoAnalyzeService {
       if (serviceType === ServiceType.MOCK || serviceType === ServiceType.HYBRID) {
         console.log('[ParallelAutoAnalyzeService] Using mock analysis summary service');
         const mockAnalysisSummaryService = new MockAnalysisSummaryService(session.config.openaiApiKey);
-        analysisSummary = await mockAnalysisSummaryService.generateAnalysisSummary(resolvedSessions);
+        analysisSummary = await mockAnalysisSummaryService.generateAnalysisSummary(resolvedSessions, session.config.modelId);
       } else {
         console.log('[ParallelAutoAnalyzeService] Using real analysis summary service');
         const analysisSummaryService = new AnalysisSummaryService(session.config.openaiApiKey);
-        analysisSummary = await analysisSummaryService.generateAnalysisSummary(resolvedSessions);
+        analysisSummary = await analysisSummaryService.generateAnalysisSummary(resolvedSessions, session.config.modelId);
       }
       
       session.analysisSummary = analysisSummary;

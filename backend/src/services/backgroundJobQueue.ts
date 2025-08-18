@@ -347,7 +347,7 @@ export class BackgroundJobQueue {
       try {
         const { AnalysisSummaryService } = await import('./analysisSummaryService');
         const analysisSummaryService = new AnalysisSummaryService(job.config.openaiApiKey);
-        analysisSummary = await analysisSummaryService.generateAnalysisSummary(allResults);
+        analysisSummary = await analysisSummaryService.generateAnalysisSummary(allResults, job.config.modelId);
 
         // Update token usage to include summary generation
         totalTokenUsage.totalTokens += 1000; // Approximate tokens for summary generation

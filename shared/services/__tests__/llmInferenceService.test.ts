@@ -289,6 +289,66 @@ Test suggestion`;
     });
   });
 
+  describe('model configuration', () => {
+    it('should use the configurable model when generating analysis summary', async () => {
+      const mockResponse = `# ANALYSIS_OVERVIEW
+Test overview
+# ANALYSIS_SUMMARY
+Test summary
+# CONTAINMENT_SUGGESTION
+Test suggestion`;
+
+      mockOpenAI.chat.completions.create.mockResolvedValue({
+        choices: [{
+          message: { content: mockResponse }
+        }],
+        usage: { total_tokens: 1500 }
+      });
+
+      // Test with different model configurations
+      const testModelId = 'gpt-4o';
+      await service.generateAnalysisSummary(mockSessions, testModelId);
+
+      // Verify the correct model was used in the OpenAI call
+      expect(mockOpenAI.chat.completions.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          model: testModelId,
+          messages: expect.any(Array),
+          temperature: expect.any(Number),
+          max_tokens: expect.any(Number)
+        })
+      );
+    });
+
+    it('should default to gpt-4o-mini when no model is specified', async () => {
+      const mockResponse = `# ANALYSIS_OVERVIEW
+Test overview
+# ANALYSIS_SUMMARY
+Test summary
+# CONTAINMENT_SUGGESTION
+Test suggestion`;
+
+      mockOpenAI.chat.completions.create.mockResolvedValue({
+        choices: [{
+          message: { content: mockResponse }
+        }],
+        usage: { total_tokens: 1500 }
+      });
+
+      await service.generateAnalysisSummary(mockSessions);
+
+      // Verify the default model was used
+      expect(mockOpenAI.chat.completions.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          model: 'gpt-4o-mini',
+          messages: expect.any(Array),
+          temperature: expect.any(Number),
+          max_tokens: expect.any(Number)
+        })
+      );
+    });
+  });
+
   describe('edge cases', () => {
     it('should handle sessions with missing duration', () => {
       const sessionsWithoutDuration = mockSessions.map(s => {

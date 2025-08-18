@@ -106,9 +106,9 @@ export class LLMInferenceService {
   }
 
   /**
-   * Generate analysis summaries using OpenAI GPT-4o-mini
+   * Generate analysis summaries using OpenAI
    */
-  async generateAnalysisSummary(sessions: SessionWithFacts[]): Promise<LLMAnalysisResponse> {
+  async generateAnalysisSummary(sessions: SessionWithFacts[], modelId: string = 'gpt-4o-mini'): Promise<LLMAnalysisResponse> {
     if (!sessions || sessions.length === 0) {
       throw new Error('No sessions provided for analysis');
     }
@@ -121,7 +121,7 @@ export class LLMInferenceService {
     
     try {
       const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: modelId,
         messages: [
           {
             role: 'user',
@@ -144,7 +144,7 @@ export class LLMInferenceService {
       return {
         ...parsedResponse,
         tokensUsed: completion.usage?.total_tokens,
-        cost: this.calculateCost(completion.usage?.total_tokens || 0)
+        cost: this.calculateCost(completion.usage?.total_tokens || 0, modelId)
       };
     } catch (error) {
       console.error('Error calling OpenAI API:', error);
@@ -177,15 +177,31 @@ export class LLMInferenceService {
   }
 
   /**
-   * Calculate cost based on token usage
-   * GPT-4o-mini pricing: $0.00015 per 1K input tokens, $0.0006 per 1K output tokens
+   * Calculate cost based on token usage for different models
    * Assuming roughly 60% input, 40% output for analysis tasks
    */
-  private calculateCost(totalTokens: number): number {
+  private calculateCost(totalTokens: number, modelId: string = 'gpt-4o-mini'): number {
     const inputTokens = totalTokens * 0.6;
     const outputTokens = totalTokens * 0.4;
-    const inputCost = (inputTokens / 1000) * 0.00015;
-    const outputCost = (outputTokens / 1000) * 0.0006;
+    
+    // Use model-specific pricing
+    let inputPricePerMillion: number;
+    let outputPricePerMillion: number;
+    
+    switch (modelId) {
+      case 'gpt-4o':
+        inputPricePerMillion = 5.0; // $5.00 per 1M input tokens
+        outputPricePerMillion = 15.0; // $15.00 per 1M output tokens
+        break;
+      case 'gpt-4o-mini':
+      default:
+        inputPricePerMillion = 0.15; // $0.15 per 1M input tokens
+        outputPricePerMillion = 0.6;  // $0.60 per 1M output tokens
+        break;
+    }
+    
+    const inputCost = (inputTokens / 1_000_000) * inputPricePerMillion;
+    const outputCost = (outputTokens / 1_000_000) * outputPricePerMillion;
     return inputCost + outputCost;
   }
 
