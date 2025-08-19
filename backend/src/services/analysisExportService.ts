@@ -49,7 +49,8 @@ export class AnalysisExportService {
         sessionCount: config.sessionCount,
         requestedAt,
         completedAt,
-        ...(results.botId && { botId: results.botId })
+        ...(results.botId && { botId: results.botId }),
+        ...(config.additionalContext && { additionalContext: config.additionalContext })
       },
       sessions,
       summary: {

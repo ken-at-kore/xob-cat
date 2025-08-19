@@ -30,7 +30,8 @@ export class BatchAnalysisService {
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
     openaiApiKey: string,
-    modelId: string = 'gpt-4o-mini'
+    modelId: string = 'gpt-4o-mini',
+    additionalContext?: string
   ): Promise<BatchProcessingResult> {
     this.batchCounter++;
     const startTime = Date.now();
@@ -39,6 +40,7 @@ export class BatchAnalysisService {
     console.log(`⏱️  Batch Start: ${new Date().toISOString()}`);
     console.log(`📊 Sessions in Batch: ${sessions.length}`);
     console.log(`🧠 Model: ${modelId}`);
+    console.log(`🔧 Additional Context: ${additionalContext ? `"${additionalContext.substring(0, 100)}..."` : 'None'}`);
     console.log(`🔧 Existing Classifications:`);
     console.log(`   • Intents: ${existingClassifications.generalIntent.size}`);
     console.log(`   • Reasons: ${existingClassifications.transferReason.size}`);
@@ -80,7 +82,8 @@ export class BatchAnalysisService {
           regularSessions,
           updatedClassifications,
           openaiApiKey,
-          modelId
+          modelId,
+          additionalContext
         );
         const regularBatchDuration = Date.now() - regularBatchStartTime;
         
@@ -108,7 +111,8 @@ export class BatchAnalysisService {
               [oversizedSession],
               updatedClassifications,
               openaiApiKey,
-              modelId
+              modelId,
+              additionalContext
             );
             const sessionDuration = Date.now() - sessionStartTime;
             
@@ -211,7 +215,8 @@ export class BatchAnalysisService {
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
     openaiApiKey: string,
-    modelId: string = 'gpt-4o-mini'
+    modelId: string = 'gpt-4o-mini',
+    additionalContext?: string
   ): Promise<{
     sessions: SessionWithFacts[];
     tokenUsage: BatchTokenUsage;
@@ -225,7 +230,8 @@ export class BatchAnalysisService {
       sessions,
       existingClassifications,
       openaiApiKey,
-      modelId
+      modelId,
+      additionalContext
     );
     
     const openaiCallDuration = Date.now() - openaiCallStartTime;

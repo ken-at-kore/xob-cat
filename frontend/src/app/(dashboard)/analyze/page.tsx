@@ -8,6 +8,7 @@ import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Label } from '../../../components/ui/label';
 import { Input } from '../../../components/ui/input';
+import { Textarea } from '../../../components/ui/textarea';
 import { Badge } from '../../../components/ui/badge';
 import { Progress } from '../../../components/ui/progress';
 import { Alert, AlertDescription } from '../../../components/ui/alert';
@@ -83,6 +84,7 @@ interface ConfigFormData {
   sessionCount: number;
   openaiApiKey: string;
   modelId: string;
+  additionalContext: string;
 }
 
 const TIME_MAPPINGS: Record<TimeOfDay, string> = {
@@ -130,7 +132,8 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
       timeOfDay: 'morning',
       sessionCount: 100,
       openaiApiKey: '',
-      modelId: 'gpt-4.1' // Default to GPT-4.1 (base)
+      modelId: 'gpt-4.1', // Default to GPT-4.1 (base)
+      additionalContext: ''
     };
   });
 
@@ -186,7 +189,8 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
         startTime: TIME_MAPPINGS[formData.timeOfDay],
         sessionCount: formData.sessionCount,
         openaiApiKey: formData.openaiApiKey,
-        modelId: formData.modelId
+        modelId: formData.modelId,
+        ...(formData.additionalContext.trim() && { additionalContext: formData.additionalContext.trim() })
       };
 
       const response = await autoAnalyze.startAnalysis(config);
@@ -304,6 +308,23 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
                 Your OpenAI API key for AI analysis. This is not stored and only used for this analysis. 
                 The cost can't be precisely determined in advance, but typically costs about 25 cents 
                 depending on the length of the sessions analyzed.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="additionalContext">Additional Context & Instructions (Optional)</Label>
+              <Textarea
+                id="additionalContext"
+                name="additionalContext"
+                rows={2}
+                maxLength={1500}
+                placeholder="The bot is an Acme Labs IVA. It helps callers track lab results. Callers call a DTMF IVR first to get to this bot."
+                value={formData.additionalContext}
+                onChange={(e) => handleInputChange('additionalContext', e.target.value)}
+                className="resize-none"
+              />
+              <p className="text-xs text-gray-500">
+                Provide context about your bot, company, or specific analysis instructions ({formData.additionalContext.length}/1500 characters)
               </p>
             </div>
 

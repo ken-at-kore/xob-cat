@@ -156,7 +156,8 @@ export class RealOpenAIService implements IOpenAIService {
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
     openaiApiKey: string,
-    modelId: string = 'gpt-4o-mini'
+    modelId: string = 'gpt-4o-mini',
+    additionalContext?: string
   ): Promise<{
     sessions: any[];
     promptTokens: number;
@@ -165,7 +166,7 @@ export class RealOpenAIService implements IOpenAIService {
     cost: number;
     model: string;
   }> {
-    return this.openAIAnalysisService.analyzeBatch(sessions, existingClassifications, openaiApiKey, modelId);
+    return this.openAIAnalysisService.analyzeBatch(sessions, existingClassifications, openaiApiKey, modelId, additionalContext);
   }
 
   calculateCost(promptTokens: number, completionTokens: number, modelId: string): number {

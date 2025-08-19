@@ -182,6 +182,7 @@ export interface AnalysisConfig {
   sessionCount: number; // 10-1000
   openaiApiKey: string;
   modelId: string; // GPT model ID
+  additionalContext?: string; // Optional user-provided context (max 1500 chars)
 }
 
 export interface SessionWithFacts extends SessionWithTranscript {
@@ -257,6 +258,7 @@ export interface AnalysisResults {
   sessions: SessionWithFacts[];
   analysisSummary?: AnalysisSummary | undefined;
   botId?: string; // Bot ID used for analysis
+  additionalContext?: string; // User-provided context for analysis
 }
 
 export interface BatchTokenUsage {
@@ -384,6 +386,7 @@ export interface AnalysisExportFile {
     requestedAt: string;
     completedAt: string;
     botId?: string; // Bot ID used for analysis
+    additionalContext?: string; // User-provided context for analysis
   };
   sessions: SessionWithFacts[];
   summary: AnalysisExportSummary;
@@ -504,6 +507,7 @@ export interface StreamConfig {
   modelId: string;
   apiKey: string;
   maxSessionsPerCall: number;
+  additionalContext?: string;
 }
 
 export interface StreamProgress {

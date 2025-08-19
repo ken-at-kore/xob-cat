@@ -68,7 +68,8 @@ IMPORTANT:
  */
 export function createSessionAnalysisPrompt(
   sessions: SessionWithTranscript[],
-  existingClassifications: ExistingClassifications
+  existingClassifications: ExistingClassifications,
+  additionalContext?: string
 ): string {
   // Build classification guidance based on existing classifications
   let intentGuidance = '';
@@ -102,8 +103,13 @@ Transcript:
 ${transcript}`;
   }).join('\n\n');
 
-  return `Analyze the following session transcripts and classify each session according to the specified criteria.
+  // Add additional context if provided
+  const contextSection = additionalContext 
+    ? `\nAdditional Context and Instructions from User: ${additionalContext}\n`
+    : '';
 
+  return `Analyze the following session transcripts and classify each session according to the specified criteria.
+${contextSection}
 ${intentGuidance}${transferReasonGuidance}${dropOffGuidance}
 
 ${CLASSIFICATION_INSTRUCTIONS}

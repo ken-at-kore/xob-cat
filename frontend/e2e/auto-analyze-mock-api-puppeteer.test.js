@@ -43,7 +43,8 @@ const MOCK_ANALYSIS_CONFIG = {
   startTime: '09:00',       // Backward compatibility - will be mapped to morning
   sessionCount: '10',       // Increased to 10 to potentially trigger parallel processing
   openaiApiKey: 'sk-mock-openai-key-for-testing',  // Use sk- prefix to pass validation
-  modelId: 'gpt-4.1-nano'   // Select the nano model for testing (correct ID)
+  modelId: 'gpt-4.1-nano',  // Select the nano model for testing (correct ID)
+  additionalContext: 'This is a healthcare IVA that helps members check claim status. The bot uses member ID for authentication.'
 };
 
 async function runAutoAnalyzeMockTest() {
@@ -106,7 +107,8 @@ async function runAutoAnalyzeMockTest() {
     // Step 9: Validate report content
     const validationResults = await validateReport(page, {
       expectedBotId: MOCK_CREDENTIALS.botId,
-      expectedSessionCount: parseInt(MOCK_ANALYSIS_CONFIG.sessionCount)
+      expectedSessionCount: parseInt(MOCK_ANALYSIS_CONFIG.sessionCount),
+      expectedContext: MOCK_ANALYSIS_CONFIG.additionalContext
     });
     
     // Step 10: Test session details dialog

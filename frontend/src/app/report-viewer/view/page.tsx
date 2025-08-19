@@ -81,7 +81,8 @@ export default function ReportViewerViewPage() {
         averageMessagesPerSession: 0 // Not included in export
       }
     } : undefined,
-    botId: reportData.analysisConfig.botId
+    botId: reportData.analysisConfig.botId,
+    additionalContext: reportData.analysisConfig.additionalContext
   };
 
   return (

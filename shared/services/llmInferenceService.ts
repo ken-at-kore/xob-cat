@@ -108,7 +108,7 @@ export class LLMInferenceService {
   /**
    * Generate analysis summaries using OpenAI
    */
-  async generateAnalysisSummary(sessions: SessionWithFacts[], modelId: string = 'gpt-4o-mini'): Promise<LLMAnalysisResponse> {
+  async generateAnalysisSummary(sessions: SessionWithFacts[], modelId: string = 'gpt-4o-mini', additionalContext?: string): Promise<LLMAnalysisResponse> {
     if (!sessions || sessions.length === 0) {
       throw new Error('No sessions provided for analysis');
     }
@@ -117,7 +117,7 @@ export class LLMInferenceService {
     const aggregation = this.aggregateAnalysisData(sessions);
     
     // Create prompt using centralized prompt engineering
-    const prompt = createAnalysisPrompt(aggregation, sessions);
+    const prompt = createAnalysisPrompt(aggregation, sessions, additionalContext);
     
     // Debug logging if enabled
     if (process.env.HYBRID_SUMMARY_DEBUG === 'true') {
@@ -126,6 +126,7 @@ export class LLMInferenceService {
       console.log('Model:', modelId);
       console.log('Temperature:', 0.7);
       console.log('Max Tokens:', 2000);
+      console.log('Additional Context:', additionalContext || 'none');
       console.log('Prompt Length:', prompt.length, 'characters');
       console.log('\n📝 [DEBUG] Full Prompt Being Sent to OpenAI:');
       console.log('─'.repeat(80));

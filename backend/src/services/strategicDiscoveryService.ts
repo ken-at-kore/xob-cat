@@ -32,7 +32,8 @@ export class StrategicDiscoveryService {
     config: Partial<DiscoveryConfig> = {},
     progressCallback?: DiscoveryProgressCallback,
     openaiApiKey?: string,
-    modelId?: string
+    modelId?: string,
+    additionalContext?: string
   ): Promise<DiscoveryResult> {
     const fullConfig = { ...this.DEFAULT_CONFIG, ...config };
     
@@ -55,7 +56,8 @@ export class StrategicDiscoveryService {
       fullConfig,
       progressCallback,
       openaiApiKey,
-      modelId
+      modelId,
+      additionalContext
     );
 
     // Calculate remaining sessions
@@ -152,7 +154,8 @@ export class StrategicDiscoveryService {
     config: DiscoveryConfig,
     progressCallback?: DiscoveryProgressCallback,
     openaiApiKey?: string,
-    modelId?: string
+    modelId?: string,
+    additionalContext?: string
   ): Promise<{
     classifications: ExistingClassifications;
     processedSessions: SessionWithFacts[];
@@ -197,7 +200,8 @@ export class StrategicDiscoveryService {
           batch,
           classifications,
           openaiApiKey || process.env.OPENAI_API_KEY || '',
-          modelId || 'gpt-4o-mini' // Default model for discovery
+          modelId || 'gpt-4o-mini', // Default model for discovery
+          additionalContext
         );
 
         allProcessedSessions.push(...batchResult.results);

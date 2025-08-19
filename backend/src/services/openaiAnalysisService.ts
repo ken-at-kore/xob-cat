@@ -34,11 +34,12 @@ export class OpenAIAnalysisService {
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
     apiKey: string,
-    modelId: string = 'gpt-4o-mini'
+    modelId: string = 'gpt-4o-mini',
+    additionalContext?: string
   ): Promise<OpenAIBatchResult> {
     const client = new OpenAI({ apiKey });
     
-    const prompt = createSessionAnalysisPrompt(sessions, existingClassifications);
+    const prompt = createSessionAnalysisPrompt(sessions, existingClassifications, additionalContext);
 
     try {
       // Get the actual API model string from our model configuration
@@ -54,6 +55,7 @@ export class OpenAIAnalysisService {
           sessionCount: sessions.length,
           apiKey: apiKey.substring(0, 8) + '...',
           promptLength: prompt.length,
+          additionalContext: additionalContext || 'none',
           existingClassifications: {
             intents: existingClassifications.generalIntent.size,
             transferReasons: existingClassifications.transferReason.size,

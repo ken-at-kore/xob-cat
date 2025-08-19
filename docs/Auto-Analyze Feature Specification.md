@@ -37,6 +37,7 @@ Auto-Analyze provides intelligent bot performance insights by automatically anal
     - Afternoon (1:00 PM Eastern Time) 
     - Evening (6:00 PM Eastern Time)
   - **OpenAI API Key**: Secure text input with cost information (~25 cents depending on session length)
+  - **Additional Context & Instructions** (Optional): Text area (2 lines tall, max 1500 characters) for providing context about the bot, company, or specific analysis instructions. Placeholder: "The bot is an Acme Labs IVA. It helps callers track lab results. Callers call a DTMF IVR first to get to this bot."
   - **Advanced Options** (Progressive Disclosure with chevron toggle):
     - **Number of Sessions**: Number input (default: 100, max: 1000, min: 5)
     - **GPT Model**: Model selection dropdown
@@ -107,6 +108,7 @@ Auto-Analyze provides intelligent bot performance insights by automatically anal
 - Export capabilities (CSV, JSON)
 - Token usage summary and cost breakdown
 - Classification consistency statistics
+- Additional context display (if provided) - shown at bottom of report in de-emphasized text
 
 ## Technical Architecture
 
@@ -155,6 +157,7 @@ interface AnalysisConfig {
   sessionCount: number; // 5-1000
   openaiApiKey: string;
   model?: string; // GPT model selection (default: gpt-4o-mini)
+  additionalContext?: string; // Optional user-provided context for analysis (max 1500 chars)
 }
 
 // Time mappings for Eastern Time

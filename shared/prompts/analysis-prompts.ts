@@ -129,7 +129,7 @@ Give us the one change that would make the biggest difference in keeping more co
 /**
  * Create the comprehensive analysis prompt
  */
-export function createAnalysisPrompt(aggregation: AnalysisAggregation, sessions: Array<{ start_time: string }>): string {
+export function createAnalysisPrompt(aggregation: AnalysisAggregation, sessions: Array<{ start_time: string }>, additionalContext?: string): string {
   // Helper function to format breakdowns
   const formatBreakdown = (breakdown: Record<string, number>) => {
     return Object.entries(breakdown)
@@ -162,10 +162,16 @@ export function createAnalysisPrompt(aggregation: AnalysisAggregation, sessions:
   };
 
   const analysisPeriod = calculateAnalysisPeriod(sessions);
+  
+  // Add additional context if provided
+  const contextSection = additionalContext 
+    ? `\nAdditional Context and Instructions from User: ${additionalContext}\n`
+    : '';
 
   return `# Kore.ai Bot Analysis Context
 
 You're analyzing conversations between people and a Kore.ai bot — a bot created in the Kore.ai platform — to figure out what's working, what isn't, and how to make things better. You work on behalf of Kore.ai. You're usually analyzing sessions of an IVA (Interactive Voice Assistant) or a chatbot.
+${contextSection}
 
 ## Analysis Dataset Overview
 

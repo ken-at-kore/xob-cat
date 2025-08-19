@@ -265,7 +265,8 @@ export class StreamProcessingService {
       sessions,
       streamConfig.baseClassifications,
       streamConfig.apiKey,
-      streamConfig.modelId
+      streamConfig.modelId,
+      streamConfig.additionalContext
     );
 
     // Validate the response
@@ -307,7 +308,8 @@ export class StreamProcessingService {
             remainingMissingSessions,
             streamConfig.baseClassifications,
             streamConfig.apiKey,
-            streamConfig.modelId
+            streamConfig.modelId,
+            streamConfig.additionalContext
           );
 
           // Validate retry response
@@ -398,7 +400,8 @@ export class StreamProcessingService {
     sessions: SessionWithTranscript[],
     baseClassifications: ExistingClassifications,
     apiKey: string,
-    modelId: string
+    modelId: string,
+    additionalContext?: string
   ): Promise<{
     llmResponse: BatchTokenUsage & {
       sessions: Array<{
@@ -426,7 +429,8 @@ export class StreamProcessingService {
       sessions,
       baseClassifications,
       apiKey,
-      modelId
+      modelId,
+      additionalContext
     );
     
     const apiCallDuration = Date.now() - apiCallStartTime;

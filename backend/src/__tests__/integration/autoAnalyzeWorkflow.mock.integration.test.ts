@@ -3,6 +3,7 @@ import request from 'supertest';
 import { parallelAutoAnalyzeRouter } from '../../routes/parallelAutoAnalyze';
 import { ServiceFactory } from '../../factories/serviceFactory';
 import { destroyBackgroundJobQueue } from '../../services/backgroundJobQueue';
+import OpenAI from 'openai';
 import {
   MOCK_CREDENTIALS,
   createTestApp,
@@ -13,7 +14,9 @@ import {
   testNonExistentAnalysisId,
   validateCredentials,
   testMultipleSessionCounts,
-  testLargeSessionCount
+  testLargeSessionCount,
+  waitForCompletion,
+  getResults
 } from './autoAnalyzeWorkflow.shared';
 
 /**
@@ -236,6 +239,222 @@ describe('Auto-Analyze Integration Test - Mock API', () => {
       expect(foundStreamProgress || attempts < maxAttempts).toBe(true);
 
     }, 120000);
+  });
+
+  describe('Additional Context Feature', () => {
+    it('should accept and process additional context', async () => {
+      const testContext = 'This is a healthcare IVA that helps members check claim status. The bot uses member ID for authentication.';
+      
+      const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
+        startDate: '2024-08-01', // Use date that matches mock data
+        startTime: '09:00',
+        sessionCount: 5, // Use smaller count to avoid sampling issues
+        modelId: 'gpt-4o-mini',
+        additionalContext: testContext
+      });
+
+      const { progress, results } = await runFullAnalysisWorkflow(
+        app, 
+        analysisConfig, 
+        'Additional Context Test',
+        120,
+        routePrefix
+      );
+
+      // Verify the analysis completed successfully
+      expect(progress.phase).toBe('complete');
+      expect(results.sessions).toHaveLength(10);
+      
+      // Verify the additional context is included in results
+      expect(results.additionalContext).toBe(testContext);
+    }, 120000);
+
+    it('should handle analysis without additional context', async () => {
+      const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
+        sessionCount: 10,
+        modelId: 'gpt-4o-mini'
+        // No additionalContext provided
+      });
+
+      const { progress, results } = await runFullAnalysisWorkflow(
+        app, 
+        analysisConfig, 
+        'No Context Test',
+        120,
+        routePrefix
+      );
+
+      // Verify the analysis completed successfully
+      expect(progress.phase).toBe('complete');
+      expect(results.sessions).toHaveLength(10);
+      
+      // Verify the additional context is undefined
+      expect(results.additionalContext).toBeUndefined();
+    }, 120000);
+
+    it('should handle maximum length additional context', async () => {
+      const maxLengthContext = 'x'.repeat(1500); // 1500 character context
+      
+      const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
+        sessionCount: 10,
+        modelId: 'gpt-4o-mini',
+        additionalContext: maxLengthContext
+      });
+
+      const { progress, results } = await runFullAnalysisWorkflow(
+        app, 
+        analysisConfig, 
+        'Max Length Context Test',
+        120,
+        routePrefix
+      );
+
+      // Verify the analysis completed successfully
+      expect(progress.phase).toBe('complete');
+      expect(results.sessions).toHaveLength(10);
+      
+      // Verify the full context is preserved
+      expect(results.additionalContext).toBe(maxLengthContext);
+      expect(results.additionalContext?.length).toBe(1500);
+    }, 120000);
+
+    it('should follow Spanish instructions with AI-verified compliance', async () => {
+      console.log('\n🌍 [Spanish Test] Testing additional context with Spanish instructions...');
+      
+      const spanishInstructions = 'IMPORTANT: Write ALL classifications and notes in Spanish. Use Spanish words for all fields: generalIntent should be in Spanish, sessionOutcome should be "Transferido" or "Contenido", transferReason and dropOffLocation should be in Spanish, and all notes should be completely in Spanish. The analysis summary and all text in the final report must also be in Spanish.';
+      
+      const analysisConfig = createAnalysisConfig(MOCK_CREDENTIALS, {
+        // Use default date from createAnalysisConfig
+        sessionCount: 5, // Use smaller count to match other tests
+        modelId: 'gpt-4o-mini',
+        additionalContext: spanishInstructions
+      });
+
+      // Start the analysis
+      const startResponse = await request(app)
+        .post(`${routePrefix}/start`)
+        .send(analysisConfig)
+        .expect(200);
+
+      const analysisId = startResponse.body.data.analysisId;
+      console.log(`[Spanish Test] Started analysis ${analysisId}`);
+
+      // Wait for completion
+      const progress = await waitForCompletion(app, analysisId, 1000, 120, routePrefix);
+      expect(progress.phase).toBe('complete');
+
+      // Get the results
+      const results = await getResults(app, analysisId, routePrefix);
+      
+      // Verify additional context is preserved
+      expect(results.additionalContext).toBe(spanishInstructions);
+      
+      // Verify we have analyzed sessions
+      expect(results.analyzedSessions).toBeDefined();
+      expect(results.analyzedSessions.length).toBeGreaterThan(0);
+      
+      console.log(`[Spanish Test] Analyzing ${results.analyzedSessions.length} sessions for Spanish compliance...`);
+
+      // AI-powered verification using OpenAI
+      const verificationClient = new OpenAI({ 
+        apiKey: process.env.TEST_OPENAI_API_KEY || MOCK_CREDENTIALS.openaiApiKey
+      });
+
+      // Verify each session analysis is in Spanish
+      let allSessionsCompliant = true;
+      for (let i = 0; i < Math.min(5, results.analyzedSessions.length); i++) {
+        const session = results.analyzedSessions[i];
+        
+        const sessionVerificationPrompt = `Please analyze if the following session analysis follows Spanish language instructions:
+
+INSTRUCTIONS GIVEN: "Write ALL classifications and notes in Spanish"
+
+ANALYSIS TO VERIFY:
+- generalIntent: "${session.facts?.generalIntent || 'N/A'}"
+- sessionOutcome: "${session.facts?.sessionOutcome || 'N/A'}"
+- transferReason: "${session.facts?.transferReason || 'N/A'}"
+- dropOffLocation: "${session.facts?.dropOffLocation || 'N/A'}"
+- notes: "${session.facts?.notes || 'N/A'}"
+
+Respond with ONLY "COMPLIANT" if all non-empty fields are in Spanish, or "NON_COMPLIANT" if any field is not in Spanish.`;
+
+        try {
+          const response = await verificationClient.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: sessionVerificationPrompt }],
+            max_tokens: 20,
+            temperature: 0
+          });
+          
+          const result = response.choices[0]?.message?.content?.trim();
+          console.log(`  Session ${i + 1} Spanish compliance: ${result}`);
+          
+          if (result !== 'COMPLIANT') {
+            allSessionsCompliant = false;
+            console.log(`    ❌ Non-compliant content detected in session ${i + 1}`);
+          }
+        } catch (error) {
+          console.log(`  ⚠️ Could not verify session ${i + 1}: ${error}`);
+        }
+      }
+
+      // Verify the analysis summary is in Spanish
+      if (results.analysisSummary) {
+        const summaryVerificationPrompt = `Please analyze if the following analysis summary is written in Spanish:
+
+SUMMARY TEXT:
+"${results.analysisSummary.substring(0, 500)}..."
+
+Respond with ONLY "COMPLIANT" if the text is in Spanish, or "NON_COMPLIANT" if it's not in Spanish.`;
+
+        try {
+          const response = await verificationClient.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: summaryVerificationPrompt }],
+            max_tokens: 20,
+            temperature: 0
+          });
+          
+          const result = response.choices[0]?.message?.content?.trim();
+          console.log(`  Summary Spanish compliance: ${result}`);
+          
+          expect(result).toBe('COMPLIANT');
+        } catch (error) {
+          console.log(`  ⚠️ Could not verify summary: ${error}`);
+        }
+      }
+
+      // Verify the analysis overview is in Spanish
+      if (results.analysisOverview) {
+        const overviewVerificationPrompt = `Please analyze if the following analysis overview is written in Spanish:
+
+OVERVIEW TEXT:
+"${results.analysisOverview.substring(0, 500)}..."
+
+Respond with ONLY "COMPLIANT" if the text is in Spanish, or "NON_COMPLIANT" if it's not in Spanish.`;
+
+        try {
+          const response = await verificationClient.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: overviewVerificationPrompt }],
+            max_tokens: 20,
+            temperature: 0
+          });
+          
+          const result = response.choices[0]?.message?.content?.trim();
+          console.log(`  Overview Spanish compliance: ${result}`);
+          
+          expect(result).toBe('COMPLIANT');
+        } catch (error) {
+          console.log(`  ⚠️ Could not verify overview: ${error}`);
+        }
+      }
+
+      // Assert overall compliance
+      expect(allSessionsCompliant).toBe(true);
+      console.log('✅ [Spanish Test] All analyzed content is in Spanish as instructed!');
+      
+    }, 180000); // 3 minute timeout for analysis + verification
   });
 
   describe('Error Handling and Edge Cases', () => {

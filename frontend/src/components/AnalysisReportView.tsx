@@ -596,6 +596,18 @@ export function AnalysisReportView({ results, onStartNew, analysisId }: Analysis
       )}
 
       {/* Share Report Modal */}
+      {/* Additional Context (if provided) */}
+      {results.additionalContext && (
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="text-sm font-medium text-gray-600">Analysis Context</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-gray-600">{results.additionalContext}</p>
+          </CardContent>
+        </Card>
+      )}
+
       <ShareReportModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}

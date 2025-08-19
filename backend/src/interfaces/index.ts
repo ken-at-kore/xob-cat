@@ -34,7 +34,8 @@ export interface IOpenAIService {
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
     openaiApiKey: string,
-    modelId?: string
+    modelId: string,
+    additionalContext?: string
   ): Promise<{
     sessions: any[];
     promptTokens: number;

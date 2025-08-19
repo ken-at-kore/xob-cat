@@ -50,10 +50,6 @@ REAL_API_TEST_MODE=basic|all|workflow|errors|validation npm test -- --testPathPa
 # Hybrid tests (Production data + OpenAI)
 HYBRID_TEST_MODE=main HYBRID_MODEL="gpt-4.1" npm test -- --testPathPattern="perSessionAnalysis.hybrid"
 
-# Analysis Summary tests (Mock session data + Real OpenAI)
-HYBRID_SUMMARY_TEST_MODE=main npm test -- --testPathPattern="analysisSummary.hybrid"
-HYBRID_SUMMARY_MODEL="gpt-4.1" HYBRID_SUMMARY_DEBUG=true npm test -- --testPathPattern="analysisSummary.hybrid"
-
 # Puppeteer standalone (recommended)
 node frontend/e2e/run-puppeteer-test.js
 
@@ -66,59 +62,10 @@ node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=10  # Valid
 npm run build|typecheck|lint|lint:fix
 ```
 
-### Data Collection
-```bash
-npx tsx scripts/collect-production-data.ts [--start|-s] [--end|-e] [--output|-o] [--limit|-l] [--files|-f] [--containment|-c]
-# Example: npx tsx scripts/collect-production-data.ts -s "2025-07-30T10:32:00" -e "2025-07-30T11:32:00" -c agent -l 20
-```
-
-## Project Structure
-
-### Frontend (`frontend/src/`)
-```
-app/
-├── page.tsx                 # Credentials page
-├── (dashboard)/            # Dashboard layout group
-│   ├── sessions/page.tsx   # View Sessions (default)
-│   └── analyze/page.tsx    # Auto-Analyze
-
-components/
-├── TopNav.tsx              # "XOBCAT" | "Bot ID" + "Disconnect"
-├── Sidebar.tsx             # Navigation
-├── SessionTable.tsx        # Sessions list
-├── SessionDetailsDialog.tsx # Session details
-├── AnalyzedSessionDetailsDialog.tsx # AI-analyzed details
-├── AnalysisCharts.tsx      # Recharts visualizations
-└── ui/                     # shadcn/ui components
-    └── progress.tsx        # Blue animated progress bars (#2970FF)
-```
-
-### Backend (`backend/src/`)
-```
-routes/
-├── analysis.ts             # /api/analysis/* - OpenAI
-└── kore.ts                 # /api/kore/* - Kore.ai
-
-services/
-├── koreApiService.ts       # Kore.ai integration
-├── openaiService.ts        # GPT-4o-mini
-├── swtService.ts           # Session analysis
-└── parallelAutoAnalyzeService.ts # Multi-phase analysis (RECOMMENDED)
-
-__mocks__/                  # Pure mock services
-interfaces/                 # Service interfaces
-factories/serviceFactory.ts # Environment-based selection
-```
-
 ## Key Features
 
-### Bot Connection (Optimized)
-- **Performance**: 2.94s (from 3.1s)
-- **Method**: Single 'agent' API call, 1-minute window, 1 session limit
-- **Endpoint**: `/api/kore/test`
-
 ### Auto-Analyze
-AI-powered session analysis with GPT-4o-mini, time window expansion, batch processing.
+AI-powered session analysis with GPT-4o-mini, time window expansion, parallel processing.
 
 **⚠️ Use Parallel Implementation** (`ParallelAutoAnalyzeService`) - NOT sequential.
 
@@ -137,38 +84,26 @@ GET  /api/analysis/auto-analyze/results/:id
 DELETE /api/analysis/auto-analyze/:id
 ```
 
-**Config:** `PARALLEL_STREAM_COUNT=4`, `PARALLEL_BATCH_SIZE=3`, `ENABLE_CONFLICT_RESOLUTION=true`
+#### Additional Context Feature
+- **UI**: Text area with 1500 character limit
+- **Purpose**: User-provided context for analysis (e.g., bot purpose, company info, custom instructions)
+- **Implementation**: Flows through all analysis phases (discovery, parallel processing, summary)
+- **Example**: "The bot is an Acme Labs IVA. It helps callers track lab results. Write all responses in Spanish."
 
-### Analysis Summary Generation
-Macro-level analysis that generates comprehensive reports from per-session analysis results using `analysis-prompts.ts`.
-
-**Integration Test:** `analysisSummaryService.hybrid.integration.test.ts`
-- **Input**: Pre-analyzed sessions from `data/mock-analysis-results.json`
-- **API**: Real OpenAI API for summary generation
-- **Output**: Analysis overview, detailed summary, containment suggestions
-
-**Environment Variables:**
-- `HYBRID_SUMMARY_TEST_MODE`: `main`|`all` (controls test scope)
-- `HYBRID_SUMMARY_MODEL`: `gpt-4.1-nano`|`gpt-4.1` (OpenAI model)
-- `HYBRID_SUMMARY_DEBUG`: `true`|`false` (show prompts/responses)
-- `HYBRID_SUMMARY_SESSION_LIMIT`: Number (limit sessions for cost control)
-
-### Session Viewer (Enhanced)
-- **Always-visible filters**: Interruptible loading
-- **24-hour default**: Faster initial load
-- **AbortController**: Request cancellation
+### Bot Connection (Optimized)
+- **Performance**: 2.94s (from 3.1s)
+- **Method**: Single 'agent' API call, 1-minute window, 1 session limit
+- **Endpoint**: `/api/kore/test`
 
 ### Data Access Architecture (Layered)
 ```typescript
 // Layer 1: KoreApiService (API)
 getSessionsMetadata(options)           // Fast metadata
 getMessagesForSessions(sessionIds)     // Selective messages
-getSessionsWithMessages(options)       // Combined
 
-// Layer 2: SWTService (Transform)
+// Layer 2: SWTService (Transform)  
 createSWTsFromMetadata(sessions)       // Convert format
 populateMessages(swts, sessionIds?)    // Add messages
-generateSWTs(options)                  // Eager loading
 
 // Layer 3: SessionSamplingService (Business)
 // Metadata → Sample → Populate (10x faster)
@@ -186,11 +121,6 @@ generateSWTs(options)                  // Eager loading
 - **TypeScript**: No `any` types
 - **Security**: Environment variables only
 - **Commands**: Use npm scripts (not cd)
-- **Scripts Organization**:
-  - `scripts/`: Production scripts
-  - `scripts/debug/`: Debug utilities
-  - `scripts/test-utils/`: Test files
-  - Root: Deployment scripts
 
 ### E2E Testing
 
@@ -204,11 +134,6 @@ node frontend/e2e/auto-analyze-mock-api-puppeteer.test.js
 node frontend/e2e/view-sessions-real-api-puppeteer.test.js
 node frontend/e2e/auto-analyze-real-api-puppeteer.test.js
 ```
-
-**Shared Workflow Pattern** (Recommended):
-- Create in `frontend/e2e/shared/`
-- Separate mock vs real API test files
-- Benefits: DRY, consistent, maintainable
 
 #### Mock Services
 Activate with `mock-*` credentials:
@@ -253,13 +178,6 @@ TEST_OPENAI_API_KEY=sk-your-openai-key
 - **No Database**: In-memory only
 - **No Auth**: MVP without authentication
 - **OpenAI Required**: For session analysis
-
-## Documentation
-- `docs/Product Requirements Document.md`
-- `docs/architecture.md`
-- `docs/Auto-Analyze Technical Design.md`
-- `docs/Parallel Auto-Analyze Design.md`
-- `docs/Parallel Auto-Analyze Debugging Breakthroughs.md`
 
 ## Testing
 - **Progress Bar Animation Test**: `/test-progress` - Test blue animated progress bars with validation

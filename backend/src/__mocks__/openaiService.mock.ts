@@ -154,7 +154,8 @@ export class MockOpenAIService implements IOpenAIService {
     sessions: SessionWithTranscript[],
     existingClassifications: ExistingClassifications,
     openaiApiKey: string,
-    modelId: string = 'gpt-4o-mini'
+    modelId: string = 'gpt-4o-mini',
+    additionalContext?: string
   ): Promise<{
     sessions: any[];
     promptTokens: number;

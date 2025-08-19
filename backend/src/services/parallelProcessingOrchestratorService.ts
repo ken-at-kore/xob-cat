@@ -37,7 +37,8 @@ export class ParallelProcessingOrchestratorService {
     config: Partial<ParallelConfig>,
     apiKey: string,
     modelId: string,
-    progressCallback?: ParallelProgressCallback
+    progressCallback?: ParallelProgressCallback,
+    additionalContext?: string
   ): Promise<ParallelProcessingResult> {
     const parallelStartTime = Date.now();
     console.log(`\n🚀 ============ PARALLEL PROCESSING STARTED ============`);
@@ -135,7 +136,8 @@ export class ParallelProcessingOrchestratorService {
             allProcessedSessions.length,
             streamProgress
           );
-        }
+        },
+        additionalContext
       );
       const parallelProcessingDuration = Date.now() - parallelProcessingStartTime;
       console.log(`⏱️  Parallel Processing Time: ${parallelProcessingDuration}ms (${(parallelProcessingDuration/1000).toFixed(2)}s)`);
@@ -324,7 +326,8 @@ export class ParallelProcessingOrchestratorService {
     config: ParallelConfig,
     apiKey: string,
     modelId: string,
-    progressCallback?: (streamProgress: StreamProgress[]) => void
+    progressCallback?: (streamProgress: StreamProgress[]) => void,
+    additionalContext?: string
   ): Promise<StreamResult[]> {
     console.log(`[ParallelProcessingOrchestrator] Starting ${sessionStreams.length} streams in parallel`);
     
@@ -350,7 +353,8 @@ export class ParallelProcessingOrchestratorService {
         baseClassifications,
         modelId,
         apiKey,
-        maxSessionsPerCall: config.maxSessionsPerLLMCall
+        maxSessionsPerCall: config.maxSessionsPerLLMCall,
+        ...(additionalContext && { additionalContext })
       };
 
       return this.streamProcessingService.processStream(

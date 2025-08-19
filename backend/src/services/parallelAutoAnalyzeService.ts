@@ -199,7 +199,8 @@ export class ParallelAutoAnalyzeService {
     return {
       sessions: session.results,
       analysisSummary: session.analysisSummary,
-      botId: this.botId
+      botId: this.botId,
+      ...(session.config.additionalContext && { additionalContext: session.config.additionalContext })
     };
   }
 
@@ -375,7 +376,8 @@ export class ParallelAutoAnalyzeService {
         });
       },
       session.config.openaiApiKey,
-      session.config.modelId
+      session.config.modelId,
+      session.config.additionalContext
     );
 
     await this.updateProgress(session.id, {
@@ -423,7 +425,8 @@ export class ParallelAutoAnalyzeService {
           streamsActive
           // streamProgress removed - not displaying individual streams in simplified UI
         });
-      }
+      },
+      session.config.additionalContext
     );
 
     // Combine discovery results with parallel processing results
@@ -482,11 +485,11 @@ export class ParallelAutoAnalyzeService {
       if (serviceType === ServiceType.MOCK || serviceType === ServiceType.HYBRID) {
         console.log('[ParallelAutoAnalyzeService] Using mock analysis summary service');
         const mockAnalysisSummaryService = new MockAnalysisSummaryService(session.config.openaiApiKey);
-        analysisSummary = await mockAnalysisSummaryService.generateAnalysisSummary(resolvedSessions, session.config.modelId);
+        analysisSummary = await mockAnalysisSummaryService.generateAnalysisSummary(resolvedSessions, session.config.modelId, session.config.additionalContext);
       } else {
         console.log('[ParallelAutoAnalyzeService] Using real analysis summary service');
         const analysisSummaryService = new AnalysisSummaryService(session.config.openaiApiKey);
-        analysisSummary = await analysisSummaryService.generateAnalysisSummary(resolvedSessions, session.config.modelId);
+        analysisSummary = await analysisSummaryService.generateAnalysisSummary(resolvedSessions, session.config.modelId, session.config.additionalContext);
       }
       
       session.analysisSummary = analysisSummary;

@@ -25,6 +25,7 @@ interface AnalysisConfigState {
   startTime: string;
   sessionCount: number;
   openaiApiKey: string;
+  additionalContext: string; // Optional user-provided context (max 1500 chars)
   isSubmitting: boolean;
   errors: Record<string, string>;
 }
@@ -206,7 +207,8 @@ const SESSION_ANALYSIS_FUNCTION_SCHEMA = {
 ```typescript
 function createAnalysisPrompt(
   sessions: SessionWithTranscript[], 
-  existingClassifications: ExistingClassifications
+  existingClassifications: ExistingClassifications,
+  additionalContext?: string
 ): string {
   const intentGuidance = existingClassifications.generalIntent.size > 0 
     ? `\nExisting General Intent classifications: ${Array.from(existingClassifications.generalIntent).sort().join(', ')}`
@@ -220,8 +222,12 @@ function createAnalysisPrompt(
     ? `\nExisting Drop-Off Location classifications: ${Array.from(existingClassifications.dropOffLocation).sort().join(', ')}`
     : '';
 
-  return `Analyze the following session transcripts and classify each session according to the specified criteria.
+  const contextSection = additionalContext 
+    ? `\nAdditional Context: ${additionalContext}\n`
+    : '';
 
+  return `Analyze the following session transcripts and classify each session according to the specified criteria.
+${contextSection}
 ${intentGuidance}${transferGuidance}${dropOffGuidance}
 
 For each session, provide the following classifications:

@@ -285,6 +285,19 @@ async function configureAnalysis(page, config) {
     console.log('⚠️ OpenAI API key input not found');
   }
   
+  // NEW: Fill additional context (if provided)
+  if (config.additionalContext) {
+    console.log('🔤 Setting additional context');
+    const contextInput = await page.$('#additionalContext');
+    if (contextInput) {
+      await contextInput.click({ clickCount: 3 }); // Select all
+      await contextInput.type(config.additionalContext);
+      console.log('✅ Additional context set');
+    } else {
+      console.log('⚠️ Additional context textarea not found');
+    }
+  }
+  
   // NEW: Handle advanced options (session count and GPT model are now behind progressive disclosure)
   console.log('🔧 Opening advanced options for session count and model selection');
   
@@ -823,6 +836,13 @@ async function validateReport(page, expectedData = {}) {
     pageContent.includes('Download Report Data') && 
     pageContent.includes('Share Report') && 
     pageContent.includes('Start New Analysis');
+
+  // Check for Additional Context display (if provided in expectedData)
+  if (expectedData.expectedContext) {
+    validationResults.hasAdditionalContext = pageContent.includes('Analysis Context') &&
+                                           pageContent.includes(expectedData.expectedContext);
+    console.log(`🔤 Additional context check: ${validationResults.hasAdditionalContext ? '✅' : '❌'}`);
+  }
   
   console.log('Report Validation Results:');
   Object.entries(validationResults).forEach(([test, passed]) => {

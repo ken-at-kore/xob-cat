@@ -134,7 +134,8 @@ async function runAutoAnalyzeRealTest() {
       startTime: '09:00',       // Backward compatibility - will be mapped to morning
       sessionCount: sessionCount.toString(),
       openaiApiKey: credentials.openaiApiKey,
-      modelId: 'gpt-4.1-nano'   // Use nano model for testing (correct ID)
+      modelId: 'gpt-4.1-nano',  // Use nano model for testing (correct ID)
+      additionalContext: 'This is a healthcare IVA that helps members check claim status. The bot uses member ID for authentication.'
     };
     
     console.log(`📊 Configured for ${sessionCount} sessions with ${realAnalysisConfig.modelId} model`);
@@ -334,7 +335,8 @@ async function runAutoAnalyzeRealTest() {
     // Step 9: Validate report content
     const validationResults = await validateReport(page, {
       expectedBotId: credentials.botId,
-      expectedSessionCount: parseInt(realAnalysisConfig.sessionCount)
+      expectedSessionCount: parseInt(realAnalysisConfig.sessionCount),
+      expectedContext: realAnalysisConfig.additionalContext
     });
     
     // Step 10: Test session details dialog (if analysis completed)

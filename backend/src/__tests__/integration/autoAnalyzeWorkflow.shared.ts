@@ -436,3 +436,16 @@ export async function testConfigurableSessionCounts(
   
   await testMultipleSessionCounts(app, credentials, testSizes, testName, configOverrides, routePrefix);
 }
+
+/**
+ * Wait for analysis completion by polling progress
+ */
+export async function waitForCompletion(
+  app: express.Application,
+  analysisId: string,
+  pollInterval: number = 1000,
+  maxAttempts: number = 120,
+  routePrefix: string = '/api/analysis/auto-analyze'
+): Promise<AnalysisProgress | ParallelAnalysisProgress> {
+  return pollUntilComplete(app, analysisId, maxAttempts, pollInterval, routePrefix);
+}

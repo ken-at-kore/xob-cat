@@ -8,9 +8,9 @@ export class AnalysisSummaryService {
     this.llmService = new LLMInferenceService(apiKey);
   }
 
-  async generateAnalysisSummary(sessions: SessionWithFacts[], modelId: string = 'gpt-4o-mini'): Promise<AnalysisSummary> {
+  async generateAnalysisSummary(sessions: SessionWithFacts[], modelId: string = 'gpt-4o-mini', additionalContext?: string): Promise<AnalysisSummary> {
     try {
-      const llmResponse = await this.llmService.generateAnalysisSummary(sessions, modelId);
+      const llmResponse = await this.llmService.generateAnalysisSummary(sessions, modelId, additionalContext);
       return this.llmService.createAnalysisSummary(llmResponse, sessions);
     } catch (error) {
       console.error('Error generating analysis summary:', error);
