@@ -649,6 +649,34 @@ async function waitForCompletion(page, sessionCount = 10) {
       }
     }
     
+    // Test: Check badge text when status shows "Generating analysis report"
+    if (currentContent.includes('Generating analysis report')) {
+      console.log('🔍 Testing badge text during "Generating analysis report" phase');
+      const badgeText = await page.evaluate(() => {
+        // Look for the progress badge in the top-right corner
+        const progressCards = document.querySelectorAll('*');
+        for (let element of progressCards) {
+          const text = element.textContent;
+          if (text && text.includes('Progress') && element.querySelector('span[data-slot="badge"]')) {
+            const badge = element.querySelector('span[data-slot="badge"]');
+            return badge ? badge.textContent.trim() : null;
+          }
+        }
+        return null;
+      });
+      
+      console.log(`📊 Badge text during "Generating analysis report": "${badgeText}"`);
+      
+      if (badgeText === 'Resolving') {
+        console.log('❌ BUG DETECTED: Badge shows "Resolving" during "Generating analysis report" phase');
+        throw new Error('Badge bug confirmed: Shows "Resolving" instead of "Writing report" during report generation');
+      } else if (badgeText === 'Writing report') {
+        console.log('✅ CORRECT: Badge shows "Writing report" during report generation phase');
+      } else {
+        console.log(`⚠️ Unexpected badge text: "${badgeText}" during report generation`);
+      }
+    }
+    
     // Look for completion indicators including error states
     if (currentContent.includes('Analysis Report') || 
         currentContent.includes('Analyzed Sessions') ||

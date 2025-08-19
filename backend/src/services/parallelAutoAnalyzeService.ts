@@ -474,6 +474,7 @@ export class ParallelAutoAnalyzeService {
 
   private async runSummaryGenerationPhase(session: ParallelAnalysisSession, resolvedSessions: SessionWithFacts[]): Promise<void> {
     this.updateProgress(session.id, {
+      phase: 'generating_summary',
       currentStep: 'Generating analysis summary...'
     });
 
