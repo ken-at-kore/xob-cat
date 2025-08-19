@@ -611,7 +611,7 @@ export interface SessionStream {
 
 // Enhanced Analysis Progress for Parallel Processing
 export interface ParallelAnalysisProgress extends Omit<AnalysisProgress, 'phase'> {
-  phase: 'sampling' | 'discovery' | 'parallel_processing' | 'conflict_resolution' | 'complete' | 'error';
+  phase: 'sampling' | 'discovery' | 'parallel_processing' | 'conflict_resolution' | 'generating_summary' | 'complete' | 'error';
   roundsCompleted?: number;
   totalRounds?: number;
   streamsActive?: number;
