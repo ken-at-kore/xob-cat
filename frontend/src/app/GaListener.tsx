@@ -1,9 +1,9 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import * as gtag from '../lib/gtag';
 
-export default function GaListener() {
+function GaListenerInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -13,4 +13,12 @@ export default function GaListener() {
   }, [pathname, searchParams]);
 
   return null;
+}
+
+export default function GaListener() {
+  return (
+    <Suspense fallback={null}>
+      <GaListenerInner />
+    </Suspense>
+  );
 }
