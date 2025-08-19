@@ -24,7 +24,7 @@ export const CLASSIFICATION_INSTRUCTIONS = `For each session, provide the follow
 
 3. **Transfer Reason**: Why the session was transferred (only if Session Outcome is "Transfer"). Look for specific error messages or invalid responses that caused the transfer. Example reasons: "Invalid Provider ID" (when provider ID is rejected), "Live Agent Request", "Invalid Member ID" (when member ID is rejected), "Invalid Claim Number" (when claim number is rejected), "No Provider ID" (when user says they don't have one), "Inactive Provider ID" (when provider ID is inactive), "Authentication Failed", "Technical Issue", "Policy Not Found", "Can't Capture Policy Number". If not transferred, leave blank.
 
-4. **Drop-Off Location**: Where in the session flow (at which prompt) the user dropped off (started getting routed to an agent), not counting error response prompts or Live Agent rebuttal prompts. Will only have a value if session_outcome is "Transfer"). Example locations: "Policy Number Prompt", "Help Offer Prompt", "Authentication", "Claim Details", "Member Information", "Provider ID", "Date of Service", "User Name". If not transferred, leave blank.
+4. **Drop-Off Location**: Where in the session flow (at which prompt) the user dropped off (started getting routed to an agent), not counting error response prompts or Live Agent rebuttal prompts. Will only have a value if session_outcome is "Transfer"). Example locations: "Policy Number Prompt", "Help Offer" (How can I help you?), "Additional Help Offer" (How else can I help you?), "Authentication", "Claim Details", "Member Information", "Provider ID", "Date of Service", "User Name". If not transferred, leave blank.
 
 5. **Notes**: One sentence summary of what happened in the session.
 
@@ -41,7 +41,7 @@ In that example, the classifications should be as follows:
 Intent: Live Agent
 Outcome: Transfer
 Transfer Reason: Live Agent Request
-Drop-Off Location: Help Offer Prompt
+Drop-Off Location: Help Offer
 
 EXAMPLE 2:
 Consider the following example transcript...
@@ -56,7 +56,7 @@ In that example, the classifications should be as follows:
 Intent: Claim status
 Outcome: Transfer
 Transfer Reason: Live Agent Request
-Drop-Off Location: Help Offer Prompt
+Drop-Off Location: Additional Help Offer
 
 IMPORTANT: 
 - Use existing classifications when possible to maintain consistency
