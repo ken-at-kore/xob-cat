@@ -185,13 +185,76 @@ aws cloudformation delete-stack \
   --profile ken-at-kore
 ```
 
+## ✅ Deployment Validation & Verification
+
+### ⚠️ CRITICAL: Never Declare Success Without Verification
+
+**Before claiming deployment is complete, ALWAYS run these validation steps:**
+
+#### Backend Deployment Verification
+```bash
+# 1. Check Lambda function was actually updated (look for recent timestamp)
+aws lambda get-function-configuration \
+  --function-name xobcat-backend-ApiFunction-7yG0yqId5Qg2 \
+  --profile ken-at-kore --region us-east-2 \
+  --query '[LastModified,CodeSha256,CodeSize]' --output table
+
+# 2. Test health endpoint
+curl -s https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod/health | jq
+
+# 3. Check if latest code changes are present (grep for recent changes)
+aws logs tail /aws/lambda/xobcat-backend-ApiFunction-7yG0yqId5Qg2 \
+  --region us-east-2 --profile ken-at-kore --since 2m
+```
+
+#### Frontend Deployment Verification
+```bash
+# 1. Check if latest commit was deployed
+aws amplify list-jobs --app-id d72hemfmh671a --branch-name main \
+  --max-results 1 --profile ken-at-kore --region us-east-2 \
+  --query 'jobSummaries[0].[jobId,status,commitId,commitMessage]' --output table
+
+# 2. Compare with your current git commit
+git log --oneline -1
+
+# 3. Test frontend loads
+curl -s https://www.koreai-xobcat.com | head -20
+```
+
+#### End-to-End Functional Testing
+```bash
+# Run automated smoke tests to verify deployment actually works
+cd /Users/kengrafals/workspace/xobcat
+
+# Test View Sessions functionality  
+node frontend/e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
+
+# Test Auto-Analyze functionality (validates both frontend/backend integration)
+node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com --sessions=10
+```
+
+### 🚨 Deployment Red Flags - Stop and Investigate If You See These
+
+1. **Lambda CodeSha256 unchanged** → Code wasn't actually updated
+2. **Lambda CodeSize dramatically different** (6MB instead of 12MB) → Packaging issue
+3. **Amplify deploying old commit** → Git changes weren't pushed
+4. **Health endpoint fails** → Basic connectivity broken
+5. **Smoke tests fail** → Functional regression
+
 ## 🚀 Complete Deployment Workflow
+
+### Pre-Deployment Checklist
+- [ ] All changes committed and pushed to `main` branch
+- [ ] TypeScript compiles without errors (`npm run typecheck`)
+- [ ] Tests pass locally (`npm test`)
+- [ ] No hardcoded credentials in code
 
 ### Initial Setup (One-time)
 1. **Backend**: Run `./deploy-backend.sh`
 2. **Get API URL** from CloudFormation outputs
 3. **Update Amplify** environment variable `NEXT_PUBLIC_API_URL`
 4. **Redeploy frontend** (auto-triggers on env var change)
+5. **Run smoke tests to verify everything works**
 
 ### Regular Updates
 
@@ -199,6 +262,7 @@ aws cloudformation delete-stack \
 - **Method**: Push to `main` branch
 - **Auto-deploy**: Yes (via Amplify)
 - **Time**: ~3-5 minutes
+- **⚠️ Important**: Amplify deploys from Git, not local files. Uncommitted changes won't be deployed!
 
 #### Backend Updates
 ```bash
@@ -361,17 +425,84 @@ curl https://ed8fqpj0n2.execute-api.us-east-2.amazonaws.com/Prod
 
 ## 📋 Troubleshooting
 
+### 🔥 Critical Deployment Failures
+
+#### Lambda Package Structure Issues
+**Problem**: "Cannot find module 'simple-lambda'" error
+**Root Cause**: Incorrect zip file structure - files nested under `lambda-package/` instead of at root
+**Solution**:
+```bash
+# WRONG - Creates nested structure
+cd backend && zip -r lambda-focused.zip lambda-package/
+
+# CORRECT - Files at root level
+cd backend/lambda-package && zip -r ../lambda-focused.zip . && cd ..
+```
+**Verification**:
+```bash
+# Check zip structure - should see simple-lambda.js at root, not nested
+unzip -l backend/lambda-focused.zip | head -10
+```
+
+#### TypeScript Compilation Errors During Deployment
+**Problem**: Build fails with missing type definitions (e.g., `generating_summary` phase not in type)
+**Root Cause**: Type definitions out of sync between frontend and backend
+**Solution**:
+```bash
+# 1. Fix type definitions in shared/types/index.ts
+# 2. Copy to backend
+cp shared/types/index.ts backend/src/shared/types/index.ts
+# 3. Rebuild
+./package-lambda.sh
+```
+
+#### Lambda Package Size Anomalies  
+**Expected Size**: ~12MB (includes all dependencies)
+**Problem Signs**:
+- 6MB package → Missing dependencies/files
+- 0MB package → Build completely failed
+- 25MB+ package → Including unnecessary files
+
+**Debug Commands**:
+```bash
+# Check package contents
+ls -la backend/lambda-package/
+ls -la backend/lambda-focused.zip
+
+# Verify TypeScript compilation worked
+ls -la backend/lambda-package/dist/
+```
+
+#### Frontend Deploys Old Code
+**Problem**: Changes not showing up despite "successful" deployment
+**Root Cause**: Amplify deploys from Git commits, not local files
+**Solution**:
+```bash
+# 1. Check what's actually committed
+git status
+git log --oneline -3
+
+# 2. Commit and push changes
+git add . && git commit -m "your changes" && git push origin main
+
+# 3. Verify Amplify picks up new commit
+aws amplify list-jobs --app-id d72hemfmh671a --branch-name main \
+  --max-results 1 --profile ken-at-kore --region us-east-2
+```
+
 ### Common Issues
 
 1. **Build Failures**
    - Check Node.js version compatibility
    - Verify `amplify.yml` syntax
    - Check TypeScript compilation errors
+   - **NEW**: Verify all changes are committed to git (for frontend)
 
 2. **API Connection Issues**
    - Verify `NEXT_PUBLIC_API_URL` environment variable
    - Check CORS configuration
    - Test backend health endpoint
+   - **NEW**: Verify Lambda actually got updated (check CodeSha256)
 
 3. **Lambda Cold Starts**
    - Expected ~2-3 second delay on first request
