@@ -145,13 +145,15 @@ async function validatePromptEngineeringChanges(page, openaiApiKey) {
     const analysisPrompt = `Analyze this list of drop-off locations from a bot analysis report:
 ${JSON.stringify(dropOffLocations)}
 
-Please answer these two specific questions:
-1. Is there at least one drop-off location exactly called "Help Offer"?
-2. Are there any drop-off locations called "Help Offer Prompt"?
+Please answer these specific questions:
+1. Is there at least one drop-off location exactly called "Initial Help Offer"?
+2. Are there any drop-off locations called "Help Offer" (without "Initial")?
+3. Are there any drop-off locations called "Help Offer Prompt"?
 
 Respond in this exact JSON format:
 {
-  "hasHelpOffer": true/false,
+  "hasInitialHelpOffer": true/false,
+  "hasOldHelpOffer": true/false,
   "hasHelpOfferPrompt": true/false,
   "explanation": "brief explanation of what you found"
 }`;
@@ -165,12 +167,13 @@ Respond in this exact JSON format:
     const analysis = JSON.parse(response.choices[0].message.content);
     
     console.log('🤖 OpenAI Analysis Results:');
-    console.log(`   - Has "Help Offer": ${analysis.hasHelpOffer ? '✅' : '❌'}`);
-    console.log(`   - Has "Help Offer Prompt": ${analysis.hasHelpOfferPrompt ? '✅' : '❌'}`);
+    console.log(`   - Has "Initial Help Offer": ${analysis.hasInitialHelpOffer ? '✅' : '❌'}`);
+    console.log(`   - Has old "Help Offer": ${analysis.hasOldHelpOffer ? '❌ (BAD - old prompts)' : '✅ (GOOD)'}`);
+    console.log(`   - Has "Help Offer Prompt": ${analysis.hasHelpOfferPrompt ? '❌ (BAD - old prompts)' : '✅ (GOOD)'}`);
     console.log(`   - Explanation: ${analysis.explanation}`);
     
-    // Validate our expectations
-    const promptEngineeringWorking = analysis.hasHelpOffer && !analysis.hasHelpOfferPrompt;
+    // Validate our expectations - should have new prompts, not old ones
+    const promptEngineeringWorking = analysis.hasInitialHelpOffer && !analysis.hasOldHelpOffer && !analysis.hasHelpOfferPrompt;
     
     if (promptEngineeringWorking) {
       console.log('✅ Prompt engineering changes are working correctly!');
@@ -181,7 +184,8 @@ Respond in this exact JSON format:
     
     return {
       validated: true,
-      hasHelpOffer: analysis.hasHelpOffer,
+      hasInitialHelpOffer: analysis.hasInitialHelpOffer,
+      hasOldHelpOffer: analysis.hasOldHelpOffer,
       hasHelpOfferPrompt: analysis.hasHelpOfferPrompt,
       explanation: analysis.explanation,
       promptEngineeringWorking
