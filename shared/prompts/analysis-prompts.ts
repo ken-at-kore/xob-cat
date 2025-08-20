@@ -71,7 +71,7 @@ Write a clear, engaging summary that kicks off the analysis report. Think of thi
  * Detailed Analysis Prompt - In-depth but accessible
  */
 export const DETAILED_ANALYSIS_PROMPT = `
-## 2. Detailed Analysis (~600-800 words, thorough but readable)
+## 2. Detailed Analysis (~400-500 words, thorough but readable)
 Now dive deeper into what the data is telling us. This is where you get to tell the full story behind the numbers - write this for people who need to understand what's really happening and what to do about it.
 
 **What to cover:**
