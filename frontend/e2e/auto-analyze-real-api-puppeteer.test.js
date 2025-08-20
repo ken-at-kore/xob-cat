@@ -95,6 +95,104 @@ function parseArgs() {
   return config;
 }
 
+/**
+ * Validate prompt engineering changes using OpenAI to analyze the report content
+ * @param {Page} page - Puppeteer page object
+ * @param {string} openaiApiKey - OpenAI API key for validation
+ * @returns {Object} Validation results
+ */
+async function validatePromptEngineeringChanges(page, openaiApiKey) {
+  console.log('🔍 Step 9.5: Validating prompt engineering changes');
+  
+  try {
+    // Extract sessions table data from the page
+    const sessionsData = await page.evaluate(() => {
+      const table = document.querySelector('table');
+      if (!table) return null;
+      
+      const rows = Array.from(table.querySelectorAll('tbody tr'));
+      return rows.map(row => {
+        const cells = Array.from(row.querySelectorAll('td'));
+        return {
+          sessionId: cells[0]?.textContent?.trim() || '',
+          intent: cells[1]?.textContent?.trim() || '',
+          outcome: cells[2]?.textContent?.trim() || '',
+          dropOffLocation: cells[3]?.textContent?.trim() || '',
+          transferReason: cells[4]?.textContent?.trim() || ''
+        };
+      });
+    });
+    
+    if (!sessionsData || sessionsData.length === 0) {
+      console.log('⚠️ No sessions table found for validation');
+      return { 
+        validated: false, 
+        reason: 'No sessions table found',
+        hasHelpOffer: false,
+        hasHelpOfferPrompt: false
+      };
+    }
+    
+    console.log(`📊 Found ${sessionsData.length} sessions to analyze`);
+    
+    // Use OpenAI to analyze the drop-off locations
+    const OpenAI = require('openai');
+    const openai = new OpenAI({ apiKey: openaiApiKey });
+    
+    const dropOffLocations = sessionsData.map(s => s.dropOffLocation).filter(loc => loc && loc !== '');
+    console.log(`🎯 Drop-off locations found: ${JSON.stringify([...new Set(dropOffLocations)])}`);
+    
+    const analysisPrompt = `Analyze this list of drop-off locations from a bot analysis report:
+${JSON.stringify(dropOffLocations)}
+
+Please answer these two specific questions:
+1. Is there at least one drop-off location exactly called "Help Offer"?
+2. Are there any drop-off locations called "Help Offer Prompt"?
+
+Respond in this exact JSON format:
+{
+  "hasHelpOffer": true/false,
+  "hasHelpOfferPrompt": true/false,
+  "explanation": "brief explanation of what you found"
+}`;
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: analysisPrompt }],
+      temperature: 0
+    });
+    
+    const analysis = JSON.parse(response.choices[0].message.content);
+    
+    console.log('🤖 OpenAI Analysis Results:');
+    console.log(`   - Has "Help Offer": ${analysis.hasHelpOffer ? '✅' : '❌'}`);
+    console.log(`   - Has "Help Offer Prompt": ${analysis.hasHelpOfferPrompt ? '✅' : '❌'}`);
+    console.log(`   - Explanation: ${analysis.explanation}`);
+    
+    // Validate our expectations
+    const promptEngineeringWorking = analysis.hasHelpOffer && !analysis.hasHelpOfferPrompt;
+    
+    if (promptEngineeringWorking) {
+      console.log('✅ Prompt engineering changes are working correctly!');
+    } else {
+      console.log('❌ Prompt engineering changes NOT working - still using old prompts');
+      throw new Error(`Prompt validation failed: ${analysis.explanation}`);
+    }
+    
+    return {
+      validated: true,
+      hasHelpOffer: analysis.hasHelpOffer,
+      hasHelpOfferPrompt: analysis.hasHelpOfferPrompt,
+      explanation: analysis.explanation,
+      promptEngineeringWorking
+    };
+    
+  } catch (error) {
+    console.log(`❌ Prompt validation error: ${error.message}`);
+    throw error;
+  }
+}
+
 async function runAutoAnalyzeRealTest() {
   // Parse command line arguments
   const args = process.argv.slice(2);
@@ -165,6 +263,38 @@ async function runAutoAnalyzeRealTest() {
     
     // Step 3-4: Navigate to Auto-Analyze page
     await navigateToAutoAnalyze(page, config.baseUrl);
+    
+    // Step 4.5: Verify default start date is yesterday (in local timezone)
+    console.log('🔍 Step 4.5: Verifying default start date is yesterday');
+    
+    // Calculate yesterday in the browser's local timezone
+    const expectedYesterday = await page.evaluate(() => {
+      const defaultDate = new Date();
+      defaultDate.setDate(defaultDate.getDate() - 1); // Yesterday
+      // Format as YYYY-MM-DD in local timezone (not UTC)
+      const year = defaultDate.getFullYear();
+      const month = String(defaultDate.getMonth() + 1).padStart(2, '0');
+      const day = String(defaultDate.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    });
+    
+    console.log(`📅 Expected yesterday date (local time): ${expectedYesterday}`);
+    
+    // Get the actual default value from the start date input
+    const actualStartDate = await page.evaluate(() => {
+      const startDateInput = document.querySelector('input[type="date"]');
+      return startDateInput ? startDateInput.value : null;
+    });
+    
+    console.log(`📅 Actual default start date in field: ${actualStartDate}`);
+    
+    // Assert the dates match
+    if (actualStartDate === expectedYesterday) {
+      console.log('✅ DEFAULT DATE CORRECT: Start date field defaults to yesterday');
+    } else {
+      console.log(`❌ DEFAULT DATE INCORRECT: Expected ${expectedYesterday}, but got ${actualStartDate}`);
+      throw new Error(`Default start date assertion failed: Expected ${expectedYesterday}, got ${actualStartDate}`);
+    }
     
     // Step 5: Configure analysis settings with real API key
     await configureAnalysis(page, realAnalysisConfig);
@@ -338,6 +468,9 @@ async function runAutoAnalyzeRealTest() {
       expectedSessionCount: parseInt(realAnalysisConfig.sessionCount),
       expectedContext: realAnalysisConfig.additionalContext
     });
+    
+    // Step 9.5: Validate prompt engineering changes using OpenAI
+    const promptValidationResults = await validatePromptEngineeringChanges(page, credentials.openaiApiKey);
     
     // Step 10: Test session details dialog (if analysis completed)
     let dialogResults = { dialogTested: false };

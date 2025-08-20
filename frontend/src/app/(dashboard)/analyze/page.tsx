@@ -127,8 +127,14 @@ export function AutoAnalyzeConfig({ onAnalysisStart, onShowMockReports, isLoadin
     const defaultDate = new Date();
     defaultDate.setDate(defaultDate.getDate() - 1); // Yesterday
     
+    // Format as YYYY-MM-DD in local timezone (not UTC)
+    const year = defaultDate.getFullYear();
+    const month = String(defaultDate.getMonth() + 1).padStart(2, '0');
+    const day = String(defaultDate.getDate()).padStart(2, '0');
+    const localDateString = `${year}-${month}-${day}`;
+    
     return {
-      startDate: defaultDate.toISOString().split('T')[0],
+      startDate: localDateString,
       timeOfDay: 'morning',
       sessionCount: 100,
       openaiApiKey: '',
