@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { apiClient, ApiError } from '@/lib/api';
 import { ROUTES } from '@/routes';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 
 interface Credentials {
   botId: string;
@@ -35,6 +36,8 @@ export default function Home({ onNavigate }: HomeProps = {}) {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
+  const [selectedBotVersion, setSelectedBotVersion] = useState<'XO11' | 'XO10'>('XO11');
   const botIdRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -152,6 +155,72 @@ export default function Home({ onNavigate }: HomeProps = {}) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Help Section */}
+          <div className={`rounded-lg transition-all ${showHelp ? 'border p-4 bg-muted/30' : ''}`}>
+            <button
+              onClick={() => setShowHelp(!showHelp)}
+              className="flex items-center justify-between w-full text-left hover:opacity-80 transition-opacity py-1"
+              type="button"
+            >
+              <div className="flex items-center gap-2">
+                <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">How to get these credentials?</span>
+              </div>
+              {showHelp ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+            </button>
+            
+            {showHelp && (
+              <div className="mt-4 space-y-4">
+                {/* Bot Version Tabs */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setSelectedBotVersion('XO11')}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      selectedBotVersion === 'XO11' 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
+                    type="button"
+                  >
+                    XO11 Bots
+                  </button>
+                  <button
+                    onClick={() => setSelectedBotVersion('XO10')}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      selectedBotVersion === 'XO10' 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
+                    type="button"
+                  >
+                    XO10 Bots
+                  </button>
+                </div>
+                
+                {/* Instructions */}
+                <div className="bg-background rounded-md p-4 space-y-2 text-sm">
+                  {selectedBotVersion === 'XO11' ? (
+                    <ol className="list-decimal list-inside space-y-2">
+                      <li>In your XO bot, go to <span className="font-mono bg-muted px-1 rounded">App Settings → Dev Tools → API Scopes</span></li>
+                      <li>Edit one of the JWT apps</li>
+                      <li>Copy the <strong>App ID</strong>, <strong>Client ID</strong> and <strong>Client Secret</strong></li>
+                      <li>Enable <strong>"App Sessions"</strong> and <strong>"Chat History"</strong></li>
+                      <li>Hit <strong>Save</strong></li>
+                    </ol>
+                  ) : (
+                    <ol className="list-decimal list-inside space-y-2">
+                      <li>In your XO bot, go to <span className="font-mono bg-muted px-1 rounded">Deploy → APIs & Extensions → API Scopes</span></li>
+                      <li>Edit one of the JWT apps</li>
+                      <li>Copy the <strong>Bot ID</strong>, <strong>Client ID</strong> and <strong>Client Secret</strong></li>
+                      <li>Enable <strong>"Bot Sessions"</strong> and <strong>"Chat History"</strong></li>
+                      <li>Hit <strong>Save</strong></li>
+                    </ol>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          
           {/* Hidden decoy fields to confuse password managers */}
           <div style={{ display: 'none' }}>
             <input type="text" name="fakeusername" autoComplete="username" />
@@ -159,13 +228,13 @@ export default function Home({ onNavigate }: HomeProps = {}) {
           </div>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="botId">Bot ID</Label>
+              <Label htmlFor="botId">Bot ID / App ID</Label>
               <Input
                 id="botId"
                 ref={botIdRef}
                 type="text"
                 autoComplete="off"
-                placeholder="Enter your Bot ID"
+                placeholder="Enter your Bot ID or App ID"
                 value={credentials.botId}
                 onChange={(e) => handleInputChange('botId', e.target.value)}
                 className={errors.botId ? 'border-destructive' : ''}
