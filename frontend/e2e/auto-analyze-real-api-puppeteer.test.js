@@ -484,10 +484,13 @@ async function runAutoAnalyzeRealTest() {
     }
     
     // Step 11: Test download functionality (if analysis completed and enabled)
-    let downloadResults = { downloadTested: false, downloadSuccess: false };
+    let downloadResults = { downloadTested: false, downloadSuccess: false, shareModalDownloadTested: false, shareModalDownloadSuccess: false };
     if (completionResults.analysisCompleted && config.testDownload) {
       try {
         console.log('📥 Step 11: Testing download functionality');
+        
+        // Test 1: Download button on report page
+        console.log('📥 Step 11a: Testing download button on report page');
         
         // Look for the Download Report Data button using proper Puppeteer selectors
         const downloadButton = await page.evaluateHandle(() => {
@@ -501,7 +504,7 @@ async function runAutoAnalyzeRealTest() {
         });
         
         if (downloadButton && downloadButton.asElement()) {
-          console.log('✅ Download button found');
+          console.log('✅ Download button found on report page');
           
           // Setup download listening via response monitoring
           const downloadPromise = new Promise((resolve, reject) => {
@@ -537,26 +540,155 @@ async function runAutoAnalyzeRealTest() {
           });
           
           await downloadButton.asElement().click();
-          console.log('🔽 Download button clicked');
+          console.log('🔽 Download button clicked on report page');
           
           try {
             const downloadResponse = await downloadPromise;
-            console.log('✅ Download completed successfully');
+            console.log('✅ Report page download completed successfully');
             console.log(`📦 Download response: ${JSON.stringify(downloadResponse)}`);
-            downloadResults = { 
-              downloadTested: true, 
-              downloadSuccess: true, 
-              contentType: downloadResponse.contentType,
-              contentDisposition: downloadResponse.contentDisposition
-            };
+            downloadResults.downloadTested = true;
+            downloadResults.downloadSuccess = true;
+            downloadResults.contentType = downloadResponse.contentType;
+            downloadResults.contentDisposition = downloadResponse.contentDisposition;
           } catch (downloadError) {
-            console.log(`⚠️ Download failed: ${downloadError.message}`);
-            downloadResults = { downloadTested: true, downloadSuccess: false, error: downloadError.message };
+            console.log(`⚠️ Report page download failed: ${downloadError.message}`);
+            downloadResults.downloadTested = true;
+            downloadResults.downloadSuccess = false;
+            downloadResults.error = downloadError.message;
           }
         } else {
-          console.log('⚠️ Download button not found in report');
-          downloadResults = { downloadTested: false, reason: 'Download button not found' };
+          console.log('⚠️ Download button not found on report page');
+          downloadResults.downloadTested = false;
+          downloadResults.reason = 'Download button not found on report page';
         }
+        
+        // Test 2: Download button in Share Report modal
+        console.log('📥 Step 11b: Testing download button in Share Report modal');
+        
+        try {
+          // Look for Share Report button
+          const shareButton = await page.evaluateHandle(() => {
+            const buttons = Array.from(document.querySelectorAll('button'));
+            return buttons.find(btn => 
+              btn.textContent?.includes('Share Report') ||
+              btn.textContent?.includes('Share')
+            );
+          });
+          
+          if (shareButton && shareButton.asElement()) {
+            console.log('✅ Share Report button found');
+            
+            // Click Share Report button to open modal
+            await shareButton.asElement().click();
+            console.log('🔄 Share Report button clicked - modal should open');
+            
+            // Wait for modal to appear
+            await page.waitForSelector('[role="dialog"]', { timeout: 5000 });
+            console.log('✅ Share Report modal opened');
+            
+            // Look for the Download Report Data button in the modal
+            await page.waitForFunction(() => {
+              const buttons = Array.from(document.querySelectorAll('button'));
+              return buttons.some(btn => btn.textContent?.includes('Download Report Data'));
+            }, { timeout: 5000 });
+            
+            const modalDownloadButton = await page.evaluateHandle(() => {
+              const buttons = Array.from(document.querySelectorAll('button'));
+              return buttons.find(btn => btn.textContent?.includes('Download Report Data'));
+            });
+            
+            if (modalDownloadButton && modalDownloadButton.asElement()) {
+              console.log('✅ Download button found in Share Report modal');
+              
+              // Setup download monitoring for modal button
+              const modalDownloadPromise = new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => reject(new Error('Modal download timeout after 10 seconds')), 10000);
+                
+                page.on('response', async (response) => {
+                  if (response.url().includes('/export/') && response.status() === 200) {
+                    clearTimeout(timeout);
+                    console.log(`✅ Modal download API call successful: ${response.url()}`);
+                    
+                    try {
+                      const contentType = response.headers()['content-type'];
+                      const contentDisposition = response.headers()['content-disposition'];
+                      
+                      console.log(`📄 Modal Content-Type: ${contentType}`);
+                      console.log(`📁 Modal Content-Disposition: ${contentDisposition}`);
+                      
+                      if (contentType?.includes('application/json')) {
+                        console.log('✅ Valid JSON response for modal download');
+                        resolve({ success: true, contentType, contentDisposition });
+                      } else {
+                        reject(new Error(`Invalid content type: ${contentType}`));
+                      }
+                    } catch (error) {
+                      reject(new Error(`Modal response validation failed: ${error.message}`));
+                    }
+                  } else if (response.url().includes('/export/') && response.status() !== 200) {
+                    clearTimeout(timeout);
+                    reject(new Error(`Modal download failed with status ${response.status()}: ${response.status()}`));
+                  }
+                });
+              });
+              
+              // Click the download button in the modal
+              await modalDownloadButton.asElement().click();
+              console.log('🔽 Download button clicked in Share Report modal');
+              
+              try {
+                const modalDownloadResponse = await modalDownloadPromise;
+                console.log('✅ Share modal download completed successfully');
+                console.log(`📦 Modal download response: ${JSON.stringify(modalDownloadResponse)}`);
+                downloadResults.shareModalDownloadTested = true;
+                downloadResults.shareModalDownloadSuccess = true;
+                downloadResults.shareModalContentType = modalDownloadResponse.contentType;
+                downloadResults.shareModalContentDisposition = modalDownloadResponse.contentDisposition;
+              } catch (modalDownloadError) {
+                console.log(`⚠️ Share modal download failed: ${modalDownloadError.message}`);
+                downloadResults.shareModalDownloadTested = true;
+                downloadResults.shareModalDownloadSuccess = false;
+                downloadResults.shareModalError = modalDownloadError.message;
+              }
+              
+              // Close the modal by clicking outside or finding close button
+              try {
+                const closeButton = await page.evaluateHandle(() => {
+                  const buttons = Array.from(document.querySelectorAll('button'));
+                  return buttons.find(btn => 
+                    btn.textContent?.includes('Cancel') || 
+                    btn.textContent?.includes('Done') ||
+                    btn.textContent?.includes('Close')
+                  );
+                });
+                
+                if (closeButton && closeButton.asElement()) {
+                  await closeButton.asElement().click();
+                  console.log('🔒 Share Report modal closed');
+                } else {
+                  // Click outside modal to close
+                  await page.keyboard.press('Escape');
+                  console.log('🔒 Share Report modal closed with Escape key');
+                }
+              } catch (closeError) {
+                console.log('⚠️ Could not close Share Report modal, continuing...');
+              }
+            } else {
+              console.log('❌ Download button not found in Share Report modal');
+              downloadResults.shareModalDownloadTested = false;
+              downloadResults.shareModalReason = 'Download button not found in modal';
+            }
+          } else {
+            console.log('❌ Share Report button not found');
+            downloadResults.shareModalDownloadTested = false;
+            downloadResults.shareModalReason = 'Share Report button not found';
+          }
+        } catch (shareModalError) {
+          console.log(`❌ Share modal test error: ${shareModalError.message}`);
+          downloadResults.shareModalDownloadTested = false;
+          downloadResults.shareModalError = shareModalError.message;
+        }
+        
       } catch (downloadTestError) {
         console.log(`❌ Download test error: ${downloadTestError.message}`);
         downloadResults = { downloadTested: false, error: downloadTestError.message };
@@ -619,18 +751,41 @@ async function runAutoAnalyzeRealTest() {
       }
       
       // Log download test results
-      if (downloadResults.downloadTested) {
-        console.log(`📥 Download Test: ${downloadResults.downloadSuccess ? '✅ SUCCESS' : '❌ FAILED'}`);
-        if (downloadResults.downloadSuccess) {
-          console.log(`   📄 Content-Type: ${downloadResults.contentType}`);
-          console.log(`   📁 Content-Disposition: ${downloadResults.contentDisposition}`);
-          console.log(`   ✅ Download endpoint working correctly with parallel API`);
-        } else if (downloadResults.error) {
-          console.log(`   ❌ Error: ${downloadResults.error}`);
+      if (downloadResults.downloadTested || downloadResults.shareModalDownloadTested) {
+        console.log('📥 Download Tests Summary:');
+        
+        // Report page download results
+        if (downloadResults.downloadTested) {
+          console.log(`   📄 Report Page Download: ${downloadResults.downloadSuccess ? '✅ SUCCESS' : '❌ FAILED'}`);
+          if (downloadResults.downloadSuccess) {
+            console.log(`      📄 Content-Type: ${downloadResults.contentType}`);
+            console.log(`      📁 Content-Disposition: ${downloadResults.contentDisposition}`);
+          } else if (downloadResults.error) {
+            console.log(`      ❌ Error: ${downloadResults.error}`);
+          }
+        } else {
+          const reason = downloadResults.reason || 'Not tested';
+          console.log(`   📄 Report Page Download: ⏭️ SKIPPED (${reason})`);
+        }
+        
+        // Share modal download results
+        if (downloadResults.shareModalDownloadTested) {
+          console.log(`   📤 Share Modal Download: ${downloadResults.shareModalDownloadSuccess ? '✅ SUCCESS' : '❌ FAILED'}`);
+          if (downloadResults.shareModalDownloadSuccess) {
+            console.log(`      📄 Content-Type: ${downloadResults.shareModalContentType}`);
+            console.log(`      📁 Content-Disposition: ${downloadResults.shareModalContentDisposition}`);
+            console.log(`      ✅ Share modal download working correctly!`);
+          } else if (downloadResults.shareModalError) {
+            console.log(`      ❌ Error: ${downloadResults.shareModalError}`);
+            console.log(`      🐛 BUG DETECTED: Share modal download button is broken!`);
+          }
+        } else {
+          const reason = downloadResults.shareModalReason || downloadResults.shareModalError || 'Not tested';
+          console.log(`   📤 Share Modal Download: ⏭️ SKIPPED (${reason})`);
         }
       } else {
         const reason = downloadResults.reason || downloadResults.error || 'Analysis not completed';
-        console.log(`📥 Download Test: ⏭️ SKIPPED (${reason})`);
+        console.log(`📥 Download Tests: ⏭️ ALL SKIPPED (${reason})`);
       }
     }
     

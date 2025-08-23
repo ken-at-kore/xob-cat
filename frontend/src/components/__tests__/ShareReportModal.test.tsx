@@ -185,7 +185,7 @@ describe('ShareReportModal', () => {
       fireEvent.click(downloadButton);
       
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:3001/api/analysis/auto-analyze/export/test-123',
+        'http://localhost:3001/api/analysis/auto-analyze/parallel/export/test-123',
         expect.objectContaining({
           headers: expect.objectContaining({
             'x-jwt-token': 'mock-jwt-token',
