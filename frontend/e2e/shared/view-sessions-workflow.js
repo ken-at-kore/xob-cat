@@ -61,8 +61,8 @@ async function enterCredentials(page, credentials, baseUrl = 'http://localhost:3
   await page.type('#clientId', credentials.clientId);
   await page.type('#clientSecret', credentials.clientSecret);
   
-  // Find and click the Connect button
-  const connectButton = await page.$('button');
+  // Find and click the Connect button (specifically target the form submit button)
+  const connectButton = await page.$('button:not([type="button"])');
   if (connectButton) {
     const buttonText = await page.evaluate(el => el.textContent, connectButton);
     if (buttonText.includes('Connect')) {
@@ -71,7 +71,20 @@ async function enterCredentials(page, credentials, baseUrl = 'http://localhost:3
       throw new Error(`Expected Connect button, found: ${buttonText}`);
     }
   } else {
-    throw new Error('Connect button not found');
+    // Fallback: look for any button with "Connect" text
+    const buttons = await page.$$('button');
+    let foundConnectButton = false;
+    for (const button of buttons) {
+      const buttonText = await page.evaluate(el => el.textContent, button);
+      if (buttonText.includes('Connect')) {
+        await button.click();
+        foundConnectButton = true;
+        break;
+      }
+    }
+    if (!foundConnectButton) {
+      throw new Error('Connect button not found');
+    }
   }
   console.log('✅ Credentials entered and Connect clicked');
 }
