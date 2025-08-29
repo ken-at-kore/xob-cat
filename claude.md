@@ -136,8 +136,8 @@ node frontend/e2e/auto-analyze-real-api-puppeteer.test.js
 ```
 
 #### Mock Services
-Activate with `mock-*` credentials:
-- `mock-bot-id`, `mock-client-id`, `mock-client-secret`
+Activate with exact credentials:
+- `st-mock-bot-id-12345`, `cs-mock-client-id-12345`, `mock-client-secret-12345`
 - 10 predefined sessions with rich conversations
 
 ### Frontend Debugging
