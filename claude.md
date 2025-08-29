@@ -53,8 +53,9 @@ HYBRID_TEST_MODE=main HYBRID_MODEL="gpt-4.1" npm test -- --testPathPattern="perS
 # Puppeteer standalone (recommended)
 node frontend/e2e/run-puppeteer-test.js
 
-# Progress bar animation testing
-node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=10  # Validates blue animated progress
+# Auto-analyze testing (uses shared workflow architecture)
+node frontend/e2e/auto-analyze-real-api-puppeteer.test.js --sessions=10  # Real APIs, validates end-to-end workflow
+node frontend/e2e/auto-analyze-mock-api-puppeteer.test.js              # Mock APIs, fast validation
 ```
 
 ### Build & Quality
