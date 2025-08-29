@@ -8,8 +8,8 @@ export class MockKoreApiService implements IKoreApiService {
     {
       session_id: 'mock_session_1',
       user_id: 'mock_user_1',
-      start_time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-      end_time: new Date(Date.now() - 1.75 * 60 * 60 * 1000).toISOString(), // 1h45m ago
+      start_time: '2024-08-01T10:00:00.000Z',
+      end_time: '2024-08-01T10:15:00.000Z',
       containment_type: 'selfService',
       tags: ['Claim Status', 'Contained', 'Sanitization Test'],
       metrics: {
@@ -57,8 +57,8 @@ export class MockKoreApiService implements IKoreApiService {
     {
       session_id: 'mock_session_2',
       user_id: 'mock_user_2',
-      start_time: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
-      end_time: new Date(Date.now() - 0.83 * 60 * 60 * 1000).toISOString(), // 50 minutes ago
+      start_time: '2024-08-01T11:00:00.000Z',
+      end_time: '2024-08-01T11:10:00.000Z',
       containment_type: 'agent',
       tags: ['Billing', 'Transfer'],
       metrics: {
@@ -101,8 +101,8 @@ export class MockKoreApiService implements IKoreApiService {
     {
       session_id: 'mock_session_3',
       user_id: 'mock_user_3',
-      start_time: new Date(Date.now() - 0.5 * 60 * 60 * 1000).toISOString(), // 30 minutes ago
-      end_time: new Date(Date.now() - 0.08 * 60 * 60 * 1000).toISOString(), // 5 minutes ago
+      start_time: '2024-08-01T12:00:00.000Z',
+      end_time: '2024-08-01T12:25:00.000Z',
       containment_type: 'selfService',
       tags: ['Eligibility', 'Contained'],
       metrics: {

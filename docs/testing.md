@@ -129,9 +129,12 @@ npm run test:e2e
 # Run Puppeteer tests (recommended for critical paths)
 node e2e/view-sessions-mock-api-puppeteer.test.js
 node e2e/view-sessions-real-api-puppeteer.test.js
+node e2e/auto-analyze-mock-api-puppeteer.test.js        # Fast workflow validation
+node e2e/auto-analyze-real-api-puppeteer.test.js       # Comprehensive real API testing
 
 # Test against production
 node e2e/view-sessions-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
+node e2e/auto-analyze-real-api-puppeteer.test.js --url=https://www.koreai-xobcat.com
 ```
 
 ## 📈 Current Test Coverage

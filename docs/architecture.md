@@ -362,9 +362,13 @@ Raw Sessions → SessionWithTranscript → AnalysisResult → Charts
 ```
 frontend/e2e/
 ├── shared/
-│   └── view-sessions-workflow.js    # Reusable workflow steps
+│   ├── view-sessions-workflow.js    # View sessions reusable workflow steps
+│   ├── auto-analyze-workflow.js     # Auto-analyze reusable workflow steps
+│   └── parse-test-args.js           # Common CLI argument parsing
 ├── view-sessions-mock-api-puppeteer.test.js
 ├── view-sessions-real-api-puppeteer.test.js
+├── auto-analyze-mock-api-puppeteer.test.js  # Fast workflow validation
+├── auto-analyze-real-api-puppeteer.test.js  # Comprehensive real API testing
 └── *.spec.ts                        # Playwright tests
 ```
 

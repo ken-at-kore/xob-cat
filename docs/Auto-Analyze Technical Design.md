@@ -677,7 +677,8 @@ interface ProgressTextLog {
 NEXT_PUBLIC_PROGRESS_DEBUG=true
 
 # Puppeteer testing with debug output
-node frontend/e2e/auto-analyze-real-api-puppeteer.test.js
+node frontend/e2e/auto-analyze-real-api-puppeteer.test.js       # Real API comprehensive testing
+node frontend/e2e/auto-analyze-mock-api-puppeteer.test.js      # Mock API fast validation
 
 # View transformation logs in browser console
 console.log(ProgressTextProcessor.getInstance().exportDebugInfo());

@@ -34,9 +34,9 @@ const {
 
 // Mock credentials that trigger mock services
 const MOCK_CREDENTIALS = {
-  botId: 'mock-bot-id',
-  clientId: 'mock-client-id',
-  clientSecret: 'mock-client-secret'
+  botId: 'st-mock-bot-id-12345',
+  clientId: 'cs-mock-client-id-12345', 
+  clientSecret: 'mock-client-secret-12345'
 };
 
 // Analysis configuration for mock testing (NEW UI)
@@ -71,6 +71,7 @@ async function runAutoAnalyzeMockTest() {
       console.log(`🐌 SlowMo enabled at ${config.slowMo}ms`);
     }
     console.log('🧪 Using mock services - no real API calls will be made');
+    console.log('⚡ Mock test optimized for fast workflow validation (~2 seconds)');
     
     // Launch browser with shared configuration
     browser = await puppeteer.launch(getBrowserConfig({ 
