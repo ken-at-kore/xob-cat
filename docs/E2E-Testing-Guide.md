@@ -140,9 +140,9 @@ async function runTest() {
     
     // Use shared workflow steps
     await enterCredentials(page, {
-      botId: 'mock-bot-id',
-      clientId: 'mock-client-id',
-      clientSecret: 'mock-client-secret'
+      botId: 'st-mock-bot-id-12345',
+      clientId: 'cs-mock-client-id-12345',
+      clientSecret: 'mock-client-secret-12345'
     });
     
     await waitForSessionsPage(page);
@@ -246,14 +246,14 @@ async function runTest() {
 
 ### Mock Service Activation
 
-Mock services automatically activate when credentials contain "mock":
+Mock services automatically activate with exact mock credentials:
 
 ```javascript
-// ✅ Triggers mock services
+// ✅ Triggers mock services (exact values required)
 const mockCredentials = {
-  botId: 'mock-bot-id',
-  clientId: 'mock-client-id', 
-  clientSecret: 'mock-client-secret'
+  botId: 'st-mock-bot-id-12345',
+  clientId: 'cs-mock-client-id-12345', 
+  clientSecret: 'mock-client-secret-12345'
 };
 
 // ❌ Uses real API services
@@ -470,9 +470,9 @@ node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
 #### 1. Start with Mock API Test
 ```javascript
 // Use mock credentials for fast, reliable testing
-await page.fill('#botId', 'mock-bot-id');
-await page.fill('#clientId', 'mock-client-id');
-await page.fill('#clientSecret', 'mock-client-secret');
+await page.fill('#botId', 'st-mock-bot-id-12345');
+await page.fill('#clientId', 'cs-mock-client-id-12345');
+await page.fill('#clientSecret', 'mock-client-secret-12345');
 ```
 
 #### 2. Add Real API Variant (Optional)
