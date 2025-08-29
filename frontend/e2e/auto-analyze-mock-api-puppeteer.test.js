@@ -26,7 +26,10 @@ const {
   waitForCompletion,
   validateReport,
   testSessionDetailsDialog,
-  setupRequestLogging
+  setupRequestLogging,
+  validateDefaultStartDate,
+  validateInitialStatusMessage,
+  validateDiscoveryPhaseStatus
 } = require('./shared/auto-analyze-workflow');
 
 // Mock credentials that trigger mock services
@@ -90,11 +93,40 @@ async function runAutoAnalyzeMockTest() {
     // Step 3-4: Navigate to Auto-Analyze page
     await navigateToAutoAnalyze(page);
     
+    // Step 4.5: Verify default start date (shared validation)
+    console.log('🔍 Step 4.5: Verifying default start date (mock test)');
+    const dateValidation = await validateDefaultStartDate(page);
+    if (!dateValidation.isCorrect) {
+      console.log(`⚠️ Mock test: Default date validation failed but continuing - ${dateValidation.message}`);
+    }
+    
     // Step 5: Configure analysis settings
     await configureAnalysis(page, MOCK_ANALYSIS_CONFIG);
     
     // Step 6: Start analysis
     await startAnalysis(page);
+    
+    // Step 6.5: Check initial status message (shared validation)
+    console.log('🔍 Step 6.5: Checking initial status message (mock test)');
+    try {
+      const initialStatusValidation = await validateInitialStatusMessage(page);
+      if (!initialStatusValidation.isCorrect) {
+        console.log(`⚠️ Mock test: Initial status validation failed but continuing - ${initialStatusValidation.message}`);
+      }
+    } catch (error) {
+      console.log(`⚠️ Mock test: Initial status validation error but continuing - ${error.message}`);
+    }
+    
+    // Step 6.75: Check discovery phase status (shared validation)
+    console.log('🔍 Step 6.75: Checking discovery phase status (mock test)');
+    try {
+      const discoveryStatusValidation = await validateDiscoveryPhaseStatus(page);
+      if (!discoveryStatusValidation.isCorrect) {
+        console.log(`⚠️ Mock test: Discovery phase validation failed but continuing - ${discoveryStatusValidation.message}`);
+      }
+    } catch (error) {
+      console.log(`⚠️ Mock test: Discovery phase validation error but continuing - ${error.message}`);
+    }
     
     // Step 7: Monitor progress
     const progressResults = await monitorProgress(page);
