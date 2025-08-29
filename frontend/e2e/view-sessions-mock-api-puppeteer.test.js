@@ -21,9 +21,9 @@ const { parseTestArgs, showHelp } = require('./shared/parse-test-args');
 
 // Mock credentials to trigger mock services
 const MOCK_CREDENTIALS = {
-  botId: 'mock-bot-id',
-  clientId: 'mock-client-id',
-  clientSecret: 'mock-client-secret'
+  botId: 'st-mock-bot-id-12345',
+  clientId: 'cs-mock-client-id-12345',
+  clientSecret: 'mock-client-secret-12345'
 };
 
 async function runTest() {
