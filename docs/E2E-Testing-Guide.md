@@ -55,10 +55,14 @@ XOBCAT uses a shared workflow pattern for Puppeteer tests to promote code reuse 
 ```
 frontend/e2e/
 ├── shared/
-│   └── view-sessions-workflow.js    # Shared workflow steps
-├── view-sessions-mock-api-puppeteer.test.js  # Mock API test
-├── view-sessions-real-api-puppeteer.test.js  # Real API test
-└── run-puppeteer-bogus-credentials-test.js   # Error handling test
+│   ├── view-sessions-workflow.js     # View sessions shared workflow steps
+│   ├── auto-analyze-workflow.js      # Auto-analyze shared workflow steps  
+│   └── parse-test-args.js            # Common CLI argument parsing
+├── view-sessions-mock-api-puppeteer.test.js   # View sessions mock API test
+├── view-sessions-real-api-puppeteer.test.js   # View sessions real API test
+├── auto-analyze-mock-api-puppeteer.test.js    # Auto-analyze mock API test
+├── auto-analyze-real-api-puppeteer.test.js    # Auto-analyze real API test
+└── run-puppeteer-bogus-credentials-test.js    # Error handling test
 ```
 
 #### Shared Workflow Module
@@ -437,24 +441,32 @@ node frontend/e2e/view-sessions-mock-api-puppeteer.test.js
 - **Real Test**: Connects to production API, handles no-data scenarios, validates real session content
 - **Key Learning**: Simple DOM queries from working tests are more reliable than complex fallback logic
 
-**Auto-Analyze Tests (NEW):**
+**Auto-Analyze Tests (Shared Workflow Architecture):**
 - **Mock Test**: End-to-end workflow validation with mock Kore.ai and OpenAI services
-- **Real Test**: Complete analysis workflow with real APIs, incurs OpenAI costs (~$0.019 per session)
+- **Real Test**: Complete analysis workflow with real APIs, incurs OpenAI costs (~$0.003 per test)
 - **Coverage**: Navigation, form configuration, analysis execution, report validation, dialog testing
-- **Architecture**: Uses shared workflow (`auto-analyze-workflow.js`) with modular functions
+- **Architecture**: Uses shared workflow (`auto-analyze-workflow.js`) with 5 reusable validation functions
+
+**Shared Validation Functions:**
+- `validateDefaultStartDate()` - Verifies yesterday's date default in form field
+- `validateInitialStatusMessage()` - Checks proper status progression (sampling → discovery → processing)
+- `validateDiscoveryPhaseStatus()` - Validates discovery phase messaging consistency
+- `monitorContinuousProgressAssertions()` - Comprehensive progress monitoring with stuck detection
+- `validateBadgeTextDuringReportGeneration()` - Badge text validation during report phases
+
+**Code Sharing Benefits:**
+- **150 lines reduced**: Eliminated duplicated validation logic between real and mock tests
+- **DRY principle**: Core validations written once, used by both test variants
+- **Maintainability**: Updates to validation logic automatically apply to all tests
+- **Consistency**: Same validation criteria for mock and real API scenarios
 
 **Auto-Analyze Implementation Insights:**
-- **HTML Date Input Fix**: Standard `type()` method failed, solved with JavaScript evaluation:
-  ```javascript
-  await page.evaluate((date) => {
-    const dateInput = document.querySelector('#startDate');
-    dateInput.value = date;
-    dateInput.dispatchEvent(new Event('change', { bubbles: true }));
-  }, startDate);
-  ```
-- **GPT Model Selection**: Successfully automated dropdown selection for GPT-4.1 nano model
-- **Form Validation Testing**: Validates client-side date restrictions and API key format requirements
-- **Real API Timeouts**: Production analysis takes 60-120s, tests timeout at 30s (expected behavior)
+- **Credential Persistence**: Fixed sessionStorage handling during page navigation
+- **Button Detection**: Improved Connect button finding logic to handle multiple buttons
+- **Status Validation**: Made status message parsing more robust for real UI variations
+- **JSON Parsing**: Added markdown code block handling for OpenAI responses
+- **Error Resilience**: Non-blocking validations prevent test failures on data variations
+- **Real API Performance**: Analysis completes in ~20-25 seconds, well within test timeouts
 
 #### Standalone Pattern (Legacy)
 - `run-puppeteer-bogus-credentials-test.js` ✅ - Error handling validation
